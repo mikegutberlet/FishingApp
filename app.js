@@ -190,6 +190,7 @@ function editLake(lake) {
       <label>State lake page (DNR) URL <input name="infoUrl" type="url" value="${esc(lake.infoUrl)}"></label>
       <label>Stocking report URL <input name="stockingUrl" type="url" value="${esc(lake.stockingUrl)}"></label>
       <label>USGS gauge id (optional, pins a specific gauge) <input name="usgsSite" value="${esc(lake.usgsSite)}"></label>
+      <label>CDEC reservoir station (California, optional, e.g. SHA) <input name="cdecStation" value="${esc(lake.cdecStation)}"></label>
       <div class="row"><label>Lat <input name="lat" type="number" step="any" required value="${lake.lat ?? ''}"></label>
         <label>Lon <input name="lon" type="number" step="any" required value="${lake.lon ?? ''}"></label></div>
       <button class="primary">Save</button>
@@ -261,7 +262,7 @@ async function renderConditions(lake, body) {
       <table>${w.daily.time.slice(1).map((t, j) => { const i = j + 1; return `<tr><td>${new Date(t + 'T12:00').toLocaleDateString(undefined, { weekday: 'short' })}</td><td>${WEATHER_CODES[w.daily.weather_code[i]] ?? ''}</td><td>${Math.round(w.daily.temperature_2m_min[i])}–${Math.round(w.daily.temperature_2m_max[i])}°</td><td>${arrow(w.daily.wind_direction_10m_dominant[i])} ${Math.round(w.daily.wind_speed_10m_max[i])} (g${Math.round(w.daily.wind_gusts_10m_max[i])})</td><td>${w.daily.precipitation_probability_max[i] ?? 0}%</td></tr>`; }).join('')}</table>
       <p class="muted small">Open-Meteo forecast · moon phase computed on device</p>`;
   } catch (e) { if (body.isConnected) $('#wx').textContent = `Weather: ${e.message} (offline?)`; }
-  CA.nearestReservoir(lake.lat, lake.lon).then(r => {
+  CA.nearestReservoir(lake.lat, lake.lon, lake.cdecStation).then(r => {
     if (!r || !body.isConnected) return;
     const el = $('#res'), e = r.elevation, s = r.storage;
     const change = days => e.length > days ? (e.at(-1)[1] - e.at(-1 - days)[1]) : null;
@@ -270,7 +271,7 @@ async function renderConditions(lake, body) {
       ${e.length ? `<div class="stat"><b>${e.at(-1)[1].toLocaleString()} ft</b><span>Elevation ${fmtDate(e.at(-1)[0] + 'T12:00')}</span></div>
       <div class="stat"><b>${signed(change(7))}</b><span>Last 7 days</span></div><div class="stat"><b>${signed(change(29))}</b><span>Last 30 days</span></div>` : ''}
       ${s.length ? `<div class="stat"><b>${Math.round(s.at(-1)[1]).toLocaleString()}</b><span>Storage, acre-ft</span></div>` : ''}</div>
-      <p class="muted small">CDEC station ${esc(r.id)} · ${r.distKm.toFixed(1)} km away</p>`;
+      <p class="muted small">CDEC station ${esc(r.id)} · ${r.distKm.toFixed(1)} km away${lake.cdecStation ? '' : ' · wrong lake? set the station under Edit'}</p>`;
     el.classList.remove('hidden');
   });
   try {

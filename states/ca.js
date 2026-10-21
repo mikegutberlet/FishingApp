@@ -46,9 +46,13 @@ export async function nearestWaters(lat, lon, maxKm = 5) {
     .sort((a, b) => a.distKm - b.distKm);
 }
 
-export async function nearestReservoir(lat, lon, maxKm = 8) {
+// Big reservoirs' gauges sit at the dam, often 15+ km from the middle of the lake, so the search is wide.
+// A lake can pin a station id (Edit → CDEC station) when the nearest one is the wrong water.
+export async function nearestReservoir(lat, lon, pinnedId, maxKm = 25) {
   const r = await load('reservoirs');
   if (!r) return null;
+  const pinned = pinnedId && r.reservoirs.find(s => s.id === pinnedId.toUpperCase());
+  if (pinned) return { ...pinned, distKm: haversineKm(lat, lon, pinned.lat, pinned.lon), updatedAt: r.updatedAt };
   const best = r.reservoirs
     .map(s => ({ ...s, distKm: haversineKm(lat, lon, s.lat, s.lon) }))
     .sort((a, b) => a.distKm - b.distKm)[0];

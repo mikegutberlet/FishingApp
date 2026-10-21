@@ -22,6 +22,29 @@ A Fish Deeper–style app that keeps all of your data on your own device. No acc
 
 It is a PWA: open it once in Safari/Chrome, choose **Add to Home Screen**, and it behaves like an app and opens with no signal (map tiles you've already viewed are cached).
 
+## California
+
+* **Find stocked waters**: Lakes → *Find California stocked waters* lists every CDFW-stocked lake and river, filtered to recent and upcoming plants, with one-tap *Add*. The map also has a *CA stocked waters* layer (green = planted in the last 30 days).
+* **Stocking per lake**: the Stocking tab shows CDFW plants for that water (upcoming plants, last plant, plants per year, full list). CDFW publishes week and species but not fish counts.
+* **History**: CDFW's public schedule only goes back about a year, so the nightly job merges each day into `data/ca/plants.json`. History builds from 2025-10 onward.
+* **Lake level**: for reservoirs, Conditions shows CDEC elevation, 7- and 30-day change, and storage. The nearest gauge within 25 km is used; set a station id under Edit if it picks the wrong one.
+
+Data is refreshed daily by `.github/workflows/update-data.yml` running `scripts/update-ca-data.mjs`. It runs on GitHub because the state sites don't let a browser app fetch from them directly. It is all public data, and the job never sees anything from your phone.
+
+**Nevada and Oregon (planned)**: same shape, as `states/nv.js` and `states/or.js` plus a nightly script each. The sources are NDOW's weekly stocking reports and ODFW's trout stocking schedule and past stocking reports. Nevada reservoir levels come from USBR and USGS. Oregon lake levels come from USGS and the Army Corps of Engineers.
+
+## Sharing with friends
+
+* Everyone installs the same link. Each person's catches, notes and spots stay on their own phone. There are no shared accounts.
+* **Share a lake**: open a lake → *Share*. It sends a small file through Messages, AirDrop, email and so on, containing the lake, your Deeper depth maps and (if you choose) your notes and pinned spots. Catches are never included. Your friend opens the app → Data → *Import backup or shared lake*.
+
+## Installing on iPhone and Android
+
+* **iPhone**: open the link in Safari → Share → *Add to Home Screen*.
+* **Android**: open the link in Chrome → ⋮ → *Install app*.
+
+The Data tab shows the right steps for the phone you're on.
+
 ## Privacy model
 
 * Catches, notes, photos, spots, depth data and stocking records live only in the browser's IndexedDB on your phone.
@@ -51,7 +74,7 @@ Reverse-engineering other apps isn't needed: the public sources above cover cond
 
 ## Next steps
 
-* State-specific stocking adapters (many DNRs publish CSV or JSON stocking data) so stocking fills in automatically.
+* Nevada and Oregon stocking and lake levels (see above).
 * Depth contour lines (not just colored points) and spot waypoints with icons.
 * Water-temp/thermocline log from Deeper readings.
 * Optional encrypted sync between your own devices (e.g. to a folder you control) if you want phone + desktop.
@@ -62,4 +85,6 @@ Reverse-engineering other apps isn't needed: the public sources above cover cond
 * `app.js`: views, map, catch log, stats
 * `db.js`: IndexedDB storage and backup
 * `data-sources.js`: Open-Meteo, USGS, moon phase, CSV/GPX/KML parsers
+* `states/ca.js`: California stocking and reservoir lookups
+* `scripts/update-ca-data.mjs` and `data/ca/`: nightly public-data refresh and its output
 * `sw.js`, `manifest.json`: offline + install
