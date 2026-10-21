@@ -7,6 +7,11 @@
   <title>Tackle Box</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icon.svg">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Tackle Box">
   <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -72,12 +77,14 @@
     </section>
 
     <section id="view-settings" class="view">
+      <h2>Install</h2>
+      <div class="card small" id="install-help"></div>
       <h2>Your data</h2>
       <div class="card">
         <p>Everything is stored only in this browser on this device. There is no account and no server.
           Back up regularly, and use a backup file to move your data to another device.</p>
         <button id="btn-export">⬇ Export backup</button>
-        <label class="file-btn">⬆ Import backup <input type="file" id="import-file" accept=".json" hidden></label>
+        <label class="file-btn">⬆ Import backup or shared lake <input type="file" id="import-file" accept=".json,application/json" hidden></label>
         <p id="storage-info" class="muted small"></p>
       </div>
       <h2>What leaves your device</h2>
@@ -87,6 +94,7 @@
           <li><b>USGS Water Services</b> (flow, level, water temp): a box around the lake.</li>
           <li><b>Map tiles</b> (OpenStreetMap / Esri): the map area you view.</li>
           <li><b>Windy / MyRadar</b>: only when you open those panels or links.</li>
+          <li><b>California stocking and lake levels</b> come from this app's own site (refreshed nightly from CDFW and CDEC), so nothing extra is sent.</li>
         </ul>
         <p>Catches, notes, photos, spots and depth data never leave the device.</p>
       </div>

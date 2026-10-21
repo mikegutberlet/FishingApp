@@ -118,14 +118,19 @@ async function updateReservoirs() {
     const url = `https://cdec.water.ca.gov/dynamicapp/req/JSONDataServlet?Stations=${ids}&SensorNums=6,15&dur_code=D&Start=${day(start)}&End=${day(end)}`;
     for (const r of await (await get(url)).json()) {
       if (r.value == null || r.value < -9000) continue;
+      // CDEC's JSON names the sensor field inconsistently (SENSOR_NUM / sensorNum) and dates look like "2026-9-21 00:00".
+      const sensor = Number(r.SENSOR_NUM ?? r.sensorNum ?? r.sensor_num);
+      const isElevation = sensor === 6 || /ele|feet/i.test(`${r.sensorType} ${r.units}`);
+      const [y, m, d] = String(r.date ?? r.obsDate).trim().split(/[ T]/)[0].split('-');
       const s = series.get(r.stationId) ?? { elevation: [], storage: [] };
-      (r.sensorNum === 6 ? s.elevation : s.storage).push([r.date.slice(0, 10), r.value]);
+      (isElevation ? s.elevation : s.storage).push([`${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`, r.value]);
       series.set(r.stationId, s);
     }
   }
+  for (const s of series.values()) for (const k of ['elevation', 'storage']) s[k].sort((a, b) => a[0].localeCompare(b[0]));
   const reservoirs = stations.filter(s => series.has(s.id)).map(s => ({ ...s, ...series.get(s.id) }));
   await writeJson('reservoirs.json', { updatedAt: new Date().toISOString(), source: 'https://cdec.water.ca.gov', units: { elevation: 'ft', storage: 'acre-ft' }, reservoirs });
-  console.log(`reservoirs: ${stations.length} stations listed, ${reservoirs.length} with recent data`);
+  console.log(`reservoirs: ${stations.length} stations listed, ${reservoirs.length} with recent data, ${reservoirs.filter(r => r.elevation.length).length} with elevation`);
 }
 
 await mkdir(OUT, { recursive: true });
