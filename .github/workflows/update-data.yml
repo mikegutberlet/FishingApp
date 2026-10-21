@@ -1,0 +1,36 @@
+name: Update state fishing data
+
+on:
+  schedule:
+    - cron: '17 13 * * *' # daily, ~6am Pacific
+  workflow_dispatch:
+  push:
+    paths:
+      - scripts/update-*-data.mjs
+      - .github/workflows/update-data.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-data-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: California
+        run: node scripts/update-ca-data.mjs
+      - name: Commit changes
+        run: |
+          git add data/
+          if git diff --cached --quiet; then echo "No data changes"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update state fishing data"
+          git push
