@@ -1,0 +1,10 @@
+{
+  "name": "Tackle Box",
+  "short_name": "Tackle Box",
+  "description": "Private fishing log, lake conditions and depth maps. Data stays on your device.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0f3b4c",
+  "theme_color": "#0f3b4c",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}
