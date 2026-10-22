@@ -8,7 +8,7 @@
 //
 // Only public data; nothing from anyone's phone is involved.
 
-import { writeFile, mkdir } from 'node:fs/promises';
+import { writeFile, mkdir, readFile } from 'node:fs/promises';
 
 const OUT = new URL('../data/ca/', import.meta.url);
 const UA = { 'User-Agent': 'TackleBox-fishing-app (personal, github.com/mikegutberlet/FishingApp)' };
@@ -332,6 +332,15 @@ function splitCsv(line) {
   return out.map(s => s.trim());
 }
 
+// HydroLAKES estimates (monthly job) give a rough average depth to sanity-check crowd-sourced maxima against.
+let HYDRO = [];
+try { HYDRO = JSON.parse(await readFile(new URL('hydrolakes.json', OUT), 'utf8')).lakes; } catch {}
+const plausibleMax = (lake, maxFt) => {
+  const h = HYDRO.filter(x => Math.abs(x.lat - lake.lat) < 0.1 && Math.abs(x.lon - lake.lon) < 0.12 && x.acres / Math.max(lake.acres, 1) > 0.4 && x.acres / Math.max(lake.acres, 1) < 2.5)
+    .sort((a, b) => distKm([a.lon, a.lat], [lake.lon, lake.lat]) - distKm([b.lon, b.lat], [lake.lon, lake.lat]))[0];
+  return !h || (maxFt >= h.meanDepthFt * 0.8 && maxFt <= h.meanDepthFt * 8);
+};
+
 function attachDepths(lakes, depths, source) {
   let matched = 0; const unmatched = [];
   for (const d of depths) {
@@ -344,7 +353,7 @@ function attachDepths(lakes, depths, source) {
       if (score < bestD) { bestD = score; best = l; }
     }
     // Big lakes' survey points can be far from our label point, so allow more distance for bigger lakes.
-    if (best && !best.maxDepthFt && bestD <= Math.max(1, Math.sqrt(best.acres / 247) * 1.5)) {
+    if (best && !best.maxDepthFt && bestD <= Math.max(1, Math.sqrt(best.acres / 247) * 1.5) && (source !== 'Wikidata' || plausibleMax(best, d.maxFt))) {
       best.maxDepthFt = d.maxFt; if (d.meanFt) best.meanDepthFt = d.meanFt; best.depthSource = source; matched++;
     } else unmatched.push(`${d.name} ${d.lat},${d.lon} ${d.maxFt}ft${best ? ` nearest ${best.name} ${bestD.toFixed(1)}km` : ''}`);
   }
