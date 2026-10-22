@@ -1,0 +1,71 @@
+{
+  "startedAt": "2026-10-22T02:23:37.563Z",
+  "steps": {
+    "nhdLayers": [
+      {
+        "id": 0,
+        "name": "Point"
+      },
+      {
+        "id": 1,
+        "name": "Point Event"
+      },
+      {
+        "id": 2,
+        "name": "Line - Large Scale "
+      },
+      {
+        "id": 3,
+        "name": "Flow Direction"
+      },
+      {
+        "id": 4,
+        "name": "Flowline - Small Scale"
+      },
+      {
+        "id": 5,
+        "name": "Flowline - Small Scale (HI, PR, VI, Pacific Territories)"
+      },
+      {
+        "id": 6,
+        "name": "Flowline - Large Scale"
+      },
+      {
+        "id": 7,
+        "name": "Area - Small Scale"
+      },
+      {
+        "id": 8,
+        "name": "Area - Small Scale (HI, PR, VI, Pacific Territories)"
+      },
+      {
+        "id": 9,
+        "name": "Area - Large Scale"
+      },
+      {
+        "id": 10,
+        "name": "Waterbody - Small Scale"
+      },
+      {
+        "id": 11,
+        "name": "Waterbody - Small Scale (HI, PR, VI, Pacific Territories)"
+      },
+      {
+        "id": 12,
+        "name": "Waterbody - Large Scale"
+      }
+    ],
+    "lakes": {
+      "features": 3286,
+      "inCalifornia": 2541
+    },
+    "depthError": "fetch failed",
+    "rivers": {
+      "layer": 6,
+      "segments": 363814,
+      "named": 1,
+      "kept": 0
+    }
+  },
+  "finishedAt": "2026-10-22T02:48:58.427Z"
+}
