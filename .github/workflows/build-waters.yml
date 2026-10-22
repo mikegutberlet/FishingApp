@@ -27,9 +27,17 @@ jobs:
         with:
           node-version: 22
       - name: California waters
-        run: node scripts/build-ca-waters.mjs
+        continue-on-error: true
+        run: |
+          mkdir -p data/ca/logs
+          node scripts/build-ca-waters.mjs 2>&1 | tee data/ca/logs/build-ca-waters.log
+          exit ${PIPESTATUS[0]}
       - name: California history
-        run: node scripts/build-ca-history.mjs
+        continue-on-error: true
+        run: |
+          mkdir -p data/ca/logs
+          node scripts/build-ca-history.mjs 2>&1 | tee data/ca/logs/build-ca-history.log
+          exit ${PIPESTATUS[0]}
       - name: Commit changes
         run: |
           git add data/
@@ -37,4 +45,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
           git commit -m "Update statewide water list"
-          for i in 1 2 3; do git pull --rebase origin "${GITHUB_REF_NAME}" && git push && break; sleep 5; done
+          for i in 1 2 3; do if git pull --rebase origin "${GITHUB_REF_NAME}" && git push; then exit 0; fi; sleep 10; done
+          echo "push failed"; exit 1

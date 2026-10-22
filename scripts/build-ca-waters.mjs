@@ -42,6 +42,8 @@ async function get(url, tries = 3) {
 const getJson = async url => (await get(url)).json();
 
 const round = n => +n.toFixed(5);
+// NHD layers disagree on field-name case (GNIS_NAME vs gnis_name), so read properties case-insensitively.
+const prop = (props, name) => { const k = Object.keys(props).find(k => k.toLowerCase() === name.toLowerCase()); return k === undefined ? undefined : props[k]; };
 const distKm = (a, b) => {
   const toRad = d => d * Math.PI / 180;
   const h = Math.sin(toRad(b[1] - a[1]) / 2) ** 2 + Math.cos(toRad(a[1])) * Math.cos(toRad(b[1])) * Math.sin(toRad(b[0] - a[0]) / 2) ** 2;
@@ -99,26 +101,42 @@ async function queryTiled(layerId, where, outFields, offset, tile = 1) {
 }
 
 async function buildLakes(ids) {
-  // FTYPE 390 = Lake/Pond, 436 = Reservoir. AREASQKM 0.02 ≈ 5 acres.
-  const feats = await queryTiled(ids.waterbody, "GNIS_NAME IS NOT NULL AND FTYPE IN (390,436) AND AREASQKM >= 0.02",
+  // FTYPE 390 = Lake/Pond, 436 = Reservoir. AREASQKM 0.008 ≈ 2 acres.
+  const feats = await queryTiled(ids.waterbody, "GNIS_NAME IS NOT NULL AND FTYPE IN (390,436) AND AREASQKM >= 0.008",
     'PERMANENT_IDENTIFIER,GNIS_ID,GNIS_NAME,AREASQKM,ELEVATION,FTYPE', '0.0005');
   report.steps.lakes = { features: feats.length };
-  const byId = new Map();
+  // One polygon per PERMANENT_IDENTIFIER (tiles overlap), then one lake per GNIS id (big lakes are split into arms).
+  const polys = new Map();
   for (const f of feats) {
     if (!f.geometry) continue;
     const p = f.properties;
+    const pid = prop(p, 'PERMANENT_IDENTIFIER');
+    if (polys.has(pid)) continue;
     const pt = lakePoint(f.geometry);
     if (!inCalifornia(pt)) continue;
-    const key = p.PERMANENT_IDENTIFIER;
-    const prev = byId.get(key);
-    if (prev && prev.acres >= p.AREASQKM * 247.105) continue; // tiles overlap: keep one copy
-    byId.set(key, {
-      id: key, gnis: p.GNIS_ID ?? null, name: p.GNIS_NAME, type: p.FTYPE === 436 ? 'Reservoir' : 'Lake',
-      acres: Math.round(p.AREASQKM * 247.105), elevationFt: p.ELEVATION != null && p.ELEVATION > -100 ? Math.round(p.ELEVATION * 3.28084) : null,
-      lat: round(pt[1]), lon: round(pt[0]),
-    });
+    polys.set(pid, { pid, gnis: prop(p, 'GNIS_ID') || null, name: prop(p, 'GNIS_NAME'), ftype: prop(p, 'FTYPE'),
+      acres: prop(p, 'AREASQKM') * 247.105, elev: prop(p, 'ELEVATION'), lat: round(pt[1]), lon: round(pt[0]) });
   }
-  const lakes = [...byId.values()].sort((a, b) => b.acres - a.acres);
+  const byLake = new Map();
+  for (const poly of polys.values()) {
+    const key = poly.gnis ?? `p${poly.pid}`;
+    const lake = byLake.get(key);
+    if (!lake) byLake.set(key, { ...poly, parts: 1 });
+    else {
+      // Keep the largest part's point; add the rest of the area only when the parts are close together (same water).
+      const near = Math.abs(lake.lat - poly.lat) < 0.3 && Math.abs(lake.lon - poly.lon) < 0.3;
+      if (!near) { byLake.set(`${key}-${poly.pid}`, { ...poly, parts: 1 }); continue; }
+      if (poly.acres > lake.acres) Object.assign(lake, { pid: poly.pid, lat: poly.lat, lon: poly.lon, elev: poly.elev, ftype: poly.ftype, acres: lake.acres + poly.acres, parts: lake.parts + 1 });
+      else { lake.acres += poly.acres; lake.parts++; }
+    }
+  }
+  // NHD ELEVATION is usually meters but some lakes carry feet. No California lake sits above 4,000 m, so larger values are feet.
+  const elevationFt = e => e == null || e <= 0 ? null : Math.round(e > 4000 ? e : e * 3.28084);
+  const lakes = [...byLake.values()].map(l => ({
+    id: l.gnis ?? `p${l.pid}`, gnis: l.gnis, name: l.name, type: l.ftype === 436 ? 'Reservoir' : 'Lake',
+    acres: Math.round(l.acres), elevationFt: elevationFt(l.elev), lat: l.lat, lon: l.lon,
+  })).sort((a, b) => b.acres - a.acres);
+  report.steps.lakes.polygons = polys.size;
   report.steps.lakes.inCalifornia = lakes.length;
   return lakes;
 }
@@ -132,14 +150,15 @@ async function buildRivers(ids) {
   const groups = new Map();
   for (const f of feats) {
     if (!f.geometry) continue;
-    const p = f.properties;
-    const key = p.GNIS_ID || p.GNIS_NAME;
-    const g = groups.get(key) ?? { name: p.GNIS_NAME, gnis: p.GNIS_ID ?? null, km: 0, segs: new Map() };
+    const name = prop(f.properties, 'GNIS_NAME'), gnis = prop(f.properties, 'GNIS_ID') || null, lengthKm = prop(f.properties, 'LENGTHKM');
+    if (!name) continue;
+    const key = gnis || name;
+    const g = groups.get(key) ?? { name, gnis, km: 0, segs: new Map() };
     const lines = f.geometry.type === 'LineString' ? [f.geometry.coordinates] : f.geometry.coordinates;
     const segKey = JSON.stringify(lines[0][0]);
     if (g.segs.has(segKey)) continue; // duplicate from overlapping tiles
     g.segs.set(segKey, lines);
-    g.km += p.LENGTHKM ?? 0;
+    g.km += lengthKm ?? 0;
     groups.set(key, g);
   }
   const rivers = [];
@@ -171,6 +190,13 @@ async function buildRivers(ids) {
 
 // LAGOS-US DEPTH (Stachelek et al.): observed max/mean depth for ~17,000 US lakes, published on EDI.
 async function depthTable() {
+  // LAGOS-US DEPTH v1.0 is EDI package edi.1043; the search below is the fallback if that id ever changes.
+  let ids = ['edi.1043.1'];
+  try {
+    const rev = (await (await get('https://pasta.lternet.edu/package/eml/edi/1043?filter=newest')).text()).trim();
+    if (/^\d+$/.test(rev)) ids = [`edi.1043.${rev}`];
+  } catch (e) { report.steps.depthProbe = e.message; }
+  if (!report.steps.depthProbe) return await depthFromPackage(ids[0]);
   const search = await getJson('https://pasta.lternet.edu/package/search/eml?defType=edismax&q=title:%22LAGOS-US%20DEPTH%22&fl=packageid,title,pubdate&rows=20&wt=json')
     .catch(async () => {
       // PASTA returns XML by default; fall back to parsing it.
@@ -178,14 +204,15 @@ async function depthTable() {
       return { xml };
     });
   const text = JSON.stringify(search);
-  const ids = [...new Set([...text.matchAll(/edi\.\d+\.\d+/g)].map(m => m[0]))];
-  report.steps.depth = { packages: ids };
+  ids = [...new Set([...text.matchAll(/edi\.\d+\.\d+/g)].map(m => m[0]))];
   if (!ids.length) throw new Error('LAGOS-US DEPTH package not found');
-  // Newest revision of the first matching package.
-  const [scope, id] = ids.sort((a, b) => +b.split('.')[2] - +a.split('.')[2])[0].split('.');
-  const rev = (await (await get(`https://pasta.lternet.edu/package/eml/${scope}/${id}?filter=newest`)).text()).trim();
+  return await depthFromPackage(ids.sort((a, b) => +b.split('.')[2] - +a.split('.')[2])[0]);
+}
+
+async function depthFromPackage(packageId) {
+  const [scope, id, rev] = packageId.split('.');
+  report.steps.depth = { package: packageId };
   const entities = (await (await get(`https://pasta.lternet.edu/package/data/eml/${scope}/${id}/${rev}`)).text()).trim().split('\n');
-  report.steps.depth.package = `${scope}.${id}.${rev}`;
   report.steps.depth.entities = [];
   for (const ent of entities) {
     const name = (await (await get(`https://pasta.lternet.edu/package/name/eml/${scope}/${id}/${rev}/${ent}`)).text()).trim();

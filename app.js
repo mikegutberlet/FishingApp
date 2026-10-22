@@ -175,7 +175,7 @@ async function showDepthSet(setId) {
 
 // Contour surveys store elevations; depth = surface elevation - contour elevation.
 async function showSurvey(survey, lake) {
-  const [gj, res] = await Promise.all([fetch(CA.bathymetryUrl(survey.id)).then(r => r.json()), CA.nearestReservoir(lake.lat, lake.lon, lake.cdecStation)]);
+  const [gj, res] = await Promise.all([fetch(CA.bathymetryUrl(survey.id)).then(r => r.json()), CA.nearestReservoir(lake.lat, lake.lon, lake.cdecStation, { name: lake.name, acres: lake.acres })]);
   const toFt = survey.units === 'm' ? M_TO_FT : 1;
   const current = res?.elevation?.at(-1)?.[1];
   // Only trust the CDEC level if it falls within the survey's range (same datum, same lake).
@@ -366,7 +366,7 @@ async function renderConditions(lake, body) {
       <table>${w.daily.time.slice(1).map((t, j) => { const i = j + 1; return `<tr><td>${new Date(t + 'T12:00').toLocaleDateString(undefined, { weekday: 'short' })}</td><td>${WEATHER_CODES[w.daily.weather_code[i]] ?? ''}</td><td>${Math.round(w.daily.temperature_2m_min[i])}–${Math.round(w.daily.temperature_2m_max[i])}°</td><td>${arrow(w.daily.wind_direction_10m_dominant[i])} ${Math.round(w.daily.wind_speed_10m_max[i])} (g${Math.round(w.daily.wind_gusts_10m_max[i])})</td><td>${w.daily.precipitation_probability_max[i] ?? 0}%</td></tr>`; }).join('')}</table>
       <p class="muted small">Open-Meteo forecast · moon phase computed on device</p>`;
   } catch (e) { if (body.isConnected) $('#wx').textContent = `Weather: ${e.message} (offline?)`; }
-  CA.nearestReservoir(lake.lat, lake.lon, lake.cdecStation).then(r => {
+  CA.nearestReservoir(lake.lat, lake.lon, lake.cdecStation, { name: lake.name, acres: lake.acres }).then(r => {
     if (!r || !body.isConnected) return;
     const el = $('#res'), e = r.elevation, s = r.storage;
     const change = days => e.length > days ? (e.at(-1)[1] - e.at(-1 - days)[1]) : null;

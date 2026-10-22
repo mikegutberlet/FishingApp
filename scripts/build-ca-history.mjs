@@ -34,15 +34,23 @@ async function getJson(url, tries = 3) {
 
 async function nasRecords() {
   const records = [];
-  for (let offset = 0; ; offset += 1000) {
-    const page = await getJson(`https://nas.er.usgs.gov/api/v2/occurrence/search?state=CA&group=Fishes&offset=${offset}&limit=1000`);
-    const rows = page.results ?? [];
+  for (let offset = 0, page = 0; page < 500; page++) {
+    const json = await getJson(`https://nas.er.usgs.gov/api/v2/occurrence/search?state=CA&group=Fishes&offset=${offset}&limit=1000`);
+    const rows = Array.isArray(json) ? json : json.results ?? json.data ?? [];
+    if (page === 0) { report.total = json.count ?? json.total ?? null; report.sampleKeys = Object.keys(rows[0] ?? {}); report.sample = rows[0] ?? null; }
+    if (!rows.length) break;
     records.push(...rows);
-    if (offset === 0) { report.total = page.count; report.sampleKeys = Object.keys(rows[0] ?? {}); }
-    if (rows.length < 1000 || records.length >= (page.count ?? Infinity)) break;
+    offset += rows.length;
+    if (report.total != null && records.length >= report.total) break;
   }
   return records;
 }
+
+// NAS field names have shifted between API versions, so look them up by pattern.
+const field = (r, ...patterns) => {
+  for (const pat of patterns) { const k = Object.keys(r).find(k => pat.test(k)); if (k !== undefined && r[k] != null && r[k] !== '') return r[k]; }
+  return undefined;
+};
 
 await mkdir(OUT, { recursive: true });
 let records = [];
@@ -52,13 +60,16 @@ report.fetched = records.length;
 // Keep the earliest record of each species at each place (~1 km), which is what "history" means here.
 const earliest = new Map();
 for (const r of records) {
-  const lat = +r.decimalLatitude, lon = +r.decimalLongitude, year = +r.year;
-  if (!Number.isFinite(lat) || !Number.isFinite(lon) || !year) continue;
-  const name = r.commonName || `${r.genus} ${r.species}`;
+  const lat = +field(r, /^decimallatitude$/i, /latitude/i, /^lat$/i), lon = +field(r, /^decimallongitude$/i, /longitude/i, /^lon$/i), year = +field(r, /^year$/i, /year/i);
+  if (!Number.isFinite(lat) || !Number.isFinite(lon) || !year || year < 1800) continue;
+  const name = field(r, /^commonname$/i, /common/i) || `${field(r, /^genus$/i) ?? ''} ${field(r, /^species$/i) ?? ''}`.trim();
+  if (!name) continue;
+  const locality = String(field(r, /^locality$/i, /locality|location|waterbody|drainage/i) ?? '');
+  const status = String(field(r, /^status$/i) ?? '');
   const key = `${name}|${lat.toFixed(2)}|${lon.toFixed(2)}`;
   const prev = earliest.get(key);
   if (prev && prev[2] <= year) continue;
-  earliest.set(key, [+lat.toFixed(4), +lon.toFixed(4), year, name, (r.locality || '').slice(0, 120), r.status || '']);
+  earliest.set(key, [+lat.toFixed(4), +lon.toFixed(4), year, name, locality.slice(0, 120), status]);
 }
 const places = [...earliest.values()].sort((a, b) => a[2] - b[2]);
 

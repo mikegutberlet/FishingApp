@@ -48,15 +48,21 @@ export async function nearestWaters(lat, lon, maxKm = 5) {
 
 // Big reservoirs' gauges sit at the dam, often 15+ km from the middle of the lake, so the search is wide.
 // A lake can pin a station id (Edit → CDEC station) when the nearest one is the wrong water.
-export async function nearestReservoir(lat, lon, pinnedId, maxKm = 25) {
+// Without a name match, a gauge only counts when it sits within a radius that scales with the lake's size,
+// so a pond near a big dam doesn't show the dam's level.
+export async function nearestReservoir(lat, lon, pinnedId, { name, acres, maxKm = 25 } = {}) {
   const r = await load('reservoirs');
   if (!r) return null;
   const pinned = pinnedId && r.reservoirs.find(s => s.id === pinnedId.toUpperCase());
   if (pinned) return { ...pinned, distKm: haversineKm(lat, lon, pinned.lat, pinned.lon), updatedAt: r.updatedAt };
+  const key = norm(name);
   const best = r.reservoirs
-    .map(s => ({ ...s, distKm: haversineKm(lat, lon, s.lat, s.lon) }))
-    .sort((a, b) => a.distKm - b.distKm)[0];
-  return best && best.distKm <= maxKm ? { ...best, updatedAt: r.updatedAt } : null;
+    .map(s => ({ ...s, distKm: haversineKm(lat, lon, s.lat, s.lon), named: key.length > 2 && norm(s.name).includes(key) }))
+    .filter(s => s.distKm <= maxKm)
+    .sort((a, b) => (b.named - a.named) || a.distKm - b.distKm)[0];
+  if (!best) return null;
+  const limit = best.named ? maxKm : Math.max(3, Math.sqrt((acres ?? 0) / 247) * 2.5);
+  return best.distKm <= limit ? { ...best, updatedAt: r.updatedAt } : null;
 }
 
 // ---------- Statewide water list (weekly build from USGS NHD) ----------
