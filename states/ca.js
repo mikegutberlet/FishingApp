@@ -58,3 +58,31 @@ export async function nearestReservoir(lat, lon, pinnedId, maxKm = 25) {
     .sort((a, b) => a.distKm - b.distKm)[0];
   return best && best.distKm <= maxKm ? { ...best, updatedAt: r.updatedAt } : null;
 }
+
+// ---------- Statewide water list (weekly build from USGS NHD) ----------
+// Lakes keep their id; rivers are flattened into one entry per label point, all sharing the river's id.
+export async function statewide() {
+  const [l, r] = await Promise.all([load('lakes'), load('rivers')]);
+  const lakes = (l?.lakes ?? []).map(x => ({ ...x, kind: 'lake' }));
+  const riverLabels = [];
+  for (const river of r?.rivers ?? []) {
+    for (const [lat, lon] of river.points) riverLabels.push({ ...river, kind: 'river', lat, lon });
+  }
+  return { lakes, riverLabels };
+}
+
+export async function history() {
+  return load('history');
+}
+
+const norm = s => (s ?? '').toLowerCase().replace(/\b(lake|reservoir|river|creek|pond|the|of)\b|[^a-z0-9]/g, '');
+
+// Best CDFW stocked water for a statewide water: close by, preferring a matching name.
+export async function matchStockedWater(water) {
+  const radius = water.kind === 'river' ? 3 : Math.max(2, Math.sqrt((water.acres ?? 50) / 247) * 2);
+  const near = await nearestWaters(water.lat, water.lon, water.kind === 'river' ? 25 : radius);
+  const key = norm(water.name);
+  const named = near.find(w => key && (norm(w.name).startsWith(key) || key.startsWith(norm(w.name))));
+  if (named) return named;
+  return water.kind === 'river' ? null : near.find(w => w.distKm <= radius) ?? null;
+}

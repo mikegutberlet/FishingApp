@@ -10,12 +10,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: |
+          set +e
           mkdir -p tmp-ref
-          curl -sSL -A "TackleBox-fishing-app" -o fb178.pdf https://escholarship.org/content/qt5rm0h8qg/qt5rm0h8qg.pdf
-          ls -la fb178.pdf; file fb178.pdf
-          (which pdftotext || sudo apt-get install -y -qq poppler-utils) >/dev/null
+          exec > >(tee tmp-ref/log.txt) 2>&1
+          curl -sSL -A "Mozilla/5.0 TackleBox-fishing-app" -w "http %{http_code} %{content_type}\n" -o fb178.pdf https://escholarship.org/content/qt5rm0h8qg/qt5rm0h8qg.pdf
+          ls -la fb178.pdf; head -c 200 fb178.pdf | od -c | head -3
+          which pdftotext || (sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils)
           pdftotext -layout fb178.pdf tmp-ref/fish-bulletin-178.txt
           wc -c tmp-ref/fish-bulletin-178.txt
+          sleep 1
+      - run: |
           git add tmp-ref
           git config user.name "github-actions[bot]"
           git config user.email "41898699+github-actions[bot]@users.noreply.github.com"

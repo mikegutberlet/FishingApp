@@ -258,7 +258,7 @@ async function renderConditions(lake, body) {
       </div>
       <h3 style="margin-top:12px">Next 24 hours</h3>
       <div class="hours">${hours.map(({ t, i }) => `<div class="hour">${fmtTime(t)}<br><b>${Math.round(w.hourly.temperature_2m[i])}°</b><br>${arrow(w.hourly.wind_direction_10m[i])} ${Math.round(w.hourly.wind_speed_10m[i])}<br><span class="muted">g${Math.round(w.hourly.wind_gusts_10m[i])}</span><br>${w.hourly.precipitation_probability[i] ?? 0}%💧</div>`).join('')}</div>
-      <h3 style="margin-top:12px">7 days</h3>
+      <h3 style="margin-top:12px">10 days</h3>
       <table>${w.daily.time.slice(1).map((t, j) => { const i = j + 1; return `<tr><td>${new Date(t + 'T12:00').toLocaleDateString(undefined, { weekday: 'short' })}</td><td>${WEATHER_CODES[w.daily.weather_code[i]] ?? ''}</td><td>${Math.round(w.daily.temperature_2m_min[i])}–${Math.round(w.daily.temperature_2m_max[i])}°</td><td>${arrow(w.daily.wind_direction_10m_dominant[i])} ${Math.round(w.daily.wind_speed_10m_max[i])} (g${Math.round(w.daily.wind_gusts_10m_max[i])})</td><td>${w.daily.precipitation_probability_max[i] ?? 0}%</td></tr>`; }).join('')}</table>
       <p class="muted small">Open-Meteo forecast · moon phase computed on device</p>`;
   } catch (e) { if (body.isConnected) $('#wx').textContent = `Weather: ${e.message} (offline?)`; }
