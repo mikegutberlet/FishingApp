@@ -1,0 +1,23 @@
+{
+ "updatedAt": "2026-10-22T02:29:48.063Z",
+ "surveys": [
+  {
+   "id": "calaveras-reservoir-california-contours-navd88-2019",
+   "title": "Calaveras Reservoir, California, contours, NAVD88 (2019)",
+   "source": "https://www.sciencebase.gov/catalog/item/5f5fd23b82ce3550e3bff45e",
+   "units": "ft",
+   "field": "Contour",
+   "minElev": 620,
+   "maxElev": 750,
+   "bbox": [
+    -121.83338,
+    37.45277,
+    -121.78261,
+    37.49539
+   ],
+   "lat": 37.47408,
+   "lon": -121.808,
+   "bytes": 1239509
+  }
+ ]
+}
