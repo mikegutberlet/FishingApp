@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-22T04:25:50.242Z",
+  "startedAt": "2026-10-22T08:59:00.716Z",
   "steps": {
     "nhdLayers": [
       {
@@ -60,12 +60,21 @@
       "polygons": 3248,
       "inCalifornia": 2930
     },
-    "elevationError": "fetch failed",
+    "elevationError": "429 https://api.open-meteo.com/v1/elevation?latitude=37.28163,37.47478,37.2858,36.9818,37.13785,37.34153,37.44258,37.13509,37.18833,36.61635,37.13366,37.25133,36.64732,37.20539,37.18534,37.34669,37.02113,",
     "elevations": {
-      "nhdKept": 526,
-      "fromDem": 1804
+      "nhdKept": 649,
+      "fromDem": 2281,
+      "missing": 0
     },
     "depthProbe": "403 https://pasta.lternet.edu/package/eml/edi/1043?filter=newest",
+    "depth": {
+      "package": "edi.1043.1",
+      "pastaError": "403 https://pasta.lternet.edu/package/data/eml/edi/1043/1",
+      "portalUrls": [],
+      "matchedWikidata": 10,
+      "lakesWithDepth": 10
+    },
+    "depthPackageError": "No depth table found via portal",
     "depthError": "403 https://pasta.lternet.edu/package/search/eml?defType=edismax&q=title:%22LAGOS-US%20DEPTH%22&fl=packageid,title,pubdate&rows=20",
     "rivers": {
       "layer": 6,
@@ -74,5 +83,5 @@
       "kept": 1591
     }
   },
-  "finishedAt": "2026-10-22T05:12:38.858Z"
+  "finishedAt": "2026-10-22T09:39:04.231Z"
 }
