@@ -67,6 +67,7 @@ map.on('moveend', drawWaterLabels);
 map.on('overlayadd overlayremove', drawWaterLabels);
 
 // Show bigger waters first as you zoom out, every named one when zoomed in close.
+// Labels that would overlap an already placed one are skipped, and a river gets one label per view when zoomed out.
 function drawWaterLabels() {
   watersLayer.clearLayers();
   shownWaters = [];
@@ -75,10 +76,29 @@ function drawWaterLabels() {
   if (z < 7) return;
   const minAcres = z >= 12 ? 0 : z >= 11 ? 20 : z >= 10 ? 80 : z >= 9 ? 300 : z >= 8 ? 1500 : 6000;
   const b = map.getBounds().pad(0.05);
+  const center = map.getCenter();
   const lakes = statewide.lakes.filter(l => l.acres >= minAcres && b.contains([l.lat, l.lon]));
-  const rivers = statewide.riverLabels.filter(r => (z >= 11 || (r.type === 'River' && (z >= 9 || r.km >= 150))) && b.contains([r.lat, r.lon]));
-  shownWaters = [...lakes.slice(0, 250), ...rivers.slice(0, 150)];
-  for (const w of shownWaters) {
+  let rivers = statewide.riverLabels.filter(r => (z >= 11 || (r.type === 'River' && (z >= 9 || r.km >= 150))) && b.contains([r.lat, r.lon]));
+  if (z < 12) {
+    const best = new Map();
+    for (const r of rivers) {
+      const d = Math.hypot(r.lat - center.lat, r.lon - center.lng);
+      if (!best.has(r.id) || d < best.get(r.id).d) best.set(r.id, { r, d });
+    }
+    rivers = [...best.values()].map(x => x.r);
+  }
+  const placed = [];
+  const fits = (w, px) => {
+    const box = { x1: px.x - w.name.length * 3.4, x2: px.x + w.name.length * 3.4, y1: px.y - 8, y2: px.y + 8 };
+    if (placed.some(p => box.x1 < p.x2 && box.x2 > p.x1 && box.y1 < p.y2 && box.y2 > p.y1)) return false;
+    placed.push(box);
+    return true;
+  };
+  const candidates = [...lakes.sort((a, b) => b.acres - a.acres), ...rivers.sort((a, b) => b.km - a.km)];
+  for (const w of candidates) {
+    if (shownWaters.length >= 400) break;
+    if (!fits(w, map.latLngToContainerPoint([w.lat, w.lon]))) continue;
+    shownWaters.push(w);
     const label = L.divIcon({ className: `wlabel ${w.kind}`, html: `<span>${esc(w.name)}</span>`, iconSize: null });
     L.marker([w.lat, w.lon], { icon: label, keyboard: false }).on('click', () => openWater(w)).addTo(watersLayer);
   }
