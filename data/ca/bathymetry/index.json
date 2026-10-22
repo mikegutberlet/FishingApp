@@ -1,93 +1,81 @@
 {
- "updatedAt": "2026-10-22T04:29:49.207Z",
+ "updatedAt": "2026-10-22T09:18:36.543Z",
  "surveys": [
   {
-   "id": "bathymetric-data-for-whiskeytown-lake-december-2018-ver-2-0-july-2021",
-   "title": "Bathymetric data for Whiskeytown Lake, December 2018 (ver. 2.0, July 2021)",
-   "year": 2018,
-   "source": "https://www.sciencebase.gov/catalog/item/5dfbd23fe4b0cc5243395f60",
-   "units": "ft",
+   "id": "bathymetric-data-for-whiskeytown-lake-september-2020",
+   "title": "Bathymetric data for Whiskeytown Lake, September 2020",
+   "year": 2020,
+   "source": "https://www.sciencebase.gov/catalog/item/6052599bd34e7eb1cb3eb498",
+   "lake": "Whiskeytown Lake",
+   "lakeKey": "whiskeytown",
+   "units": "m",
    "unitsGuessed": false,
    "datum": "NAVD88",
    "minElev": 300,
-   "maxElev": 360,
+   "maxElev": 366,
    "bbox": [
-    -122.5913,
-    40.59834,
-    -122.5275,
-    40.65143
+    -122.59149,
+    40.59818,
+    -122.52688,
+    40.65148
    ],
-   "lat": 40.62488,
-   "lon": -122.5594,
-   "bytes": 3351572
-  },
-  {
-   "id": "bathymetric-data-for-whiskeytown-lake-may-2019-ver-2-0-july-2021",
-   "title": "Bathymetric data for Whiskeytown Lake, May 2019 (ver. 2.0, July 2021)",
-   "year": 2019,
-   "source": "https://www.sciencebase.gov/catalog/item/5dfbeea5e4b0cc5243395ff8",
-   "units": "ft",
-   "unitsGuessed": false,
-   "datum": "NAVD88",
-   "minElev": 300,
-   "maxElev": 360,
-   "bbox": [
-    -122.5913,
-    40.59835,
-    -122.52721,
-    40.65146
-   ],
-   "lat": 40.6249,
-   "lon": -122.55926,
-   "bytes": 3341226
+   "lat": 40.62483,
+   "lon": -122.55918,
+   "bytes": 3038195
   },
   {
    "id": "bathymetric-survey-and-stage-storage-assessment-of-lost-lake-californi",
    "title": "Bathymetric survey and stage-storage assessment of Lost Lake, California, collected in 2022",
    "year": 2022,
    "source": "https://www.sciencebase.gov/catalog/item/686d8a07d4be026f4a016404",
-   "units": "ft",
+   "lake": "Lost Lake",
+   "lakeKey": "lost",
+   "units": "m",
    "unitsGuessed": false,
    "datum": "NAVD88",
-   "minElev": 2180,
+   "minElev": 2178,
    "maxElev": 2310,
    "bbox": [
     -120.14372,
     41.15231,
-    -120.13492,
+    -120.13491,
     41.15748
    ],
    "lat": 41.15489,
    "lon": -120.13932,
-   "bytes": 890387
+   "bytes": 1609361
   },
   {
-   "id": "calaveras-reservoir-california-bathymetric-digital-elevation-model-dem",
-   "title": "Calaveras Reservoir, California, bathymetric digital elevation model (DEM), NAVD88 (2019)",
-   "year": 2019,
-   "source": "https://www.sciencebase.gov/catalog/item/5f5ffad282ce3550e3bff557",
+   "id": "bathymetric-survey-and-stage-storage-assessment-of-quail-lake-calif-co",
+   "title": "Bathymetric survey and stage-storage assessment of Quail Lake, Calif., collected in 2022",
+   "year": 2022,
+   "source": "https://www.sciencebase.gov/catalog/item/62d86c8bd34e2842e1ed4f96",
+   "lake": "Quail Lake",
+   "lakeKey": "quail",
    "units": "ft",
    "unitsGuessed": false,
    "datum": "NAVD88",
-   "minElev": 620,
-   "maxElev": 800,
+   "minElev": 6660,
+   "maxElev": 7980,
    "bbox": [
-    -121.83383,
-    37.45193,
-    -121.77745,
-    37.49583
+    -120.17501,
+    39.0625,
+    -120.1625,
+    39.07501
    ],
-   "lat": 37.47388,
-   "lon": -121.80564,
-   "bytes": 1746652
+   "lat": 39.06875,
+   "lon": -120.16876,
+   "bytes": 2732394
   },
   {
    "id": "calaveras-reservoir-california-contours-navd88-2019",
    "title": "Calaveras Reservoir, California, contours, NAVD88 (2019)",
    "year": 2019,
    "source": "https://www.sciencebase.gov/catalog/item/5f5fd23b82ce3550e3bff45e",
+   "lake": "Calaveras Reservoir",
+   "lakeKey": "calaveras",
    "units": "ft",
-   "unitsGuessed": true,
+   "unitsGuessed": false,
    "datum": "NAVD88",
    "minElev": 620,
    "maxElev": 750,
@@ -102,44 +90,26 @@
    "bytes": 1239509
   },
   {
-   "id": "san-antonio-reservoir-california-10-ft-contours-navd88-2018",
-   "title": "San Antonio Reservoir, California, 10-ft contours, NAVD88, (2018)",
-   "year": 2018,
-   "source": "https://www.sciencebase.gov/catalog/item/5c897cabe4b09388244f03a4",
+   "id": "little-rock-reservoir-california-2022-bathymetric-survey-and-stage-sto",
+   "title": "Little Rock Reservoir, California, 2022 bathymetric survey and stage-storage computations",
+   "year": 2022,
+   "source": "https://www.sciencebase.gov/catalog/item/62e8a8c9d34e749ac04cbd66",
+   "lake": "Little Rock Reservoir",
+   "lakeKey": "littlerock",
    "units": "ft",
    "unitsGuessed": false,
    "datum": "NAVD88",
-   "minElev": 320,
-   "maxElev": 470,
+   "minElev": 3200,
+   "maxElev": 4640,
    "bbox": [
-    -121.8501,
-    37.56363,
-    -121.80469,
-    37.59586
+    -118.03555,
+    34.46013,
+    -118.00046,
+    34.48919
    ],
-   "lat": 37.57975,
-   "lon": -121.82739,
-   "bytes": 722912
-  },
-  {
-   "id": "san-antonio-reservoir-california-bathymetric-digital-elevation-model-d",
-   "title": "San Antonio Reservoir, California, bathymetric digital elevation model (DEM), NAVD88, (2018)",
-   "year": 2018,
-   "source": "https://www.sciencebase.gov/catalog/item/5c895546e4b09388244eedcd",
-   "units": "ft",
-   "unitsGuessed": false,
-   "datum": "NAVD88",
-   "minElev": 320,
-   "maxElev": 460,
-   "bbox": [
-    -121.85016,
-    37.56386,
-    -121.80676,
-    37.59587
-   ],
-   "lat": 37.57986,
-   "lon": -121.82846,
-   "bytes": 2512707
+   "lat": 34.47466,
+   "lon": -118.01801,
+   "bytes": 2916863
   }
  ]
 }

@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-22T04:26:10.763Z",
+  "startedAt": "2026-10-22T08:59:16.229Z",
   "items": [
     {
       "id": "5f5fd23b82ce3550e3bff45e",
@@ -13,12 +13,19 @@
       "downloaded": [
         "Contour_shapefiles.zip (3 MB)"
       ],
+      "unitsCorrected": {
+        "from": null,
+        "to": "ft",
+        "maxVal": 750,
+        "lakeElevationFt": 696,
+        "lake": "Calaveras Reservoir"
+      },
       "ok": {
         "fileId": "calaveras-reservoir-california-contours-navd88-2019",
         "features": 14,
         "bytes": 1239509,
         "simplify": "0.00002",
-        "units": null
+        "units": "ft"
       }
     },
     {
@@ -29,22 +36,13 @@
         "Contours_shapefile.zip",
         "Contours_dwg_format.zip",
         "San Antonio Reservoir, California, 10-ft contours, NAVD88, (2018).xml"
-      ],
-      "downloaded": [
-        "Contours_shapefile.zip (0 MB)"
-      ],
-      "ok": {
-        "fileId": "san-antonio-reservoir-california-10-ft-contours-navd88-2018",
-        "features": 34,
-        "bytes": 722912,
-        "simplify": "0.00002",
-        "units": "ft"
-      }
+      ]
     },
     {
-      "id": "5f5ffad282ce3550e3bff557",
-      "title": "Calaveras Reservoir, California, bathymetric digital elevation model (DEM), NAVD88 (2019)",
-      "skip": "contours published separately"
+      "id": "5c897cabe4b09388244f03a4",
+      "title": "San Antonio Reservoir, California, 10-ft contours, NAVD88, (2018)",
+      "error": "502 https://www.sciencebase.gov/catalog/file/get/5c897cabe4b09388244f03a4?f=__disk__ed%2F0c%2Fc4%2Fed0cc4b45103f46a3f0472f999a1cb6533d22bea",
+      "at": "at get (file:///home/runner/work/FishingApp/FishingApp/scripts/build-ca-bathymetry.mjs:29:20)"
     },
     {
       "id": "62e8a8c9d34e749ac04cbd66",
@@ -64,19 +62,25 @@
         "file": "DEM_1m_NAD83_UTM11_LRD.txt",
         "shp": "/tmp/bathy/62e8a8c9d34e749ac04cbd66/contours.shp",
         "field": "e",
-        "interval": "10",
+        "interval": "80",
+        "units": "ft",
+        "nodata": 0,
+        "lake": "Little Rock Reservoir",
+        "minVal": 3123.57,
+        "maxVal": 4699.02,
         "size": [
           3248,
           3248
         ]
       },
       "assumedSrs": "EPSG:26911",
-      "skip": "too large even simplified"
-    },
-    {
-      "id": "5c895546e4b09388244eedcd",
-      "title": "San Antonio Reservoir, California, bathymetric digital elevation model (DEM), NAVD88, (2018)",
-      "skip": "contours published separately"
+      "ok": {
+        "fileId": "little-rock-reservoir-california-2022-bathymetric-survey-and-stage-sto",
+        "features": 117,
+        "bytes": 2916863,
+        "simplify": "0.00002",
+        "units": "ft"
+      }
     },
     {
       "id": "62d86c8bd34e2842e1ed4f96",
@@ -95,14 +99,25 @@
         "file": "QuailLake_DEM_final_NAD83_NAVD88_ft_1m.txt",
         "shp": "/tmp/bathy/62d86c8bd34e2842e1ed4f96/contours.shp",
         "field": "e",
-        "interval": "10",
+        "interval": "20",
+        "units": "ft",
+        "nodata": 0,
+        "lake": "Quail Lake",
+        "minVal": 6651.184,
+        "maxVal": 7991.785,
         "size": [
           1123,
           1419
         ]
       },
       "assumedSrs": "EPSG:26910",
-      "skip": "too large even simplified"
+      "ok": {
+        "fileId": "bathymetric-survey-and-stage-storage-assessment-of-quail-lake-calif-co",
+        "features": 146,
+        "bytes": 2732394,
+        "simplify": "0.00002",
+        "units": "ft"
+      }
     },
     {
       "id": "686d8a07d4be026f4a016404",
@@ -120,11 +135,23 @@
       "downloaded": [
         "LostLake_NAD83-2011_UTMZ10N_NAVD88_0.25m_PHaluska2026.tif (31 MB)"
       ],
+      "unitsCorrected": {
+        "from": null,
+        "to": "m",
+        "maxVal": 2313.082,
+        "lakeElevationFt": 7290,
+        "lake": "Lost Lake"
+      },
       "raster": {
         "file": "LostLake_NAD83-2011_UTMZ10N_NAVD88_0.25m_PHaluska2026.tif",
         "shp": "/tmp/bathy/686d8a07d4be026f4a016404/contours.shp",
         "field": "e",
-        "interval": "10",
+        "interval": "3",
+        "units": "m",
+        "nodata": -32767,
+        "lake": "Lost Lake",
+        "minVal": 2177.499,
+        "maxVal": 2313.082,
         "size": [
           2763,
           2106
@@ -133,11 +160,35 @@
       },
       "ok": {
         "fileId": "bathymetric-survey-and-stage-storage-assessment-of-lost-lake-californi",
-        "features": 37,
-        "bytes": 890387,
+        "features": 93,
+        "bytes": 1609361,
         "simplify": "0.00002",
-        "units": "ft"
+        "units": "m"
       }
+    },
+    {
+      "id": "67ae1a04d34e3f09c0e0f018",
+      "title": "Lake depth profile, water quality, sediment, periphyton, tadpole (Pseudacris regilla), and landscape data from six lakes and two stream sites of the Tokopah Basin in Sequoia National Park, California, 2021-2022",
+      "parent": null,
+      "files": [
+        "histology.csv",
+        "hourlyLoggers.csv",
+        "hourlyLoggers.rds",
+        "lakeSpatialData.csv",
+        "periChlaAfdm.csv",
+        "periphytonCu.csv",
+        "SampleLabelREADME.txt",
+        "secchi.csv",
+        "sediment.csv",
+        "tadpole.csv",
+        "usgsStationWQ.csv",
+        "usgsStationWQ.rds",
+        "waterchem.csv",
+        "waternutr.csv",
+        "YSI_Clean.csv",
+        "Metadata_TokopahBasin_LakeEcologyData.xml"
+      ],
+      "skip": "no usable files"
     },
     {
       "id": "60bfe572d34e86b938917d57",
@@ -171,82 +222,61 @@
       "downloaded": [
         "Whiskeytown_2020_2m_bathy_NAD83_NAVD88.zip (8 MB)"
       ],
+      "unitsCorrected": {
+        "from": null,
+        "to": "m",
+        "maxVal": 369.325,
+        "lakeElevationFt": 1210,
+        "lake": "Whiskeytown Lake"
+      },
       "raster": {
         "file": "Whiskeytown_2020_2m_bathy_NAD83_NAVD88.tif",
         "shp": "/tmp/bathy/6052599bd34e7eb1cb3eb498/contours.shp",
         "field": "e",
-        "interval": "10",
+        "interval": "6",
+        "units": "m",
+        "nodata": -3.402823e+38,
+        "lake": "Whiskeytown Lake",
+        "minVal": 295.621,
+        "maxVal": 369.325,
         "size": [
           2762,
           2969
         ],
         "srs": "PROJCRS[\"NAD83(2011) / UTM zone 10N\",\n    BASEGEOGCRS[\"NAD83(2011)\",\n        DAT"
       },
-      "skip": "too large even simplified"
+      "ok": {
+        "fileId": "bathymetric-data-for-whiskeytown-lake-september-2020",
+        "features": 648,
+        "bytes": 3038195,
+        "simplify": "0.00002",
+        "units": "m"
+      }
+    },
+    {
+      "id": "5f5ffad282ce3550e3bff557",
+      "title": "Calaveras Reservoir, California, bathymetric digital elevation model (DEM), NAVD88 (2019)",
+      "skip": "newer survey of this lake already saved"
     },
     {
       "id": "5dfbeea5e4b0cc5243395ff8",
       "title": "Bathymetric data for Whiskeytown Lake, May 2019 (ver. 2.0, July 2021)",
-      "parent": null,
-      "files": [
-        "Whiskeytown_2019_bathy_QV.jpg",
-        "Whiskeytown_2019_1m_bathy_NAD83_NAVD88.zip",
-        "Whiskeytown_2019_2m_bathy_NAD83_NAVD88.zip",
-        "Whiskeytown_2019_1m_2m_bathy_NAD83_NAVD88_metadata.xml"
-      ],
-      "downloaded": [
-        "Whiskeytown_2019_2m_bathy_NAD83_NAVD88.zip (6 MB)"
-      ],
-      "raster": {
-        "file": "Whiskeytown_2019_2m_bathy_NAD83_NAVD88.tif",
-        "shp": "/tmp/bathy/5dfbeea5e4b0cc5243395ff8/contours.shp",
-        "field": "e",
-        "interval": "10",
-        "size": [
-          2750,
-          2971
-        ],
-        "srs": "PROJCRS[\"NAD83(2011) / UTM zone 10N\",\n    BASEGEOGCRS[\"NAD83(2011)\",\n        DAT"
-      },
-      "ok": {
-        "fileId": "bathymetric-data-for-whiskeytown-lake-may-2019-ver-2-0-july-2021",
-        "features": 237,
-        "bytes": 3341226,
-        "simplify": "0.00002",
-        "units": "ft"
-      }
+      "skip": "newer survey of this lake already saved"
+    },
+    {
+      "id": "5f5f98d482ce3550e3bff26e",
+      "title": "Bathymetry, Stage-Area, and Stage-Volume Tables for the Calaveras Reservoir, California, 2019 (ver. 2.0, March 2025)",
+      "skip": "newer survey of this lake already saved"
+    },
+    {
+      "id": "5c895546e4b09388244eedcd",
+      "title": "San Antonio Reservoir, California, bathymetric digital elevation model (DEM), NAVD88, (2018)",
+      "skip": "contours published separately"
     },
     {
       "id": "5dfbd23fe4b0cc5243395f60",
       "title": "Bathymetric data for Whiskeytown Lake, December 2018 (ver. 2.0, July 2021)",
-      "parent": null,
-      "files": [
-        "Whiskeytown_2018_bathy_QV.jpg",
-        "Whiskeytown_2018_1m_bathy_NAD83_NAVD88.zip",
-        "Whiskeytown_2018_2m_bathy_NAD83_NAVD88.zip",
-        "Whiskeytown_2018_1m_2m_bathy_NAD83_NAVD88_metadata.xml"
-      ],
-      "downloaded": [
-        "Whiskeytown_2018_2m_bathy_NAD83_NAVD88.zip (5 MB)"
-      ],
-      "raster": {
-        "file": "Whiskeytown_2018_2m_bathy_NAD83_NAVD88.tif",
-        "shp": "/tmp/bathy/5dfbd23fe4b0cc5243395f60/contours.shp",
-        "field": "e",
-        "interval": "10",
-        "size": [
-          2752,
-          2951
-        ],
-        "srs": "PROJCRS[\"NAD83(2011) / UTM zone 10N\",\n    BASEGEOGCRS[\"NAD83(2011)\",\n        DAT"
-      },
-      "ok": {
-        "fileId": "bathymetric-data-for-whiskeytown-lake-december-2018-ver-2-0-july-2021",
-        "features": 312,
-        "bytes": 3351572,
-        "simplify": "0.00002",
-        "units": "ft"
-      }
+      "skip": "newer survey of this lake already saved"
     },
     {
       "id": "5c61a600e4b0fe48cb32fbcf",
@@ -259,37 +289,6 @@
       "skip": "no usable files"
     },
     {
-      "id": "5c895546e4b09388244eedcd",
-      "title": "San Antonio Reservoir, California, bathymetric digital elevation model (DEM), NAVD88, (2018)",
-      "parent": "Bathymetry, Stage-Area, and Stage-Volume Tables for the San Antonio Reservoir, California, 2018",
-      "files": [
-        "San_Antonio_Reservoir_2018_Bathymetry_ascii_export.zip",
-        "San_Antonio_Reservoir_2018_Bathymetry_tiff_export.zip",
-        "San Antonio Reservoir, California, bathymetric digital elevation model (DEM), NAVD88, (2018).xml"
-      ],
-      "downloaded": [
-        "San_Antonio_Reservoir_2018_Bathymetry_ascii_export.zip (10 MB)"
-      ],
-      "raster": {
-        "file": "san_antonio_reservoir_2018_bathymetry_ascii_export.txt",
-        "shp": "/tmp/bathy/5c895546e4b09388244eedcd/contours.shp",
-        "field": "e",
-        "interval": "20",
-        "size": [
-          4051,
-          3691
-        ]
-      },
-      "assumedSrs": "EPSG:26910",
-      "ok": {
-        "fileId": "san-antonio-reservoir-california-bathymetric-digital-elevation-model-d",
-        "features": 104,
-        "bytes": 2512707,
-        "simplify": "0.00002",
-        "units": "ft"
-      }
-    },
-    {
       "id": "5c895908e4b09388244eede0",
       "title": "San Antonio Reservoir, California, Stage-area and Stage-volume tables (2018)",
       "parent": "Bathymetry, Stage-Area, and Stage-Volume Tables for the San Antonio Reservoir, California, 2018",
@@ -298,80 +297,10 @@
         "San Antonio Reservoir, California, Stage-area and Stage-volume tables (2018).xml"
       ],
       "skip": "no usable files"
-    },
-    {
-      "id": "5f5f98d482ce3550e3bff26e",
-      "title": "Bathymetry, Stage-Area, and Stage-Volume Tables for the Calaveras Reservoir, California, 2019 (ver. 2.0, March 2025)",
-      "parent": null,
-      "files": [
-        "Version_history.txt"
-      ],
-      "skip": "no usable files"
-    },
-    {
-      "id": "5f5ffb5e82ce3550e3bff55b",
-      "title": "Calaveras Reservoir, California, stage-area and stage-volume tables (2019)",
-      "parent": "Bathymetry, Stage-Area, and Stage-Volume Tables for the Calaveras Reservoir, California, 2019 (ver. 2.0, March 2025)",
-      "files": [
-        "CalaverasReservoirCA_Stage-area_and_stage-volume_tables_2019.csv",
-        "Calaveras Reservoir, California, Stage-area and Stage-volume tables (2019)_metadata.xml"
-      ],
-      "skip": "no usable files"
-    },
-    {
-      "id": "5f5ffad282ce3550e3bff557",
-      "title": "Calaveras Reservoir, California, bathymetric digital elevation model (DEM), NAVD88 (2019)",
-      "parent": "Bathymetry, Stage-Area, and Stage-Volume Tables for the Calaveras Reservoir, California, 2019 (ver. 2.0, March 2025)",
-      "files": [
-        "CalaverasReservoirBathymetry.zip",
-        "Calaveras Reservoir, California, bathymetric digital elevation model_metadata.xml.xml"
-      ],
-      "downloaded": [
-        "CalaverasReservoirBathymetry.zip (20 MB)"
-      ],
-      "raster": {
-        "file": "dblbnd.adf",
-        "shp": "/tmp/bathy/5f5ffad282ce3550e3bff557/contours.shp",
-        "field": "e",
-        "interval": "20",
-        "size": [
-          5399,
-          5109
-        ],
-        "srs": "PROJCRS[\"unnamed\",\n    BASEGEOGCRS[\"NAD83\",\n        DATUM[\"North American Datum "
-      },
-      "ok": {
-        "fileId": "calaveras-reservoir-california-bathymetric-digital-elevation-model-dem",
-        "features": 114,
-        "bytes": 1746652,
-        "simplify": "0.00002",
-        "units": "ft"
-      }
-    },
-    {
-      "id": "67ae1a04d34e3f09c0e0f018",
-      "title": "Lake depth profile, water quality, sediment, periphyton, tadpole (Pseudacris regilla), and landscape data from six lakes and two stream sites of the Tokopah Basin in Sequoia National Park, California, 2021-2022",
-      "parent": null,
-      "files": [
-        "histology.csv",
-        "hourlyLoggers.csv",
-        "hourlyLoggers.rds",
-        "lakeSpatialData.csv",
-        "periChlaAfdm.csv",
-        "periphytonCu.csv",
-        "SampleLabelREADME.txt",
-        "secchi.csv",
-        "sediment.csv",
-        "tadpole.csv",
-        "usgsStationWQ.csv",
-        "usgsStationWQ.rds",
-        "waterchem.csv",
-        "waternutr.csv",
-        "YSI_Clean.csv",
-        "Metadata_TokopahBasin_LakeEcologyData.xml"
-      ],
-      "skip": "no usable files"
     }
+  ],
+  "searchErrors": [
+    "lake bathymetric California: 400 https://www.sciencebase.gov/catalog/items?q=lake+bathymetric+California&format=json&max=300&fields=title%2Cspatial%2ChasChildren"
   ],
   "searched": 436,
   "candidates": [
@@ -380,24 +309,22 @@
     "San Antonio Reservoir, California, bathymetric digital elevation model (DEM), NAVD88, (2018)",
     "Bathymetric survey and stage-storage assessment of Quail Lake, Calif., collected in 2022",
     "Bathymetric survey and stage-storage assessment of Lost Lake, California, collected in 2022",
+    "Calaveras Reservoir, California, contours, NAVD88 (2019)",
+    "San Antonio Reservoir, California, 10-ft contours, NAVD88, (2018)",
     "Stage-Storage and Bed Material Data from the 2020 Upper Letts Lake Survey, California",
     "Bathymetric data for Whiskeytown Lake, September 2020",
     "Bathymetric data for Whiskeytown Lake, May 2019 (ver. 2.0, July 2021)",
     "Bathymetric data for Whiskeytown Lake, December 2018 (ver. 2.0, July 2021)",
-    "Calaveras Reservoir, California, contours, NAVD88 (2019)",
-    "San Antonio Reservoir, California, 10-ft contours, NAVD88, (2018)",
     "Bathymetry, Stage-Area, and Stage-Volume Tables for the San Antonio Reservoir, California, 2018",
     "Bathymetry, Stage-Area, and Stage-Volume Tables for the Calaveras Reservoir, California, 2019 (ver. 2.0, March 2025)",
     "Lake depth profile, water quality, sediment, periphyton, tadpole (Pseudacris regilla), and landscape data from six lakes and two stream sites of the Tokopah Basin in Sequoia National Park, California, 2021-2022"
   ],
   "saved": [
-    "Bathymetric data for Whiskeytown Lake, December 2018 (ver. 2.0, July 2021) (3352 KB, ft)",
-    "Bathymetric data for Whiskeytown Lake, May 2019 (ver. 2.0, July 2021) (3341 KB, ft)",
-    "Bathymetric survey and stage-storage assessment of Lost Lake, California, collected in 2022 (890 KB, ft)",
-    "Calaveras Reservoir, California, bathymetric digital elevation model (DEM), NAVD88 (2019) (1747 KB, ft)",
+    "Bathymetric data for Whiskeytown Lake, September 2020 (3038 KB, m)",
+    "Bathymetric survey and stage-storage assessment of Lost Lake, California, collected in 2022 (1609 KB, m)",
+    "Bathymetric survey and stage-storage assessment of Quail Lake, Calif., collected in 2022 (2732 KB, ft)",
     "Calaveras Reservoir, California, contours, NAVD88 (2019) (1240 KB, ft)",
-    "San Antonio Reservoir, California, 10-ft contours, NAVD88, (2018) (723 KB, ft)",
-    "San Antonio Reservoir, California, bathymetric digital elevation model (DEM), NAVD88, (2018) (2513 KB, ft)"
+    "Little Rock Reservoir, California, 2022 bathymetric survey and stage-storage computations (2917 KB, ft)"
   ],
-  "finishedAt": "2026-10-22T04:29:49.208Z"
+  "finishedAt": "2026-10-22T09:18:36.543Z"
 }
