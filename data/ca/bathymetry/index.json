@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-10-22T11:06:06.064Z",
+ "updatedAt": "2026-10-22T12:02:26.771Z",
  "surveys": [
   {
    "id": "bathymetric-data-for-whiskeytown-lake-september-2020",
@@ -21,7 +21,7 @@
    ],
    "lat": 40.62483,
    "lon": -122.55918,
-   "bytes": 3038195
+   "bytes": 3036778
   },
   {
    "id": "bathymetric-survey-and-stage-storage-assessment-of-lost-lake-californi",
@@ -43,7 +43,7 @@
    ],
    "lat": 41.15489,
    "lon": -120.13932,
-   "bytes": 1609361
+   "bytes": 1602169
   },
   {
    "id": "bathymetric-survey-and-stage-storage-assessment-of-quail-lake-calif-co",
@@ -65,7 +65,7 @@
    ],
    "lat": 39.06875,
    "lon": -120.16875,
-   "bytes": 3068599
+   "bytes": 3060503
   },
   {
    "id": "calaveras-reservoir-california-contours-navd88-2019",
@@ -109,7 +109,7 @@
    ],
    "lat": 34.47465,
    "lon": -118.02214,
-   "bytes": 2578577
+   "bytes": 2575820
   },
   {
    "id": "san-antonio-reservoir-california-10-ft-contours-navd88-2018",

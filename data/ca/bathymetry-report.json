@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-22T10:47:26.529Z",
+  "startedAt": "2026-10-22T11:44:29.870Z",
   "items": [
     {
       "id": "5f5fd23b82ce3550e3bff45e",
@@ -90,8 +90,8 @@
       "ok": {
         "fileId": "little-rock-reservoir-california-2022-bathymetric-survey-and-stage-sto",
         "features": 94,
-        "bytes": 2578577,
-        "simplify": "0.00002",
+        "bytes": 2575820,
+        "simplify": "0.00005",
         "units": "ft"
       }
     },
@@ -127,8 +127,8 @@
       "ok": {
         "fileId": "bathymetric-survey-and-stage-storage-assessment-of-quail-lake-calif-co",
         "features": 165,
-        "bytes": 3068599,
-        "simplify": "0.00002",
+        "bytes": 3060503,
+        "simplify": "0.00005",
         "units": "ft"
       }
     },
@@ -175,8 +175,8 @@
       "ok": {
         "fileId": "bathymetric-survey-and-stage-storage-assessment-of-lost-lake-californi",
         "features": 93,
-        "bytes": 1609361,
-        "simplify": "0.00002",
+        "bytes": 1602169,
+        "simplify": "0.00005",
         "units": "m"
       }
     },
@@ -263,8 +263,8 @@
       "ok": {
         "fileId": "bathymetric-data-for-whiskeytown-lake-september-2020",
         "features": 648,
-        "bytes": 3038195,
-        "simplify": "0.00002",
+        "bytes": 3036778,
+        "simplify": "0.00005",
         "units": "m"
       }
     },
@@ -317,12 +317,15 @@
     "Lake depth profile, water quality, sediment, periphyton, tadpole (Pseudacris regilla), and landscape data from six lakes and two stream sites of the Tokopah Basin in Sequoia National Park, California, 2021-2022"
   ],
   "saved": [
-    "Bathymetric data for Whiskeytown Lake, September 2020 (3038 KB, m)",
-    "Bathymetric survey and stage-storage assessment of Lost Lake, California, collected in 2022 (1609 KB, m)",
-    "Bathymetric survey and stage-storage assessment of Quail Lake, Calif., collected in 2022 (3069 KB, ft)",
+    "Bathymetric data for Whiskeytown Lake, September 2020 (3037 KB, m)",
+    "Bathymetric survey and stage-storage assessment of Lost Lake, California, collected in 2022 (1602 KB, m)",
+    "Bathymetric survey and stage-storage assessment of Quail Lake, Calif., collected in 2022 (3061 KB, ft)",
     "Calaveras Reservoir, California, contours, NAVD88 (2019) (900 KB, ft)",
-    "Little Rock Reservoir, California, 2022 bathymetric survey and stage-storage computations (2579 KB, ft)",
+    "Little Rock Reservoir, California, 2022 bathymetric survey and stage-storage computations (2576 KB, ft)",
     "San Antonio Reservoir, California, 10-ft contours, NAVD88, (2018) (723 KB, ft)"
   ],
-  "finishedAt": "2026-10-22T11:06:06.065Z"
+  "hydrolakes": {
+    "rows": 1701
+  },
+  "finishedAt": "2026-10-22T12:03:08.753Z"
 }
