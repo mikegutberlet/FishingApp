@@ -108,6 +108,21 @@ export async function historyFor(lake) {
   return { note: h.note, statewide: h.statewide, local };
 }
 
+// HydroLAKES estimate (average depth, volume, shoreline) for this lake: same name nearby, or the one lake of
+// similar size at this spot. Modelled from shape and terrain, so it is labelled as an estimate in the app.
+export async function hydroFor(lake) {
+  if (lake.kind === 'river' || /river|creek|stream|slough/i.test(lake.type ?? '')) return null;
+  const h = await load('hydrolakes');
+  if (!h) return null;
+  const key = norm(lake.name);
+  const radius = Math.max(1, Math.sqrt((lake.acres ?? 50) / 247) * 1.5);
+  const near = h.lakes.map(x => ({ ...x, distKm: haversineKm(lake.lat, lake.lon, x.lat, x.lon) })).filter(x => x.distKm <= Math.max(radius, 8)).sort((a, b) => a.distKm - b.distKm);
+  const named = key.length > 2 && near.find(x => norm(x.name) === key);
+  if (named) return named;
+  const sized = near.find(x => x.distKm <= radius && lake.acres && x.acres / lake.acres > 0.4 && x.acres / lake.acres < 2.5);
+  return sized ?? null;
+}
+
 // Public depth-contour surveys (USGS) covering this water, if any.
 export async function bathymetryFor(lake) {
   const idx = cache.bathy ??= fetch('data/ca/bathymetry/index.json').then(r => r.ok ? r.json() : null).catch(() => null);

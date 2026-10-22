@@ -337,7 +337,7 @@ function attachDepths(lakes, depths, source) {
   for (const d of depths) {
     let best = null, bestD = Infinity;
     for (const l of lakes) {
-      if (Math.abs(l.lat - d.lat) > 0.05 || Math.abs(l.lon - d.lon) > 0.06) continue;
+      if (Math.abs(l.lat - d.lat) > 0.25 || Math.abs(l.lon - d.lon) > 0.3) continue;
       const km = distKm([l.lon, l.lat], [d.lon, d.lat]);
       const sameName = d.name && l.name.toLowerCase() === d.name.toLowerCase();
       const score = sameName ? km / 3 : km;

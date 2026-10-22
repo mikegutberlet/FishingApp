@@ -333,6 +333,45 @@ for (const name of await readdir(OUT)) if (name.endsWith('.geojson') && !keep.ha
 index.sort((a, b) => a.title.localeCompare(b.title) || (b.year ?? 0) - (a.year ?? 0));
 await writeFile(new URL('index.json', OUT), JSON.stringify({ updatedAt: new Date().toISOString(), surveys: index }, null, 1) + '\n');
 report.saved = index.map(i => `${i.title} (${Math.round(i.bytes / 1e3)} KB, ${i.units})`);
+// HydroLAKES (Messager et al. 2016): every lake over 10 ha with an average depth and volume estimated from its
+// shape and the surrounding terrain. Estimates, not soundings, but they cover thousands of lakes no survey does.
+async function buildHydroLakes() {
+  const dir = join(WORK, 'hydrolakes');
+  await mkdir(dir, { recursive: true });
+  const zip = join(dir, 'polys.zip');
+  const r = await get('https://data.hydrosheds.org/file/hydrolakes/HydroLAKES_polys_v10_shp.zip');
+  await writeFile(zip, Buffer.from(await r.arrayBuffer()));
+  sh('unzip', ['-qo', zip, '-d', dir]);
+  const shp = (await walk(dir)).find(f => /\.shp$/i.test(f));
+  if (!shp) throw new Error('no shapefile in HydroLAKES zip');
+  const layer = basename(shp, '.shp');
+  const csv = join(dir, 'ca.csv');
+  sh('ogr2ogr', ['-f', 'CSV', '-spat', '-124.6', '32.4', '-114', '42.1', '-dialect', 'SQLite',
+    '-sql', `SELECT Hylak_id, Lake_name, Lake_type, Lake_area, Depth_avg, Vol_total, Shore_len, Res_time, Elevation, ST_X(ST_Centroid(geometry)) AS lon, ST_Y(ST_Centroid(geometry)) AS lat, geometry FROM "${layer}"`, csv, shp]);
+  const lines = (await readFile(csv, 'utf8')).replace(/\r/g, '').split('\n').filter(Boolean);
+  const header = lines[0].split(',').map(h => h.toLowerCase());
+  const col = n => header.indexOf(n.toLowerCase());
+  const rows = [];
+  const splitCsv = line => { const out = []; let cur = '', q = false; for (const ch of line) { if (ch === '"') q = !q; else if (ch === ',' && !q) { out.push(cur); cur = ''; } else cur += ch; } out.push(cur); return out; };
+  for (const line of lines.slice(1)) {
+    const c = splitCsv(line);
+    const lat = +c[col('lat')], lon = +c[col('lon')], area = +c[col('Lake_area')], depth = +c[col('Depth_avg')];
+    if (!Number.isFinite(lat) || !Number.isFinite(lon) || !(depth > 0) || !inCalifornia([lon - 0.01, lat - 0.01, lon + 0.01, lat + 0.01])) continue;
+    rows.push({
+      id: +c[col('Hylak_id')], name: c[col('Lake_name')] || null, type: +c[col('Lake_type')] === 2 ? 'Reservoir' : 'Lake',
+      lat: +lat.toFixed(4), lon: +lon.toFixed(4), acres: Math.round(area * 247.105), meanDepthFt: +(depth * 3.28084).toFixed(1),
+      volumeAcreFt: Math.round(+c[col('Vol_total')] * 810.7), shoreMi: +(+c[col('Shore_len')] * 0.6214).toFixed(1),
+      residenceDays: Math.round(+c[col('Res_time')]) || null, elevationFt: Math.round(+c[col('Elevation')] * 3.28084),
+    });
+  }
+  await writeFile(new URL('../hydrolakes.json', OUT), JSON.stringify({
+    updatedAt: new Date().toISOString(), source: 'HydroLAKES v1.0 (Messager et al. 2016), average depth and volume modelled from lake shape and terrain', lakes: rows,
+  }) + '\n');
+  report.hydrolakes = { rows: rows.length };
+  await rm(dir, { recursive: true, force: true });
+}
+try { await buildHydroLakes(); } catch (e) { report.hydrolakesError = e.message.slice(0, 300); console.error('hydrolakes:', e.message); }
+
 report.finishedAt = new Date().toISOString();
 await writeFile(new URL('../bathymetry-report.json', OUT), JSON.stringify(report, null, 2) + '\n');
-console.log(JSON.stringify({ searched: report.searched, candidates: report.candidates.length, saved: report.saved }, null, 2));
+console.log(JSON.stringify({ searched: report.searched, candidates: report.candidates.length, saved: report.saved, hydrolakes: report.hydrolakes ?? report.hydrolakesError }, null, 2));

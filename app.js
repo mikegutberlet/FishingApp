@@ -439,17 +439,28 @@ async function renderSurveys(lake, el) {
   el.querySelectorAll('[data-survey]').forEach(b => b.onclick = () => showSurvey(surveys[+b.dataset.survey], lake));
 }
 
-function depthFacts(lake) {
-  if (!lake.maxDepth && !lake.meanDepth) return '<p class="muted small">No published depth survey for this water yet. Your own Deeper scans are the best depth map you can have.</p>';
-  return `<div class="grid">${lake.maxDepth ? `<div class="stat"><b>${lake.maxDepth} ft</b><span>Max depth</span></div>` : ''}${lake.meanDepth ? `<div class="stat"><b>${lake.meanDepth} ft</b><span>Average depth</span></div>` : ''}
-    ${lake.elevationFt ? `<div class="stat"><b>${lake.elevationFt.toLocaleString()} ft</b><span>Surface elevation</span></div>` : ''}</div>
-    ${lake.depthSource ? `<p class="muted small">Depth from ${lake.depthSource === 'LAGOS' ? 'LAGOS-US DEPTH (published lake surveys)' : 'Wikidata (Wikipedia lake data)'}.</p>` : ''}
-    <p class="muted small">Depths from published surveys (LAGOS-US DEPTH). Reservoirs vary with water level.</p>`;
+async function depthFacts(lake) {
+  const [est, surveys] = await Promise.all([CA.hydroFor(lake).catch(() => null), CA.bathymetryFor(lake).catch(() => [])]);
+  const stat = (v, label) => v ? `<div class="stat"><b>${v}</b><span>${label}</span></div>` : '';
+  let html = '';
+  if (lake.maxDepth || lake.meanDepth) {
+    html += `<div class="grid">${stat(lake.maxDepth && `${lake.maxDepth} ft`, 'Max depth')}${stat(lake.meanDepth && `${lake.meanDepth} ft`, 'Average depth')}${stat(lake.elevationFt?.toLocaleString() && `${lake.elevationFt.toLocaleString()} ft`, 'Surface elevation')}</div>
+      <p class="muted small">${lake.depthSource === 'Wikidata' ? 'Depth from Wikidata (Wikipedia lake data).' : lake.depthSource === 'LAGOS' ? 'Depth from LAGOS-US DEPTH (published lake surveys).' : 'From your lake notes.'} Reservoirs vary with water level.</p>`;
+  } else {
+    html += surveys.length ? `<p class="muted small">Tap <b>Show</b> on the survey above for the full contour chart; the legend gives today's max depth.</p>`
+      : `<p class="muted small">No published depth survey for this water yet. Your own Deeper scans are the best depth map you can have.</p>`;
+    if (!est && lake.elevationFt) html += `<div class="grid">${stat(`${lake.elevationFt.toLocaleString()} ft`, 'Surface elevation')}</div>`;
+  }
+  if (est) {
+    html += `<h4 style="margin:10px 0 4px">Estimated from the lake's shape</h4><div class="grid">${lake.meanDepth ? '' : stat(`${Math.round(est.meanDepthFt)} ft`, 'Average depth (est.)')}${stat(est.volumeAcreFt?.toLocaleString() && `${est.volumeAcreFt.toLocaleString()} ac·ft`, 'Volume (est.)')}${stat(est.shoreMi && `${est.shoreMi} mi`, 'Shoreline')}${stat(est.residenceDays && (est.residenceDays > 730 ? `${(est.residenceDays / 365).toFixed(1)} yr` : `${est.residenceDays} days`), 'Water turnover (est.)')}${(lake.maxDepth || lake.meanDepth) || !lake.elevationFt ? '' : stat(`${lake.elevationFt.toLocaleString()} ft`, 'Surface elevation')}</div>
+      <p class="muted small">HydroLAKES models these from the shoreline and surrounding terrain; they are rough guides, not soundings.</p>`;
+  }
+  return html;
 }
 
 async function renderDepth(lake, body) {
   if (lake.unsaved) {
-    body.innerHTML = `<div id="surveys"></div><div class="card"><h3>Depth</h3>${depthFacts(lake)}<p class="small">Save this water to import your Deeper scans and see them as a depth map.</p></div>`;
+    body.innerHTML = `<div id="surveys"></div><div class="card"><h3>Depth</h3>${await depthFacts(lake)}<p class="small">Save this water to import your Deeper scans and see them as a depth map.</p></div>`;
     renderSurveys(lake, $('#surveys'));
     return;
   }
@@ -459,7 +470,7 @@ async function renderDepth(lake, body) {
     <form class="form" id="depth-form"><div class="row"><label>Units in file <select name="units"><option value="ft">Feet</option><option value="m">Meters</option></select></label>
       <label>Name <input name="name" placeholder="Spring 2026 scan"></label></div>
       <label class="file-btn">Choose file… <input type="file" name="file" accept=".csv,.txt,.gpx,.kml" hidden></label></form>
-    ${depthFacts(lake)}</div>
+    ${await depthFacts(lake)}</div>
     ${sets.map(s => `<div class="card lake-item"><div><b>${esc(s.name)}</b><div class="muted small">${s.points.length.toLocaleString()} points · max ${Math.max(...s.points.map(p => p[2])).toFixed(1)} ft · ${fmtDate(s.createdAt)}</div></div>
       <div><button data-show="${s.id}">Show</button> <button class="danger" data-del="${s.id}">✕</button></div></div>`).join('')}`;
   body.querySelector('input[type=file]').onchange = async e => {
