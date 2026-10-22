@@ -41,7 +41,8 @@ async function nasRecords() {
     if (!rows.length) break;
     records.push(...rows);
     offset += rows.length;
-    if (report.total != null && records.length >= report.total) break;
+    // The API reports count per page (capped at 1000), so keep going while pages come back full.
+    if (rows.length < 1000) break;
   }
   return records;
 }

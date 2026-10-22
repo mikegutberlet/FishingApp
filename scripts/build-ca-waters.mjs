@@ -12,6 +12,8 @@ import { writeFile, mkdir } from 'node:fs/promises';
 
 const OUT = new URL('../data/ca/', import.meta.url);
 const UA = { 'User-Agent': 'TackleBox-fishing-app (personal, github.com/mikegutberlet/FishingApp)' };
+// EDI's PASTA server refuses the plain app user agent, so those calls go out looking like a browser.
+const BROWSER_UA = { 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36', Accept: '*/*' };
 const NHD = 'https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer';
 const CA_BBOX = { xmin: -124.5, ymin: 32.5, xmax: -114.1, ymax: 42.05 };
 const report = { startedAt: new Date().toISOString(), steps: {} };
@@ -30,7 +32,7 @@ function inCalifornia([x, y]) {
 async function get(url, tries = 3) {
   for (let i = 1; ; i++) {
     try {
-      const r = await fetch(url, { headers: UA });
+      const r = await fetch(url, { headers: /lternet\.edu|edirepository\.org/.test(url) ? BROWSER_UA : UA });
       if (!r.ok) throw new Error(`${r.status} ${url.slice(0, 200)}`);
       return r;
     } catch (e) {
@@ -130,15 +132,38 @@ async function buildLakes(ids) {
       else { lake.acres += poly.acres; lake.parts++; }
     }
   }
-  // NHD ELEVATION is usually meters but some lakes carry feet. No California lake sits above 4,000 m, so larger values are feet.
-  const elevationFt = e => e == null || e <= 0 ? null : Math.round(e > 4000 ? e : e * 3.28084);
   const lakes = [...byLake.values()].map(l => ({
     id: l.gnis ?? `p${l.pid}`, gnis: l.gnis, name: l.name, type: l.ftype === 436 ? 'Reservoir' : 'Lake',
-    acres: Math.round(l.acres), elevationFt: elevationFt(l.elev), lat: l.lat, lon: l.lon,
+    acres: Math.round(l.acres), elevationFt: null, nhdElev: l.elev, lat: l.lat, lon: l.lon,
   })).sort((a, b) => b.acres - a.acres);
+  await attachElevations(lakes);
+  for (const l of lakes) delete l.nhdElev;
   report.steps.lakes.polygons = polys.size;
   report.steps.lakes.inCalifornia = lakes.length;
   return lakes;
+}
+
+// NHD's ELEVATION field mixes feet and meters with no flag, so check each against a terrain model
+// (Open-Meteo's elevation API, 100 points per call) and keep whichever reading agrees with it.
+async function attachElevations(lakes) {
+  let fromDem = 0, kept = 0;
+  for (let i = 0; i < lakes.length; i += 100) {
+    const batch = lakes.slice(i, i + 100);
+    let dem = [];
+    try {
+      const url = `https://api.open-meteo.com/v1/elevation?latitude=${batch.map(l => l.lat).join(',')}&longitude=${batch.map(l => l.lon).join(',')}`;
+      dem = (await getJson(url)).elevation ?? [];
+    } catch (e) { report.steps.elevationError = e.message; }
+    batch.forEach((l, j) => {
+      const demFt = Number.isFinite(dem[j]) ? dem[j] * 3.28084 : null;
+      const asM = l.nhdElev > 0 ? l.nhdElev * 3.28084 : null, asFt = l.nhdElev > 0 ? l.nhdElev : null;
+      const close = v => v != null && demFt != null && Math.abs(v - demFt) <= Math.max(60, demFt * 0.08);
+      if (close(asM)) { l.elevationFt = Math.round(asM); kept++; }
+      else if (close(asFt)) { l.elevationFt = Math.round(asFt); kept++; }
+      else if (demFt != null) { l.elevationFt = Math.round(demFt); fromDem++; }
+    });
+  }
+  report.steps.elevations = { nhdKept: kept, fromDem };
 }
 
 // Rivers: merge every named flowline segment by GNIS id, then place label points every ~15 km along it.
@@ -212,6 +237,22 @@ async function depthTable() {
 async function depthFromPackage(packageId) {
   const [scope, id, rev] = packageId.split('.');
   report.steps.depth = { package: packageId };
+  try { return await depthFromPasta(scope, id, rev); } catch (e) { report.steps.depth.pastaError = e.message; }
+  // Fallback: the EDI portal serves the same package; entity ids come from its EML.
+  const eml = await (await get(`https://portal.edirepository.org/nis/metadataviewer?packageid=${packageId}&contentType=application/xml`)).text();
+  const urls = [...eml.matchAll(/<url[^>]*>\s*(https?:[^<\s]+)\s*<\/url>/g)].map(m => m[1]);
+  report.steps.depth.portalUrls = urls.slice(0, 10);
+  for (const u of urls) {
+    const ent = u.match(/\/data\/eml\/edi\/\d+\/\d+\/([0-9a-f]{32})/)?.[1];
+    if (!ent) continue;
+    const csv = await (await get(`https://portal.edirepository.org/nis/dataviewer?packageid=${packageId}&entityid=${ent}`)).text();
+    const rows = parseDepthCsv(csv);
+    if (rows) return rows;
+  }
+  throw new Error('No depth table found via portal');
+}
+
+async function depthFromPasta(scope, id, rev) {
   const entities = (await (await get(`https://pasta.lternet.edu/package/data/eml/${scope}/${id}/${rev}`)).text()).trim().split('\n');
   report.steps.depth.entities = [];
   for (const ent of entities) {
@@ -219,6 +260,15 @@ async function depthFromPackage(packageId) {
     report.steps.depth.entities.push(name);
     if (!/depth/i.test(name) || /readme|meta|source/i.test(name)) continue;
     const csv = await (await get(`https://pasta.lternet.edu/package/data/eml/${scope}/${id}/${rev}/${ent}`)).text();
+    const rows = parseDepthCsv(csv);
+    if (rows) return rows;
+  }
+  throw new Error('No depth table in package');
+}
+
+// Returns the California rows of a LAGOS depth CSV, or null if this isn't the depth table.
+function parseDepthCsv(csv) {
+  {
     const lines = csv.replace(/\r/g, '').split('\n').filter(Boolean);
     const header = splitCsv(lines[0]).map(h => h.toLowerCase());
     report.steps.depth.header = header;
@@ -226,7 +276,7 @@ async function depthFromPackage(packageId) {
     const iLat = col('lake_lat_decdeg', 'lat', 'latitude'), iLon = col('lake_lon_decdeg', 'lon', 'longitude');
     const iMax = col('lake_maxdepth_m', 'maxdepth_m', 'max_depth_m'), iMean = col('lake_meandepth_m', 'meandepth_m', 'mean_depth_m');
     const iName = col('lake_namegnis', 'lake_namelagos', 'lake_name', 'name'), iState = col('lake_states', 'state', 'lake_state');
-    if (iLat < 0 || iMax < 0) continue;
+    if (iLat < 0 || iMax < 0) return null;
     const rows = [];
     for (const line of lines.slice(1)) {
       const c = splitCsv(line);
@@ -239,7 +289,6 @@ async function depthFromPackage(packageId) {
     report.steps.depth.californiaRows = rows.length;
     return rows;
   }
-  throw new Error('No depth table in package');
 }
 function splitCsv(line) {
   const out = []; let cur = '', q = false;

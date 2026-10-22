@@ -17,12 +17,12 @@ const SB = 'https://www.sciencebase.gov/catalog';
 // ScienceBase ANDs every word and searches summaries too, so short queries with "California" work well.
 const QUERIES = ['reservoir bathymetric California', 'lake bathymetric California', 'reservoir contours California', 'lake contours California',
   'bathymetric survey California', 'stage-storage California', 'stage storage reservoir California', 'Lake Tahoe bathymetry', 'bathymetry reservoir California', 'lake depth survey California'];
-const MAX_FILE = 400e6, MAX_GEOJSON = 3e6;
+const MAX_FILE = 400e6, MAX_GEOJSON = 4e6;
 const report = { startedAt: new Date().toISOString(), items: [] };
 
 const INCLUDE = /\b(lake|reservoir|res\.)\b/i;
 const TOPIC = /bathymetr|contour|stage-?storage|depth/i;
-const EXCLUDE = /water[- ]?table|ground-?water|potentiometric|clay|subsidence|insar|\bned\b|arc-second|tidal|marsh|multibeam|canyon|borderland|delta|slough|\briver\b|ship channel|geochemical|diatom|grain size|seafloor|offshore|coast|ocean|island|estuar|\bbay\b|lagoon|topobathymetric|sediment core|vapor transport/i;
+const EXCLUDE = /orthomosaic|imagery|digital surface model|\bdsm\b|hillshade|water[- ]?table|ground-?water|potentiometric|clay|subsidence|insar|\bned\b|arc-second|tidal|marsh|multibeam|canyon|borderland|delta|slough|\briver\b|ship channel|geochemical|diatom|grain size|seafloor|offshore|coast|ocean|island|estuar|\bbay\b|lagoon|topobathymetric|sediment core|vapor transport/i;
 
 async function get(url) {
   const r = await fetch(url, { headers: UA, redirect: 'follow' });
@@ -52,7 +52,7 @@ async function walk(dir) {
   return out;
 }
 
-const isRasterName = f => /\.(tif|tiff|asc|xyz|img|adf)$/i.test(f) || (/\.txt$/i.test(f) && /dem|grid|xyz|bathy|elev/i.test(basename(f)));
+const isRasterName = f => !/ortho|_hll|dsm|browse|thumb/i.test(basename(f)) && (/\.(tif|tiff|asc|xyz|img|adf)$/i.test(f) || (/\.txt$/i.test(f) && /dem|grid|xyz|bathy|elev/i.test(basename(f))));
 const isGoodFile = f => (/\.zip$/i.test(f.name) && !/dwg|cad|jpg|photo|image/i.test(f.name)) || isRasterName(f.name);
 
 function unitsOf(...texts) {
@@ -69,13 +69,20 @@ function elevField(features) {
     .map(k => ({ k, spread: new Set(features.map(f => f.properties[k])).size })).sort((a, b) => b.spread - a.spread)[0]?.k;
 }
 
-async function toGeoJson(shp, field, dir) {
-  for (const simplify of ['0.00002', '0.00005', '0.0001', '0.0002']) {
+function eachCoord(geometry, cb) {
+  const rec = c => { if (typeof c[0] === 'number') cb(c); else for (const x of c) rec(x); };
+  rec(geometry.coordinates);
+}
+const vertexCount = g => { let n = 0; eachCoord(g, () => n++); return n; };
+
+async function toGeoJson(shp, field, dir, srsArgs = []) {
+  for (const simplify of ['0.00002', '0.00005', '0.0001', '0.0002', '0.0004']) {
     const out = join(dir, `out-${simplify}.geojson`);
     await rm(out, { force: true });
-    sh('ogr2ogr', ['-f', 'GeoJSON', '-t_srs', 'EPSG:4326', '-simplify', simplify, '-lco', 'COORDINATE_PRECISION=5', '-select', field, out, shp]);
+    sh('ogr2ogr', ['-f', 'GeoJSON', ...srsArgs, '-t_srs', 'EPSG:4326', '-simplify', simplify, '-lco', 'COORDINATE_PRECISION=5', '-select', field, out, shp]);
     const gj = JSON.parse(await readFile(out, 'utf8'));
-    const features = gj.features.filter(f => f.geometry && Number.isFinite(+f.properties[field]))
+    // Drop the speckle of tiny rings a raster contour produces; they add bytes and no information.
+    const features = gj.features.filter(f => f.geometry && Number.isFinite(+f.properties[field]) && vertexCount(f.geometry) >= 12)
       .map(f => ({ type: 'Feature', properties: { e: +(+f.properties[field]).toFixed(1) }, geometry: f.geometry }));
     const body = JSON.stringify({ type: 'FeatureCollection', features });
     if (body.length <= MAX_GEOJSON) return { body, features, simplify };
@@ -83,7 +90,21 @@ async function toGeoJson(shp, field, dir) {
   return null;
 }
 
-async function contourRaster(raster, units, dir) {
+// USGS "DEM ... .txt" files are usually x,y,z rows. GDAL reads them only when gridded and sorted, so sort first.
+async function prepareRaster(raster, dir) {
+  try { JSON.parse(sh('gdalinfo', ['-json', raster])); return raster; } catch {}
+  if (!/\.txt$/i.test(raster)) throw new Error('unreadable raster');
+  const head = sh('head', ['-n', '3', raster]);
+  const delim = head.includes(',') ? ',' : /\t/.test(head) ? '\t' : ' ';
+  const sorted = join(dir, 'sorted.xyz');
+  const hasHeader = /[a-df-z]/i.test(head.split('\n')[0]);
+  execFileSync('bash', ['-c', `${hasHeader ? 'tail -n +2' : 'cat'} "${raster}" | tr -s ' ' | sed 's/^ //' | sort -t'${delim === ' ' ? ' ' : delim}' -k2,2g -k1,1g > "${sorted}"`], { stdio: 'ignore' });
+  JSON.parse(sh('gdalinfo', ['-json', sorted]));
+  return sorted;
+}
+
+async function contourRaster(rasterIn, units, dir) {
+  const raster = await prepareRaster(rasterIn, dir);
   const info = JSON.parse(sh('gdalinfo', ['-json', raster]));
   const [w, h] = info.size;
   let src = raster;
@@ -93,7 +114,9 @@ async function contourRaster(raster, units, dir) {
     src = join(dir, 'coarse.tif');
     sh('gdalwarp', ['-overwrite', '-r', 'average', '-ts', String(Math.round(w / factor)), String(Math.round(h / factor)), raster, src]);
   }
-  const interval = units === 'm' ? '3' : '10';
+  // Big lakes get 20 ft contours so the file stays small enough for a phone.
+  const big = w * h > 12e6;
+  const interval = units === 'm' ? (big ? '6' : '3') : (big ? '20' : '10');
   const shp = join(dir, 'contours.shp');
   sh('gdal_contour', ['-i', interval, '-a', 'e', '-f', 'ESRI Shapefile', src, shp]);
   return { shp, field: 'e', interval, size: [w, h], srs: info.coordinateSystem?.wkt?.slice(0, 80) };
@@ -108,7 +131,7 @@ async function processItem(it, parentTitle) {
   const bb = bboxOf(full);
   if (bb && !inCalifornia(bb)) { entry.skip = 'outside California'; return null; }
   const picks = files.filter(isGoodFile).filter(f => f.size <= MAX_FILE)
-    .sort((a, b) => (/contour/i.test(b.name) - /contour/i.test(a.name)) || (/\.zip$/i.test(b.name) - /\.zip$/i.test(a.name)) || (/\.tiff?$/i.test(b.name) - /\.tiff?$/i.test(a.name)));
+    .sort((a, b) => (/contour/i.test(b.name) - /contour/i.test(a.name)) || (/\.tiff?$|\.zip$/i.test(b.name) - /\.tiff?$|\.zip$/i.test(a.name)) || a.size - b.size);
   if (!picks.length) { entry.skip = 'no usable files'; return null; }
   const dir = join(WORK, it.id);
   await mkdir(dir, { recursive: true });
@@ -147,14 +170,20 @@ async function processItem(it, parentTitle) {
     field = elevField(JSON.parse(await readFile(probe, 'utf8')).features);
     if (!field) { entry.skip = 'no elevation field'; return null; }
   }
-  const gj = await toGeoJson(shp, field, dir);
+  // Some ASCII exports carry no projection. USGS names them with their UTM zone (UTM11, UTMZ10N), so use that.
+  const srsArgs = [];
+  try { JSON.parse(sh('ogrinfo', ['-json', '-so', shp])); } catch {}
+  const probeInfo = sh('ogrinfo', ['-so', '-al', shp]);
+  if (!/PROJCRS|GEOGCRS|PROJCS|GEOGCS/.test(probeInfo)) {
+    const zone = `${it.title} ${entry.files.join(' ')} ${(entry.downloaded ?? []).join(' ')}`.match(/UTM\s?Z?(1[01])/i)?.[1] ?? '10';
+    srsArgs.push('-s_srs', `EPSG:269${zone}`);
+    entry.assumedSrs = `EPSG:269${zone}`;
+  }
+  const gj = await toGeoJson(shp, field, dir, srsArgs);
   if (!gj) { entry.skip = 'too large even simplified'; return null; }
   const elevs = gj.features.map(f => f.properties.e);
   let [w, s, e, n] = [180, 90, -180, -90];
-  for (const f of gj.features) {
-    const coords = f.geometry.type === 'LineString' ? f.geometry.coordinates : f.geometry.coordinates.flat(f.geometry.type === 'MultiPolygon' ? 2 : 1);
-    for (const [x, y] of coords) { w = Math.min(w, x); e = Math.max(e, x); s = Math.min(s, y); n = Math.max(n, y); }
-  }
+  for (const f of gj.features) eachCoord(f.geometry, ([x, y]) => { w = Math.min(w, x); e = Math.max(e, x); s = Math.min(s, y); n = Math.max(n, y); });
   if (!inCalifornia([w, s, e, n])) { entry.skip = 'contours outside California'; return null; }
   const title = parentTitle && !/lake|reservoir/i.test(it.title) ? `${parentTitle} · ${it.title}` : it.title;
   const fileId = slug(title);
@@ -183,7 +212,14 @@ report.candidates = candidates.map(c => c.title);
 
 const index = [];
 const done = new Set();
+const contourTitles = candidates.filter(c => /contour/i.test(c.title)).map(c => c.title.split(',')[0].toLowerCase());
+candidates.sort((a, b) => /contour/i.test(b.title) - /contour/i.test(a.title));
 for (const cand of candidates) {
+  // A lake with a published contour set doesn't need its DEM contoured too.
+  if (/digital elevation model|\bdem\b/i.test(cand.title) && contourTitles.includes(cand.title.split(',')[0].toLowerCase())) {
+    report.items.push({ id: cand.id, title: cand.title, skip: 'contours published separately' });
+    continue;
+  }
   const queue = [{ it: cand, parent: null }];
   if (cand.hasChildren) {
     try { for (const ch of await children(cand.id)) queue.push({ it: ch, parent: cand.title }); } catch (e) { report.items.push({ id: cand.id, title: cand.title, childrenError: e.message }); }
@@ -195,7 +231,7 @@ for (const cand of candidates) {
       const entry = await processItem(it, parent);
       if (entry) index.push(entry);
     } catch (e) {
-      report.items.push({ id: it.id, title: it.title, error: e.message.slice(0, 300) });
+      report.items.push({ id: it.id, title: it.title, error: e.message.slice(0, 300), at: (e.stack ?? '').split('\n')[1]?.trim() });
     }
     await rm(join(WORK, it.id), { recursive: true, force: true });
   }
