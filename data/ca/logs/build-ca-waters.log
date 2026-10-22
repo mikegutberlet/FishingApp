@@ -1,0 +1,74 @@
+depth: 403 https://pasta.lternet.edu/package/search/eml?defType=edismax&q=title:%22LAGOS-US%20DEPTH%22&fl=packageid,title,pubdate&rows=20
+{
+  "startedAt": "2026-10-22T03:38:57.539Z",
+  "steps": {
+    "nhdLayers": [
+      {
+        "id": 0,
+        "name": "Point"
+      },
+      {
+        "id": 1,
+        "name": "Point Event"
+      },
+      {
+        "id": 2,
+        "name": "Line - Large Scale "
+      },
+      {
+        "id": 3,
+        "name": "Flow Direction"
+      },
+      {
+        "id": 4,
+        "name": "Flowline - Small Scale"
+      },
+      {
+        "id": 5,
+        "name": "Flowline - Small Scale (HI, PR, VI, Pacific Territories)"
+      },
+      {
+        "id": 6,
+        "name": "Flowline - Large Scale"
+      },
+      {
+        "id": 7,
+        "name": "Area - Small Scale"
+      },
+      {
+        "id": 8,
+        "name": "Area - Small Scale (HI, PR, VI, Pacific Territories)"
+      },
+      {
+        "id": 9,
+        "name": "Area - Large Scale"
+      },
+      {
+        "id": 10,
+        "name": "Waterbody - Small Scale"
+      },
+      {
+        "id": 11,
+        "name": "Waterbody - Small Scale (HI, PR, VI, Pacific Territories)"
+      },
+      {
+        "id": 12,
+        "name": "Waterbody - Large Scale"
+      }
+    ],
+    "lakes": {
+      "features": 4206,
+      "polygons": 3248,
+      "inCalifornia": 2930
+    },
+    "depthProbe": "403 https://pasta.lternet.edu/package/eml/edi/1043?filter=newest",
+    "depthError": "403 https://pasta.lternet.edu/package/search/eml?defType=edismax&q=title:%22LAGOS-US%20DEPTH%22&fl=packageid,title,pubdate&rows=20",
+    "rivers": {
+      "layer": 6,
+      "segments": 363814,
+      "named": 12971,
+      "kept": 1591
+    }
+  },
+  "finishedAt": "2026-10-22T04:21:55.581Z"
+}
