@@ -204,11 +204,34 @@ async function renderLakeList() {
   const list = $('#lake-list');
   list.classList.remove('hidden');
   const lakes = (await db.all('lakes')).sort((a, b) => a.name.localeCompare(b.name));
-  list.innerHTML = `<h2>Lakes & rivers</h2><button id="find-waters" style="width:100%;margin-bottom:12px">🔎 Find California stocked waters</button>`
+  list.innerHTML = `<h2>Lakes & rivers</h2><div class="row" style="margin-bottom:12px"><button id="find-any" style="flex:1">🔎 Any California water</button><button id="find-waters" style="flex:1">🐟 Stocked waters</button></div>`
     + (lakes.length ? '' : `<div class="card muted">No waters yet. Find one above, or use “＋ Lake here” on the map.</div>`)
     + lakes.map(l => `<div class="card lake-item" data-id="${l.id}"><div><b>${esc(l.name)}</b><div class="muted small">${esc(l.type)}${l.county ? ' · ' + esc(l.county) : ''}${l.state ? ', ' + esc(l.state) : ''}</div></div><span>›</span></div>`).join('');
   list.querySelectorAll('.lake-item').forEach(el => el.onclick = () => openLake(el.dataset.id));
   $('#find-waters').onclick = renderFindWaters;
+  $('#find-any').onclick = renderFindAny;
+}
+
+// Search every named California lake, reservoir and river from the statewide list.
+async function renderFindAny() {
+  const list = $('#lake-list');
+  list.innerHTML = `<button id="back">‹ My waters</button><h2>California lakes & rivers</h2>
+    <div class="card form"><label>Name <input id="asearch" type="search" placeholder="Shasta, Kern River, Convict…" autofocus></label></div>
+    <div id="aresults" class="muted">Type a name to search ${statewide ? (statewide.lakes.length + new Set(statewide.riverLabels.map(r => r.id)).size).toLocaleString() : ''} waters.</div>`;
+  $('#back').onclick = renderLakeList;
+  if (!statewide) statewide = await CA.statewide();
+  const rivers = [...new Map(statewide.riverLabels.map(r => [r.id, r])).values()];
+  const draw = () => {
+    const q = $('#asearch').value.trim().toLowerCase();
+    if (q.length < 2) { $('#aresults').innerHTML = ''; return; }
+    const hits = [...statewide.lakes, ...rivers].filter(w => w.name.toLowerCase().includes(q))
+      .sort((a, b) => (a.name.toLowerCase().startsWith(q) ? 0 : 1) - (b.name.toLowerCase().startsWith(q) ? 0 : 1) || (b.acres ?? b.km ?? 0) - (a.acres ?? a.km ?? 0)).slice(0, 60);
+    $('#aresults').innerHTML = hits.length ? hits.map((w, i) => `<div class="card lake-item" data-i="${i}"><div><b>${esc(w.name)}</b>
+        <div class="muted small">${esc(w.type)}${w.acres ? ` · ${w.acres.toLocaleString()} acres` : ''}${w.km ? ` · ${Math.round(w.km * 0.621)} mi` : ''}${w.maxDepthFt ? ` · ${w.maxDepthFt} ft deep` : ''}${w.elevationFt ? ` · ${w.elevationFt.toLocaleString()} ft elev.` : ''}</div></div><span>›</span></div>`).join('')
+      : '<div class="card muted">No matches.</div>';
+    $('#aresults').querySelectorAll('.lake-item').forEach(el => el.onclick = () => openWater(hits[+el.dataset.i]));
+  };
+  $('#asearch').oninput = draw;
 }
 
 // Browse CDFW stocked waters and add one as a lake in a tap.

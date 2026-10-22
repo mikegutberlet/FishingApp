@@ -1,5 +1,5 @@
 // Caches the app shell so it opens with no signal on the water. Your data is in IndexedDB, not here.
-const CACHE = 'tackle-box-v2';
+const CACHE = 'tackle-box-v3';
 const SHELL = ['./', 'index.html', 'styles.css', 'app.js', 'db.js', 'data-sources.js', 'manifest.json', 'icon.svg', 'states/ca.js', 'icons/icon-180.png', 'icons/icon-192.png',
   'vendor/leaflet/leaflet.css', 'vendor/leaflet/leaflet.js'];
 
