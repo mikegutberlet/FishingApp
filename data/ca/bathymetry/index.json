@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-10-22T09:18:36.543Z",
+ "updatedAt": "2026-10-22T09:59:10.018Z",
  "surveys": [
   {
    "id": "bathymetric-data-for-whiskeytown-lake-september-2020",
@@ -56,16 +56,16 @@
    "unitsGuessed": false,
    "datum": "NAVD88",
    "minElev": 6660,
-   "maxElev": 7980,
+   "maxElev": 7130,
    "bbox": [
-    -120.17501,
+    -120.175,
     39.0625,
     -120.1625,
     39.07501
    ],
    "lat": 39.06875,
-   "lon": -120.16876,
-   "bytes": 2732394
+   "lon": -120.16875,
+   "bytes": 3068599
   },
   {
    "id": "calaveras-reservoir-california-contours-navd88-2019",
@@ -78,16 +78,16 @@
    "unitsGuessed": false,
    "datum": "NAVD88",
    "minElev": 620,
-   "maxElev": 750,
+   "maxElev": 730,
    "bbox": [
-    -121.83338,
-    37.45277,
-    -121.78261,
-    37.49539
+    -121.83203,
+    37.45584,
+    -121.78572,
+    37.49524
    ],
-   "lat": 37.47408,
-   "lon": -121.808,
-   "bytes": 1239509
+   "lat": 37.47554,
+   "lon": -121.80888,
+   "bytes": 900284
   },
   {
    "id": "little-rock-reservoir-california-2022-bathymetric-survey-and-stage-sto",
@@ -99,17 +99,39 @@
    "units": "ft",
    "unitsGuessed": false,
    "datum": "NAVD88",
-   "minElev": 3200,
-   "maxElev": 4640,
+   "minElev": 3130,
+   "maxElev": 3390,
    "bbox": [
-    -118.03555,
+    -118.02893,
     34.46013,
-    -118.00046,
-    34.48919
+    -118.01535,
+    34.48918
    ],
-   "lat": 34.47466,
-   "lon": -118.01801,
-   "bytes": 2916863
+   "lat": 34.47465,
+   "lon": -118.02214,
+   "bytes": 2578577
+  },
+  {
+   "id": "san-antonio-reservoir-california-10-ft-contours-navd88-2018",
+   "title": "San Antonio Reservoir, California, 10-ft contours, NAVD88, (2018)",
+   "year": 2018,
+   "source": "https://www.sciencebase.gov/catalog/item/5c897cabe4b09388244f03a4",
+   "lake": "San Antonio Reservoir",
+   "lakeKey": "sanantonio",
+   "units": "ft",
+   "unitsGuessed": false,
+   "datum": "NAVD88",
+   "minElev": 320,
+   "maxElev": 470,
+   "bbox": [
+    -121.8501,
+    37.56363,
+    -121.80469,
+    37.59586
+   ],
+   "lat": 37.57975,
+   "lon": -121.82739,
+   "bytes": 722912
   }
  ]
 }
