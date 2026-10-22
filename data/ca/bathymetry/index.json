@@ -1,6 +1,86 @@
 {
- "updatedAt": "2026-10-22T03:58:52.652Z",
+ "updatedAt": "2026-10-22T04:29:49.207Z",
  "surveys": [
+  {
+   "id": "bathymetric-data-for-whiskeytown-lake-december-2018-ver-2-0-july-2021",
+   "title": "Bathymetric data for Whiskeytown Lake, December 2018 (ver. 2.0, July 2021)",
+   "year": 2018,
+   "source": "https://www.sciencebase.gov/catalog/item/5dfbd23fe4b0cc5243395f60",
+   "units": "ft",
+   "unitsGuessed": false,
+   "datum": "NAVD88",
+   "minElev": 300,
+   "maxElev": 360,
+   "bbox": [
+    -122.5913,
+    40.59834,
+    -122.5275,
+    40.65143
+   ],
+   "lat": 40.62488,
+   "lon": -122.5594,
+   "bytes": 3351572
+  },
+  {
+   "id": "bathymetric-data-for-whiskeytown-lake-may-2019-ver-2-0-july-2021",
+   "title": "Bathymetric data for Whiskeytown Lake, May 2019 (ver. 2.0, July 2021)",
+   "year": 2019,
+   "source": "https://www.sciencebase.gov/catalog/item/5dfbeea5e4b0cc5243395ff8",
+   "units": "ft",
+   "unitsGuessed": false,
+   "datum": "NAVD88",
+   "minElev": 300,
+   "maxElev": 360,
+   "bbox": [
+    -122.5913,
+    40.59835,
+    -122.52721,
+    40.65146
+   ],
+   "lat": 40.6249,
+   "lon": -122.55926,
+   "bytes": 3341226
+  },
+  {
+   "id": "bathymetric-survey-and-stage-storage-assessment-of-lost-lake-californi",
+   "title": "Bathymetric survey and stage-storage assessment of Lost Lake, California, collected in 2022",
+   "year": 2022,
+   "source": "https://www.sciencebase.gov/catalog/item/686d8a07d4be026f4a016404",
+   "units": "ft",
+   "unitsGuessed": false,
+   "datum": "NAVD88",
+   "minElev": 2180,
+   "maxElev": 2310,
+   "bbox": [
+    -120.14372,
+    41.15231,
+    -120.13492,
+    41.15748
+   ],
+   "lat": 41.15489,
+   "lon": -120.13932,
+   "bytes": 890387
+  },
+  {
+   "id": "calaveras-reservoir-california-bathymetric-digital-elevation-model-dem",
+   "title": "Calaveras Reservoir, California, bathymetric digital elevation model (DEM), NAVD88 (2019)",
+   "year": 2019,
+   "source": "https://www.sciencebase.gov/catalog/item/5f5ffad282ce3550e3bff557",
+   "units": "ft",
+   "unitsGuessed": false,
+   "datum": "NAVD88",
+   "minElev": 620,
+   "maxElev": 800,
+   "bbox": [
+    -121.83383,
+    37.45193,
+    -121.77745,
+    37.49583
+   ],
+   "lat": 37.47388,
+   "lon": -121.80564,
+   "bytes": 1746652
+  },
   {
    "id": "calaveras-reservoir-california-contours-navd88-2019",
    "title": "Calaveras Reservoir, California, contours, NAVD88 (2019)",
@@ -40,6 +120,26 @@
    "lat": 37.57975,
    "lon": -121.82739,
    "bytes": 722912
+  },
+  {
+   "id": "san-antonio-reservoir-california-bathymetric-digital-elevation-model-d",
+   "title": "San Antonio Reservoir, California, bathymetric digital elevation model (DEM), NAVD88, (2018)",
+   "year": 2018,
+   "source": "https://www.sciencebase.gov/catalog/item/5c895546e4b09388244eedcd",
+   "units": "ft",
+   "unitsGuessed": false,
+   "datum": "NAVD88",
+   "minElev": 320,
+   "maxElev": 460,
+   "bbox": [
+    -121.85016,
+    37.56386,
+    -121.80676,
+    37.59587
+   ],
+   "lat": 37.57986,
+   "lon": -121.82846,
+   "bytes": 2512707
   }
  ]
 }

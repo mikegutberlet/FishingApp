@@ -1,228 +1,6 @@
 {
-  "startedAt": "2026-10-22T03:39:14.812Z",
+  "startedAt": "2026-10-22T04:26:10.763Z",
   "items": [
-    {
-      "id": "5f5ffad282ce3550e3bff557",
-      "title": "Calaveras Reservoir, California, bathymetric digital elevation model (DEM), NAVD88 (2019)",
-      "parent": null,
-      "files": [
-        "CalaverasReservoirBathymetry.zip",
-        "Calaveras Reservoir, California, bathymetric digital elevation model_metadata.xml.xml"
-      ],
-      "downloaded": [
-        "CalaverasReservoirBathymetry.zip (20 MB)"
-      ],
-      "raster": {
-        "file": "dblbnd.adf",
-        "shp": "/tmp/bathy/5f5ffad282ce3550e3bff557/contours.shp",
-        "field": "e",
-        "interval": "10",
-        "size": [
-          5399,
-          5109
-        ],
-        "srs": "PROJCRS[\"unnamed\",\n    BASEGEOGCRS[\"NAD83\",\n        DATUM[\"North American Datum "
-      },
-      "skip": "too large even simplified"
-    },
-    {
-      "id": "62e8a8c9d34e749ac04cbd66",
-      "title": "Little Rock Reservoir, California, 2022 bathymetric survey and stage-storage computations",
-      "parent": null,
-      "files": [
-        "Stage_Storage_LR_NAVD88.csv",
-        "Stage_SurfaceArea_LR_NAVD88.csv",
-        "DEM_1m_NAD83_UTM11_NAVD88_ft.txt",
-        "DEM_1m_NAD83_UTM11_LRD.txt",
-        "LR_data_release.xml"
-      ],
-      "downloaded": [
-        "DEM_1m_NAD83_UTM11_NAVD88_ft.txt (330 MB)",
-        "DEM_1m_NAD83_UTM11_LRD.txt (320 MB)"
-      ],
-      "rasterErrors": [
-        "DEM_1m_NAD83_UTM11_NAVD88_ft.txt: Command failed: gdalinfo -json /tmp/bathy/62e8a8c9d34e749ac04cbd66/DEM_1m_NAD83_UTM11_NAVD88_ft.txt\nERROR 4: `/tmp/bathy/62e8a8c9d34e749ac04cbd66/DEM_1m_NAD83_U",
-        "DEM_1m_NAD83_UTM11_LRD.txt: Command failed: gdalinfo -json /tmp/bathy/62e8a8c9d34e749ac04cbd66/DEM_1m_NAD83_UTM11_LRD.txt\nERROR 4: `/tmp/bathy/62e8a8c9d34e749ac04cbd66/DEM_1m_NAD83_UTM11_L",
-        "DEM_1m_NAD83_UTM11_NAVD88_ft.txt: Command failed: gdalinfo -json /tmp/bathy/62e8a8c9d34e749ac04cbd66/DEM_1m_NAD83_UTM11_NAVD88_ft.txt\nERROR 4: `/tmp/bathy/62e8a8c9d34e749ac04cbd66/DEM_1m_NAD83_U"
-      ],
-      "skip": "no contours or readable raster"
-    },
-    {
-      "id": "5c895546e4b09388244eedcd",
-      "title": "San Antonio Reservoir, California, bathymetric digital elevation model (DEM), NAVD88, (2018)",
-      "parent": null,
-      "files": [
-        "San_Antonio_Reservoir_2018_Bathymetry_ascii_export.zip",
-        "San_Antonio_Reservoir_2018_Bathymetry_tiff_export.zip",
-        "San Antonio Reservoir, California, bathymetric digital elevation model (DEM), NAVD88, (2018).xml"
-      ],
-      "downloaded": [
-        "San_Antonio_Reservoir_2018_Bathymetry_ascii_export.zip (10 MB)"
-      ],
-      "raster": {
-        "file": "san_antonio_reservoir_2018_bathymetry_ascii_export.txt",
-        "shp": "/tmp/bathy/5c895546e4b09388244eedcd/contours.shp",
-        "field": "e",
-        "interval": "10",
-        "size": [
-          4051,
-          3691
-        ]
-      }
-    },
-    {
-      "id": "5c895546e4b09388244eedcd",
-      "title": "San Antonio Reservoir, California, bathymetric digital elevation model (DEM), NAVD88, (2018)",
-      "error": "Command failed: ogr2ogr -f GeoJSON -t_srs EPSG:4326 -simplify 0.00002 -lco COORDINATE_PRECISION=5 -select e /tmp/bathy/5c895546e4b09388244eedcd/out-0.00002.geojson /tmp/bathy/5c895546e4b09388244eedcd/contours.shp\nERROR 1: Can't transform coordinates, source layer has no\ncoordinate system.  Use -s_sr"
-    },
-    {
-      "id": "62d86c8bd34e2842e1ed4f96",
-      "title": "Bathymetric survey and stage-storage assessment of Quail Lake, Calif., collected in 2022",
-      "parent": null,
-      "files": [
-        "QL_StageArea_Ac_NAVD88ft.csv",
-        "QL_StageStorage_AcFt_NAVD88ft.csv",
-        "QuailLake_DEM_final_NAD83_NAVD88_ft_1m.txt",
-        "Quail_Lake_DR_metadata.xml"
-      ],
-      "downloaded": [
-        "QuailLake_DEM_final_NAD83_NAVD88_ft_1m.txt (50 MB)"
-      ],
-      "rasterErrors": [
-        "QuailLake_DEM_final_NAD83_NAVD88_ft_1m.txt: Command failed: gdalinfo -json /tmp/bathy/62d86c8bd34e2842e1ed4f96/QuailLake_DEM_final_NAD83_NAVD88_ft_1m.txt\nERROR 4: `/tmp/bathy/62d86c8bd34e2842e1ed4f96/Quai"
-      ],
-      "skip": "no contours or readable raster"
-    },
-    {
-      "id": "686d8a07d4be026f4a016404",
-      "title": "Bathymetric survey and stage-storage assessment of Lost Lake, California, collected in 2022",
-      "parent": null,
-      "files": [
-        "LostLake2023_Dataset_Thumbnail_PHaluska2026.png",
-        "LostLake_DEM_NAD83_2011_UTMZ10N_NAVD88_ft_0.25m_PHaluska2026.txt",
-        "LostLake_DEM_NAD83_2011_UTMZ10N_NAVD88_m_0.25m_PHaluska2026.txt",
-        "LostLake_NAD83-2011_UTMZ10N_NAVD88_0.25m_PHaluska2026.tif",
-        "LostLake_StageArea_m2_Ac_NAVD88_PHaluska2026.csv",
-        "LostLake_StageStorage_m3_Ac-ft_NAVD88_PHaluska2026.csv",
-        "Lost_Lake_metadata.xml"
-      ],
-      "downloaded": [
-        "LostLake_NAD83-2011_UTMZ10N_NAVD88_0.25m_PHaluska2026.tif (31 MB)"
-      ],
-      "raster": {
-        "file": "LostLake_NAD83-2011_UTMZ10N_NAVD88_0.25m_PHaluska2026.tif",
-        "shp": "/tmp/bathy/686d8a07d4be026f4a016404/contours.shp",
-        "field": "e",
-        "interval": "10",
-        "size": [
-          2763,
-          2106
-        ],
-        "srs": "PROJCRS[\"NAD83(2011) / UTM zone 10N\",\n    BASEGEOGCRS[\"NAD83(2011)\",\n        DAT"
-      }
-    },
-    {
-      "id": "686d8a07d4be026f4a016404",
-      "title": "Bathymetric survey and stage-storage assessment of Lost Lake, California, collected in 2022",
-      "error": ".for is not iterable"
-    },
-    {
-      "id": "60bfe572d34e86b938917d57",
-      "title": "Stage-Storage and Bed Material Data from the 2020 Upper Letts Lake Survey, California",
-      "parent": null,
-      "files": [
-        "Stage_Storage_LettsLake_NAVD88ft_AcFt.csv",
-        "Stage_SurfaceArea_LettsLake_NAVD88ft_Ac.csv",
-        "LettsLake_Bathy_TerrestrialLidar_NAD83_NAVD88_UTM_50cm.txt",
-        "LettsLake_GSDresults_cdf_mm.csv",
-        "LettsLake_DR.xml"
-      ],
-      "downloaded": [
-        "LettsLake_Bathy_TerrestrialLidar_NAD83_NAVD88_UTM_50cm.txt (71 MB)"
-      ],
-      "rasterErrors": [
-        "LettsLake_Bathy_TerrestrialLidar_NAD83_NAVD88_UTM_50cm.txt: Command failed: gdalinfo -json /tmp/bathy/60bfe572d34e86b938917d57/LettsLake_Bathy_TerrestrialLidar_NAD83_NAVD88_UTM_50cm.txt\nERROR 1: Ungridded dataset: At lin"
-      ],
-      "skip": "no contours or readable raster"
-    },
-    {
-      "id": "6052599bd34e7eb1cb3eb498",
-      "title": "Bathymetric data for Whiskeytown Lake, September 2020",
-      "parent": null,
-      "files": [
-        "Whiskeytown_2020_1m_bathy_NAD83_NAVD88.zip",
-        "Whiskeytown_2020_2m_bathy_NAD83_NAVD88.zip",
-        "Whiskeytown_2020_bathy_QV.jpg",
-        "Whiskeytown_2020_1m_2m_bathy_NAD83_NAVD88_metadata.xml"
-      ],
-      "downloaded": [
-        "Whiskeytown_2020_1m_bathy_NAD83_NAVD88.zip (29 MB)"
-      ],
-      "raster": {
-        "file": "Whiskeytown_2020_1m_bathy_NAD83_NAVD88.tif",
-        "shp": "/tmp/bathy/6052599bd34e7eb1cb3eb498/contours.shp",
-        "field": "e",
-        "interval": "10",
-        "size": [
-          5523,
-          5937
-        ],
-        "srs": "PROJCRS[\"NAD83(2011) / UTM zone 10N\",\n    BASEGEOGCRS[\"NAD83(2011)\",\n        DAT"
-      },
-      "skip": "too large even simplified"
-    },
-    {
-      "id": "5dfbeea5e4b0cc5243395ff8",
-      "title": "Bathymetric data for Whiskeytown Lake, May 2019 (ver. 2.0, July 2021)",
-      "parent": null,
-      "files": [
-        "Whiskeytown_2019_bathy_QV.jpg",
-        "Whiskeytown_2019_1m_bathy_NAD83_NAVD88.zip",
-        "Whiskeytown_2019_2m_bathy_NAD83_NAVD88.zip",
-        "Whiskeytown_2019_1m_2m_bathy_NAD83_NAVD88_metadata.xml"
-      ],
-      "downloaded": [
-        "Whiskeytown_2019_1m_bathy_NAD83_NAVD88.zip (29 MB)"
-      ],
-      "raster": {
-        "file": "Whiskeytown_2019_1m_bathy_NAD83_NAVD88.tif",
-        "shp": "/tmp/bathy/5dfbeea5e4b0cc5243395ff8/contours.shp",
-        "field": "e",
-        "interval": "10",
-        "size": [
-          5499,
-          5939
-        ],
-        "srs": "PROJCRS[\"NAD83(2011) / UTM zone 10N\",\n    BASEGEOGCRS[\"NAD83(2011)\",\n        DAT"
-      },
-      "skip": "too large even simplified"
-    },
-    {
-      "id": "5dfbd23fe4b0cc5243395f60",
-      "title": "Bathymetric data for Whiskeytown Lake, December 2018 (ver. 2.0, July 2021)",
-      "parent": null,
-      "files": [
-        "Whiskeytown_2018_bathy_QV.jpg",
-        "Whiskeytown_2018_1m_bathy_NAD83_NAVD88.zip",
-        "Whiskeytown_2018_2m_bathy_NAD83_NAVD88.zip",
-        "Whiskeytown_2018_1m_2m_bathy_NAD83_NAVD88_metadata.xml"
-      ],
-      "downloaded": [
-        "Whiskeytown_2018_1m_bathy_NAD83_NAVD88.zip (27 MB)"
-      ],
-      "raster": {
-        "file": "Whiskeytown_2018_1m_bathy_NAD83_NAVD88.tif",
-        "shp": "/tmp/bathy/5dfbd23fe4b0cc5243395f60/contours.shp",
-        "field": "e",
-        "interval": "10",
-        "size": [
-          5501,
-          5903
-        ],
-        "srs": "PROJCRS[\"NAD83(2011) / UTM zone 10N\",\n    BASEGEOGCRS[\"NAD83(2011)\",\n        DAT"
-      },
-      "skip": "too large even simplified"
-    },
     {
       "id": "5f5fd23b82ce3550e3bff45e",
       "title": "Calaveras Reservoir, California, contours, NAVD88 (2019)",
@@ -264,6 +42,213 @@
       }
     },
     {
+      "id": "5f5ffad282ce3550e3bff557",
+      "title": "Calaveras Reservoir, California, bathymetric digital elevation model (DEM), NAVD88 (2019)",
+      "skip": "contours published separately"
+    },
+    {
+      "id": "62e8a8c9d34e749ac04cbd66",
+      "title": "Little Rock Reservoir, California, 2022 bathymetric survey and stage-storage computations",
+      "parent": null,
+      "files": [
+        "Stage_Storage_LR_NAVD88.csv",
+        "Stage_SurfaceArea_LR_NAVD88.csv",
+        "DEM_1m_NAD83_UTM11_NAVD88_ft.txt",
+        "DEM_1m_NAD83_UTM11_LRD.txt",
+        "LR_data_release.xml"
+      ],
+      "downloaded": [
+        "DEM_1m_NAD83_UTM11_LRD.txt (320 MB)"
+      ],
+      "raster": {
+        "file": "DEM_1m_NAD83_UTM11_LRD.txt",
+        "shp": "/tmp/bathy/62e8a8c9d34e749ac04cbd66/contours.shp",
+        "field": "e",
+        "interval": "10",
+        "size": [
+          3248,
+          3248
+        ]
+      },
+      "assumedSrs": "EPSG:26911",
+      "skip": "too large even simplified"
+    },
+    {
+      "id": "5c895546e4b09388244eedcd",
+      "title": "San Antonio Reservoir, California, bathymetric digital elevation model (DEM), NAVD88, (2018)",
+      "skip": "contours published separately"
+    },
+    {
+      "id": "62d86c8bd34e2842e1ed4f96",
+      "title": "Bathymetric survey and stage-storage assessment of Quail Lake, Calif., collected in 2022",
+      "parent": null,
+      "files": [
+        "QL_StageArea_Ac_NAVD88ft.csv",
+        "QL_StageStorage_AcFt_NAVD88ft.csv",
+        "QuailLake_DEM_final_NAD83_NAVD88_ft_1m.txt",
+        "Quail_Lake_DR_metadata.xml"
+      ],
+      "downloaded": [
+        "QuailLake_DEM_final_NAD83_NAVD88_ft_1m.txt (50 MB)"
+      ],
+      "raster": {
+        "file": "QuailLake_DEM_final_NAD83_NAVD88_ft_1m.txt",
+        "shp": "/tmp/bathy/62d86c8bd34e2842e1ed4f96/contours.shp",
+        "field": "e",
+        "interval": "10",
+        "size": [
+          1123,
+          1419
+        ]
+      },
+      "assumedSrs": "EPSG:26910",
+      "skip": "too large even simplified"
+    },
+    {
+      "id": "686d8a07d4be026f4a016404",
+      "title": "Bathymetric survey and stage-storage assessment of Lost Lake, California, collected in 2022",
+      "parent": null,
+      "files": [
+        "LostLake2023_Dataset_Thumbnail_PHaluska2026.png",
+        "LostLake_DEM_NAD83_2011_UTMZ10N_NAVD88_ft_0.25m_PHaluska2026.txt",
+        "LostLake_DEM_NAD83_2011_UTMZ10N_NAVD88_m_0.25m_PHaluska2026.txt",
+        "LostLake_NAD83-2011_UTMZ10N_NAVD88_0.25m_PHaluska2026.tif",
+        "LostLake_StageArea_m2_Ac_NAVD88_PHaluska2026.csv",
+        "LostLake_StageStorage_m3_Ac-ft_NAVD88_PHaluska2026.csv",
+        "Lost_Lake_metadata.xml"
+      ],
+      "downloaded": [
+        "LostLake_NAD83-2011_UTMZ10N_NAVD88_0.25m_PHaluska2026.tif (31 MB)"
+      ],
+      "raster": {
+        "file": "LostLake_NAD83-2011_UTMZ10N_NAVD88_0.25m_PHaluska2026.tif",
+        "shp": "/tmp/bathy/686d8a07d4be026f4a016404/contours.shp",
+        "field": "e",
+        "interval": "10",
+        "size": [
+          2763,
+          2106
+        ],
+        "srs": "PROJCRS[\"NAD83(2011) / UTM zone 10N\",\n    BASEGEOGCRS[\"NAD83(2011)\",\n        DAT"
+      },
+      "ok": {
+        "fileId": "bathymetric-survey-and-stage-storage-assessment-of-lost-lake-californi",
+        "features": 37,
+        "bytes": 890387,
+        "simplify": "0.00002",
+        "units": "ft"
+      }
+    },
+    {
+      "id": "60bfe572d34e86b938917d57",
+      "title": "Stage-Storage and Bed Material Data from the 2020 Upper Letts Lake Survey, California",
+      "parent": null,
+      "files": [
+        "Stage_Storage_LettsLake_NAVD88ft_AcFt.csv",
+        "Stage_SurfaceArea_LettsLake_NAVD88ft_Ac.csv",
+        "LettsLake_Bathy_TerrestrialLidar_NAD83_NAVD88_UTM_50cm.txt",
+        "LettsLake_GSDresults_cdf_mm.csv",
+        "LettsLake_DR.xml"
+      ],
+      "downloaded": [
+        "LettsLake_Bathy_TerrestrialLidar_NAD83_NAVD88_UTM_50cm.txt (71 MB)"
+      ],
+      "rasterErrors": [
+        "LettsLake_Bathy_TerrestrialLidar_NAD83_NAVD88_UTM_50cm.txt: Command failed: gdalinfo -json /tmp/bathy/60bfe572d34e86b938917d57/sorted.xyz\nERROR 1: Ungridded dataset: At line 15, too many stepY values\ngdalinfo failed - un"
+      ],
+      "skip": "no contours or readable raster"
+    },
+    {
+      "id": "6052599bd34e7eb1cb3eb498",
+      "title": "Bathymetric data for Whiskeytown Lake, September 2020",
+      "parent": null,
+      "files": [
+        "Whiskeytown_2020_1m_bathy_NAD83_NAVD88.zip",
+        "Whiskeytown_2020_2m_bathy_NAD83_NAVD88.zip",
+        "Whiskeytown_2020_bathy_QV.jpg",
+        "Whiskeytown_2020_1m_2m_bathy_NAD83_NAVD88_metadata.xml"
+      ],
+      "downloaded": [
+        "Whiskeytown_2020_2m_bathy_NAD83_NAVD88.zip (8 MB)"
+      ],
+      "raster": {
+        "file": "Whiskeytown_2020_2m_bathy_NAD83_NAVD88.tif",
+        "shp": "/tmp/bathy/6052599bd34e7eb1cb3eb498/contours.shp",
+        "field": "e",
+        "interval": "10",
+        "size": [
+          2762,
+          2969
+        ],
+        "srs": "PROJCRS[\"NAD83(2011) / UTM zone 10N\",\n    BASEGEOGCRS[\"NAD83(2011)\",\n        DAT"
+      },
+      "skip": "too large even simplified"
+    },
+    {
+      "id": "5dfbeea5e4b0cc5243395ff8",
+      "title": "Bathymetric data for Whiskeytown Lake, May 2019 (ver. 2.0, July 2021)",
+      "parent": null,
+      "files": [
+        "Whiskeytown_2019_bathy_QV.jpg",
+        "Whiskeytown_2019_1m_bathy_NAD83_NAVD88.zip",
+        "Whiskeytown_2019_2m_bathy_NAD83_NAVD88.zip",
+        "Whiskeytown_2019_1m_2m_bathy_NAD83_NAVD88_metadata.xml"
+      ],
+      "downloaded": [
+        "Whiskeytown_2019_2m_bathy_NAD83_NAVD88.zip (6 MB)"
+      ],
+      "raster": {
+        "file": "Whiskeytown_2019_2m_bathy_NAD83_NAVD88.tif",
+        "shp": "/tmp/bathy/5dfbeea5e4b0cc5243395ff8/contours.shp",
+        "field": "e",
+        "interval": "10",
+        "size": [
+          2750,
+          2971
+        ],
+        "srs": "PROJCRS[\"NAD83(2011) / UTM zone 10N\",\n    BASEGEOGCRS[\"NAD83(2011)\",\n        DAT"
+      },
+      "ok": {
+        "fileId": "bathymetric-data-for-whiskeytown-lake-may-2019-ver-2-0-july-2021",
+        "features": 237,
+        "bytes": 3341226,
+        "simplify": "0.00002",
+        "units": "ft"
+      }
+    },
+    {
+      "id": "5dfbd23fe4b0cc5243395f60",
+      "title": "Bathymetric data for Whiskeytown Lake, December 2018 (ver. 2.0, July 2021)",
+      "parent": null,
+      "files": [
+        "Whiskeytown_2018_bathy_QV.jpg",
+        "Whiskeytown_2018_1m_bathy_NAD83_NAVD88.zip",
+        "Whiskeytown_2018_2m_bathy_NAD83_NAVD88.zip",
+        "Whiskeytown_2018_1m_2m_bathy_NAD83_NAVD88_metadata.xml"
+      ],
+      "downloaded": [
+        "Whiskeytown_2018_2m_bathy_NAD83_NAVD88.zip (5 MB)"
+      ],
+      "raster": {
+        "file": "Whiskeytown_2018_2m_bathy_NAD83_NAVD88.tif",
+        "shp": "/tmp/bathy/5dfbd23fe4b0cc5243395f60/contours.shp",
+        "field": "e",
+        "interval": "10",
+        "size": [
+          2752,
+          2951
+        ],
+        "srs": "PROJCRS[\"NAD83(2011) / UTM zone 10N\",\n    BASEGEOGCRS[\"NAD83(2011)\",\n        DAT"
+      },
+      "ok": {
+        "fileId": "bathymetric-data-for-whiskeytown-lake-december-2018-ver-2-0-july-2021",
+        "features": 312,
+        "bytes": 3351572,
+        "simplify": "0.00002",
+        "units": "ft"
+      }
+    },
+    {
       "id": "5c61a600e4b0fe48cb32fbcf",
       "title": "Bathymetry, Stage-Area, and Stage-Volume Tables for the San Antonio Reservoir, California, 2018",
       "parent": null,
@@ -272,6 +257,37 @@
         "San Antonio Reservoir bathmetry map with 10-ft contours.pdf"
       ],
       "skip": "no usable files"
+    },
+    {
+      "id": "5c895546e4b09388244eedcd",
+      "title": "San Antonio Reservoir, California, bathymetric digital elevation model (DEM), NAVD88, (2018)",
+      "parent": "Bathymetry, Stage-Area, and Stage-Volume Tables for the San Antonio Reservoir, California, 2018",
+      "files": [
+        "San_Antonio_Reservoir_2018_Bathymetry_ascii_export.zip",
+        "San_Antonio_Reservoir_2018_Bathymetry_tiff_export.zip",
+        "San Antonio Reservoir, California, bathymetric digital elevation model (DEM), NAVD88, (2018).xml"
+      ],
+      "downloaded": [
+        "San_Antonio_Reservoir_2018_Bathymetry_ascii_export.zip (10 MB)"
+      ],
+      "raster": {
+        "file": "san_antonio_reservoir_2018_bathymetry_ascii_export.txt",
+        "shp": "/tmp/bathy/5c895546e4b09388244eedcd/contours.shp",
+        "field": "e",
+        "interval": "20",
+        "size": [
+          4051,
+          3691
+        ]
+      },
+      "assumedSrs": "EPSG:26910",
+      "ok": {
+        "fileId": "san-antonio-reservoir-california-bathymetric-digital-elevation-model-d",
+        "features": 104,
+        "bytes": 2512707,
+        "simplify": "0.00002",
+        "units": "ft"
+      }
     },
     {
       "id": "5c895908e4b09388244eede0",
@@ -303,187 +319,34 @@
       "skip": "no usable files"
     },
     {
-      "id": "5dfbba2fe4b0b5e61c073327",
-      "title": "Bathymetry, topography and orthomosaic imagery for Whiskeytown Lake, northern California (ver. 2.0, July 2021)",
-      "parent": null,
+      "id": "5f5ffad282ce3550e3bff557",
+      "title": "Calaveras Reservoir, California, bathymetric digital elevation model (DEM), NAVD88 (2019)",
+      "parent": "Bathymetry, Stage-Area, and Stage-Volume Tables for the Calaveras Reservoir, California, 2019 (ver. 2.0, March 2025)",
       "files": [
-        "2019-06-Bathy_Topo_Orthomosaic_browse.jpg",
-        "DOI_P9TJTS8M_VersionHistory.txt",
-        "2018-12-Bathy_Topo_Orthomosaic_browse.jpg",
-        "Whiskeytown_2020-11-10_topo_and_bathy_browse.jpg",
-        "2019-06-Bathy_Topo_Orthomosaic_browse.jpg",
-        "Whiskeytown_2019-11-12_topo_and_bathy_browse.jpg"
-      ],
-      "skip": "no usable files"
-    },
-    {
-      "id": "5e7d2fbde4b01d5092751dfd",
-      "title": "Topographic digital surface model (DSM) for Whiskeytown Lake and surrounding area, 2018-12-02",
-      "parent": "Bathymetry, topography and orthomosaic imagery for Whiskeytown Lake, northern California (ver. 2.0, July 2021)",
-      "files": [
-        "Whiskeytown_2018-12-02_DSM_25cm_browse.png",
-        "Whiskeytown_2018-12-02_DSM_25cm.tif",
-        "Whiskeytown_2018-12-02_DSM.xml",
-        "Whiskeytown_2018-12-02_DSM_25cm_hll.tif"
-      ],
-      "skip": "no usable files"
-    },
-    {
-      "id": "605259afd34e7eb1cb3eb49b",
-      "title": "Topographic digital surface model (DSM) for Whiskeytown Lake and surrounding area, 2020-11-10",
-      "parent": "Bathymetry, topography and orthomosaic imagery for Whiskeytown Lake, northern California (ver. 2.0, July 2021)",
-      "files": [
-        "Whiskeytown_2020-11-10_DSM_25cm.tif",
-        "Whiskeytown_2020-11-10_DSM_25cm_browse.png",
-        "Whiskeytown_2020-11-10_DSM_25cm_hll.tif",
-        "Whiskeytown_2020-11-10_DSM.xml"
-      ],
-      "skip": "no usable files"
-    },
-    {
-      "id": "605259bfd34e7eb1cb3eb49f",
-      "title": "Orthomosaic imagery for Whiskeytown Lake and surrounding area, northern California, 2020-11-10",
-      "parent": "Bathymetry, topography and orthomosaic imagery for Whiskeytown Lake, northern California (ver. 2.0, July 2021)",
-      "files": [
-        "Whiskeytown_2020-11-10_orthomosaic_browse.png",
-        "Whiskeytown_2020-11-10_orthomosaic.xml",
-        "Whiskeytown_2020-11-10_orthomosaic_25cm.tif",
-        "Whiskeytown_2020-11-10_orthomosaic_5cm_east.tif",
-        "Whiskeytown_2020-11-10_orthomosaic_5cm_west.tif"
+        "CalaverasReservoirBathymetry.zip",
+        "Calaveras Reservoir, California, bathymetric digital elevation model_metadata.xml.xml"
       ],
       "downloaded": [
-        "Whiskeytown_2020-11-10_orthomosaic_25cm.tif (225 MB)"
+        "CalaverasReservoirBathymetry.zip (20 MB)"
       ],
       "raster": {
-        "file": "Whiskeytown_2020-11-10_orthomosaic_25cm.tif",
-        "shp": "/tmp/bathy/605259bfd34e7eb1cb3eb49f/contours.shp",
+        "file": "dblbnd.adf",
+        "shp": "/tmp/bathy/5f5ffad282ce3550e3bff557/contours.shp",
         "field": "e",
-        "interval": "10",
+        "interval": "20",
         "size": [
-          41984,
-          32768
+          5399,
+          5109
         ],
-        "srs": "PROJCRS[\"NAD83(2011) / UTM zone 10N\",\n    BASEGEOGCRS[\"NAD83(2011)\",\n        DAT"
+        "srs": "PROJCRS[\"unnamed\",\n    BASEGEOGCRS[\"NAD83\",\n        DATUM[\"North American Datum "
       },
-      "skip": "too large even simplified"
-    },
-    {
-      "id": "605258afd34e7eb1cb3eb47f",
-      "title": "Orthomosaic imagery for Whiskeytown Lake and surrounding area, northern California, 2019-11-12",
-      "parent": "Bathymetry, topography and orthomosaic imagery for Whiskeytown Lake, northern California (ver. 2.0, July 2021)",
-      "files": [
-        "Whiskeytown_2019-11-12_orthomosaic_browse.png",
-        "Whiskeytown_2019-11-12_orthomosaic.xml",
-        "Whiskeytown_2019-11-12_orthomosaic_25cm.tif",
-        "Whiskeytown_2019-11-12_orthomosaic_6cm_west.tif",
-        "Whiskeytown_2019-11-12_orthomosaic_6cm_east.tif"
-      ],
-      "downloaded": [
-        "Whiskeytown_2019-11-12_orthomosaic_25cm.tif (352 MB)"
-      ],
-      "raster": {
-        "file": "Whiskeytown_2019-11-12_orthomosaic_25cm.tif",
-        "shp": "/tmp/bathy/605258afd34e7eb1cb3eb47f/contours.shp",
-        "field": "e",
-        "interval": "10",
-        "size": [
-          58368,
-          53248
-        ],
-        "srs": "PROJCRS[\"NAD83(2011) / UTM zone 10N\",\n    BASEGEOGCRS[\"NAD83(2011)\",\n        DAT"
-      },
-      "skip": "too large even simplified"
-    },
-    {
-      "id": "5e7d4203e4b01d5092751e15",
-      "title": "Orthomosaic imagery for Whiskeytown Lake and surrounding area, northern California, 2018-12-02",
-      "parent": "Bathymetry, topography and orthomosaic imagery for Whiskeytown Lake, northern California (ver. 2.0, July 2021)",
-      "files": [
-        "Whiskeytown_2018-12-02_orthomosaic_browse.png",
-        "Whiskeytown_2018-12-02_orthomosaic_25cm.tif",
-        "Whiskeytown_2018-12-02_orthomosaic_6cm_east.tif",
-        "Whiskeytown_2018-12-02_orthomosaic_6cm_west.tif",
-        "Whiskeytown_2018-12-02_orthomosaic.xml"
-      ],
-      "downloaded": [
-        "Whiskeytown_2018-12-02_orthomosaic_25cm.tif (116 MB)"
-      ],
-      "raster": {
-        "file": "Whiskeytown_2018-12-02_orthomosaic_25cm.tif",
-        "shp": "/tmp/bathy/5e7d4203e4b01d5092751e15/contours.shp",
-        "field": "e",
-        "interval": "10",
-        "size": [
-          40960,
-          30720
-        ],
-        "srs": "PROJCRS[\"NAD83(2011) / UTM zone 10N\",\n    BASEGEOGCRS[\"NAD83(2011)\",\n        DAT"
-      },
-      "skip": "too large even simplified"
-    },
-    {
-      "id": "5e7d44c1e4b01d5092751e1f",
-      "title": "Orthomosaic imagery for Whiskeytown Lake and surrounding area, 2019-06-03",
-      "parent": "Bathymetry, topography and orthomosaic imagery for Whiskeytown Lake, northern California (ver. 2.0, July 2021)",
-      "files": [
-        "Whiskeytown_2019-06-03_orthomosaic_browse.png",
-        "Whiskeytown_2019-06-03_orthomosaic_25cm.tif",
-        "Whiskeytown_2019-06-03_orthomosaic_6cm_east.tif",
-        "Whiskeytown_2019-06-03_orthomosaic_6cm_west.tif",
-        "Whiskeytown_2019-06-03_orthomosaic.xml"
-      ],
-      "downloaded": [
-        "Whiskeytown_2019-06-03_orthomosaic_25cm.tif (175 MB)"
-      ],
-      "raster": {
-        "file": "Whiskeytown_2019-06-03_orthomosaic_25cm.tif",
-        "shp": "/tmp/bathy/5e7d44c1e4b01d5092751e1f/contours.shp",
-        "field": "e",
-        "interval": "10",
-        "size": [
-          39936,
-          32768
-        ],
-        "srs": "PROJCRS[\"NAD83(2011) / UTM zone 10N\",\n    BASEGEOGCRS[\"NAD83(2011)\",\n        DAT"
-      },
-      "skip": "too large even simplified"
-    },
-    {
-      "id": "5e6be1bfe4b01d5092638a75",
-      "title": "Orthomosaic imagery for Whiskeytown Lake and surrounding area, expanded AOI, 2019-06-03",
-      "parent": "Bathymetry, topography and orthomosaic imagery for Whiskeytown Lake, northern California (ver. 2.0, July 2021)",
-      "files": [
-        "Whiskeytown_2019-06-03_orthomosaic_expandedAOI_browse.png",
-        "Whiskeytown_2019-06-03_orthomosaic_expandedAOI_25cm.tif",
-        "Whiskeytown_2019-06-03_orthomosaic_expandedAOI_14cm_east.tif",
-        "Whiskeytown_2019-06-03_orthomosaic_expandedAOI_14cm_west.tif",
-        "Whiskeytown_2019-06-03_orthomosaic_expandedAOI.xml"
-      ],
-      "skip": "no usable files"
-    },
-    {
-      "id": "5e7d36c1e4b01d5092751e09",
-      "title": "Topographic digital surface model (DSM) for Whiskeytown Lake and surrounding area, 2019-06-03",
-      "parent": "Bathymetry, topography and orthomosaic imagery for Whiskeytown Lake, northern California (ver. 2.0, July 2021)",
-      "files": [
-        "Whiskeytown_2019-06-03_DSM_25cm_browse.png",
-        "Whiskeytown_2019-06-03_DSM_25cm.tif",
-        "Whiskeytown_2019-06-03_DSM.xml",
-        "Whiskeytown_2019-06-03_DSM_25cm_hll.tif"
-      ],
-      "skip": "no usable files"
-    },
-    {
-      "id": "605258bfd34e7eb1cb3eb482",
-      "title": "Topographic digital surface model (DSM) for Whiskeytown Lake and surrounding area, 2019-11-12",
-      "parent": "Bathymetry, topography and orthomosaic imagery for Whiskeytown Lake, northern California (ver. 2.0, July 2021)",
-      "files": [
-        "Whiskeytown_2019-11-12_DSM_25cm_browse.png",
-        "Whiskeytown_2019-11-12_DSM_25cm.tif",
-        "Whiskeytown_2019-11-12_DSM_25cm_hll.tif",
-        "Whiskeytown_2019-11-12_DSM.xml"
-      ],
-      "skip": "no usable files"
+      "ok": {
+        "fileId": "calaveras-reservoir-california-bathymetric-digital-elevation-model-dem",
+        "features": 114,
+        "bytes": 1746652,
+        "simplify": "0.00002",
+        "units": "ft"
+      }
     },
     {
       "id": "67ae1a04d34e3f09c0e0f018",
@@ -525,12 +388,16 @@
     "San Antonio Reservoir, California, 10-ft contours, NAVD88, (2018)",
     "Bathymetry, Stage-Area, and Stage-Volume Tables for the San Antonio Reservoir, California, 2018",
     "Bathymetry, Stage-Area, and Stage-Volume Tables for the Calaveras Reservoir, California, 2019 (ver. 2.0, March 2025)",
-    "Bathymetry, topography and orthomosaic imagery for Whiskeytown Lake, northern California (ver. 2.0, July 2021)",
     "Lake depth profile, water quality, sediment, periphyton, tadpole (Pseudacris regilla), and landscape data from six lakes and two stream sites of the Tokopah Basin in Sequoia National Park, California, 2021-2022"
   ],
   "saved": [
+    "Bathymetric data for Whiskeytown Lake, December 2018 (ver. 2.0, July 2021) (3352 KB, ft)",
+    "Bathymetric data for Whiskeytown Lake, May 2019 (ver. 2.0, July 2021) (3341 KB, ft)",
+    "Bathymetric survey and stage-storage assessment of Lost Lake, California, collected in 2022 (890 KB, ft)",
+    "Calaveras Reservoir, California, bathymetric digital elevation model (DEM), NAVD88 (2019) (1747 KB, ft)",
     "Calaveras Reservoir, California, contours, NAVD88 (2019) (1240 KB, ft)",
-    "San Antonio Reservoir, California, 10-ft contours, NAVD88, (2018) (723 KB, ft)"
+    "San Antonio Reservoir, California, 10-ft contours, NAVD88, (2018) (723 KB, ft)",
+    "San Antonio Reservoir, California, bathymetric digital elevation model (DEM), NAVD88, (2018) (2513 KB, ft)"
   ],
-  "finishedAt": "2026-10-22T03:58:52.653Z"
+  "finishedAt": "2026-10-22T04:29:49.208Z"
 }
