@@ -1,974 +1,102 @@
 {
-  "startedAt": "2026-10-22T02:30:46.332Z",
+  "startedAt": "2026-10-22T03:39:14.812Z",
   "items": [
-    {
-      "id": "5f5fd23b82ce3550e3bff45e",
-      "title": "Calaveras Reservoir, California, contours, NAVD88 (2019)",
-      "zipBytes": 2508052,
-      "ok": true
-    },
-    {
-      "id": "5c897cabe4b09388244f03a4",
-      "title": "San Antonio Reservoir, California, 10-ft contours, NAVD88, (2018)",
-      "zipBytes": 392672,
-      "ok": true
-    },
-    {
-      "id": "56d4edb8e4b015c306f17b52",
-      "title": "Transgressive Contours--Pigeon Point to Monterey, California",
-      "skip": "no zip",
-      "files": [
-        "TransgressiveContours_PigeonPointToMonterey_metadata_faq.html",
-        "TransgressiveContours_PigeonPointToMonterey_metadata.html",
-        "TransgressiveContours_PigeonPointToMonterey_metadata.txt",
-        "TransgressiveContours_PigeonPointToMonterey_metadata.xml"
-      ]
-    },
-    {
-      "id": "556f90c3e4b0d9246a9fd0b8",
-      "title": "Contours--Monterey Canyon and Vicinity Map Area, California",
-      "skip": "no zip",
-      "files": [
-        "Contours_MontereyCanyon_metadata_faq.html",
-        "Contours_MontereyCanyon_metadata.html",
-        "Contours_MontereyCanyon_metadata.txt",
-        "Contours_MontereyCanyon_metadata.xml"
-      ]
-    },
-    {
-      "id": "5c9138d8e4b09388245480de",
-      "title": "Transgressive Contours—Point Sur to Point Arguello, California",
-      "skip": "no zip",
-      "files": [
-        "TransgressiveContours_PointSurToPointArguello_metadata.faq.html",
-        "TransgressiveContours_PointSurToPointArguello_metadata.html",
-        "TransgressiveContours_PointSurToPointArguello_metadata.txt",
-        "TransgressiveContours_PointSurToPointArguello_metadata.xml"
-      ]
-    },
-    {
-      "id": "5d1288efe4b0941bde56eb71",
-      "title": "Transgressive Contours--Punta Gorda to Point Arena, California",
-      "skip": "no zip",
-      "files": [
-        "TransgressiveContours_PuntaGordaToPointArena_metadata.faq.html",
-        "TransgressiveContours_PuntaGordaToPointArena_metadata.html",
-        "TransgressiveContours_PuntaGordaToPointArena_metadata.txt",
-        "TransgressiveContours_PuntaGordaToPointArena_metadata.xml"
-      ]
-    },
-    {
-      "id": "589cbb2de4b0efcedb76547a",
-      "title": "Transgressive Contours--Point Conception to Hueneme Canyon, California",
-      "skip": "no zip",
-      "files": [
-        "TransgressiveContours_PointConceptionToHuenemeCanyon_metadata_faq.html",
-        "TransgressiveContours_PointConceptionToHuenemeCanyon_metadata.html",
-        "TransgressiveContours_PointConceptionToHuenemeCanyon_metadata.txt",
-        "TransgressiveContours_PointConceptionToHuenemeCanyon_metadata.xml"
-      ]
-    },
-    {
-      "id": "631405b6d34e36012efa2f71",
-      "title": "1994 Water-Table Contours of the Morongo Ground-Water Basin, San Bernardino County, California",
-      "zipBytes": 68650,
-      "ok": true
-    },
-    {
-      "id": "631405b5d34e36012efa2f6a",
-      "title": "1992 Water-Table Contours of the Mojave River Ground-Water Basin, San Bernardino County, California.",
-      "zipBytes": 45684,
-      "ok": true
-    },
-    {
-      "id": "631405b7d34e36012efa2f82",
-      "title": "2010 Water-Table Contours of the Mojave River and the Morongo Groundwater Basins, San Bernardino County, California",
-      "zipBytes": 892482,
-      "ok": true
-    },
-    {
-      "id": "631405b7d34e36012efa2f76",
-      "title": "1998 Water-Table Contours of the Mojave River and the Morongo Ground-Water Basins, San Bernardino County, California",
-      "zipBytes": 73989,
-      "ok": true
-    },
-    {
-      "id": "631405b7d34e36012efa2f78",
-      "title": "2000 Water-Table Contours of the Mojave River and the Morongo Ground-Water Basins, San Bernardino County, California",
-      "zipBytes": 74549,
-      "ok": true
-    },
-    {
-      "id": "631405b7d34e36012efa2f7a",
-      "title": "2002 Water-Table Contours of the Mojave River and the Morongo Ground-Water Basins, San Bernardino County, California",
-      "zipBytes": 822545,
-      "ok": true
-    },
-    {
-      "id": "627599b8d34e8d45aa6e2290",
-      "title": "Interferometric Synthetic Aperture Radar-Derived Subsidence Contours for the West-Central San Joaquin Valley, California, 2008-10",
-      "zipBytes": 297297,
-      "ok": true
-    },
-    {
-      "id": "5a68b699e4b06e28e9c71317",
-      "title": "USGS NED 1/3 arc-second Contours for Trona E, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a7e8adce4b00f54eb24b15e",
-      "title": "USGS NED 1/3 arc-second Contours for Monterey E, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b683e4b06e28e9c71246",
-      "title": "USGS NED 1/3 arc-second Contours for Susanville E, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b5dae4b06e28e9c70dae",
-      "title": "USGS NED 1/3 arc-second Contours for Needles W, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b69fe4b06e28e9c71346",
-      "title": "USGS NED 1/3 arc-second Contours for Ukiah E, California 20220428 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b6bfe4b06e28e9c71460",
-      "title": "USGS NED 1/3 arc-second Contours for Weed W, California 20220428 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b3fbe4b06e28e9c70357",
-      "title": "USGS NED 1/3 arc-second Contours for Bakersfield W, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b4d5e4b06e28e9c70801",
-      "title": "USGS NED 1/3 arc-second Contours for Fresno E, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b683e4b06e28e9c71248",
-      "title": "USGS NED 1/3 arc-second Contours for Susanville W, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "62ba228ad34e8f4977cc9fc8",
-      "title": "Regional water table Contours of the Antelope Valley and Fremont Valley groundwater basins, Southwestern Mojave Desert, California, March 2014",
-      "zipBytes": 18798,
-      "ok": true
-    },
-    {
-      "id": "5a68b630e4b06e28e9c70fd9",
-      "title": "USGS NED 1/3 arc-second Contours for Redding E, California 20220428 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b6a7e4b06e28e9c7137e",
-      "title": "USGS NED 1/3 arc-second Contours for Ukiah W, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b648e4b06e28e9c71088",
-      "title": "USGS NED 1/3 arc-second Contours for Sacramento W, California 20220428 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b3fbe4b06e28e9c70353",
-      "title": "USGS NED 1/3 arc-second Contours for Bakersfield E, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b592e4b06e28e9c70c24",
-      "title": "USGS NED 1/3 arc-second Contours for Mariposa E, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b69ae4b06e28e9c71319",
-      "title": "USGS NED 1/3 arc-second Contours for Trona W, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b3e1e4b06e28e9c702ad",
-      "title": "USGS NED 1/3 arc-second Contours for Alturas E, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b554e4b06e28e9c70ab9",
-      "title": "USGS NED 1/3 arc-second Contours for Kingman W, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a7e8adce4b00f54eb24b160",
-      "title": "USGS NED 1/3 arc-second Contours for Monterey W, California 20220428 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b648e4b06e28e9c71086",
-      "title": "USGS NED 1/3 arc-second Contours for Sacramento E, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b45ae4b06e28e9c7056b",
-      "title": "USGS NED 1/3 arc-second Contours for Chico E, California 20220428 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "631405b6d34e36012efa2f73",
-      "title": "1996 Water-Table Contours of the Mojave River, the Morongo, and the Fort Irwin Ground-Water Basins, San Bernardino County, California",
-      "zipBytes": 75777,
-      "ok": true
-    },
-    {
-      "id": "5a68b4d5e4b06e28e9c70804",
-      "title": "USGS NED 1/3 arc-second Contours for Fresno W, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b3e1e4b06e28e9c702b2",
-      "title": "USGS NED 1/3 arc-second Contours for Alturas W, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b593e4b06e28e9c70c28",
-      "title": "USGS NED 1/3 arc-second Contours for Mariposa W, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b6bee4b06e28e9c7145d",
-      "title": "USGS NED 1/3 arc-second Contours for Weed E, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b631e4b06e28e9c70fdb",
-      "title": "USGS NED 1/3 arc-second Contours for Redding W, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b45be4b06e28e9c7056f",
-      "title": "USGS NED 1/3 arc-second Contours for Chico W, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b63de4b06e28e9c71038",
-      "title": "USGS NED 1/3 arc-second Contours for Redding W, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b6cde4b06e28e9c714f5",
-      "title": "USGS NED 1/3 arc-second Contours for Weed W, California 20220428 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b5e2e4b06e28e9c70e03",
-      "title": "USGS NED 1/3 arc-second Contours for Needles W, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b690e4b06e28e9c712ad",
-      "title": "USGS NED 1/3 arc-second Contours for Susanville E, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b3fae4b06e28e9c7034e",
-      "title": "USGS NED 1/3 arc-second Contours for Bakersfield E, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b4dfe4b06e28e9c70841",
-      "title": "USGS NED 1/3 arc-second Contours for Fresno W, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b579e4b06e28e9c70b9c",
-      "title": "USGS NED 1/3 arc-second Contours for Long Beach W, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b6a7e4b06e28e9c7137b",
-      "title": "USGS NED 1/3 arc-second Contours for Trona E, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b45ae4b06e28e9c7056d",
-      "title": "USGS NED 1/3 arc-second Contours for Chico E, California 20220428 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b64fe4b06e28e9c710d1",
-      "title": "USGS NED 1/3 arc-second Contours for San Jose E, California 20220428 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b650e4b06e28e9c710d3",
-      "title": "USGS NED 1/3 arc-second Contours for San Jose W, California 20220428 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b59ce4b06e28e9c70c68",
-      "title": "USGS NED 1/3 arc-second Contours for Mariposa E, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b64fe4b06e28e9c710cf",
-      "title": "USGS NED 1/3 arc-second Contours for San Francisco W, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "56e7136ee4b0f59b85d5b190",
-      "title": "2014 Water-Table Contours of the Mojave River and the Morongo Groundwater Basins, San Bernardino County, California (ver. 1.2, August 2020)",
-      "zipBytes": 38153,
-      "ok": true
-    },
-    {
-      "id": "5a68b578e4b06e28e9c70b98",
-      "title": "USGS NED 1/3 arc-second Contours for Long Beach E, California 20220428 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b690e4b06e28e9c712af",
-      "title": "USGS NED 1/3 arc-second Contours for Susanville W, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b488e4b06e28e9c7065e",
-      "title": "USGS NED 1/3 arc-second Contours for Death Valley W, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a7e8ad6e4b00f54eb24b154",
-      "title": "USGS NED 1/3 arc-second Contours for Monterey E, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a7e8ad6e4b00f54eb24b156",
-      "title": "USGS NED 1/3 arc-second Contours for Monterey W, California 20220428 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b584e4b06e28e9c70bd3",
-      "title": "USGS NED 1/3 arc-second Contours for Los Angeles E, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b6a7e4b06e28e9c7137d",
-      "title": "USGS NED 1/3 arc-second Contours for Trona W, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b45be4b06e28e9c70573",
-      "title": "USGS NED 1/3 arc-second Contours for Chico W, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b55fe4b06e28e9c70af8",
-      "title": "USGS NED 1/3 arc-second Contours for Kingman W, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b654e4b06e28e9c710ee",
-      "title": "USGS NED 1/3 arc-second Contours for Santa Ana W, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b3fbe4b06e28e9c70351",
-      "title": "USGS NED 1/3 arc-second Contours for Bakersfield W, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b64fe4b06e28e9c710cd",
-      "title": "USGS NED 1/3 arc-second Contours for San Francisco E, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b652e4b06e28e9c710e4",
-      "title": "USGS NED 1/3 arc-second Contours for Sacramento W, California 20220428 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b488e4b06e28e9c7065c",
-      "title": "USGS NED 1/3 arc-second Contours for Death Valley E, California 20220428 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b59ce4b06e28e9c70c6e",
-      "title": "USGS NED 1/3 arc-second Contours for Mariposa W, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b64ee4b06e28e9c710c5",
-      "title": "USGS NED 1/3 arc-second Contours for San Bernardino E, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a7e8aede4b00f54eb24b182",
-      "title": "USGS NED 1/3 arc-second Contours for Santa Maria E, California 20220428 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b584e4b06e28e9c70bd5",
-      "title": "USGS NED 1/3 arc-second Contours for Los Angeles W, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b64ee4b06e28e9c710c7",
-      "title": "USGS NED 1/3 arc-second Contours for San Bernardino W, California 20220428 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b6b5e4b06e28e9c7140b",
-      "title": "USGS NED 1/3 arc-second Contours for Ukiah W, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b6cde4b06e28e9c714f3",
-      "title": "USGS NED 1/3 arc-second Contours for Weed E, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b64de4b06e28e9c710bb",
-      "title": "USGS NED 1/3 arc-second Contours for Salton Sea W, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b3e1e4b06e28e9c702af",
-      "title": "USGS NED 1/3 arc-second Contours for Alturas W, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b65ee4b06e28e9c71124",
-      "title": "USGS NED 1/3 arc-second Contours for Santa Rosa W, California 20220428 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b4dee4b06e28e9c7083e",
-      "title": "USGS NED 1/3 arc-second Contours for Fresno E, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b63de4b06e28e9c71034",
-      "title": "USGS NED 1/3 arc-second Contours for Redding E, California 20220428 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b653e4b06e28e9c710ea",
-      "title": "USGS NED 1/3 arc-second Contours for Santa Ana E, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a7e8aede4b00f54eb24b180",
-      "title": "USGS NED 1/3 arc-second Contours for Santa Cruz E, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b3e0e4b06e28e9c702ab",
-      "title": "USGS NED 1/3 arc-second Contours for Alturas E, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b655e4b06e28e9c710fa",
-      "title": "USGS NED 1/3 arc-second Contours for Santa Rosa E, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b6ade4b06e28e9c713ce",
-      "title": "USGS NED 1/3 arc-second Contours for Ukiah E, California 20220428 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b652e4b06e28e9c710e1",
-      "title": "USGS NED 1/3 arc-second Contours for Sacramento E, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b662e4b06e28e9c71148",
-      "title": "USGS NED 1/3 arc-second Contours for San Jose E, California 20220428 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b65fe4b06e28e9c71130",
-      "title": "USGS NED 1/3 arc-second Contours for San Bernardino E, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a7e8aede4b00f54eb24b184",
-      "title": "USGS NED 1/3 arc-second Contours for Santa Rosa Island E, California 20220429 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b48ce4b06e28e9c70675",
-      "title": "USGS NED 1/3 arc-second Contours for Death Valley W, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b583e4b06e28e9c70bcc",
-      "title": "USGS NED 1/3 arc-second Contours for Long Beach W, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b65fe4b06e28e9c71132",
-      "title": "USGS NED 1/3 arc-second Contours for San Bernardino W, California 20220428 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b48ce4b06e28e9c70671",
-      "title": "USGS NED 1/3 arc-second Contours for Death Valley E, California 20220428 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b58de4b06e28e9c70bfe",
-      "title": "USGS NED 1/3 arc-second Contours for Los Angeles E, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b651e4b06e28e9c710de",
-      "title": "USGS NED 1/3 arc-second Contours for San Luis Obispo W, California 20220428 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b665e4b06e28e9c7115f",
-      "title": "USGS NED 1/3 arc-second Contours for Santa Ana E, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a7e8ae6e4b00f54eb24b170",
-      "title": "USGS NED 1/3 arc-second Contours for Santa Cruz E, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b583e4b06e28e9c70bc9",
-      "title": "USGS NED 1/3 arc-second Contours for Long Beach E, California 20220428 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b665e4b06e28e9c71164",
-      "title": "USGS NED 1/3 arc-second Contours for Santa Ana W, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b650e4b06e28e9c710d6",
-      "title": "USGS NED 1/3 arc-second Contours for San Luis Obispo E, California 20220428 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b65de4b06e28e9c7111f",
-      "title": "USGS NED 1/3 arc-second Contours for Salton Sea W, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b661e4b06e28e9c71144",
-      "title": "USGS NED 1/3 arc-second Contours for San Francisco W, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b66fe4b06e28e9c7119c",
-      "title": "USGS NED 1/3 arc-second Contours for Santa Rosa W, California 20220428 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a7e8ae6e4b00f54eb24b172",
-      "title": "USGS NED 1/3 arc-second Contours for Santa Maria E, California 20220428 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b660e4b06e28e9c71140",
-      "title": "USGS NED 1/3 arc-second Contours for San Francisco E, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b662e4b06e28e9c7114c",
-      "title": "USGS NED 1/3 arc-second Contours for San Jose W, California 20220428 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b58ee4b06e28e9c70c02",
-      "title": "USGS NED 1/3 arc-second Contours for Los Angeles W, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b667e4b06e28e9c71171",
-      "title": "USGS NED 1/3 arc-second Contours for Santa Rosa E, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "631405d8d34e36012efa3445",
-      "title": "SIR 2015-5175, Water-level altitude contours of Pahute Mesa-Oasis Valley and surrounding groundwater basins, Nevada and California, version 1.1",
-      "zipBytes": 578058,
-      "skip": "no shapefile"
-    },
-    {
-      "id": "5a68b663e4b06e28e9c71150",
-      "title": "USGS NED 1/3 arc-second Contours for San Luis Obispo E, California 20220428 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b663e4b06e28e9c71152",
-      "title": "USGS NED 1/3 arc-second Contours for San Luis Obispo W, California 20220428 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a7e8ae7e4b00f54eb24b174",
-      "title": "USGS NED 1/3 arc-second Contours for Santa Rosa Island E, California 20220429 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "63140573d34e36012efa2c64",
-      "title": "Simulated potentiometric surface contours of prepumping conditions in layer 1 of the transient ground-water flow model of the Death Valley regional ground-water flow system, Nevada and California",
-      "zipBytes": 50306,
-      "ok": true
-    },
-    {
-      "id": "63140562d34e36012efa2bb2",
-      "title": "Simulated potentiometric surface contours of prepumping conditions in layer 1 of the transient ground-water flow model of the Death Valley regional ground-water flow system, Nevada and California",
-      "zipBytes": 50306,
-      "ok": true
-    },
-    {
-      "id": "63140573d34e36012efa2c69",
-      "title": "Simulated potentiometric surface contours of prepumping conditions in layer 16 of the transient ground-water flow model of the Death Valley regional ground-water flow system, Nevada and California",
-      "zipBytes": 36721,
-      "ok": true
-    },
-    {
-      "id": "63140562d34e36012efa2bb6",
-      "title": "Simulated potentiometric surface contours of prepumping conditions in layer 16 of the transient ground-water flow model of the Death Valley regional ground-water flow system, Nevada and California",
-      "zipBytes": 36721,
-      "ok": true
-    },
-    {
-      "id": "63140562d34e36012efa2bb4",
-      "title": "Simulated potentiometric surface contours at end of simulation (1998) in model layer 1 of the transient ground-water flow model of the Death Valley regional ground-water flow system, Nevada and California",
-      "zipBytes": 50299,
-      "ok": true
-    },
-    {
-      "id": "63140573d34e36012efa2c66",
-      "title": "Simulated potentiometric surface contours at end of simulation (1998) in model layer 1 of the transient ground-water flow model of the Death Valley regional ground-water flow system, Nevada and California",
-      "zipBytes": 50299,
-      "ok": true
-    },
-    {
-      "id": "63140573d34e36012efa2c6b",
-      "title": "Simulated potentiometric surface contours at end of simulation (1998) in model layer 16 of the transient ground-water flow model of the Death Valley regional ground-water flow system, Nevada and California",
-      "zipBytes": 36686,
-      "ok": true
-    },
-    {
-      "id": "63140562d34e36012efa2bb9",
-      "title": "Simulated potentiometric surface contours at end of simulation (1998) in model layer 16 of the transient ground-water flow model of the Death Valley regional ground-water flow system, Nevada and California",
-      "zipBytes": 36686,
-      "ok": true
-    },
-    {
-      "id": "5a68b590e4b06e28e9c70c14",
-      "title": "USGS NED 1/3 arc-second Contours for Lovelock W, Nevada 20210929 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b56be4b06e28e9c70b33",
-      "title": "USGS NED 1/3 arc-second Contours for Las Vegas W, Nevada 20210929 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b4dfe4b06e28e9c70846",
-      "title": "USGS NED 1/3 arc-second Contours for Goldfield W, Nevada 20210929 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b4e8e4b06e28e9c70886",
-      "title": "USGS NED 1/3 arc-second Contours for Goldfield W, Nevada 20210929 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b6b2e4b06e28e9c713fb",
-      "title": "USGS NED 1/3 arc-second Contours for Walker Lake W, Nevada 20210929 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b6bfe4b06e28e9c71466",
-      "title": "USGS NED 1/3 arc-second Contours for Vya W, Nevada 20210929 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b586e4b06e28e9c70bdf",
-      "title": "USGS NED 1/3 arc-second Contours for Lovelock W, Nevada 20210929 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b6b1e4b06e28e9c713f9",
-      "title": "USGS NED 1/3 arc-second Contours for Walker Lake E, Nevada 20210929 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b577e4b06e28e9c70b8b",
-      "title": "USGS NED 1/3 arc-second Contours for Las Vegas W, Nevada 20210929 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b632e4b06e28e9c70fdf",
-      "title": "USGS NED 1/3 arc-second Contours for Reno W, Nevada 20210929 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b6c1e4b06e28e9c71482",
-      "title": "USGS NED 1/3 arc-second Contours for Walker Lake E, Nevada 20210929 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "63140570d34e36012efa2bfd",
-      "title": "Contours of Corcoran Clay Thickness in feet by Page (1986) for the Central Valley Hydrologic Model (CVHM)",
-      "zipBytes": 391750,
-      "ok": true
-    },
-    {
-      "id": "63140570d34e36012efa2bf9",
-      "title": "Contours of Corcoran Clay Depth in feet from Page (1986) for the Central Valley Hydrologic Model (CVHM)",
-      "zipBytes": 391750,
-      "ok": true
-    },
-    {
-      "id": "5a68b6b0e4b06e28e9c713eb",
-      "title": "USGS NED 1/3 arc-second Contours for Vya W, Nevada 20210929 1 X 1 degree Shapefile",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b6c1e4b06e28e9c71486",
-      "title": "USGS NED 1/3 arc-second Contours for Walker Lake W, Nevada 20210929 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5a68b63ee4b06e28e9c71040",
-      "title": "USGS NED 1/3 arc-second Contours for Reno W, Nevada 20210929 1 X 1 degree FileGDB 10.1",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "56e3517be4b0f59b85d3abdf",
-      "title": "Humboldt, California: Tidal Marsh Bathymetry Digital Elevation Model",
-      "skip": "no zip",
-      "files": [
-        "humboldt_bath.fgdc.xml"
-      ]
-    },
-    {
-      "id": "56e3547ae4b0f59b85d3abe6",
-      "title": "Newport, California: Tidal Marsh Bathymetry Digital Elevation Models",
-      "skip": "no zip",
-      "files": [
-        "newport_bathy.fgdc.xml"
-      ]
-    },
-    {
-      "id": "597a23e9e4b0ec1a488bb211",
-      "title": "Merged multibeam bathymetry--northern portion of the Southern California Continental Borderland",
-      "zipBytes": 71731982,
-      "skip": "no shapefile"
-    },
-    {
-      "id": "597a128ee4b0ec1a488bb1a2",
-      "title": "Multibeam bathymetry data collected in 2016 in Catalina Basin, Southern California",
-      "zipBytes": 67156394,
-      "skip": "no shapefile"
-    },
-    {
-      "id": "56e35b8ce4b0f59b85d3abf0",
-      "title": "San Pablo, California: Tidal Marsh Bathymetry Digital Elevation Models",
-      "skip": "no zip",
-      "files": [
-        "sanpablo_bath.fgdc.xml"
-      ]
-    },
-    {
-      "id": "5976659fe4b0ec1a488786f0",
-      "title": "Multibeam bathymetry and acoustic-backscatter data collected in 2016 in Catalina Basin, southern California and merged multibeam bathymetry datasets of the northern portion of the Southern California Continental Borderland",
-      "skip": "no zip",
-      "files": [
-        "2016_Catalina_Basin_bathymetry_QV.png"
-      ]
-    },
-    {
-      "id": "5c61a600e4b0fe48cb32fbcf",
-      "title": "Bathymetry, Stage-Area, and Stage-Volume Tables for the San Antonio Reservoir, California, 2018",
-      "skip": "no zip",
-      "files": [
-        "San Antonio Reservoir bathymetry.JPG",
-        "San Antonio Reservoir bathmetry map with 10-ft contours.pdf"
-      ]
-    },
-    {
-      "id": "599c6354e4b0b589267ed6f4",
-      "title": "Merged multibeam bathymetry--Catalina Basin and northern Gulf of Santa Catalina, southern California",
-      "zipBytes": 113786082,
-      "skip": "no shapefile"
-    },
-    {
-      "id": "5f5f98d482ce3550e3bff26e",
-      "title": "Bathymetry, Stage-Area, and Stage-Volume Tables for the Calaveras Reservoir, California, 2019 (ver. 2.0, March 2025)",
-      "skip": "no zip",
-      "files": [
-        "Version_history.txt"
-      ]
-    },
-    {
-      "id": "588f8d74e4b072a7ac08c35e",
-      "title": "Bathymetry and acoustic backscatter data of the Sacramento River, from the Feather River to Knights Landing, California in February, 2011",
-      "skip": "no zip",
-      "files": [
-        "SacRiverBackScatter2011.png",
-        "SacRiverBathyDEM2011.png",
-        "Methods_Summary_for_Data_Release_Survey_S-03-11-CA.pdf"
-      ]
-    },
-    {
-      "id": "5d78118ee4b0c4f70d020cdf",
-      "title": "Swath bathymetry data collected in the Cache Slough Complex and the Sacramento River Deep Water Ship Channel, California, during field activity 2018-684-FA",
-      "zipBytes": 11834234,
-      "skip": "no shapefile"
-    },
-    {
-      "id": "5d7192cce4b0c4f70cff9326",
-      "title": "Single-beam bathymetry data collected in the Cache Slough Complex, Sacramento-San Joaquin Delta, California, during USGS field activities 2017-649-FA and 2018-684-FA",
-      "skip": "no zip",
-      "files": [
-        "cs17_18_singlebeam_bathy.csv",
-        "cs17_18_singlebeam_bathy.png",
-        "cs17_18_singlebeam_bathy_metadata.xml"
-      ]
-    },
-    {
-      "id": "55c90776e4b08400b1fd8890",
-      "title": "10 meter contours Santa Barbara Channel Geohab",
-      "skip": "no zip",
-      "files": [
-        "contour_10m.jpg",
-        "contour_10m_metadata.faq.html",
-        "contour_10m_metadata.html",
-        "contour_10m_metadata.txt",
-        "contour_10m_metadata.xml"
-      ]
-    },
     {
       "id": "5f5ffad282ce3550e3bff557",
       "title": "Calaveras Reservoir, California, bathymetric digital elevation model (DEM), NAVD88 (2019)",
-      "zipBytes": 20249532,
-      "skip": "no shapefile"
+      "parent": null,
+      "files": [
+        "CalaverasReservoirBathymetry.zip",
+        "Calaveras Reservoir, California, bathymetric digital elevation model_metadata.xml.xml"
+      ],
+      "downloaded": [
+        "CalaverasReservoirBathymetry.zip (20 MB)"
+      ],
+      "raster": {
+        "file": "dblbnd.adf",
+        "shp": "/tmp/bathy/5f5ffad282ce3550e3bff557/contours.shp",
+        "field": "e",
+        "interval": "10",
+        "size": [
+          5399,
+          5109
+        ],
+        "srs": "PROJCRS[\"unnamed\",\n    BASEGEOGCRS[\"NAD83\",\n        DATUM[\"North American Datum "
+      },
+      "skip": "too large even simplified"
+    },
+    {
+      "id": "62e8a8c9d34e749ac04cbd66",
+      "title": "Little Rock Reservoir, California, 2022 bathymetric survey and stage-storage computations",
+      "parent": null,
+      "files": [
+        "Stage_Storage_LR_NAVD88.csv",
+        "Stage_SurfaceArea_LR_NAVD88.csv",
+        "DEM_1m_NAD83_UTM11_NAVD88_ft.txt",
+        "DEM_1m_NAD83_UTM11_LRD.txt",
+        "LR_data_release.xml"
+      ],
+      "downloaded": [
+        "DEM_1m_NAD83_UTM11_NAVD88_ft.txt (330 MB)",
+        "DEM_1m_NAD83_UTM11_LRD.txt (320 MB)"
+      ],
+      "rasterErrors": [
+        "DEM_1m_NAD83_UTM11_NAVD88_ft.txt: Command failed: gdalinfo -json /tmp/bathy/62e8a8c9d34e749ac04cbd66/DEM_1m_NAD83_UTM11_NAVD88_ft.txt\nERROR 4: `/tmp/bathy/62e8a8c9d34e749ac04cbd66/DEM_1m_NAD83_U",
+        "DEM_1m_NAD83_UTM11_LRD.txt: Command failed: gdalinfo -json /tmp/bathy/62e8a8c9d34e749ac04cbd66/DEM_1m_NAD83_UTM11_LRD.txt\nERROR 4: `/tmp/bathy/62e8a8c9d34e749ac04cbd66/DEM_1m_NAD83_UTM11_L",
+        "DEM_1m_NAD83_UTM11_NAVD88_ft.txt: Command failed: gdalinfo -json /tmp/bathy/62e8a8c9d34e749ac04cbd66/DEM_1m_NAD83_UTM11_NAVD88_ft.txt\nERROR 4: `/tmp/bathy/62e8a8c9d34e749ac04cbd66/DEM_1m_NAD83_U"
+      ],
+      "skip": "no contours or readable raster"
+    },
+    {
+      "id": "5c895546e4b09388244eedcd",
+      "title": "San Antonio Reservoir, California, bathymetric digital elevation model (DEM), NAVD88, (2018)",
+      "parent": null,
+      "files": [
+        "San_Antonio_Reservoir_2018_Bathymetry_ascii_export.zip",
+        "San_Antonio_Reservoir_2018_Bathymetry_tiff_export.zip",
+        "San Antonio Reservoir, California, bathymetric digital elevation model (DEM), NAVD88, (2018).xml"
+      ],
+      "downloaded": [
+        "San_Antonio_Reservoir_2018_Bathymetry_ascii_export.zip (10 MB)"
+      ],
+      "raster": {
+        "file": "san_antonio_reservoir_2018_bathymetry_ascii_export.txt",
+        "shp": "/tmp/bathy/5c895546e4b09388244eedcd/contours.shp",
+        "field": "e",
+        "interval": "10",
+        "size": [
+          4051,
+          3691
+        ]
+      }
+    },
+    {
+      "id": "5c895546e4b09388244eedcd",
+      "title": "San Antonio Reservoir, California, bathymetric digital elevation model (DEM), NAVD88, (2018)",
+      "error": "Command failed: ogr2ogr -f GeoJSON -t_srs EPSG:4326 -simplify 0.00002 -lco COORDINATE_PRECISION=5 -select e /tmp/bathy/5c895546e4b09388244eedcd/out-0.00002.geojson /tmp/bathy/5c895546e4b09388244eedcd/contours.shp\nERROR 1: Can't transform coordinates, source layer has no\ncoordinate system.  Use -s_sr"
+    },
+    {
+      "id": "62d86c8bd34e2842e1ed4f96",
+      "title": "Bathymetric survey and stage-storage assessment of Quail Lake, Calif., collected in 2022",
+      "parent": null,
+      "files": [
+        "QL_StageArea_Ac_NAVD88ft.csv",
+        "QL_StageStorage_AcFt_NAVD88ft.csv",
+        "QuailLake_DEM_final_NAD83_NAVD88_ft_1m.txt",
+        "Quail_Lake_DR_metadata.xml"
+      ],
+      "downloaded": [
+        "QuailLake_DEM_final_NAD83_NAVD88_ft_1m.txt (50 MB)"
+      ],
+      "rasterErrors": [
+        "QuailLake_DEM_final_NAD83_NAVD88_ft_1m.txt: Command failed: gdalinfo -json /tmp/bathy/62d86c8bd34e2842e1ed4f96/QuailLake_DEM_final_NAD83_NAVD88_ft_1m.txt\nERROR 4: `/tmp/bathy/62d86c8bd34e2842e1ed4f96/Quai"
+      ],
+      "skip": "no contours or readable raster"
     },
     {
       "id": "686d8a07d4be026f4a016404",
       "title": "Bathymetric survey and stage-storage assessment of Lost Lake, California, collected in 2022",
-      "skip": "no zip",
+      "parent": null,
       "files": [
         "LostLake2023_Dataset_Thumbnail_PHaluska2026.png",
         "LostLake_DEM_NAD83_2011_UTMZ10N_NAVD88_ft_0.25m_PHaluska2026.txt",
@@ -977,371 +105,432 @@
         "LostLake_StageArea_m2_Ac_NAVD88_PHaluska2026.csv",
         "LostLake_StageStorage_m3_Ac-ft_NAVD88_PHaluska2026.csv",
         "Lost_Lake_metadata.xml"
-      ]
+      ],
+      "downloaded": [
+        "LostLake_NAD83-2011_UTMZ10N_NAVD88_0.25m_PHaluska2026.tif (31 MB)"
+      ],
+      "raster": {
+        "file": "LostLake_NAD83-2011_UTMZ10N_NAVD88_0.25m_PHaluska2026.tif",
+        "shp": "/tmp/bathy/686d8a07d4be026f4a016404/contours.shp",
+        "field": "e",
+        "interval": "10",
+        "size": [
+          2763,
+          2106
+        ],
+        "srs": "PROJCRS[\"NAD83(2011) / UTM zone 10N\",\n    BASEGEOGCRS[\"NAD83(2011)\",\n        DAT"
+      }
     },
     {
-      "id": "5ac6a613e4b0e2c2dd0e2fe1",
-      "title": "Swath bathymetric data from three locations in the Sacramento-San Joaquin Delta, California, 2017 to 2018",
-      "zipBytes": 950108,
-      "skip": "no shapefile"
+      "id": "686d8a07d4be026f4a016404",
+      "title": "Bathymetric survey and stage-storage assessment of Lost Lake, California, collected in 2022",
+      "error": ".for is not iterable"
+    },
+    {
+      "id": "60bfe572d34e86b938917d57",
+      "title": "Stage-Storage and Bed Material Data from the 2020 Upper Letts Lake Survey, California",
+      "parent": null,
+      "files": [
+        "Stage_Storage_LettsLake_NAVD88ft_AcFt.csv",
+        "Stage_SurfaceArea_LettsLake_NAVD88ft_Ac.csv",
+        "LettsLake_Bathy_TerrestrialLidar_NAD83_NAVD88_UTM_50cm.txt",
+        "LettsLake_GSDresults_cdf_mm.csv",
+        "LettsLake_DR.xml"
+      ],
+      "downloaded": [
+        "LettsLake_Bathy_TerrestrialLidar_NAD83_NAVD88_UTM_50cm.txt (71 MB)"
+      ],
+      "rasterErrors": [
+        "LettsLake_Bathy_TerrestrialLidar_NAD83_NAVD88_UTM_50cm.txt: Command failed: gdalinfo -json /tmp/bathy/60bfe572d34e86b938917d57/LettsLake_Bathy_TerrestrialLidar_NAD83_NAVD88_UTM_50cm.txt\nERROR 1: Ungridded dataset: At lin"
+      ],
+      "skip": "no contours or readable raster"
     },
     {
       "id": "6052599bd34e7eb1cb3eb498",
       "title": "Bathymetric data for Whiskeytown Lake, September 2020",
-      "zipBytes": 29068834,
-      "skip": "no shapefile"
-    },
-    {
-      "id": "5c12df32e4b034bf6a85edab",
-      "title": "Bathymetric change analyses of the southernmost portion of the Mokelumne River, California, from 1934 to 2018",
-      "skip": "no zip",
+      "parent": null,
       "files": [
-        "SMoke_bathy_change.png",
-        "SMoke_bathy_change_metadata.xml"
-      ]
+        "Whiskeytown_2020_1m_bathy_NAD83_NAVD88.zip",
+        "Whiskeytown_2020_2m_bathy_NAD83_NAVD88.zip",
+        "Whiskeytown_2020_bathy_QV.jpg",
+        "Whiskeytown_2020_1m_2m_bathy_NAD83_NAVD88_metadata.xml"
+      ],
+      "downloaded": [
+        "Whiskeytown_2020_1m_bathy_NAD83_NAVD88.zip (29 MB)"
+      ],
+      "raster": {
+        "file": "Whiskeytown_2020_1m_bathy_NAD83_NAVD88.tif",
+        "shp": "/tmp/bathy/6052599bd34e7eb1cb3eb498/contours.shp",
+        "field": "e",
+        "interval": "10",
+        "size": [
+          5523,
+          5937
+        ],
+        "srs": "PROJCRS[\"NAD83(2011) / UTM zone 10N\",\n    BASEGEOGCRS[\"NAD83(2011)\",\n        DAT"
+      },
+      "skip": "too large even simplified"
     },
     {
       "id": "5dfbeea5e4b0cc5243395ff8",
       "title": "Bathymetric data for Whiskeytown Lake, May 2019 (ver. 2.0, July 2021)",
-      "zipBytes": 28706966,
-      "skip": "no shapefile"
-    },
-    {
-      "id": "556f868fe4b0d9246a9fd0a6",
-      "title": "BathymetryA [2m]--Monterey Canyon and Vicinity Map Area, California",
-      "skip": "no zip",
+      "parent": null,
       "files": [
-        "BathymetryA_2m_MontereyCanyon_metadata_faq.html",
-        "BathymetryA_2m_MontereyCanyon_metadata.html",
-        "BathymetryA_2m_MontereyCanyon_metadata.txt",
-        "BathymetryA_2m_MontereyCanyon_metadata.xml"
-      ]
+        "Whiskeytown_2019_bathy_QV.jpg",
+        "Whiskeytown_2019_1m_bathy_NAD83_NAVD88.zip",
+        "Whiskeytown_2019_2m_bathy_NAD83_NAVD88.zip",
+        "Whiskeytown_2019_1m_2m_bathy_NAD83_NAVD88_metadata.xml"
+      ],
+      "downloaded": [
+        "Whiskeytown_2019_1m_bathy_NAD83_NAVD88.zip (29 MB)"
+      ],
+      "raster": {
+        "file": "Whiskeytown_2019_1m_bathy_NAD83_NAVD88.tif",
+        "shp": "/tmp/bathy/5dfbeea5e4b0cc5243395ff8/contours.shp",
+        "field": "e",
+        "interval": "10",
+        "size": [
+          5499,
+          5939
+        ],
+        "srs": "PROJCRS[\"NAD83(2011) / UTM zone 10N\",\n    BASEGEOGCRS[\"NAD83(2011)\",\n        DAT"
+      },
+      "skip": "too large even simplified"
     },
     {
       "id": "5dfbd23fe4b0cc5243395f60",
       "title": "Bathymetric data for Whiskeytown Lake, December 2018 (ver. 2.0, July 2021)",
-      "zipBytes": 27317891,
-      "skip": "no shapefile"
-    },
-    {
-      "id": "5c54c2dde4b0708288ff1f87",
-      "title": "Bathymetric change analyses of the Sacramento River near Rio Vista, California, and the junction of Cache and Steamboat sloughs, from 1992 to 2004",
-      "skip": "no zip",
+      "parent": null,
       "files": [
-        "RioVista_bathy_change.png",
-        "RioVista_bathy_change_metadata.xml"
-      ]
+        "Whiskeytown_2018_bathy_QV.jpg",
+        "Whiskeytown_2018_1m_bathy_NAD83_NAVD88.zip",
+        "Whiskeytown_2018_2m_bathy_NAD83_NAVD88.zip",
+        "Whiskeytown_2018_1m_2m_bathy_NAD83_NAVD88_metadata.xml"
+      ],
+      "downloaded": [
+        "Whiskeytown_2018_1m_bathy_NAD83_NAVD88.zip (27 MB)"
+      ],
+      "raster": {
+        "file": "Whiskeytown_2018_1m_bathy_NAD83_NAVD88.tif",
+        "shp": "/tmp/bathy/5dfbd23fe4b0cc5243395f60/contours.shp",
+        "field": "e",
+        "interval": "10",
+        "size": [
+          5501,
+          5903
+        ],
+        "srs": "PROJCRS[\"NAD83(2011) / UTM zone 10N\",\n    BASEGEOGCRS[\"NAD83(2011)\",\n        DAT"
+      },
+      "skip": "too large even simplified"
     },
     {
-      "id": "556f8b8ae4b0d9246a9fd0b4",
-      "title": "BathymetryB [5m]--Monterey Canyon and Vicinity Map Area, California",
-      "skip": "no zip",
+      "id": "5f5fd23b82ce3550e3bff45e",
+      "title": "Calaveras Reservoir, California, contours, NAVD88 (2019)",
+      "parent": null,
       "files": [
-        "BathymetryB_5m_MontereyCanyon_metadata_faq.html",
-        "BathymetryB_5m_MontereyCanyon_metadata.html",
-        "BathymetryB_5m_MontereyCanyon_metadata.txt",
-        "BathymetryB_5m_MontereyCanyon_metadata.xml"
-      ]
+        "Contours_DWG_format.zip",
+        "Contour_shapefiles.zip",
+        "Calaveras Reservoir, California, contours, NAVD88 (2019)_metadata.xml"
+      ],
+      "downloaded": [
+        "Contour_shapefiles.zip (3 MB)"
+      ],
+      "ok": {
+        "fileId": "calaveras-reservoir-california-contours-navd88-2019",
+        "features": 14,
+        "bytes": 1239509,
+        "simplify": "0.00002",
+        "units": null
+      }
     },
     {
-      "id": "5abaad29e4b081f61abb4d81",
-      "title": "Remotely sensed data and field measurements used for bathymetric mapping of the upper Sacramento River in northern California",
-      "skip": "no zip",
-      "files": []
-    },
-    {
-      "id": "5c895546e4b09388244eedcd",
-      "title": "San Antonio Reservoir, California, bathymetric digital elevation model (DEM), NAVD88, (2018)",
-      "zipBytes": 10155085,
-      "skip": "no shapefile"
-    },
-    {
-      "id": "5ebedb3e82ce476925e5de5c",
-      "title": "Multibeam bathymetry data of USGS field activity 2016-666-FA collected in the Santa Barbara Basin in September and October of 2016",
-      "skip": "no zip",
+      "id": "5c897cabe4b09388244f03a4",
+      "title": "San Antonio Reservoir, California, 10-ft contours, NAVD88, (2018)",
+      "parent": null,
       "files": [
-        "2016-666-FA_bathymetry_5m_WGS84_UTM11_NAVD88.tfw",
-        "2016-666-FA_bathymetry_5m_WGS84_UTM11_NAVD88.tif",
-        "2016-666-FA_Bathymetry_Grid.png",
-        "2016-666-FA_bathymetry_metadata.xml"
-      ]
+        "Contours_shapefile.zip",
+        "Contours_dwg_format.zip",
+        "San Antonio Reservoir, California, 10-ft contours, NAVD88, (2018).xml"
+      ],
+      "downloaded": [
+        "Contours_shapefile.zip (0 MB)"
+      ],
+      "ok": {
+        "fileId": "san-antonio-reservoir-california-10-ft-contours-navd88-2018",
+        "features": 34,
+        "bytes": 722912,
+        "simplify": "0.00002",
+        "units": "ft"
+      }
     },
     {
-      "id": "56671eb2e4b06a3ea36c8bf2",
-      "title": "Bathymetric measurements of Little Holland Tract, Sacramento-San Joaquin Delta, California, 2015, from personal watercraft",
-      "skip": "no zip",
+      "id": "5c61a600e4b0fe48cb32fbcf",
+      "title": "Bathymetry, Stage-Area, and Stage-Volume Tables for the San Antonio Reservoir, California, 2018",
+      "parent": null,
       "files": [
-        "LHT15_PWCsonar.txt",
-        "LHT15_PWCsonar_FGDC.xml"
-      ]
+        "San Antonio Reservoir bathymetry.JPG",
+        "San Antonio Reservoir bathmetry map with 10-ft contours.pdf"
+      ],
+      "skip": "no usable files"
     },
     {
-      "id": "5f7cd25a82ce1d74e7db55e2",
-      "title": "Standard deviation of the bathymetric DEM of the Sacramento River, from the Feather River to Knights Landing, California in February 2011",
-      "skip": "no zip",
+      "id": "5c895908e4b09388244eede0",
+      "title": "San Antonio Reservoir, California, Stage-area and Stage-volume tables (2018)",
+      "parent": "Bathymetry, Stage-Area, and Stage-Volume Tables for the San Antonio Reservoir, California, 2018",
       "files": [
-        "SacRiver2011stdev_nad83u10.tfw",
-        "SacRiver2011stdev_nad83u10.tif",
-        "Sacriverbrowsegraphicstdev.png",
-        "SacRiv2011StdDev.xml"
-      ]
+        "SanAntonioReservoirCA_Stage-area_and_stage-volume_tables_2018.csv",
+        "San Antonio Reservoir, California, Stage-area and Stage-volume tables (2018).xml"
+      ],
+      "skip": "no usable files"
     },
     {
-      "id": "5898cdc1e4b0efcedb707561",
-      "title": "Bathymetric DEM of the Sacramento River, from the Feather River to Knights Landing, California in February 2011",
-      "skip": "no zip",
+      "id": "5f5f98d482ce3550e3bff26e",
+      "title": "Bathymetry, Stage-Area, and Stage-Volume Tables for the Calaveras Reservoir, California, 2019 (ver. 2.0, March 2025)",
+      "parent": null,
       "files": [
-        "SacRiver2011elev_nad83u10_NAVD88.asc",
-        "SacRiverBathyDEM2011.png",
-        "Methods_Summary_for_Data_Release_Survey_S-03-11-CA.pdf",
-        "SacRiver2011elev_nad83u10_NAVD88.xml",
-        "SacRiver2011elev_nad83u10_NAVD88_2.asc",
-        "SacRiver2011elev_nad83u10_NAVD88.asc.pgp"
-      ]
+        "Version_history.txt"
+      ],
+      "skip": "no usable files"
     },
     {
-      "id": "5ebc4ba682ce25b51365d660",
-      "title": "Topobathymetric Model of Northern California, 1986 to 2019",
-      "zipBytes": 11123680,
-      "skip": "no shapefile"
-    },
-    {
-      "id": "62e8a8c9d34e749ac04cbd66",
-      "title": "Little Rock Reservoir, California, 2022 bathymetric survey and stage-storage computations",
-      "skip": "no zip",
+      "id": "5f5ffb5e82ce3550e3bff55b",
+      "title": "Calaveras Reservoir, California, stage-area and stage-volume tables (2019)",
+      "parent": "Bathymetry, Stage-Area, and Stage-Volume Tables for the Calaveras Reservoir, California, 2019 (ver. 2.0, March 2025)",
       "files": [
-        "Stage_Storage_LR_NAVD88.csv",
-        "Stage_SurfaceArea_LR_NAVD88.csv",
-        "DEM_1m_NAD83_UTM11_NAVD88_ft.txt",
-        "DEM_1m_NAD83_UTM11_LRD.txt",
-        "LR_data_release.xml"
-      ]
+        "CalaverasReservoirCA_Stage-area_and_stage-volume_tables_2019.csv",
+        "Calaveras Reservoir, California, Stage-area and Stage-volume tables (2019)_metadata.xml"
+      ],
+      "skip": "no usable files"
     },
     {
-      "id": "62d86c8bd34e2842e1ed4f96",
-      "title": "Bathymetric survey and stage-storage assessment of Quail Lake, Calif., collected in 2022",
-      "skip": "no zip",
+      "id": "5dfbba2fe4b0b5e61c073327",
+      "title": "Bathymetry, topography and orthomosaic imagery for Whiskeytown Lake, northern California (ver. 2.0, July 2021)",
+      "parent": null,
       "files": [
-        "QL_StageArea_Ac_NAVD88ft.csv",
-        "QL_StageStorage_AcFt_NAVD88ft.csv",
-        "QuailLake_DEM_final_NAD83_NAVD88_ft_1m.txt",
-        "Quail_Lake_DR_metadata.xml"
-      ]
+        "2019-06-Bathy_Topo_Orthomosaic_browse.jpg",
+        "DOI_P9TJTS8M_VersionHistory.txt",
+        "2018-12-Bathy_Topo_Orthomosaic_browse.jpg",
+        "Whiskeytown_2020-11-10_topo_and_bathy_browse.jpg",
+        "2019-06-Bathy_Topo_Orthomosaic_browse.jpg",
+        "Whiskeytown_2019-11-12_topo_and_bathy_browse.jpg"
+      ],
+      "skip": "no usable files"
     },
     {
-      "id": "6695863dd34eef7f31169646",
-      "title": "​Geochemical, grain size, lithological, diatom, bathymetric, and age model data for Wildcat Lake, Point Reyes National Seashore 2021",
-      "skip": "no zip",
+      "id": "5e7d2fbde4b01d5092751dfd",
+      "title": "Topographic digital surface model (DSM) for Whiskeytown Lake and surrounding area, 2018-12-02",
+      "parent": "Bathymetry, topography and orthomosaic imagery for Whiskeytown Lake, northern California (ver. 2.0, July 2021)",
       "files": [
-        "210Pb_137Cs_agemodel.csv",
-        "bathymetric_data.csv",
-        "diatom_percentages.csv",
-        "grain_size_percentages.csv",
-        "itrax_geochemical_counts.csv",
-        "loss_on_ignition_percentages.csv",
-        "opal_data_percentages.csv",
-        "Knight_Final_Metadata.xml"
-      ]
+        "Whiskeytown_2018-12-02_DSM_25cm_browse.png",
+        "Whiskeytown_2018-12-02_DSM_25cm.tif",
+        "Whiskeytown_2018-12-02_DSM.xml",
+        "Whiskeytown_2018-12-02_DSM_25cm_hll.tif"
+      ],
+      "skip": "no usable files"
     },
     {
-      "id": "5c12dacfe4b034bf6a85ed75",
-      "title": "Pilot study on bathymetric change analyses in the Sacramento-San Joaquin Delta, California",
-      "skip": "no zip",
+      "id": "605259afd34e7eb1cb3eb49b",
+      "title": "Topographic digital surface model (DSM) for Whiskeytown Lake and surrounding area, 2020-11-10",
+      "parent": "Bathymetry, topography and orthomosaic imagery for Whiskeytown Lake, northern California (ver. 2.0, July 2021)",
       "files": [
-        "StudyLoc.png"
-      ]
+        "Whiskeytown_2020-11-10_DSM_25cm.tif",
+        "Whiskeytown_2020-11-10_DSM_25cm_browse.png",
+        "Whiskeytown_2020-11-10_DSM_25cm_hll.tif",
+        "Whiskeytown_2020-11-10_DSM.xml"
+      ],
+      "skip": "no usable files"
     },
     {
-      "id": "65e4c140d34e5855ff4e521a",
-      "title": "Geochemical, grain size, lithological, bathymetric, reconstructed integrated vapor transport, and age model data for Leonard Lake, Mendocino County",
-      "skip": "no zip",
+      "id": "605259bfd34e7eb1cb3eb49f",
+      "title": "Orthomosaic imagery for Whiskeytown Lake and surrounding area, northern California, 2020-11-10",
+      "parent": "Bathymetry, topography and orthomosaic imagery for Whiskeytown Lake, northern California (ver. 2.0, July 2021)",
       "files": [
-        "XRF_data.csv",
-        "14C_data.csv",
-        "210Pb_data.csv",
-        "Bathymetry_LL14.csv",
-        "LOI_data.csv",
-        "PSA_data.csv",
-        "Reconstructed_IVT_final.csv",
-        "LeonardLake_final_metadata.xml"
-      ]
+        "Whiskeytown_2020-11-10_orthomosaic_browse.png",
+        "Whiskeytown_2020-11-10_orthomosaic.xml",
+        "Whiskeytown_2020-11-10_orthomosaic_25cm.tif",
+        "Whiskeytown_2020-11-10_orthomosaic_5cm_east.tif",
+        "Whiskeytown_2020-11-10_orthomosaic_5cm_west.tif"
+      ],
+      "downloaded": [
+        "Whiskeytown_2020-11-10_orthomosaic_25cm.tif (225 MB)"
+      ],
+      "raster": {
+        "file": "Whiskeytown_2020-11-10_orthomosaic_25cm.tif",
+        "shp": "/tmp/bathy/605259bfd34e7eb1cb3eb49f/contours.shp",
+        "field": "e",
+        "interval": "10",
+        "size": [
+          41984,
+          32768
+        ],
+        "srs": "PROJCRS[\"NAD83(2011) / UTM zone 10N\",\n    BASEGEOGCRS[\"NAD83(2011)\",\n        DAT"
+      },
+      "skip": "too large even simplified"
+    },
+    {
+      "id": "605258afd34e7eb1cb3eb47f",
+      "title": "Orthomosaic imagery for Whiskeytown Lake and surrounding area, northern California, 2019-11-12",
+      "parent": "Bathymetry, topography and orthomosaic imagery for Whiskeytown Lake, northern California (ver. 2.0, July 2021)",
+      "files": [
+        "Whiskeytown_2019-11-12_orthomosaic_browse.png",
+        "Whiskeytown_2019-11-12_orthomosaic.xml",
+        "Whiskeytown_2019-11-12_orthomosaic_25cm.tif",
+        "Whiskeytown_2019-11-12_orthomosaic_6cm_west.tif",
+        "Whiskeytown_2019-11-12_orthomosaic_6cm_east.tif"
+      ],
+      "downloaded": [
+        "Whiskeytown_2019-11-12_orthomosaic_25cm.tif (352 MB)"
+      ],
+      "raster": {
+        "file": "Whiskeytown_2019-11-12_orthomosaic_25cm.tif",
+        "shp": "/tmp/bathy/605258afd34e7eb1cb3eb47f/contours.shp",
+        "field": "e",
+        "interval": "10",
+        "size": [
+          58368,
+          53248
+        ],
+        "srs": "PROJCRS[\"NAD83(2011) / UTM zone 10N\",\n    BASEGEOGCRS[\"NAD83(2011)\",\n        DAT"
+      },
+      "skip": "too large even simplified"
+    },
+    {
+      "id": "5e7d4203e4b01d5092751e15",
+      "title": "Orthomosaic imagery for Whiskeytown Lake and surrounding area, northern California, 2018-12-02",
+      "parent": "Bathymetry, topography and orthomosaic imagery for Whiskeytown Lake, northern California (ver. 2.0, July 2021)",
+      "files": [
+        "Whiskeytown_2018-12-02_orthomosaic_browse.png",
+        "Whiskeytown_2018-12-02_orthomosaic_25cm.tif",
+        "Whiskeytown_2018-12-02_orthomosaic_6cm_east.tif",
+        "Whiskeytown_2018-12-02_orthomosaic_6cm_west.tif",
+        "Whiskeytown_2018-12-02_orthomosaic.xml"
+      ],
+      "downloaded": [
+        "Whiskeytown_2018-12-02_orthomosaic_25cm.tif (116 MB)"
+      ],
+      "raster": {
+        "file": "Whiskeytown_2018-12-02_orthomosaic_25cm.tif",
+        "shp": "/tmp/bathy/5e7d4203e4b01d5092751e15/contours.shp",
+        "field": "e",
+        "interval": "10",
+        "size": [
+          40960,
+          30720
+        ],
+        "srs": "PROJCRS[\"NAD83(2011) / UTM zone 10N\",\n    BASEGEOGCRS[\"NAD83(2011)\",\n        DAT"
+      },
+      "skip": "too large even simplified"
+    },
+    {
+      "id": "5e7d44c1e4b01d5092751e1f",
+      "title": "Orthomosaic imagery for Whiskeytown Lake and surrounding area, 2019-06-03",
+      "parent": "Bathymetry, topography and orthomosaic imagery for Whiskeytown Lake, northern California (ver. 2.0, July 2021)",
+      "files": [
+        "Whiskeytown_2019-06-03_orthomosaic_browse.png",
+        "Whiskeytown_2019-06-03_orthomosaic_25cm.tif",
+        "Whiskeytown_2019-06-03_orthomosaic_6cm_east.tif",
+        "Whiskeytown_2019-06-03_orthomosaic_6cm_west.tif",
+        "Whiskeytown_2019-06-03_orthomosaic.xml"
+      ],
+      "downloaded": [
+        "Whiskeytown_2019-06-03_orthomosaic_25cm.tif (175 MB)"
+      ],
+      "raster": {
+        "file": "Whiskeytown_2019-06-03_orthomosaic_25cm.tif",
+        "shp": "/tmp/bathy/5e7d44c1e4b01d5092751e1f/contours.shp",
+        "field": "e",
+        "interval": "10",
+        "size": [
+          39936,
+          32768
+        ],
+        "srs": "PROJCRS[\"NAD83(2011) / UTM zone 10N\",\n    BASEGEOGCRS[\"NAD83(2011)\",\n        DAT"
+      },
+      "skip": "too large even simplified"
+    },
+    {
+      "id": "5e6be1bfe4b01d5092638a75",
+      "title": "Orthomosaic imagery for Whiskeytown Lake and surrounding area, expanded AOI, 2019-06-03",
+      "parent": "Bathymetry, topography and orthomosaic imagery for Whiskeytown Lake, northern California (ver. 2.0, July 2021)",
+      "files": [
+        "Whiskeytown_2019-06-03_orthomosaic_expandedAOI_browse.png",
+        "Whiskeytown_2019-06-03_orthomosaic_expandedAOI_25cm.tif",
+        "Whiskeytown_2019-06-03_orthomosaic_expandedAOI_14cm_east.tif",
+        "Whiskeytown_2019-06-03_orthomosaic_expandedAOI_14cm_west.tif",
+        "Whiskeytown_2019-06-03_orthomosaic_expandedAOI.xml"
+      ],
+      "skip": "no usable files"
+    },
+    {
+      "id": "5e7d36c1e4b01d5092751e09",
+      "title": "Topographic digital surface model (DSM) for Whiskeytown Lake and surrounding area, 2019-06-03",
+      "parent": "Bathymetry, topography and orthomosaic imagery for Whiskeytown Lake, northern California (ver. 2.0, July 2021)",
+      "files": [
+        "Whiskeytown_2019-06-03_DSM_25cm_browse.png",
+        "Whiskeytown_2019-06-03_DSM_25cm.tif",
+        "Whiskeytown_2019-06-03_DSM.xml",
+        "Whiskeytown_2019-06-03_DSM_25cm_hll.tif"
+      ],
+      "skip": "no usable files"
+    },
+    {
+      "id": "605258bfd34e7eb1cb3eb482",
+      "title": "Topographic digital surface model (DSM) for Whiskeytown Lake and surrounding area, 2019-11-12",
+      "parent": "Bathymetry, topography and orthomosaic imagery for Whiskeytown Lake, northern California (ver. 2.0, July 2021)",
+      "files": [
+        "Whiskeytown_2019-11-12_DSM_25cm_browse.png",
+        "Whiskeytown_2019-11-12_DSM_25cm.tif",
+        "Whiskeytown_2019-11-12_DSM_25cm_hll.tif",
+        "Whiskeytown_2019-11-12_DSM.xml"
+      ],
+      "skip": "no usable files"
+    },
+    {
+      "id": "67ae1a04d34e3f09c0e0f018",
+      "title": "Lake depth profile, water quality, sediment, periphyton, tadpole (Pseudacris regilla), and landscape data from six lakes and two stream sites of the Tokopah Basin in Sequoia National Park, California, 2021-2022",
+      "parent": null,
+      "files": [
+        "histology.csv",
+        "hourlyLoggers.csv",
+        "hourlyLoggers.rds",
+        "lakeSpatialData.csv",
+        "periChlaAfdm.csv",
+        "periphytonCu.csv",
+        "SampleLabelREADME.txt",
+        "secchi.csv",
+        "sediment.csv",
+        "tadpole.csv",
+        "usgsStationWQ.csv",
+        "usgsStationWQ.rds",
+        "waterchem.csv",
+        "waternutr.csv",
+        "YSI_Clean.csv",
+        "Metadata_TokopahBasin_LakeEcologyData.xml"
+      ],
+      "skip": "no usable files"
     }
   ],
-  "searched": 1303,
+  "searched": 436,
   "candidates": [
+    "Calaveras Reservoir, California, bathymetric digital elevation model (DEM), NAVD88 (2019)",
+    "Little Rock Reservoir, California, 2022 bathymetric survey and stage-storage computations",
+    "San Antonio Reservoir, California, bathymetric digital elevation model (DEM), NAVD88, (2018)",
+    "Bathymetric survey and stage-storage assessment of Quail Lake, Calif., collected in 2022",
+    "Bathymetric survey and stage-storage assessment of Lost Lake, California, collected in 2022",
+    "Stage-Storage and Bed Material Data from the 2020 Upper Letts Lake Survey, California",
+    "Bathymetric data for Whiskeytown Lake, September 2020",
+    "Bathymetric data for Whiskeytown Lake, May 2019 (ver. 2.0, July 2021)",
+    "Bathymetric data for Whiskeytown Lake, December 2018 (ver. 2.0, July 2021)",
     "Calaveras Reservoir, California, contours, NAVD88 (2019)",
     "San Antonio Reservoir, California, 10-ft contours, NAVD88, (2018)",
-    "Transgressive Contours--Pigeon Point to Monterey, California",
-    "Contours--Monterey Canyon and Vicinity Map Area, California",
-    "Transgressive Contours—Point Sur to Point Arguello, California",
-    "Transgressive Contours--Punta Gorda to Point Arena, California",
-    "Transgressive Contours--Point Conception to Hueneme Canyon, California",
-    "1994 Water-Table Contours of the Morongo Ground-Water Basin, San Bernardino County, California",
-    "1992 Water-Table Contours of the Mojave River Ground-Water Basin, San Bernardino County, California.",
-    "2010 Water-Table Contours of the Mojave River and the Morongo Groundwater Basins, San Bernardino County, California",
-    "1998 Water-Table Contours of the Mojave River and the Morongo Ground-Water Basins, San Bernardino County, California",
-    "2000 Water-Table Contours of the Mojave River and the Morongo Ground-Water Basins, San Bernardino County, California",
-    "2002 Water-Table Contours of the Mojave River and the Morongo Ground-Water Basins, San Bernardino County, California",
-    "Interferometric Synthetic Aperture Radar-Derived Subsidence Contours for the West-Central San Joaquin Valley, California, 2008-10",
-    "USGS NED 1/3 arc-second Contours for Trona E, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Monterey E, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Susanville E, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Needles W, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Ukiah E, California 20220428 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Weed W, California 20220428 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Bakersfield W, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Fresno E, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Susanville W, California 20220429 1 X 1 degree Shapefile",
-    "Regional water table Contours of the Antelope Valley and Fremont Valley groundwater basins, Southwestern Mojave Desert, California, March 2014",
-    "USGS NED 1/3 arc-second Contours for Redding E, California 20220428 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Ukiah W, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Sacramento W, California 20220428 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Bakersfield E, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Mariposa E, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Trona W, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Alturas E, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Kingman W, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Monterey W, California 20220428 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Sacramento E, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Chico E, California 20220428 1 X 1 degree Shapefile",
-    "1996 Water-Table Contours of the Mojave River, the Morongo, and the Fort Irwin Ground-Water Basins, San Bernardino County, California",
-    "USGS NED 1/3 arc-second Contours for Fresno W, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Alturas W, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Mariposa W, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Weed E, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Redding W, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Chico W, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Redding W, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Weed W, California 20220428 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Needles W, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Susanville E, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Bakersfield E, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Fresno W, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Long Beach W, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Trona E, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Chico E, California 20220428 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for San Jose E, California 20220428 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for San Jose W, California 20220428 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Mariposa E, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for San Francisco W, California 20220429 1 X 1 degree Shapefile",
-    "2014 Water-Table Contours of the Mojave River and the Morongo Groundwater Basins, San Bernardino County, California (ver. 1.2, August 2020)",
-    "USGS NED 1/3 arc-second Contours for Long Beach E, California 20220428 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Susanville W, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Death Valley W, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Monterey E, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Monterey W, California 20220428 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Los Angeles E, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Trona W, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Chico W, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Kingman W, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Santa Ana W, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Bakersfield W, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for San Francisco E, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Sacramento W, California 20220428 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Death Valley E, California 20220428 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Mariposa W, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for San Bernardino E, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Santa Maria E, California 20220428 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Los Angeles W, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for San Bernardino W, California 20220428 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Ukiah W, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Weed E, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Salton Sea W, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Alturas W, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Santa Rosa W, California 20220428 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Fresno E, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Redding E, California 20220428 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Santa Ana E, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Santa Cruz E, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Alturas E, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Santa Rosa E, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Ukiah E, California 20220428 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Sacramento E, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for San Jose E, California 20220428 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for San Bernardino E, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Santa Rosa Island E, California 20220429 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Death Valley W, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Long Beach W, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for San Bernardino W, California 20220428 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Death Valley E, California 20220428 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Los Angeles E, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for San Luis Obispo W, California 20220428 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Santa Ana E, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Santa Cruz E, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Long Beach E, California 20220428 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Santa Ana W, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for San Luis Obispo E, California 20220428 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Salton Sea W, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for San Francisco W, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Santa Rosa W, California 20220428 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Santa Maria E, California 20220428 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for San Francisco E, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for San Jose W, California 20220428 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Los Angeles W, California 20220429 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Santa Rosa E, California 20220429 1 X 1 degree FileGDB 10.1",
-    "SIR 2015-5175, Water-level altitude contours of Pahute Mesa-Oasis Valley and surrounding groundwater basins, Nevada and California, version 1.1",
-    "USGS NED 1/3 arc-second Contours for San Luis Obispo E, California 20220428 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for San Luis Obispo W, California 20220428 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Santa Rosa Island E, California 20220429 1 X 1 degree FileGDB 10.1",
-    "Simulated potentiometric surface contours of prepumping conditions in layer 1 of the transient ground-water flow model of the Death Valley regional ground-water flow system, Nevada and California",
-    "Simulated potentiometric surface contours of prepumping conditions in layer 1 of the transient ground-water flow model of the Death Valley regional ground-water flow system, Nevada and California",
-    "Simulated potentiometric surface contours of prepumping conditions in layer 16 of the transient ground-water flow model of the Death Valley regional ground-water flow system, Nevada and California",
-    "Simulated potentiometric surface contours of prepumping conditions in layer 16 of the transient ground-water flow model of the Death Valley regional ground-water flow system, Nevada and California",
-    "Simulated potentiometric surface contours at end of simulation (1998) in model layer 1 of the transient ground-water flow model of the Death Valley regional ground-water flow system, Nevada and California",
-    "Simulated potentiometric surface contours at end of simulation (1998) in model layer 1 of the transient ground-water flow model of the Death Valley regional ground-water flow system, Nevada and California",
-    "Simulated potentiometric surface contours at end of simulation (1998) in model layer 16 of the transient ground-water flow model of the Death Valley regional ground-water flow system, Nevada and California",
-    "Simulated potentiometric surface contours at end of simulation (1998) in model layer 16 of the transient ground-water flow model of the Death Valley regional ground-water flow system, Nevada and California",
-    "USGS NED 1/3 arc-second Contours for Lovelock W, Nevada 20210929 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Las Vegas W, Nevada 20210929 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Goldfield W, Nevada 20210929 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Goldfield W, Nevada 20210929 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Walker Lake W, Nevada 20210929 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Vya W, Nevada 20210929 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Lovelock W, Nevada 20210929 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Walker Lake E, Nevada 20210929 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Las Vegas W, Nevada 20210929 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Reno W, Nevada 20210929 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Walker Lake E, Nevada 20210929 1 X 1 degree FileGDB 10.1",
-    "Contours of Corcoran Clay Thickness in feet by Page (1986) for the Central Valley Hydrologic Model (CVHM)",
-    "Contours of Corcoran Clay Depth in feet from Page (1986) for the Central Valley Hydrologic Model (CVHM)",
-    "USGS NED 1/3 arc-second Contours for Vya W, Nevada 20210929 1 X 1 degree Shapefile",
-    "USGS NED 1/3 arc-second Contours for Walker Lake W, Nevada 20210929 1 X 1 degree FileGDB 10.1",
-    "USGS NED 1/3 arc-second Contours for Reno W, Nevada 20210929 1 X 1 degree FileGDB 10.1",
-    "Humboldt, California: Tidal Marsh Bathymetry Digital Elevation Model",
-    "Newport, California: Tidal Marsh Bathymetry Digital Elevation Models",
-    "Merged multibeam bathymetry--northern portion of the Southern California Continental Borderland",
-    "Multibeam bathymetry data collected in 2016 in Catalina Basin, Southern California",
-    "San Pablo, California: Tidal Marsh Bathymetry Digital Elevation Models",
-    "Multibeam bathymetry and acoustic-backscatter data collected in 2016 in Catalina Basin, southern California and merged multibeam bathymetry datasets of the northern portion of the Southern California Continental Borderland",
     "Bathymetry, Stage-Area, and Stage-Volume Tables for the San Antonio Reservoir, California, 2018",
-    "Merged multibeam bathymetry--Catalina Basin and northern Gulf of Santa Catalina, southern California",
     "Bathymetry, Stage-Area, and Stage-Volume Tables for the Calaveras Reservoir, California, 2019 (ver. 2.0, March 2025)",
-    "Bathymetry and acoustic backscatter data of the Sacramento River, from the Feather River to Knights Landing, California in February, 2011",
-    "Swath bathymetry data collected in the Cache Slough Complex and the Sacramento River Deep Water Ship Channel, California, during field activity 2018-684-FA",
-    "Single-beam bathymetry data collected in the Cache Slough Complex, Sacramento-San Joaquin Delta, California, during USGS field activities 2017-649-FA and 2018-684-FA",
-    "10 meter contours Santa Barbara Channel Geohab",
-    "Calaveras Reservoir, California, bathymetric digital elevation model (DEM), NAVD88 (2019)",
-    "Bathymetric survey and stage-storage assessment of Lost Lake, California, collected in 2022",
-    "Swath bathymetric data from three locations in the Sacramento-San Joaquin Delta, California, 2017 to 2018",
-    "Bathymetric data for Whiskeytown Lake, September 2020",
-    "Bathymetric change analyses of the southernmost portion of the Mokelumne River, California, from 1934 to 2018",
-    "Bathymetric data for Whiskeytown Lake, May 2019 (ver. 2.0, July 2021)",
-    "BathymetryA [2m]--Monterey Canyon and Vicinity Map Area, California",
-    "Bathymetric data for Whiskeytown Lake, December 2018 (ver. 2.0, July 2021)",
-    "Bathymetric change analyses of the Sacramento River near Rio Vista, California, and the junction of Cache and Steamboat sloughs, from 1992 to 2004",
-    "BathymetryB [5m]--Monterey Canyon and Vicinity Map Area, California",
-    "Remotely sensed data and field measurements used for bathymetric mapping of the upper Sacramento River in northern California",
-    "San Antonio Reservoir, California, bathymetric digital elevation model (DEM), NAVD88, (2018)",
-    "Multibeam bathymetry data of USGS field activity 2016-666-FA collected in the Santa Barbara Basin in September and October of 2016",
-    "Bathymetric measurements of Little Holland Tract, Sacramento-San Joaquin Delta, California, 2015, from personal watercraft",
-    "Standard deviation of the bathymetric DEM of the Sacramento River, from the Feather River to Knights Landing, California in February 2011",
-    "Bathymetric DEM of the Sacramento River, from the Feather River to Knights Landing, California in February 2011",
-    "Topobathymetric Model of Northern California, 1986 to 2019",
-    "Little Rock Reservoir, California, 2022 bathymetric survey and stage-storage computations",
-    "Bathymetric survey and stage-storage assessment of Quail Lake, Calif., collected in 2022",
-    "​Geochemical, grain size, lithological, diatom, bathymetric, and age model data for Wildcat Lake, Point Reyes National Seashore 2021",
-    "Pilot study on bathymetric change analyses in the Sacramento-San Joaquin Delta, California",
-    "Geochemical, grain size, lithological, bathymetric, reconstructed integrated vapor transport, and age model data for Leonard Lake, Mendocino County"
+    "Bathymetry, topography and orthomosaic imagery for Whiskeytown Lake, northern California (ver. 2.0, July 2021)",
+    "Lake depth profile, water quality, sediment, periphyton, tadpole (Pseudacris regilla), and landscape data from six lakes and two stream sites of the Tokopah Basin in Sequoia National Park, California, 2021-2022"
   ],
-  "saved": 22
+  "saved": [
+    "Calaveras Reservoir, California, contours, NAVD88 (2019) (1240 KB, ft)",
+    "San Antonio Reservoir, California, 10-ft contours, NAVD88, (2018) (723 KB, ft)"
+  ],
+  "finishedAt": "2026-10-22T03:58:52.653Z"
 }
