@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-22T03:38:57.539Z",
+  "startedAt": "2026-10-22T04:25:50.242Z",
   "steps": {
     "nhdLayers": [
       {
@@ -60,6 +60,11 @@
       "polygons": 3248,
       "inCalifornia": 2930
     },
+    "elevationError": "fetch failed",
+    "elevations": {
+      "nhdKept": 526,
+      "fromDem": 1804
+    },
     "depthProbe": "403 https://pasta.lternet.edu/package/eml/edi/1043?filter=newest",
     "depthError": "403 https://pasta.lternet.edu/package/search/eml?defType=edismax&q=title:%22LAGOS-US%20DEPTH%22&fl=packageid,title,pubdate&rows=20",
     "rivers": {
@@ -69,5 +74,5 @@
       "kept": 1591
     }
   },
-  "finishedAt": "2026-10-22T04:21:55.581Z"
+  "finishedAt": "2026-10-22T05:12:38.858Z"
 }

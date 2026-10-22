@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-22T04:21:55.652Z",
+  "startedAt": "2026-10-22T05:12:38.938Z",
   "total": 1000,
   "sampleKeys": [
     "key",
@@ -83,7 +83,7 @@
       }
     ]
   },
-  "fetched": 1000,
-  "places": 879,
-  "species": 108
+  "fetched": 5694,
+  "places": 4061,
+  "species": 217
 }
