@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-22T11:25:06.904Z",
+  "startedAt": "2026-10-22T12:56:33.135Z",
   "steps": {
     "nhdLayers": [
       {
@@ -55,91 +55,8 @@
         "name": "Waterbody - Large Scale"
       }
     ],
-    "lakes": {
-      "features": 4206,
-      "polygons": 3248,
-      "inCalifornia": 2930
-    },
-    "elevationError": "fetch failed",
-    "elevations": {
-      "nhdKept": 649,
-      "fromDem": 2281,
-      "missing": 0
-    },
-    "depthProbe": "403 https://pasta.lternet.edu/package/eml/edi/1043?filter=newest",
-    "depth": {
-      "package": "edi.1043.1",
-      "pastaError": "403 https://pasta.lternet.edu/package/data/eml/edi/1043/1",
-      "portalUrls": [],
-      "portalResponse": " <!DOCTYPE html> <html lang=\"en\"> <head> <title>Data Portal - Login | Environmental Data Initiative (EDI) </title> <meta charset=\"UTF-8\"/> <meta content=\"width=device-width, initial-scale=1, maximum-scale=1\" name=\"viewport\"> <link rel=\"shortcut icon\" href=\"./images/favicon.ico\" type=\"image/x-icon\"/>",
-      "matchedWikidata": 12,
-      "unmatchedWikidata": [
-        "Lake Mohave 35.437222222,-114.643611111 75ft",
-        "Applegate Lake 42.054722222,-123.114444444 226ft nearest Elk Lake 14.6km",
-        "Biggin 37.133257,-116.041124 795ft",
-        "Golden Gate 37.816666666,-122.483333333 295ft nearest Mountain Lake 3.4km",
-        "Folsom Dam 38.7077,-121.157 479ft nearest Hunkle Reservoir 1.6km",
-        "Donner Lake 39.3228,-120.264 328ft nearest Donner Lake 0.0km",
-        "Pyramid Lake 40.033333333,-119.566666666 356ft",
-        "Q172822 36.015833333,-114.737777777 594ft",
-        "Pile Driver 37.227022,-116.056412 1518ft",
-        "Clear Lake 39.0616,-122.8272 26ft nearest Clear Lake 2.5km",
-        "Island Lake 40.615,-115.381 22ft",
-        "Abilene 37.01311,-116.045193 804ft",
-        "San Francisco Bay 37.6546543,-122.2374676 33ft nearest Central Lake 11.5km",
-        "Frenchman Lake 39.893888888,-120.19 36ft nearest Frenchman Lake 0.9km",
-        "Lake Mead 36.25,-114.39 531ft"
-      ],
-      "lakesWithDepth": 12
-    },
-    "depthPackageError": "No depth table found via portal",
-    "depthError": "403 https://pasta.lternet.edu/package/search/eml?defType=edismax&q=title:%22LAGOS-US%20DEPTH%22&fl=packageid,title,pubdate&rows=20",
-    "wikidata": {
-      "rows": 27,
-      "sample": [
-        {
-          "lat": 38.0165908,
-          "lon": -119.0093116,
-          "maxFt": 56,
-          "meanFt": null,
-          "name": "Mono Lake"
-        },
-        {
-          "lat": 38.570938888,
-          "lon": -122.235261111,
-          "maxFt": 200,
-          "meanFt": null,
-          "name": "Lake Berryessa"
-        },
-        {
-          "lat": 40.7602,
-          "lon": -122.372,
-          "maxFt": 518,
-          "meanFt": null,
-          "name": "Shasta Lake"
-        },
-        {
-          "lat": 39.0616,
-          "lon": -122.8272,
-          "maxFt": 387,
-          "meanFt": null,
-          "name": "Clear Lake"
-        },
-        {
-          "lat": 35.437222222,
-          "lon": -114.643611111,
-          "maxFt": 75,
-          "meanFt": null,
-          "name": "Lake Mohave"
-        }
-      ]
-    },
-    "rivers": {
-      "layer": 6,
-      "segments": 363814,
-      "named": 12971,
-      "kept": 1591
-    }
+    "lakesError": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/12/query?where=GNIS_NAME+IS+NOT+NULL+AND+FTYPE+IN+%28390%2C436%29+AND+AREASQKM+%3E%3D+0.008&outFields=PERMANENT_IDENTIFIER%2CGNIS_ID%2C",
+    "riversError": "502 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?where=GNIS_NAME+IS+NOT+NULL+AND+%28GNIS_NAME+LIKE+%27%25+River%25%27+OR+GNIS_NAME+LIKE+%27%25+Creek%25%27+OR+GNIS_NAME+LIKE+%27"
   },
-  "finishedAt": "2026-10-22T12:52:37.165Z"
+  "finishedAt": "2026-10-22T13:17:28.161Z"
 }
