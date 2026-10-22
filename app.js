@@ -746,4 +746,4 @@ refreshMap().then(async () => {
   const lakes = await db.all('lakes');
   if (lakes.length) map.fitBounds(L.latLngBounds(lakes.map(l => [l.lat, l.lon])).pad(0.3), { maxZoom: 13 });
 });
-window.__app = { db, openLake, showView, openWater }; window.__map = map; // handy for debugging from the console
+window.__app = { db, openLake, showView, openWater, CA }; window.__map = map; // handy for debugging from the console
