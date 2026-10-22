@@ -98,3 +98,13 @@ export async function historyFor(lake) {
     .map(([, , year, species, locality, status]) => ({ year: String(year), text: `${species}${locality ? ` (${locality})` : ''}${status ? ` · ${status.toLowerCase()}` : ''}` }));
   return { note: h.note, statewide: h.statewide, local };
 }
+
+// Public depth-contour surveys (USGS) covering this water, if any.
+export async function bathymetryFor(lake) {
+  const idx = cache.bathy ??= fetch('data/ca/bathymetry/index.json').then(r => r.ok ? r.json() : null).catch(() => null);
+  const surveys = (await idx)?.surveys ?? [];
+  const pad = 0.01;
+  return surveys.filter(s => lake.lat >= s.bbox[1] - pad && lake.lat <= s.bbox[3] + pad && lake.lon >= s.bbox[0] - pad && lake.lon <= s.bbox[2] + pad);
+}
+
+export const bathymetryUrl = id => `data/ca/bathymetry/${id}.geojson`;

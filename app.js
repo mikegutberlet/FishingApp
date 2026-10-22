@@ -173,6 +173,31 @@ async function showDepthSet(setId) {
   map.fitBounds(L.latLngBounds(set.points.map(p => [p[0], p[1]])));
 }
 
+// Contour surveys store elevations; depth = surface elevation - contour elevation.
+async function showSurvey(survey, lake) {
+  const [gj, res] = await Promise.all([fetch(CA.bathymetryUrl(survey.id)).then(r => r.json()), CA.nearestReservoir(lake.lat, lake.lon, lake.cdecStation)]);
+  const toFt = survey.units === 'm' ? M_TO_FT : 1;
+  const current = res?.elevation?.at(-1)?.[1];
+  // Only trust the CDEC level if it falls within the survey's range (same datum, same lake).
+  const surfaceFt = current && current > survey.minElev * toFt && current < survey.maxElev * toFt + 30 ? current : survey.maxElev * toFt;
+  const maxDepth = surfaceFt - survey.minElev * toFt;
+  depthLayer.clearLayers();
+  L.geoJSON(gj, {
+    filter: f => f.properties.e * toFt <= surfaceFt,
+    style: f => ({ color: depthColor(surfaceFt - f.properties.e * toFt, maxDepth), weight: 1.5, opacity: 0.9, fill: false }),
+    onEachFeature: (f, layer) => layer.bindTooltip(`${Math.round(surfaceFt - f.properties.e * toFt)} ft deep`, { sticky: true }),
+  }).addTo(depthLayer);
+  const legend = $('#depth-legend');
+  const grad = [0, .25, .5, .75, 1].map(t => depthColor(t * maxDepth, maxDepth)).join(',');
+  legend.innerHTML = `<b>${esc(lake.name)} contours</b><div class="bar" style="background:linear-gradient(90deg,${grad})"></div>0 ft <span style="float:right">${Math.round(maxDepth)} ft</span>
+    <div class="muted" style="font-size:11px">${surfaceFt === current ? `At today's level, ${Math.round(current)} ft` : 'At full pool'} · USGS survey</div><a href="#" id="hide-depth">Hide</a>`;
+  legend.classList.remove('hidden');
+  $('#hide-depth').onclick = e => { e.preventDefault(); depthLayer.clearLayers(); legend.classList.add('hidden'); };
+  if (!map.hasLayer(depthLayer)) depthLayer.addTo(map);
+  showView('map');
+  map.fitBounds([[survey.bbox[1], survey.bbox[0]], [survey.bbox[3], survey.bbox[2]]]);
+}
+
 // ---------- Lakes ----------
 async function renderLakeList() {
   $('#lake-detail').classList.add('hidden');
@@ -363,6 +388,14 @@ async function renderConditions(lake, body) {
   } catch (e) { if (body.isConnected) $('#water').textContent = `USGS: ${e.message}`; }
 }
 
+async function renderSurveys(lake, el) {
+  const surveys = await CA.bathymetryFor(lake);
+  if (!surveys.length || !el.isConnected) return;
+  el.innerHTML = `<div class="card"><h3>Depth chart</h3>${surveys.map((s, i) => `<div class="lake-item" style="margin:6px 0"><span class="small">${esc(s.title)}</span><button data-survey="${i}">Show</button></div>`).join('')}
+    <p class="muted small">Public USGS survey contours, shown as depth at today's level when the lake has a CDEC gauge.</p></div>`;
+  el.querySelectorAll('[data-survey]').forEach(b => b.onclick = () => showSurvey(surveys[+b.dataset.survey], lake));
+}
+
 function depthFacts(lake) {
   if (!lake.maxDepth && !lake.meanDepth) return '<p class="muted small">No published depth survey for this water yet. Your own Deeper scans are the best depth map you can have.</p>';
   return `<div class="grid">${lake.maxDepth ? `<div class="stat"><b>${lake.maxDepth} ft</b><span>Max depth</span></div>` : ''}${lake.meanDepth ? `<div class="stat"><b>${lake.meanDepth} ft</b><span>Average depth</span></div>` : ''}
@@ -372,11 +405,12 @@ function depthFacts(lake) {
 
 async function renderDepth(lake, body) {
   if (lake.unsaved) {
-    body.innerHTML = `<div class="card"><h3>Depth</h3>${depthFacts(lake)}<p class="small">Save this water to import your Deeper scans and see them as a depth map.</p></div>`;
+    body.innerHTML = `<div id="surveys"></div><div class="card"><h3>Depth</h3>${depthFacts(lake)}<p class="small">Save this water to import your Deeper scans and see them as a depth map.</p></div>`;
+    renderSurveys(lake, $('#surveys'));
     return;
   }
   const sets = await db.byLake('depthSets', lake.id);
-  body.innerHTML = `<div class="card"><h3>Depth maps</h3>
+  body.innerHTML = `<div id="surveys"></div><div class="card"><h3>Your depth maps</h3>
     <p class="small">Import soundings from your Deeper (Fish Deeper → Lakebook → export) or any sonar: CSV with latitude, longitude and depth columns, or GPX/KML.</p>
     <form class="form" id="depth-form"><div class="row"><label>Units in file <select name="units"><option value="ft">Feet</option><option value="m">Meters</option></select></label>
       <label>Name <input name="name" placeholder="Spring 2026 scan"></label></div>
@@ -399,6 +433,7 @@ async function renderDepth(lake, body) {
     } catch (err) { alert(err.message); }
   };
   body.querySelectorAll('[data-show]').forEach(b => b.onclick = () => showDepthSet(b.dataset.show));
+  renderSurveys(lake, $('#surveys'));
   body.querySelectorAll('[data-del]').forEach(b => b.onclick = async () => { if (confirm('Delete this depth map?')) { await db.del('depthSets', b.dataset.del); openLake(lake.id, 'depth'); } });
 }
 
