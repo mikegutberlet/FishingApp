@@ -13,7 +13,8 @@ const OUT = new URL('../data/ca/bathymetry/', import.meta.url);
 const WORK = '/tmp/bathy';
 const UA = { 'User-Agent': 'TackleBox-fishing-app (personal, github.com/mikegutberlet/FishingApp)' };
 const SB = 'https://www.sciencebase.gov/catalog';
-const QUERIES = ['California reservoir contours bathymetric', 'California reservoir bathymetry contours NAVD88', 'California lake bathymetric survey contours', 'Lake Tahoe bathymetry'];
+// ScienceBase's search ANDs every word, so keep queries short and filter by title/location afterwards.
+const QUERIES = ['contours NAVD88', 'California contours', 'reservoir contours', 'lake contours', 'bathymetric contours', 'bathymetry California', 'bathymetric survey California', 'Lake Tahoe bathymetry', 'reservoir bathymetry'];
 const report = { startedAt: new Date().toISOString(), items: [] };
 
 async function get(url) {
@@ -23,7 +24,7 @@ async function get(url) {
 }
 
 async function search(q) {
-  const params = new URLSearchParams({ q, format: 'json', max: '100', fields: 'title,spatial,files,hasChildren' });
+  const params = new URLSearchParams({ q, format: 'json', max: '300', fields: 'title,spatial,hasChildren' });
   const json = await (await get(`${SB}/items?${params}`)).json();
   return json.items ?? [];
 }
@@ -53,7 +54,8 @@ const seen = new Map();
 for (const q of QUERIES) {
   try { for (const it of await search(q)) seen.set(it.id, it); } catch (e) { report.searchError = e.message; }
 }
-const candidates = [...seen.values()].filter(it => /contour/i.test(it.title) && !/topograph|land surface|lidar/i.test(it.title));
+const caBox = it => { const b = it.spatial?.boundingBox; return b ? inCalifornia([b.minX, b.minY, b.maxX, b.maxY]) : /california|tahoe/i.test(it.title); };
+const candidates = [...seen.values()].filter(it => /contour|bathymetr/i.test(it.title) && !/topograph|land surface|lidar|seafloor|offshore|bay\b|coast|ocean|channel islands/i.test(it.title) && caBox(it));
 report.searched = seen.size;
 report.candidates = candidates.map(c => c.title);
 
