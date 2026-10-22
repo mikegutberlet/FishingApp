@@ -46,7 +46,7 @@ Data is refreshed daily by `.github/workflows/update-data.yml` running `scripts/
 | Data | Source | Refresh |
 |---|---|---|
 | Lake and river names, size, elevation | USGS National Hydrography Dataset | weekly |
-| Max and mean depth | LAGOS-US DEPTH (published lake depth surveys) | weekly |
+| Max and mean depth | LAGOS-US DEPTH (published lake depth surveys), Wikidata for lakes it misses | weekly |
 | Depth contour charts | USGS ScienceBase bathymetric surveys | monthly |
 | Historical introductions and plantings | USGS Nonindigenous Aquatic Species database, plus documented early events (Fish Bulletin 178) | weekly |
 | Current plants and stocking history | CDFW planting schedule | nightly |

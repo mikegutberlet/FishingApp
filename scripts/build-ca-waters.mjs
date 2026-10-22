@@ -147,23 +147,28 @@ async function buildLakes(ids) {
 // (Open-Meteo's elevation API, 100 points per call) and keep whichever reading agrees with it.
 async function attachElevations(lakes) {
   let fromDem = 0, kept = 0;
-  for (let i = 0; i < lakes.length; i += 100) {
-    const batch = lakes.slice(i, i + 100);
-    let dem = [];
-    try {
-      const url = `https://api.open-meteo.com/v1/elevation?latitude=${batch.map(l => l.lat).join(',')}&longitude=${batch.map(l => l.lon).join(',')}`;
-      dem = (await getJson(url)).elevation ?? [];
-    } catch (e) { report.steps.elevationError = e.message; }
-    batch.forEach((l, j) => {
-      const demFt = Number.isFinite(dem[j]) ? dem[j] * 3.28084 : null;
-      const asM = l.nhdElev > 0 ? l.nhdElev * 3.28084 : null, asFt = l.nhdElev > 0 ? l.nhdElev : null;
-      const close = v => v != null && demFt != null && Math.abs(v - demFt) <= Math.max(60, demFt * 0.08);
-      if (close(asM)) { l.elevationFt = Math.round(asM); kept++; }
-      else if (close(asFt)) { l.elevationFt = Math.round(asFt); kept++; }
-      else if (demFt != null) { l.elevationFt = Math.round(demFt); fromDem++; }
-    });
+  const todo = lakes.filter(l => l.elevationFt == null);
+  for (let pass = 0; pass < 2; pass++) {
+    const pending = todo.filter(l => l.elevationFt == null);
+    for (let i = 0; i < pending.length; i += 100) {
+      const batch = pending.slice(i, i + 100);
+      let dem = [];
+      try {
+        const url = `https://api.open-meteo.com/v1/elevation?latitude=${batch.map(l => l.lat).join(',')}&longitude=${batch.map(l => l.lon).join(',')}`;
+        dem = (await (await get(url, 5)).json()).elevation ?? [];
+      } catch (e) { report.steps.elevationError = e.message; }
+      batch.forEach((l, j) => {
+        const demFt = Number.isFinite(dem[j]) ? dem[j] * 3.28084 : null;
+        const asM = l.nhdElev > 0 ? l.nhdElev * 3.28084 : null, asFt = l.nhdElev > 0 ? l.nhdElev : null;
+        const close = v => v != null && demFt != null && Math.abs(v - demFt) <= Math.max(60, demFt * 0.08);
+        if (close(asM)) { l.elevationFt = Math.round(asM); kept++; }
+        else if (close(asFt)) { l.elevationFt = Math.round(asFt); kept++; }
+        else if (demFt != null) { l.elevationFt = Math.round(demFt); fromDem++; }
+      });
+      await new Promise(res => setTimeout(res, 400));
+    }
   }
-  report.steps.elevations = { nhdKept: kept, fromDem };
+  report.steps.elevations = { nhdKept: kept, fromDem, missing: lakes.filter(l => l.elevationFt == null).length };
 }
 
 // Rivers: merge every named flowline segment by GNIS id, then place label points every ~15 km along it.
@@ -221,7 +226,7 @@ async function depthTable() {
     const rev = (await (await get('https://pasta.lternet.edu/package/eml/edi/1043?filter=newest')).text()).trim();
     if (/^\d+$/.test(rev)) ids = [`edi.1043.${rev}`];
   } catch (e) { report.steps.depthProbe = e.message; }
-  if (!report.steps.depthProbe) return await depthFromPackage(ids[0]);
+  try { return await depthFromPackage(ids[0]); } catch (e) { report.steps.depthPackageError = e.message; }
   const search = await getJson('https://pasta.lternet.edu/package/search/eml?defType=edismax&q=title:%22LAGOS-US%20DEPTH%22&fl=packageid,title,pubdate&rows=20&wt=json')
     .catch(async () => {
       // PASTA returns XML by default; fall back to parsing it.
@@ -229,9 +234,33 @@ async function depthTable() {
       return { xml };
     });
   const text = JSON.stringify(search);
-  ids = [...new Set([...text.matchAll(/edi\.\d+\.\d+/g)].map(m => m[0]))];
+  ids = [...new Set([...text.matchAll(/edi\.\d+\.\d+/g)].map(m => m[0]))].filter(id => id !== 'edi.1043.1');
   if (!ids.length) throw new Error('LAGOS-US DEPTH package not found');
   return await depthFromPackage(ids.sort((a, b) => +b.split('.')[2] - +a.split('.')[2])[0]);
+}
+
+// Wikidata records a maximum depth for a few hundred California lakes (from Wikipedia infoboxes).
+// Used for lakes LAGOS doesn't cover, or for all of them when EDI is unreachable.
+async function wikidataDepths() {
+  const query = `SELECT ?item ?itemLabel ?loc ?depth ?unit WHERE {
+  SERVICE wikibase:box { ?item wdt:P625 ?loc . bd:serviceParam wikibase:cornerSouthWest "Point(-124.6 32.5)"^^geo:wktLiteral . bd:serviceParam wikibase:cornerNorthEast "Point(-114.1 42.1)"^^geo:wktLiteral . }
+  ?item p:P4511 ?st . ?st psv:P4511 ?v . ?v wikibase:quantityAmount ?depth ; wikibase:quantityUnit ?unit .
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}`;
+  const r = await fetch(`https://query.wikidata.org/sparql?format=json&query=${encodeURIComponent(query)}`, { headers: { ...UA, Accept: 'application/sparql-results+json' } });
+  if (!r.ok) throw new Error(`${r.status} wikidata`);
+  const rows = [];
+  for (const b of (await r.json()).results.bindings) {
+    const m = b.loc.value.match(/Point\(([-\d.]+) ([-\d.]+)\)/);
+    if (!m) continue;
+    const unit = b.unit.value.split('/').pop();
+    const toFt = unit === 'Q11573' ? 3.28084 : unit === 'Q3710' ? 1 : unit === 'Q174728' ? 0.0328084 : null; // metre, foot, centimetre
+    if (!toFt) continue;
+    const maxFt = Math.round(+b.depth.value * toFt);
+    if (!(maxFt > 0) || maxFt > 2000) continue;
+    rows.push({ lat: +m[2], lon: +m[1], maxFt, meanFt: null, name: b.itemLabel?.value ?? '' });
+  }
+  return rows;
 }
 
 async function depthFromPackage(packageId) {
@@ -301,7 +330,7 @@ function splitCsv(line) {
   return out.map(s => s.trim());
 }
 
-function attachDepths(lakes, depths) {
+function attachDepths(lakes, depths, source) {
   let matched = 0;
   for (const d of depths) {
     let best = null, bestD = Infinity;
@@ -313,9 +342,11 @@ function attachDepths(lakes, depths) {
       if (score < bestD) { bestD = score; best = l; }
     }
     // Big lakes' survey points can be far from our label point, so allow more distance for bigger lakes.
-    if (best && bestD <= Math.max(1, Math.sqrt(best.acres / 247) * 1.5)) { best.maxDepthFt = d.maxFt; if (d.meanFt) best.meanDepthFt = d.meanFt; matched++; }
+    if (best && !best.maxDepthFt && bestD <= Math.max(1, Math.sqrt(best.acres / 247) * 1.5)) {
+      best.maxDepthFt = d.maxFt; if (d.meanFt) best.meanDepthFt = d.meanFt; best.depthSource = source; matched++;
+    }
   }
-  report.steps.depth.matched = matched;
+  report.steps.depth = { ...report.steps.depth, [`matched${source}`]: matched };
 }
 
 await mkdir(OUT, { recursive: true });
@@ -326,8 +357,10 @@ try { ids = await layerIds(); } catch (e) { report.steps.nhdLayersError = e.mess
 let lakes = null;
 try { lakes = await buildLakes(ids); } catch (e) { report.steps.lakesError = e.message; console.error('lakes:', e.message); }
 if (lakes) {
-  try { attachDepths(lakes, await depthTable()); } catch (e) { report.steps.depthError = e.message; console.error('depth:', e.message); }
-  await save('lakes.json', { updatedAt: new Date().toISOString(), source: 'USGS National Hydrography Dataset; depths from LAGOS-US DEPTH', lakes });
+  try { attachDepths(lakes, await depthTable(), 'LAGOS'); } catch (e) { report.steps.depthError = e.message; console.error('depth:', e.message); }
+  try { attachDepths(lakes, await wikidataDepths(), 'Wikidata'); } catch (e) { report.steps.wikidataError = e.message; console.error('wikidata:', e.message); }
+  report.steps.depth = { ...report.steps.depth, lakesWithDepth: lakes.filter(l => l.maxDepthFt).length };
+  await save('lakes.json', { updatedAt: new Date().toISOString(), source: 'USGS National Hydrography Dataset; depths from LAGOS-US DEPTH and Wikidata', lakes });
 }
 try {
   const rivers = await buildRivers(ids);

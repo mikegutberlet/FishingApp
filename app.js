@@ -122,7 +122,7 @@ async function openWater(w, tab = 'conditions') {
   const stocked = await CA.matchStockedWater(w);
   openLake({
     unsaved: true, nhdId: String(w.id), kind: w.kind, name: w.name, type: w.type, state: 'CA', lat: w.lat, lon: w.lon,
-    acres: w.acres ?? null, elevationFt: w.elevationFt ?? null, maxDepth: w.maxDepthFt ?? null, meanDepth: w.meanDepthFt ?? null,
+    acres: w.acres ?? null, elevationFt: w.elevationFt ?? null, maxDepth: w.maxDepthFt ?? null, meanDepth: w.meanDepthFt ?? null, depthSource: w.depthSource ?? null,
     lengthKm: w.km ?? null, cdfwStockId: stocked?.id ?? null, stockingUrl: stocked ? CA.waterUrl(stocked.id) : null,
   }, tab);
 }
@@ -443,6 +443,7 @@ function depthFacts(lake) {
   if (!lake.maxDepth && !lake.meanDepth) return '<p class="muted small">No published depth survey for this water yet. Your own Deeper scans are the best depth map you can have.</p>';
   return `<div class="grid">${lake.maxDepth ? `<div class="stat"><b>${lake.maxDepth} ft</b><span>Max depth</span></div>` : ''}${lake.meanDepth ? `<div class="stat"><b>${lake.meanDepth} ft</b><span>Average depth</span></div>` : ''}
     ${lake.elevationFt ? `<div class="stat"><b>${lake.elevationFt.toLocaleString()} ft</b><span>Surface elevation</span></div>` : ''}</div>
+    ${lake.depthSource ? `<p class="muted small">Depth from ${lake.depthSource === 'LAGOS' ? 'LAGOS-US DEPTH (published lake surveys)' : 'Wikidata (Wikipedia lake data)'}.</p>` : ''}
     <p class="muted small">Depths from published surveys (LAGOS-US DEPTH). Reservoirs vary with water level.</p>`;
 }
 

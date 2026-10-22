@@ -55,6 +55,36 @@ async function walk(dir) {
 const isRasterName = f => !/ortho|_hll|dsm|browse|thumb/i.test(basename(f)) && (/\.(tif|tiff|asc|xyz|img|adf)$/i.test(f) || (/\.txt$/i.test(f) && /dem|grid|xyz|bathy|elev/i.test(basename(f))));
 const isGoodFile = f => (/\.zip$/i.test(f.name) && !/dwg|cad|jpg|photo|image/i.test(f.name)) || isRasterName(f.name);
 
+// The statewide lake list (weekly build) gives each lake's surface elevation, used to sanity-check survey units.
+let LAKES = [];
+try { LAKES = JSON.parse(await readFile(new URL('../lakes.json', OUT), 'utf8')).lakes.filter(l => l.elevationFt != null); } catch {}
+const norm = s => (s ?? '').toLowerCase().replace(/\b(lake|reservoir|res\.?|the|of)\b|[^a-z0-9]/g, '');
+// The lake a survey title names, e.g. "Bathymetric data for Whiskeytown Lake, May 2019" -> "whiskeytown".
+function lakeKey(title) {
+  const m = title.match(/\bLake\s+([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)|([A-Z][A-Za-z.']+(?:\s[A-Z][A-Za-z.']+){0,2})\s+(?:Lake|Reservoir)\b/);
+  return m ? norm(m[1] ?? m[2]) : null;
+}
+function lakeFor(title, center) {
+  const key = lakeKey(title);
+  let named = key && LAKES.filter(l => norm(l.name) === key);
+  if (key && !named.length) named = LAKES.filter(l => norm(l.name).length > 3 && key.endsWith(norm(l.name))); // "Upper Letts Lake" -> Letts Lake
+  if (named?.length && center) named = named.filter(l => Math.hypot(l.lat - center[1], (l.lon - center[0]) * 0.8) < 0.15);
+  if (named?.length) {
+    return (center ? named.sort((a, b) => Math.hypot(a.lat - center[1], a.lon - center[0]) - Math.hypot(b.lat - center[1], b.lon - center[0])) : named.sort((a, b) => b.acres - a.acres))[0];
+  }
+  if (!center) return null;
+  return LAKES.filter(l => Math.hypot(l.lat - center[1], (l.lon - center[0]) * 0.8) < 0.03).sort((a, b) => b.acres - a.acres)[0] ?? null;
+}
+// Picks the unit under which the survey's highest value sits near the lake's surface elevation.
+function checkUnits(units, maxVal, lake, entry) {
+  if (!lake || !Number.isFinite(maxVal)) return units ?? 'ft';
+  const offFt = Math.abs(maxVal - lake.elevationFt), offM = Math.abs(maxVal * 3.28084 - lake.elevationFt);
+  const fits = off => off <= Math.max(80, lake.elevationFt * 0.1);
+  const best = fits(offFt) && (!fits(offM) || offFt <= offM) ? 'ft' : fits(offM) ? 'm' : null;
+  if (best && best !== units) entry.unitsCorrected = { from: units ?? null, to: best, maxVal, lakeElevationFt: lake.elevationFt, lake: lake.name };
+  return best ?? units ?? 'ft';
+}
+
 function unitsOf(...texts) {
   const t = texts.join(' ');
   if (/_ft\b|_ft_|navd88_?ft|\bfeet\b|\bft\b|10-ft|5-ft|2-ft/i.test(t)) return 'ft';
@@ -75,8 +105,8 @@ function eachCoord(geometry, cb) {
 }
 const vertexCount = g => { let n = 0; eachCoord(g, () => n++); return n; };
 
-async function toGeoJson(shp, field, dir, srsArgs = []) {
-  for (const simplify of ['0.00002', '0.00005', '0.0001', '0.0002', '0.0004']) {
+async function toGeoJson(shp, field, dir, srsArgs = [], simplifies = ['0.00002', '0.00005', '0.0001', '0.0002', '0.0004']) {
+  for (const simplify of simplifies) {
     const out = join(dir, `out-${simplify}.geojson`);
     await rm(out, { force: true });
     sh('ogr2ogr', ['-f', 'GeoJSON', ...srsArgs, '-t_srs', 'EPSG:4326', '-simplify', simplify, '-lco', 'COORDINATE_PRECISION=5', '-select', field, out, shp]);
@@ -103,23 +133,34 @@ async function prepareRaster(raster, dir) {
   return sorted;
 }
 
-async function contourRaster(rasterIn, units, dir) {
+async function contourRaster(rasterIn, units, dir, lake, entry, times = 1) {
   const raster = await prepareRaster(rasterIn, dir);
-  const info = JSON.parse(sh('gdalinfo', ['-json', raster]));
+  const info = JSON.parse(sh('gdalinfo', ['-json', '-mm', raster]));
   const [w, h] = info.size;
+  const band = info.bands?.[0] ?? {};
+  const minVal = band.computedMin ?? band.minimum, maxVal = band.computedMax ?? band.maximum;
+  // ASCII grids rarely declare their no-data value; a huge negative minimum is one (-9999, -3.4e38).
+  const nodata = band.noDataValue ?? (minVal <= -500 ? minVal : null);
+  const nodataArgs = nodata != null ? ['-srcnodata', String(nodata), '-dstnodata', String(nodata)] : [];
   let src = raster;
-  // Keep the contouring quick: coarsen anything over ~20M cells.
-  if (w * h > 20e6) {
-    const factor = Math.ceil(Math.sqrt(w * h / 20e6));
+  // A phone doesn't need 1 m cells: coarsen anything over ~1500 px on the long side (about 2-4 m cells).
+  const MAX_PX = 1500;
+  if (Math.max(w, h) > MAX_PX) {
+    const factor = Math.max(w, h) / MAX_PX;
     src = join(dir, 'coarse.tif');
-    sh('gdalwarp', ['-overwrite', '-r', 'average', '-ts', String(Math.round(w / factor)), String(Math.round(h / factor)), raster, src]);
+    sh('gdalwarp', ['-overwrite', '-r', 'average', ...nodataArgs, '-ts', String(Math.round(w / factor)), String(Math.round(h / factor)), raster, src]);
   }
-  // Big lakes get 20 ft contours so the file stays small enough for a phone.
-  const big = w * h > 12e6;
-  const interval = units === 'm' ? (big ? '6' : '3') : (big ? '20' : '10');
+  // Units from file names are often wrong or missing, so compare the raster's top value with the lake's elevation.
+  const ext = info.wgs84Extent?.coordinates?.[0];
+  const center = ext ? [ext.reduce((a, c) => a + c[0], 0) / ext.length, ext.reduce((a, c) => a + c[1], 0) / ext.length] : null;
+  lake ??= lakeFor(entry.title, center);
+  units = checkUnits(units, maxVal, lake, entry);
+  const base = units === 'm' ? 3 : 10;
+  const interval = String(base * times);
   const shp = join(dir, 'contours.shp');
-  sh('gdal_contour', ['-i', interval, '-a', 'e', '-f', 'ESRI Shapefile', src, shp]);
-  return { shp, field: 'e', interval, size: [w, h], srs: info.coordinateSystem?.wkt?.slice(0, 80) };
+  for (const ext of ['shp', 'shx', 'dbf', 'prj']) await rm(join(dir, `contours.${ext}`), { force: true });
+  sh('gdal_contour', ['-i', interval, '-a', 'e', ...(nodata != null ? ['-snodata', String(nodata)] : []), '-f', 'ESRI Shapefile', src, shp]);
+  return { shp, field: 'e', interval, units, nodata, lake: lake?.name ?? null, minVal, maxVal, size: [w, h], srs: info.coordinateSystem?.wkt?.slice(0, 80) };
 }
 
 async function processItem(it, parentTitle) {
@@ -135,7 +176,8 @@ async function processItem(it, parentTitle) {
   if (!picks.length) { entry.skip = 'no usable files'; return null; }
   const dir = join(WORK, it.id);
   await mkdir(dir, { recursive: true });
-  let shp = null, field = null, units = unitsOf(it.title, parentTitle ?? '');
+  let shp = null, field = null, units = unitsOf(it.title, parentTitle ?? ''), rasterFile = null;
+  const lake = lakeFor(it.title, bb ? [(bb[0] + bb[2]) / 2, (bb[1] + bb[3]) / 2] : null);
   for (const pick of picks) {
     const local = join(dir, basename(pick.name));
     await writeFile(local, Buffer.from(await (await get(pick.url)).arrayBuffer()));
@@ -154,10 +196,9 @@ async function processItem(it, parentTitle) {
     const rasters = all.filter(isRasterName).filter(f => !/\.zip$/i.test(f)).sort((a, b) => (/\.tiff?$/i.test(b) - /\.tiff?$/i.test(a)));
     for (const r of rasters) {
       try {
-        const u = units ?? unitsOf(basename(r)) ?? 'ft';
-        const res = await contourRaster(r, u, dir);
+        const res = await contourRaster(r, units ?? unitsOf(basename(r)), dir, lake, entry);
         entry.raster = { file: basename(r), ...res };
-        shp = res.shp; field = res.field; units = u;
+        shp = res.shp; field = res.field; units = res.units; rasterFile = r;
         break;
       } catch (e) { entry.rasterErrors = (entry.rasterErrors ?? []).concat(`${basename(r)}: ${e.message.slice(0, 160)}`); }
     }
@@ -179,9 +220,17 @@ async function processItem(it, parentTitle) {
     srsArgs.push('-s_srs', `EPSG:269${zone}`);
     entry.assumedSrs = `EPSG:269${zone}`;
   }
-  const gj = await toGeoJson(shp, field, dir, srsArgs);
+  let gj = await toGeoJson(shp, field, dir, srsArgs, rasterFile ? ['0.00002', '0.00005'] : undefined);
+  // Raster contours that are still too big get a wider interval rather than cruder lines.
+  for (const times of [2, 4, 8]) {
+    if (gj || !rasterFile) break;
+    const res = await contourRaster(rasterFile, units, dir, lake, entry, times);
+    entry.raster = { ...entry.raster, interval: res.interval };
+    gj = await toGeoJson(res.shp, res.field, dir, srsArgs, times < 8 ? ['0.00002', '0.00005'] : undefined);
+  }
   if (!gj) { entry.skip = 'too large even simplified'; return null; }
   const elevs = gj.features.map(f => f.properties.e);
+  if (!rasterFile) units = checkUnits(units, Math.max(...elevs), lake, entry);
   let [w, s, e, n] = [180, 90, -180, -90];
   for (const f of gj.features) eachCoord(f.geometry, ([x, y]) => { w = Math.min(w, x); e = Math.max(e, x); s = Math.min(s, y); n = Math.max(n, y); });
   if (!inCalifornia([w, s, e, n])) { entry.skip = 'contours outside California'; return null; }
@@ -191,7 +240,7 @@ async function processItem(it, parentTitle) {
   entry.ok = { fileId, features: gj.features.length, bytes: gj.body.length, simplify: gj.simplify, units };
   return {
     id: fileId, title, year: +(title.match(/\b(19|20)\d{2}\b/)?.[0] ?? 0) || null, source: `https://www.sciencebase.gov/catalog/item/${it.id}`,
-    units: units ?? 'ft', unitsGuessed: !units, datum: /navd\s?88/i.test(`${title} ${entry.files.join(' ')}`) ? 'NAVD88' : null,
+    lake: lake?.name ?? null, lakeKey: lakeKey(title), units: units ?? 'ft', unitsGuessed: !units && !entry.unitsCorrected, datum: /navd\s?88/i.test(`${title} ${entry.files.join(' ')}`) ? 'NAVD88' : null,
     minElev: Math.min(...elevs), maxElev: Math.max(...elevs), bbox: [w, s, e, n].map(v => +v.toFixed(5)),
     lat: +((s + n) / 2).toFixed(5), lon: +((w + e) / 2).toFixed(5), bytes: gj.body.length,
   };
@@ -212,13 +261,17 @@ report.candidates = candidates.map(c => c.title);
 
 const index = [];
 const done = new Set();
-const contourTitles = candidates.filter(c => /contour/i.test(c.title)).map(c => c.title.split(',')[0].toLowerCase());
-candidates.sort((a, b) => /contour/i.test(b.title) - /contour/i.test(a.title));
+const yearOf = t => +(t.match(/\b(19|20)\d{2}\b/)?.[0] ?? 0);
+const contourKeys = new Set(candidates.filter(c => /contour/i.test(c.title)).map(c => lakeKey(c.title)).filter(Boolean));
+// Published contours first, then newest surveys first, so each lake ends up with its best single survey.
+candidates.sort((a, b) => (/contour/i.test(b.title) - /contour/i.test(a.title)) || yearOf(b.title) - yearOf(a.title));
+const savedKeys = new Set();
 for (const cand of candidates) {
-  // A lake with a published contour set doesn't need its DEM contoured too.
-  if (/digital elevation model|\bdem\b/i.test(cand.title) && contourTitles.includes(cand.title.split(',')[0].toLowerCase())) {
-    report.items.push({ id: cand.id, title: cand.title, skip: 'contours published separately' });
-    continue;
+  const key = lakeKey(cand.title);
+  // A lake with a published contour set doesn't need its DEM contoured too, and one survey per lake is enough.
+  if (key && savedKeys.has(key)) { report.items.push({ id: cand.id, title: cand.title, skip: 'newer survey of this lake already saved' }); done.add(cand.id); continue; }
+  if (/digital elevation model|\bdem\b/i.test(cand.title) && key && contourKeys.has(key)) {
+    report.items.push({ id: cand.id, title: cand.title, skip: 'contours published separately' }); done.add(cand.id); continue;
   }
   const queue = [{ it: cand, parent: null }];
   if (cand.hasChildren) {
@@ -227,9 +280,12 @@ for (const cand of candidates) {
   for (const { it, parent } of queue) {
     if (done.has(it.id)) continue;
     done.add(it.id);
+    const k = lakeKey(it.title) ?? key;
+    if (k && savedKeys.has(k)) continue;
+    if (/digital elevation model|\bdem\b/i.test(it.title) && k && contourKeys.has(k)) { report.items.push({ id: it.id, title: it.title, skip: 'contours published separately' }); continue; }
     try {
       const entry = await processItem(it, parent);
-      if (entry) index.push(entry);
+      if (entry) { index.push(entry); if (entry.lakeKey) savedKeys.add(entry.lakeKey); }
     } catch (e) {
       report.items.push({ id: it.id, title: it.title, error: e.message.slice(0, 300), at: (e.stack ?? '').split('\n')[1]?.trim() });
     }
