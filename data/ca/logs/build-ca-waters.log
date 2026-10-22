@@ -1,6 +1,6 @@
 depth: 403 https://pasta.lternet.edu/package/search/eml?defType=edismax&q=title:%22LAGOS-US%20DEPTH%22&fl=packageid,title,pubdate&rows=20
 {
-  "startedAt": "2026-10-22T10:47:08.253Z",
+  "startedAt": "2026-10-22T11:25:06.904Z",
   "steps": {
     "nhdLayers": [
       {
@@ -73,12 +73,10 @@ depth: 403 https://pasta.lternet.edu/package/search/eml?defType=edismax&q=title:
       "pastaError": "403 https://pasta.lternet.edu/package/data/eml/edi/1043/1",
       "portalUrls": [],
       "portalResponse": " <!DOCTYPE html> <html lang=\"en\"> <head> <title>Data Portal - Login | Environmental Data Initiative (EDI) </title> <meta charset=\"UTF-8\"/> <meta content=\"width=device-width, initial-scale=1, maximum-scale=1\" name=\"viewport\"> <link rel=\"shortcut icon\" href=\"./images/favicon.ico\" type=\"image/x-icon\"/>",
-      "matchedWikidata": 10,
+      "matchedWikidata": 12,
       "unmatchedWikidata": [
-        "Shasta Lake 40.7602,-122.372 518ft",
-        "Clear Lake 39.0616,-122.8272 387ft",
         "Lake Mohave 35.437222222,-114.643611111 75ft",
-        "Applegate Lake 42.054722222,-123.114444444 226ft",
+        "Applegate Lake 42.054722222,-123.114444444 226ft nearest Elk Lake 14.6km",
         "Biggin 37.133257,-116.041124 795ft",
         "Golden Gate 37.816666666,-122.483333333 295ft nearest Mountain Lake 3.4km",
         "Folsom Dam 38.7077,-121.157 479ft nearest Hunkle Reservoir 1.6km",
@@ -86,14 +84,14 @@ depth: 403 https://pasta.lternet.edu/package/search/eml?defType=edismax&q=title:
         "Pyramid Lake 40.033333333,-119.566666666 356ft",
         "Q172822 36.015833333,-114.737777777 594ft",
         "Pile Driver 37.227022,-116.056412 1518ft",
-        "Clear Lake 39.0616,-122.8272 26ft",
+        "Clear Lake 39.0616,-122.8272 26ft nearest Clear Lake 2.5km",
         "Island Lake 40.615,-115.381 22ft",
         "Abilene 37.01311,-116.045193 804ft",
-        "San Francisco Bay 37.6546543,-122.2374676 33ft",
+        "San Francisco Bay 37.6546543,-122.2374676 33ft nearest Central Lake 11.5km",
         "Frenchman Lake 39.893888888,-120.19 36ft nearest Frenchman Lake 0.9km",
         "Lake Mead 36.25,-114.39 531ft"
       ],
-      "lakesWithDepth": 10
+      "lakesWithDepth": 12
     },
     "depthPackageError": "No depth table found via portal",
     "depthError": "403 https://pasta.lternet.edu/package/search/eml?defType=edismax&q=title:%22LAGOS-US%20DEPTH%22&fl=packageid,title,pubdate&rows=20",
@@ -132,4 +130,4 @@ depth: 403 https://pasta.lternet.edu/package/search/eml?defType=edismax&q=title:
           "lat": 35.437222222,
           "lon": -114.643611111,
           "maxFt": 75,
-          
+          "meanFt": null,
