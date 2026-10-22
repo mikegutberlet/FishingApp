@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - scripts/build-*-waters.mjs
+      - scripts/build-ca-*.mjs
       - .github/workflows/build-waters.yml
 
 permissions:
@@ -25,8 +25,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: California
+      - name: California waters
         run: node scripts/build-ca-waters.mjs
+      - name: California history
+        run: node scripts/build-ca-history.mjs
       - name: Commit changes
         run: |
           git add data/

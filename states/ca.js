@@ -86,3 +86,15 @@ export async function matchStockedWater(water) {
   if (named) return named;
   return water.kind === 'river' ? null : near.find(w => w.distKm <= radius) ?? null;
 }
+
+// Historical introductions/plantings recorded at this water: nearby records, or records whose locality names it.
+export async function historyFor(lake) {
+  const h = await load('history');
+  if (!h) return { note: '', statewide: [], local: [] };
+  const radius = lake.kind === 'river' || /river|creek|stream|slough/i.test(lake.type ?? '') ? 3 : Math.max(1.5, Math.sqrt((lake.acres ?? 50) / 247) * 1.5);
+  const key = norm(lake.name);
+  const local = h.places
+    .filter(([lat, lon, , , locality]) => (key.length > 3 && norm(locality).includes(key)) || haversineKm(lake.lat, lake.lon, lat, lon) <= radius)
+    .map(([, , year, species, locality, status]) => ({ year: String(year), text: `${species}${locality ? ` (${locality})` : ''}${status ? ` · ${status.toLowerCase()}` : ''}` }));
+  return { note: h.note, statewide: h.statewide, local };
+}

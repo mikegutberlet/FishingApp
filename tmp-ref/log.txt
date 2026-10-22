@@ -1,169 +1,0 @@
-http 403 text/html
--rw-r--r-- 1 runner runner 919 Oct 22 02:26 fb178.pdf
-0000000   <   !   D   O   C   T   Y   P   E       H   T   M   L       P
-0000020   U   B   L   I   C       "   -   /   /   W   3   C   /   /   D
-0000040   T   D       H   T   M   L       4   .   0   1       T   r   a
-Selecting previously unselected package poppler-data.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 203540 files and directories currently installed.)
-Preparing to unpack .../poppler-data_0.4.12-1_all.deb ...
-Unpacking poppler-data (0.4.12-1) ...
-Selecting previously unselected package libpoppler134:amd64.
-Preparing to unpack .../libpoppler134_24.02.0-1ubuntu9.11_amd64.deb ...
-Unpacking libpoppler134:amd64 (24.02.0-1ubuntu9.11) ...
-Selecting previously unselected package poppler-utils.
-Preparing to unpack .../poppler-utils_24.02.0-1ubuntu9.11_amd64.deb ...
-Unpacking poppler-utils (24.02.0-1ubuntu9.11) ...
-Setting up libpoppler134:amd64 (24.02.0-1ubuntu9.11) ...
-Setting up poppler-data (0.4.12-1) ...
-Setting up poppler-utils (24.02.0-1ubuntu9.11) ...
-Processing triggers for libc-bin (2.39-0ubuntu8.9) ...
-Processing triggers for man-db (2.12.0-4build2) ...
-Not building database; man-db/auto-update is not 'true'.
-Processing triggers for fontconfig (2.15.0-1.1ubuntu2) ...
-
-Running kernel seems to be up-to-date.
-
-No services need to be restarted.
-
-No containers need to be restarted.
-
-No user sessions are running outdated binaries.
-
-No VM guests are running outdated hypervisor (qemu) binaries on this host.
-Syntax Warning: May not be a PDF file (continuing anyway)
-Syntax Error (2): Illegal character <21> in hex string
-Syntax Error (4): Illegal character <4f> in hex string
-Syntax Error (6): Illegal character <54> in hex string
-Syntax Error (7): Illegal character <59> in hex string
-Syntax Error (8): Illegal character <50> in hex string
-Syntax Error (11): Illegal character <48> in hex string
-Syntax Error (12): Illegal character <54> in hex string
-Syntax Error (13): Illegal character <4d> in hex string
-Syntax Error (14): Illegal character <4c> in hex string
-Syntax Error (16): Illegal character <50> in hex string
-Syntax Error (17): Illegal character <55> in hex string
-Syntax Error (19): Illegal character <4c> in hex string
-Syntax Error (20): Illegal character <49> in hex string
-Syntax Error (23): Illegal character <22> in hex string
-Syntax Error (24): Illegal character <2d> in hex string
-Syntax Error (25): Illegal character <2f> in hex string
-Syntax Error (26): Illegal character <2f> in hex string
-Syntax Error (27): Illegal character <57> in hex string
-Syntax Error (30): Illegal character <2f> in hex string
-Syntax Error (31): Illegal character <2f> in hex string
-Syntax Error (33): Illegal character <54> in hex string
-Syntax Error (36): Illegal character <48> in hex string
-Syntax Error (37): Illegal character <54> in hex string
-Syntax Error (38): Illegal character <4d> in hex string
-Syntax Error (39): Illegal character <4c> in hex string
-Syntax Error (42): Illegal character <2e> in hex string
-Syntax Error (46): Illegal character <54> in hex string
-Syntax Error (47): Illegal character <72> in hex string
-Syntax Error (49): Illegal character <6e> in hex string
-Syntax Error (50): Illegal character <73> in hex string
-Syntax Error (51): Illegal character <69> in hex string
-Syntax Error (52): Illegal character <74> in hex string
-Syntax Error (53): Illegal character <69> in hex string
-Syntax Error (54): Illegal character <6f> in hex string
-Syntax Error (55): Illegal character <6e> in hex string
-Syntax Error (57): Illegal character <6c> in hex string
-Syntax Error (58): Illegal character <2f> in hex string
-Syntax Error (59): Illegal character <2f> in hex string
-Syntax Error (61): Illegal character <4e> in hex string
-Syntax Error (62): Illegal character <22> in hex string
-Syntax Error (64): Illegal character <22> in hex string
-Syntax Error (65): Illegal character <68> in hex string
-Syntax Error (66): Illegal character <74> in hex string
-Syntax Error (67): Illegal character <74> in hex string
-Syntax Error (68): Illegal character <70> in hex string
-Syntax Error (69): Illegal character <3a> in hex string
-Syntax Error (70): Illegal character <2f> in hex string
-Syntax Error (71): Illegal character <2f> in hex string
-Syntax Error (72): Illegal character <77> in hex string
-Syntax Error (73): Illegal character <77> in hex string
-Syntax Error (74): Illegal character <77> in hex string
-Syntax Error (75): Illegal character <2e> in hex string
-Syntax Error (76): Illegal character <77> in hex string
-Syntax Error (78): Illegal character <2e> in hex string
-Syntax Error (79): Illegal character <6f> in hex string
-Syntax Error (80): Illegal character <72> in hex string
-Syntax Error (81): Illegal character <67> in hex string
-Syntax Error (82): Illegal character <2f> in hex string
-Syntax Error (83): Illegal character <54> in hex string
-Syntax Error (84): Illegal character <52> in hex string
-Syntax Error (85): Illegal character <2f> in hex string
-Syntax Error (86): Illegal character <68> in hex string
-Syntax Error (87): Illegal character <74> in hex string
-Syntax Error (88): Illegal character <6d> in hex string
-Syntax Error (89): Illegal character <6c> in hex string
-Syntax Error (91): Illegal character <2f> in hex string
-Syntax Error (92): Illegal character <6c> in hex string
-Syntax Error (93): Illegal character <6f> in hex string
-Syntax Error (94): Illegal character <6f> in hex string
-Syntax Error (95): Illegal character <73> in hex string
-Syntax Error (97): Illegal character <2e> in hex string
-Syntax Error (99): Illegal character <74> in hex string
-Syntax Error (101): Illegal character <22> in hex string
-Syntax Error (105): Illegal character <48> in hex string
-Syntax Error (106): Illegal character <54> in hex string
-Syntax Error (107): Illegal character <4d> in hex string
-Syntax Error (108): Illegal character <4c> in hex string
-Syntax Error (111): Illegal character <48> in hex string
-Syntax Error (117): Illegal character <4d> in hex string
-Syntax Error (119): Illegal character <54> in hex string
-Syntax Error (122): Illegal character <48> in hex string
-Syntax Error (123): Illegal character <54> in hex string
-Syntax Error (124): Illegal character <54> in hex string
-Syntax Error (125): Illegal character <50> in hex string
-Syntax Error (126): Illegal character <2d> in hex string
-Syntax Error (128): Illegal character <51> in hex string
-Syntax Error (129): Illegal character <55> in hex string
-Syntax Error (130): Illegal character <49> in hex string
-Syntax Error (131): Illegal character <56> in hex string
-Syntax Error (132): Illegal character <3d> in hex string
-Syntax Error (133): Illegal character <22> in hex string
-Syntax Error (135): Illegal character <6f> in hex string
-Syntax Error (136): Illegal character <6e> in hex string
-Syntax Error (137): Illegal character <74> in hex string
-Syntax Error (139): Illegal character <6e> in hex string
-Syntax Error (140): Illegal character <74> in hex string
-Syntax Error (141): Illegal character <2d> in hex string
-Syntax Error (142): Illegal character <54> in hex string
-Syntax Error (143): Illegal character <79> in hex string
-Syntax Error (144): Illegal character <70> in hex string
-Syntax Error (146): Illegal character <22> in hex string
-Syntax Error (149): Illegal character <4f> in hex string
-Syntax Error (150): Illegal character <4e> in hex string
-Syntax Error (151): Illegal character <54> in hex string
-Syntax Error (153): Illegal character <4e> in hex string
-Syntax Error (154): Illegal character <54> in hex string
-Syntax Error (155): Illegal character <3d> in hex string
-Syntax Error (156): Illegal character <22> in hex string
-Syntax Error (157): Illegal character <74> in hex string
-Syntax Error (159): Illegal character <78> in hex string
-Syntax Error (160): Illegal character <74> in hex string
-Syntax Error (161): Illegal character <2f> in hex string
-Syntax Error (162): Illegal character <68> in hex string
-Syntax Error (163): Illegal character <74> in hex string
-Syntax Error (164): Illegal character <6d> in hex string
-Syntax Error (165): Illegal character <6c> in hex string
-Syntax Error (166): Illegal character <3b> in hex string
-Syntax Error (169): Illegal character <68> in hex string
-Syntax Error (171): Illegal character <72> in hex string
-Syntax Error (172): Illegal character <73> in hex string
-Syntax Error (174): Illegal character <74> in hex string
-Syntax Error (175): Illegal character <3d> in hex string
-Syntax Error (176): Illegal character <69> in hex string
-Syntax Error (177): Illegal character <73> in hex string
-Syntax Error (178): Illegal character <6f> in hex string
-Syntax Error (179): Illegal character <2d> in hex string
-Syntax Error (184): Illegal character <2d> in hex string
-Syntax Error (186): Illegal character <22> in hex string
-Syntax Error (190): Illegal character <54> in hex string
-Syntax Error (191): Illegal character <49> in hex string
-Syntax Error (192): Illegal character <54> in hex string
-Syntax Error (193): Illegal character <4c> in hex string
-Syntax Error: Couldn't find trailer dictionary
-Syntax Error: Couldn't find trailer dictionary
-Syntax Error: Couldn't read xref table
-wc: tmp-ref/fish-bulletin-178.txt: No such file or directory
