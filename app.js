@@ -190,7 +190,7 @@ async function showSurvey(survey, lake) {
   const legend = $('#depth-legend');
   const grad = [0, .25, .5, .75, 1].map(t => depthColor(t * maxDepth, maxDepth)).join(',');
   legend.innerHTML = `<b>${esc(lake.name)} contours</b><div class="bar" style="background:linear-gradient(90deg,${grad})"></div>0 ft <span style="float:right">${Math.round(maxDepth)} ft</span>
-    <div class="muted" style="font-size:11px">${surfaceFt === current ? `At today's level, ${Math.round(current)} ft` : 'At full pool'} · USGS survey</div><a href="#" id="hide-depth">Hide</a>`;
+    <div class="muted" style="font-size:11px">${surfaceFt === current ? `At today's level, ${Math.round(current)} ft (CDEC ${esc(res.id)})` : 'At full pool'} · USGS survey</div><a href="#" id="hide-depth">Hide</a>`;
   legend.classList.remove('hidden');
   $('#hide-depth').onclick = e => { e.preventDefault(); depthLayer.clearLayers(); legend.classList.add('hidden'); };
   if (!map.hasLayer(depthLayer)) depthLayer.addTo(map);
@@ -723,4 +723,4 @@ refreshMap().then(async () => {
   const lakes = await db.all('lakes');
   if (lakes.length) map.fitBounds(L.latLngBounds(lakes.map(l => [l.lat, l.lon])).pad(0.3), { maxZoom: 13 });
 });
-window.__app = { db, openLake, showView }; // handy for debugging from the console
+window.__app = { db, openLake, showView, openWater }; window.__map = map; // handy for debugging from the console

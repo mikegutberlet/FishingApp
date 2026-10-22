@@ -6,7 +6,8 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - scripts/build-ca-*.mjs
+      - scripts/build-ca-waters.mjs
+      - scripts/build-ca-history.mjs
       - .github/workflows/build-waters.yml
 
 permissions:
