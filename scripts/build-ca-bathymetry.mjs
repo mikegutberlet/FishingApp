@@ -242,13 +242,13 @@ async function processItem(it, parentTitle) {
     const vals = JSON.parse(await readFile(probe, 'utf8')).features.map(f => +f.properties[field]).filter(Number.isFinite);
     units = checkUnits(units, Math.min(...vals), Math.max(...vals), lake, entry);
   }
-  let gj = await toGeoJson(shp, field, dir, srsArgs, rasterFile ? ['0.00002', '0.00005'] : undefined, surfaceCap(units, lake));
+  let gj = await toGeoJson(shp, field, dir, srsArgs, rasterFile ? ['0.00005', '0.0001'] : undefined, surfaceCap(units, lake));
   // Raster contours that are still too big get a wider interval rather than cruder lines.
   for (const times of [2, 4, 8]) {
     if (gj || !rasterFile) break;
     const res = await contourRaster(rasterFile, units, dir, lake, entry, times);
     entry.raster = { ...entry.raster, interval: res.interval };
-    gj = await toGeoJson(res.shp, res.field, dir, srsArgs, times < 8 ? ['0.00002', '0.00005'] : undefined, surfaceCap(units, lake));
+    gj = await toGeoJson(res.shp, res.field, dir, srsArgs, times < 8 ? ['0.00005', '0.0001'] : undefined, surfaceCap(units, lake));
   }
   if (!gj) { entry.skip = 'too large even simplified'; return null; }
   if (!gj.features.length) { entry.skip = 'no contours below the water line'; return null; }
