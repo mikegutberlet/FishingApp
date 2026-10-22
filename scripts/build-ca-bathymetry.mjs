@@ -24,10 +24,17 @@ const INCLUDE = /\b(lake|reservoir|res\.)\b/i;
 const TOPIC = /bathymetr|contour|stage-?storage|depth/i;
 const EXCLUDE = /orthomosaic|imagery|digital surface model|\bdsm\b|hillshade|water[- ]?table|ground-?water|potentiometric|clay|subsidence|insar|\bned\b|arc-second|tidal|marsh|multibeam|canyon|borderland|delta|slough|\briver\b|ship channel|geochemical|diatom|grain size|seafloor|offshore|coast|ocean|island|estuar|\bbay\b|lagoon|topobathymetric|sediment core|vapor transport/i;
 
-async function get(url) {
-  const r = await fetch(url, { headers: UA, redirect: 'follow' });
-  if (!r.ok) throw new Error(`${r.status} ${url}`);
-  return r;
+async function get(url, tries = 4) {
+  for (let i = 1; ; i++) {
+    try {
+      const r = await fetch(url, { headers: UA, redirect: 'follow' });
+      if (!r.ok) throw new Error(`${r.status} ${url}`);
+      return r;
+    } catch (e) {
+      if (i >= tries) throw e;
+      await new Promise(res => setTimeout(res, 5000 * i));
+    }
+  }
 }
 const getJson = async url => (await get(url)).json();
 
@@ -75,15 +82,23 @@ function lakeFor(title, center) {
   if (!center) return null;
   return LAKES.filter(l => Math.hypot(l.lat - center[1], (l.lon - center[0]) * 0.8) < 0.03).sort((a, b) => b.acres - a.acres)[0] ?? null;
 }
-// Picks the unit under which the survey's highest value sits near the lake's surface elevation.
-function checkUnits(units, maxVal, lake, entry) {
-  if (!lake || !Number.isFinite(maxVal)) return units ?? 'ft';
-  const offFt = Math.abs(maxVal - lake.elevationFt), offM = Math.abs(maxVal * 3.28084 - lake.elevationFt);
-  const fits = off => off <= Math.max(80, lake.elevationFt * 0.1);
-  const best = fits(offFt) && (!fits(offM) || offFt <= offM) ? 'ft' : fits(offM) ? 'm' : null;
-  if (best && best !== units) entry.unitsCorrected = { from: units ?? null, to: best, maxVal, lakeElevationFt: lake.elevationFt, lake: lake.name };
-  return best ?? units ?? 'ft';
+// Picks the unit under which the lake's surface elevation sits inside the survey's range: the deepest value
+// below the surface (by less than any lake is deep) and the highest value at or above it, less a margin for drawdown.
+function unitsFit(units, minVal, maxVal, lake) {
+  const toFt = units === 'm' ? 3.28084 : 1;
+  const lo = minVal * toFt, hi = maxVal * toFt, e = lake.elevationFt;
+  return lo < e && e - lo < 1800 && hi >= e - Math.max(40, e * 0.05);
 }
+function checkUnits(units, minVal, maxVal, lake, entry) {
+  if (!lake || !Number.isFinite(minVal) || !Number.isFinite(maxVal)) return units ?? 'ft';
+  const fitFt = unitsFit('ft', minVal, maxVal, lake), fitM = unitsFit('m', minVal, maxVal, lake);
+  const best = fitFt && fitM ? (units ?? 'ft') : fitFt ? 'ft' : fitM ? 'm' : null;
+  if (!best) throw new Error(`survey range ${minVal}-${maxVal} doesn't fit ${lake.name} at ${lake.elevationFt} ft`);
+  if (best !== units) entry.unitsCorrected = { from: units ?? null, to: best, minVal, maxVal, lakeElevationFt: lake.elevationFt, lake: lake.name };
+  return best;
+}
+// Contours above the water line are land, not lake bottom; keep only those up to the surface plus a little for full pool.
+const surfaceCap = (units, lake) => lake ? (lake.elevationFt + Math.max(40, lake.elevationFt * 0.05)) / (units === 'm' ? 3.28084 : 1) : Infinity;
 
 function unitsOf(...texts) {
   const t = texts.join(' ');
@@ -105,14 +120,14 @@ function eachCoord(geometry, cb) {
 }
 const vertexCount = g => { let n = 0; eachCoord(g, () => n++); return n; };
 
-async function toGeoJson(shp, field, dir, srsArgs = [], simplifies = ['0.00002', '0.00005', '0.0001', '0.0002', '0.0004']) {
+async function toGeoJson(shp, field, dir, srsArgs = [], simplifies = ['0.00002', '0.00005', '0.0001', '0.0002', '0.0004'], maxE = Infinity) {
   for (const simplify of simplifies) {
     const out = join(dir, `out-${simplify}.geojson`);
     await rm(out, { force: true });
     sh('ogr2ogr', ['-f', 'GeoJSON', ...srsArgs, '-t_srs', 'EPSG:4326', '-simplify', simplify, '-lco', 'COORDINATE_PRECISION=5', '-select', field, out, shp]);
     const gj = JSON.parse(await readFile(out, 'utf8'));
     // Drop the speckle of tiny rings a raster contour produces; they add bytes and no information.
-    const features = gj.features.filter(f => f.geometry && Number.isFinite(+f.properties[field]) && vertexCount(f.geometry) >= 12)
+    const features = gj.features.filter(f => f.geometry && Number.isFinite(+f.properties[field]) && +f.properties[field] <= maxE && vertexCount(f.geometry) >= 12)
       .map(f => ({ type: 'Feature', properties: { e: +(+f.properties[field]).toFixed(1) }, geometry: f.geometry }));
     const body = JSON.stringify({ type: 'FeatureCollection', features });
     if (body.length <= MAX_GEOJSON) return { body, features, simplify };
@@ -154,7 +169,7 @@ async function contourRaster(rasterIn, units, dir, lake, entry, times = 1) {
   const ext = info.wgs84Extent?.coordinates?.[0];
   const center = ext ? [ext.reduce((a, c) => a + c[0], 0) / ext.length, ext.reduce((a, c) => a + c[1], 0) / ext.length] : null;
   lake ??= lakeFor(entry.title, center);
-  units = checkUnits(units, maxVal, lake, entry);
+  units = checkUnits(units, minVal, maxVal, lake, entry);
   const base = units === 'm' ? 3 : 10;
   const interval = String(base * times);
   const shp = join(dir, 'contours.shp');
@@ -220,17 +235,24 @@ async function processItem(it, parentTitle) {
     srsArgs.push('-s_srs', `EPSG:269${zone}`);
     entry.assumedSrs = `EPSG:269${zone}`;
   }
-  let gj = await toGeoJson(shp, field, dir, srsArgs, rasterFile ? ['0.00002', '0.00005'] : undefined);
+  if (!rasterFile) {
+    // Published contour sets: read their range first to settle the units.
+    const probe = join(dir, 'range.geojson');
+    sh('ogr2ogr', ['-f', 'GeoJSON', ...srsArgs, '-t_srs', 'EPSG:4326', '-simplify', '0.01', '-select', field, probe, shp]);
+    const vals = JSON.parse(await readFile(probe, 'utf8')).features.map(f => +f.properties[field]).filter(Number.isFinite);
+    units = checkUnits(units, Math.min(...vals), Math.max(...vals), lake, entry);
+  }
+  let gj = await toGeoJson(shp, field, dir, srsArgs, rasterFile ? ['0.00002', '0.00005'] : undefined, surfaceCap(units, lake));
   // Raster contours that are still too big get a wider interval rather than cruder lines.
   for (const times of [2, 4, 8]) {
     if (gj || !rasterFile) break;
     const res = await contourRaster(rasterFile, units, dir, lake, entry, times);
     entry.raster = { ...entry.raster, interval: res.interval };
-    gj = await toGeoJson(res.shp, res.field, dir, srsArgs, times < 8 ? ['0.00002', '0.00005'] : undefined);
+    gj = await toGeoJson(res.shp, res.field, dir, srsArgs, times < 8 ? ['0.00002', '0.00005'] : undefined, surfaceCap(units, lake));
   }
   if (!gj) { entry.skip = 'too large even simplified'; return null; }
+  if (!gj.features.length) { entry.skip = 'no contours below the water line'; return null; }
   const elevs = gj.features.map(f => f.properties.e);
-  if (!rasterFile) units = checkUnits(units, Math.max(...elevs), lake, entry);
   let [w, s, e, n] = [180, 90, -180, -90];
   for (const f of gj.features) eachCoord(f.geometry, ([x, y]) => { w = Math.min(w, x); e = Math.max(e, x); s = Math.min(s, y); n = Math.max(n, y); });
   if (!inCalifornia([w, s, e, n])) { entry.skip = 'contours outside California'; return null; }
@@ -247,6 +269,8 @@ async function processItem(it, parentTitle) {
 }
 
 await mkdir(OUT, { recursive: true });
+let oldIndex = [];
+try { oldIndex = JSON.parse(await readFile(new URL('index.json', OUT), 'utf8')).surveys ?? []; } catch {}
 await rm(WORK, { recursive: true, force: true });
 await mkdir(WORK, { recursive: true });
 
@@ -291,6 +315,15 @@ for (const cand of candidates) {
     }
     await rm(join(WORK, it.id), { recursive: true, force: true });
   }
+}
+
+// A lake this run couldn't rebuild keeps last run's survey rather than vanishing from the app.
+for (const old of oldIndex) {
+  const key = old.lakeKey ?? lakeKey(old.title);
+  if (index.some(i => i.id === old.id || (key && i.lakeKey === key))) continue;
+  try { await stat(new URL(`${old.id}.geojson`, OUT)); } catch { continue; }
+  index.push({ ...old, lakeKey: key, keptFromLastRun: true });
+  report.keptFromLastRun = (report.keptFromLastRun ?? []).concat(old.title);
 }
 
 // Remove files from earlier runs that no longer have an index entry.

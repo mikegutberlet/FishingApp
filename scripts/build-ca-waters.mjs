@@ -260,6 +260,7 @@ async function wikidataDepths() {
     if (!(maxFt > 0) || maxFt > 2000) continue;
     rows.push({ lat: +m[2], lon: +m[1], maxFt, meanFt: null, name: b.itemLabel?.value ?? '' });
   }
+  report.steps.wikidata = { rows: rows.length, sample: rows.slice(0, 5) };
   return rows;
 }
 
@@ -271,6 +272,7 @@ async function depthFromPackage(packageId) {
   const eml = await (await get(`https://portal.edirepository.org/nis/metadataviewer?packageid=${packageId}&contentType=application/xml`)).text();
   const urls = [...eml.matchAll(/<url[^>]*>\s*(https?:[^<\s]+)\s*<\/url>/g)].map(m => m[1]);
   report.steps.depth.portalUrls = urls.slice(0, 10);
+  if (!urls.length) report.steps.depth.portalResponse = eml.replace(/\s+/g, ' ').slice(0, 300);
   for (const u of urls) {
     const ent = u.match(/\/data\/eml\/edi\/\d+\/\d+\/([0-9a-f]{32})/)?.[1];
     if (!ent) continue;
@@ -331,7 +333,7 @@ function splitCsv(line) {
 }
 
 function attachDepths(lakes, depths, source) {
-  let matched = 0;
+  let matched = 0; const unmatched = [];
   for (const d of depths) {
     let best = null, bestD = Infinity;
     for (const l of lakes) {
@@ -344,9 +346,9 @@ function attachDepths(lakes, depths, source) {
     // Big lakes' survey points can be far from our label point, so allow more distance for bigger lakes.
     if (best && !best.maxDepthFt && bestD <= Math.max(1, Math.sqrt(best.acres / 247) * 1.5)) {
       best.maxDepthFt = d.maxFt; if (d.meanFt) best.meanDepthFt = d.meanFt; best.depthSource = source; matched++;
-    }
+    } else unmatched.push(`${d.name} ${d.lat},${d.lon} ${d.maxFt}ft${best ? ` nearest ${best.name} ${bestD.toFixed(1)}km` : ''}`);
   }
-  report.steps.depth = { ...report.steps.depth, [`matched${source}`]: matched };
+  report.steps.depth = { ...report.steps.depth, [`matched${source}`]: matched, [`unmatched${source}`]: unmatched.slice(0, 60) };
 }
 
 await mkdir(OUT, { recursive: true });
