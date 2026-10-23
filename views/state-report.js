@@ -1,5 +1,6 @@
 // What a state agency writes about a water, for states that publish it (Nevada: NDOW's fishing report and
-// write-up on each water's page; Oregon: the weekly Recreation Report and ODFW's stocking-map notes). States without it (reportFor not exported) show nothing.
+// write-up on each water's page; Oregon: the weekly Recreation Report and ODFW's stocking-map notes). States
+// without it (reportFor not exported) show nothing.
 import { forLake } from '../states/index.js';
 import { esc, fmtDate } from '../ui.js';
 

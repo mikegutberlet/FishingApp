@@ -11,8 +11,8 @@ export const agency = 'ODFW';
 export const stockField = 'odfwWaterId';
 export const levelSource = 'USGS';
 export const scheduleUrl = 'https://myodfw.com/fishing/species/trout/stocking-schedule';
-// ODFW has no page per water; its schedule is the closest thing, so every water links there.
-export const waterUrl = () => scheduleUrl;
+// ODFW has no page per water; the schedule filtered to the water (ids are ODFW's spelling of the name) is closest.
+export const waterUrl = id => `${scheduleUrl}?field_zone_value=All&field_waterbody_name_value_1=${encodeURIComponent(id).replace(/%20/g, '+')}`;
 export const searchBy = 'zone';
 // The Columbia and the Snake make the north and east lines; the box takes in both rivers.
 export const bbox = [-124.75, 41.99, -116.45, 46.3];
@@ -44,16 +44,32 @@ async function zoneOf(lake) {
   return (lake.lat != null ? await zoneAt(lake.lat, lake.lon) : null) ?? stocked?.zone ?? null;
 }
 
-// What ODFW writes about a water: this week's Recreation Report entry and its stocking-map notes.
+// Whether a Recreation Report line is about this water: its name without "Lake"/"River", then that kind of water
+// within a few words ("Siltcoos and Tahkenitch lakes" is about Siltcoos Lake). Same test as the nightly job's.
+const KIND = [/\b(lake|lakes|reservoir|reservoirs|res|pond|ponds|canal)\b/i, /\b(river|rivers|creek|creeks)\b/i];
+export function mentions(text, name) {
+  const bare = String(name ?? '').replace(/\s*\(.*?\)\s*/g, ' ').trim();
+  const base = bare.replace(/^Lake\s+/i, '').replace(/\s+(Lake|Lakes|Reservoir|Pond|Ponds|River|Creek|Canal)$/i, '').trim();
+  if (base.length < 4 || /^(north|south|east|west|upper|lower|middle|big|little|clear|mud|fish|blue|lost|long|round)$/i.test(base)) return false;
+  const kind = KIND.find(re => re.test(bare)) ?? /\b(lake|lakes|reservoir|res|pond|ponds|river|rivers|creek|creeks)\b/i;
+  const b = base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`\\b${b}\\b(?:[\\s,]+[\\w'’-]+){0,3}?[\\s,]+${kind.source.replace(/\\b/g, '')}\\b`, 'i').test(text) || (/^Lake /i.test(bare) && new RegExp(`\\blake\\s+${b}\\b`, 'i').test(text));
+}
+
+// What ODFW writes about a water: this week's Recreation Report lines that name it, and its stocking-map notes.
 export async function reportFor(lake) {
   const [w, r] = await Promise.all([d.load('waters'), d.load('reports')]);
   const id = lake.odfwWaterId ?? (await matchStockedWater(lake))?.id;
   const stocked = w?.waters.find(x => x.id === id) ?? null;
-  const zone = await zoneOf(lake);
-  const rep = (stocked?.report && { text: stocked.report, date: stocked.reportDate, url: stocked.reportUrl })
-    ?? r?.reports.filter(x => sameWater(lake.name, x.name) && (!zone || sameZone(zone, x.zone))).map(x => ({ ...x }))[0] ?? null;
+  let rep = stocked?.report ? { text: stocked.report, date: stocked.reportDate, url: stocked.reportUrl } : null;
+  if (!rep && r) {
+    const zone = await zoneOf(lake);
+    const hit = r.reports.map(x => ({ ...x, lines: (x.items ?? []).filter(t => mentions(t, lake.name)) }))
+      .find(x => x.lines.length && (!zone || sameZone(zone, x.zone) || /Columbia|Marine/.test(x.zone)));
+    if (hit) rep = { text: hit.lines.join('\n'), date: hit.date, url: hit.url };
+  }
   if (!stocked && !rep) return null;
-  return { name: stocked?.name ?? lake.name, url: rep?.url ?? scheduleUrl, report: rep?.text ?? null, reportDate: rep?.date ?? null, info: stocked?.about ?? null };
+  return { name: stocked?.name ?? lake.name, url: rep?.url ?? (stocked ? waterUrl(stocked.id) : scheduleUrl), report: rep?.text ?? null, reportDate: rep?.date ?? null, info: stocked?.about ?? null };
 }
 
 // ---------- Safety: toxic algae (nightly), regulations and fish consumption advisories (weekly) ----------
