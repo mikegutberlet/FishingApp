@@ -55,7 +55,14 @@ export async function renderLicenseCard(edit = null) {
     </form>`;
   const form = $('#lic-form');
   // Report cards: fill in the due date for this year's card.
-  form.kind.onchange = () => { const k = KINDS[form.kind.value]; if (k.due && !form.date.value) form.date.value = k.due(new Date().getFullYear() - (new Date().getMonth() < 2 ? 1 : 0)); };
+  form.kind.onchange = () => {
+    const k = KINDS[form.kind.value];
+    if (!k.due || form.date.value) return;
+    // Last year's card while its deadline is still ahead, else this year's.
+    let y = new Date().getFullYear();
+    if (k.due(y - 1) >= new Date().toLocaleDateString('en-CA')) y--;
+    form.date.value = k.due(y);
+  };
   form.onsubmit = async ev => {
     ev.preventDefault();
     const f = Object.fromEntries(new FormData(form));

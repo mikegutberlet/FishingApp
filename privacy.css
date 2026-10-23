@@ -1,6 +1,6 @@
 /* Insights, app lock, backups, crew sharing, license reminders. */
-.locked header, .locked main, .locked nav, .locked #trip-pill, .locked #reminders { visibility: hidden; }
-#lock { position: fixed; inset: 0; z-index: 3000; background: #0f3b4c; color: #fff; display: flex; align-items: center; justify-content: center; padding: 24px 16px calc(24px + env(safe-area-inset-bottom)); }
+.locked header, .locked main, .locked nav, .locked #trip-pill, .locked #reminders, .locked dialog:not(#lock) { visibility: hidden; }
+#lock { position: fixed; inset: 0; z-index: 3000; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; border: 0; background: #0f3b4c; color: #fff; display: flex; align-items: center; justify-content: center; padding: 24px 16px calc(24px + env(safe-area-inset-bottom)); }
 .lock-box { width: 100%; max-width: 320px; text-align: center; }
 .lock-box .muted { color: #b7d3dd; }
 .lock-box a { color: #b7d3dd; }
@@ -15,6 +15,7 @@
 .pad button:active { background: #ffffff40; }
 .lock-box > button { background: none; color: #fff; border-color: #ffffff60; }
 .shake { animation: shake .35s; }
+#lock::backdrop { background: #0f3b4c; }
 @keyframes shake { 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
 
 #reminders { position: fixed; z-index: 1500; top: calc(var(--head-h) + 6px); left: 8px; right: 8px; display: flex; flex-direction: column; gap: 6px; }

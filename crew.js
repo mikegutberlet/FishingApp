@@ -46,7 +46,11 @@ async function buildPack({ catches = [], spots = [] }, { exact = false, photos =
     if (photos && c.photo instanceof Blob) it.photo = await blobToDataUrl(await shrinkPhoto(c.photo, 1200));
     items.push(it);
   }
-  for (const s of spots) items.push({ kind: s.kind, id: s.id, lake: lakeIdx(s.lakeId), lat: s.lat, lon: s.lon, name: s.name, text: s.text, type: s.type });
+  // A spot saved with no water (Water: None) travels with a stand-in water at its own position.
+  for (const s of spots) {
+    if (!lakes.has(s.lakeId)) lakes.set(`spot:${s.id}`, { name: s.name || 'Shared spot', lat: s.lat, lon: s.lon });
+    items.push({ kind: s.kind, id: s.id, lake: lakeIdx(lakes.has(s.lakeId) ? s.lakeId : `spot:${s.id}`), lat: s.lat, lon: s.lon, name: s.name, text: s.text, type: s.type });
+  }
   return {
     app: 'tackle-box', kind: 'crew', v: 1, from: myName(), sharedAt: new Date().toISOString(),
     lakes: lakeKeys.map(id => { const l = lakes.get(id) ?? {}; return { name: l.name, lat: l.lat, lon: l.lon, nhdId: l.nhdId, cdfwStockId: l.cdfwStockId, acres: l.acres, state: l.state }; }),
@@ -89,6 +93,7 @@ export async function importCrewPack(pack, { ask = true } = {}) {
   const mine = await db.all('lakes');
   const ids = [], added = [];
   for (const l of pack.lakes.map(cleanLake)) {
+    if (!Number.isFinite(l.lat) || !Number.isFinite(l.lon)) { ids.push(null); continue; } // its items are skipped below
     let m = await matchLake(l, mine);
     if (!m) { m = await db.put('lakes', { ...l, notes: `Shared by ${pack.from || 'a friend'}` }); mine.push(m); added.push(m.name); }
     ids.push(m.id);
@@ -201,7 +206,7 @@ export async function openComposer(preselect = {}) {
     <p class="small muted">Tick what to send. Your other catches, notes and spots stay on this phone.</p>
     ${catches.length ? `<details class="pick" ${preselect.spots ? '' : 'open'}><summary><b>Catches</b></summary>${catches.slice(0, 200).map(c => `<label class="check pick-row"><input type="checkbox" value="${c.id}" data-k="c" ${sel.has(c.id) ? 'checked' : ''}>
       <span><b>${esc(c.species)}</b> ${fmtLen(c.length)} ${weightText(c)} <span class="muted small">${esc(lakeName[c.lakeId] ?? '')} · ${fmtDate(c.time)}${c.photo ? ' · 📷' : ''}</span></span></label>`).join('')}</details>` : ''}
-    ${spots.length ? `<details class="pick" ${preselect.spots ? 'open' : ''}><summary><b>Spots</b></summary>${spots.map(s => `<label class="check pick-row"><input type="checkbox" value="${s.id}" data-k="s" ${sel.has(s.id) ? 'checked' : ''}>
+    ${spots.length ? `<details class="pick" ${preselect.spots || !catches.length ? 'open' : ''}><summary><b>Spots</b></summary>${spots.map(s => `<label class="check pick-row"><input type="checkbox" value="${s.id}" data-k="s" ${sel.has(s.id) ? 'checked' : ''}>
       <span>📍 ${esc(s.label)} <span class="muted small">${esc(lakeName[s.lakeId] ?? '')}</span></span></label>`).join('')}</details>` : ''}
     <form class="form" id="crew-opts" style="margin-top:8px">
       <label class="check"><input type="checkbox" name="exact"> Include where each fish was caught (GPS spot)</label>

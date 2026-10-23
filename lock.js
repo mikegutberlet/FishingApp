@@ -37,7 +37,8 @@ async function verifyBio(credId) {
 // ---------- The keypad sheet, used both to unlock and to set a passcode ----------
 function keypad({ title, sub = '', bio = false, onCode, onBio, onForgot, cancel }) {
   document.querySelector('#lock')?.remove();
-  const el = document.createElement('div');
+  // A modal <dialog> so it sits above any other open dialog (e.g. a waypoint sheet), which stays open underneath.
+  const el = document.createElement('dialog');
   el.id = 'lock';
   el.innerHTML = `<div class="lock-box"><div class="lock-logo">🎣</div><h2>${esc(title)}</h2><p class="small muted lock-sub">${esc(sub)}</p>
     <div class="dots"></div>
@@ -45,12 +46,16 @@ function keypad({ title, sub = '', bio = false, onCode, onBio, onForgot, cancel 
       ${bio ? '<button data-bio title="Unlock with biometrics">👤</button>' : '<button data-ok>✓</button>'}<button data-n="0">0</button><button data-back>⌫</button></div>
     ${onForgot ? '<a href="#" class="small muted" data-forgot>Forgot passcode?</a>' : ''}${cancel ? '<button data-cancel style="margin-top:10px">Cancel</button>' : ''}</div>`;
   document.body.append(el);
+  let closing = false;
+  el.addEventListener('cancel', e => e.preventDefault()); // Esc / Android back can't dismiss it
+  el.addEventListener('close', () => { if (!closing && el.isConnected) el.showModal(); });
+  el.showModal();
   let code = '';
   const dots = el.querySelector('.dots');
   const draw = () => dots.innerHTML = Array.from({ length: Math.max(4, code.length) }, (_, i) => `<i class="${i < code.length ? 'on' : ''}"></i>`).join('');
   const api = {
     el, shake(msg) { el.querySelector('.lock-box').classList.remove('shake'); void el.offsetWidth; el.querySelector('.lock-box').classList.add('shake'); code = ''; draw(); if (msg) api.sub(msg); },
-    sub: t => el.querySelector('.lock-sub').textContent = t, close: () => el.remove(), code: () => code,
+    sub: t => el.querySelector('.lock-sub').textContent = t, close: () => { closing = true; el.close(); el.remove(); }, code: () => code,
   };
   const press = k => {
     if (k === 'back') code = code.slice(0, -1);
