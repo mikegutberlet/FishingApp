@@ -1,0 +1,280 @@
+{
+  "startedAt": "2026-10-23T10:37:34.590Z",
+  "schedule": {
+    "form": {
+      "action": "/search",
+      "fields": [
+        {
+          "tag": "input",
+          "name": "phrase",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "tag": "select",
+          "name": "activity",
+          "type": null,
+          "value": ""
+        },
+        {
+          "tag": "select",
+          "name": "type",
+          "type": null,
+          "value": ""
+        }
+      ]
+    },
+    "pages": [
+      "default: 50 rows",
+      "field_date_value%5Bmin%5D=2024-10-23&field_date_value%5Bmax%5D=2027-10-23: 0 rows",
+      "start_date=2024-10-23&end_date=2027-10-23: 0 rows",
+      "field_stocking_date_value%5Bmin%5D=2024-10-23&field_stocking_date_value%5Bmax%5D=2027-10-23: 0 rows",
+      "date%5Bmin%5D=2024-10-23&date%5Bmax%5D=2027-10-23: 0 rows",
+      "print: 500 rows"
+    ],
+    "rows": 494,
+    "sample": [
+      {
+        "week": "2026-10-19",
+        "weekEnd": "2026-10-23",
+        "raw": "ROW R NATURE PK-Fmr Cott. Grv. Pd",
+        "zone": "Willamette",
+        "office": "Springfield",
+        "legals": 750,
+        "trophy": 0,
+        "brood": 0,
+        "fingerling": 0,
+        "total": 750
+      },
+      {
+        "week": "2026-10-19",
+        "weekEnd": "2026-10-23",
+        "raw": "HENRY HAGG LK",
+        "zone": "Willamette",
+        "office": null,
+        "legals": 3000,
+        "trophy": 1100,
+        "brood": 0,
+        "fingerling": 0,
+        "total": 4100
+      },
+      {
+        "week": "2026-10-19",
+        "weekEnd": "2026-10-23",
+        "raw": "ALTON BAKER CANAL",
+        "zone": "Willamette",
+        "office": "Springfield",
+        "legals": 750,
+        "trophy": 0,
+        "brood": 0,
+        "fingerling": 0,
+        "total": 750
+      },
+      {
+        "week": "2026-10-26",
+        "weekEnd": "2026-10-30",
+        "raw": "TAYLOR LK",
+        "zone": "Central",
+        "office": "The Dalles",
+        "legals": 1600,
+        "trophy": 375,
+        "brood": 0,
+        "fingerling": 0,
+        "total": 1975
+      },
+      {
+        "week": "2026-10-26",
+        "weekEnd": "2026-10-30",
+        "raw": "PINE HOLLOW RES",
+        "zone": "Central",
+        "office": "The Dalles",
+        "legals": 1600,
+        "trophy": 375,
+        "brood": 0,
+        "fingerling": 0,
+        "total": 1975
+      }
+    ]
+  },
+  "recreation": {
+    "northwest": {
+      "date": null,
+      "blocks": 12,
+      "outline": [
+        "h2: Table of Contents",
+        "h2: Recreation Report",
+        "p: Weekend's Best Bets",
+        "p: NW Zone -",
+        "li: Fall salmon fishing is fair on Nehalem, Tillamook, and Nestucca bays although fishing did ",
+        "li: The Nestucca and Wilson Rivers still have summer steelhead available, mostly in the upper ",
+        "li: Many coastal streams are open for cutthroat trout fishing through Oct 31. There are reside",
+        "li: Trout stocking has been completed in North Coast lakes for the year, but there are still h",
+        "li: Fall Chinook fishing is fair in the Siletz, Alsea, Siuslaw, Yaquina and Salmon rivers. Coh",
+        "li: Siltcoos and Tahkenitch lakes are open for wild coho retention. Some early fish may be aro",
+        "h2: Regulation Updates",
+        "p: Please see the regulation update page ."
+      ],
+      "entries": 0
+    },
+    "southwest": {
+      "date": null,
+      "blocks": 9,
+      "outline": [
+        "h2: Table of Contents",
+        "h2: Recreation Report",
+        "p: Weekend's Best Bets",
+        "p: SW Zone –",
+        "li: Weather has been near perfect for some late season trout fishing on either Garrison or Flo",
+        "li: Anglers are still picking up fall chinook trolling the Chetco River estuary.",
+        "li: Empire, Saunders, and Butterfield Lakes will be stocked by end of week 10/23/26 with legal",
+        "h2: Regulation Updates",
+        "p: Please see the regulation update page ."
+      ],
+      "entries": 0
+    },
+    "willamette": {
+      "date": null,
+      "blocks": 8,
+      "outline": [
+        "h2: Table of Contents",
+        "h2: Recreation Report",
+        "p: Weekend's Best Bets",
+        "p: Willamette Zone -",
+        "li: Coho salmon are moving into the lower parts of the North Santiam. Spinners such as Blue Fo",
+        "li: Walleye fishing has been good along stretches of the Willamette River from Peoria downstre",
+        "h2: Regulation Updates",
+        "p: Please see the regulation update page ."
+      ],
+      "entries": 0
+    },
+    "central": {
+      "date": null,
+      "blocks": 8,
+      "outline": [
+        "h2: Table of Contents",
+        "h2: Recreation Report",
+        "p: Weekend's Best Bets",
+        "p: Central Zone -",
+        "li: Following trophy trout stockings, the Fall River has been fishing exceptionally well.",
+        "li: Pine Nursery Pond in Bend was recently stocked with brown trout.",
+        "h2: Regulation Updates",
+        "p: Please see the regulation update page ."
+      ],
+      "entries": 0
+    },
+    "northeast": {
+      "date": null,
+      "blocks": 9,
+      "outline": [
+        "h2: Table of Contents",
+        "h2: Recreation Report",
+        "p: Weekend's Best Bets",
+        "p: NE Zone -",
+        "li: Tiger Muskie fishing at Phillips Reservoir should be good as fish are aggressively feeding",
+        "li: Coho fishing has been great on the lower Umatilla River. Expect fishing to remain good int",
+        "li: Anglers are catching steelhead in both the Grande Ronde and Imnaha Rivers. Focus lower on ",
+        "h2: Regulation Updates",
+        "p: Please see the regulation update page ."
+      ],
+      "entries": 0
+    },
+    "southeast": {
+      "date": null,
+      "blocks": 13,
+      "outline": [
+        "h2: Table of Contents",
+        "h2: Recreation Report",
+        "p: Weekend's Best Bets",
+        "p: SE Zone –",
+        "li: Fishing for trout at Lost Creek Reservoir.",
+        "li: Malheur Reservoir – great for Rainbow Trout from 10-22\". Common sizes are 12-16\" but fish ",
+        "li: Yellowjacket Reservoir – Great fishing without a crowd! We sampled this last week and foun",
+        "li: Yellow perch angling continues to be excellent in numerous locations in the Klamath Basin ",
+        "li: Fishing for Redband-Rainbow Trout in the Klamath River is good for fly and lure fisherman.",
+        "li: Many waterbodies will close after October 31 in the Klamath Basin to protect spawning Redb",
+        "li: Crappie angling has been excellent at Dog Lake recently.",
+        "h2: Regulation Updates",
+        "p: Please see the regulation update page ."
+      ],
+      "entries": 0
+    },
+    "snake-river": {
+      "error": "404 https://myodfw.com/recreation-report/fishing-report/snake-river-zone",
+      "entries": 0
+    },
+    "columbia": {
+      "date": null,
+      "blocks": 41,
+      "outline": [
+        "h2: Table of Contents",
+        "h2: Recreation Report",
+        "p: Columbia Fishing",
+        "p: October 22, 2026",
+        "p: Current and upcoming fishing opportunities:",
+        "p: Angling for coho has been fair to good near the mouths of some tributaries.",
+        "p: Announcements",
+        "p: For the latest regulations, including in-season changes see the fishing regulation update ",
+        "p: Forecasts for 2026 Columbia River Spring Chinook, Summer Chinook, Fall Chinook, Coho, and ",
+        "p: Fish consumption advisories",
+        "p: The Oregon Health Authority has issued consumption guidelines for parts of the Columbia Ri",
+        "li: Bonneville Dam fish advisory",
+        "li: Safe fish choices for pregnancy and young children",
+        "p: Sign up for the latest information on boater access",
+        "p: Marine Board's Opportunities and Access Report incorporates information from federal and s",
+        "p: Click here to find Columbia River regulation updates for salmon, steelhead, shad and sturg",
+        "p: SALMON, STEELHEAD, AND SHAD",
+        "p: On Saturday's (10/17) effort count, there were 97 boats from Lemon Island to Fisher Island",
+        "p: Gorge: Weekly checking showed one coho and two jack coho kept, and 51 Chinook, four jack C",
+        "p: Troutdale: Weekly checking showed 14 coho kept, and nine Chinook and six jack Chinook rele",
+        "p: PDX to Warrior Rock Lighthouse: Weekly checking showed 16 coho and two jack coho kept, and",
+        "p: Warrior Rock Lighthouse to Longview Bridge: Weekly checking showed 50 coho and five jack c",
+        "p: Longview Bridge to West Puget Island: Weekly checking showed one coho released for one boa",
+        "p: West Puget Island to Tongue Point: Weekly checking showed no catch for one boat (one angle",
+        "p: Buoy 10: Weekly checking showed 16 coho kept, and 13 coho released for 53 boats (142 angle",
+        "p: Bonneville Pool: Weekly checking showed 81 coho and three jack coho kept, and 39 Chinook, ",
+        "p: The Dalles Pool: Weekly checking showed no catch for three boats (nine anglers).",
+        "p: John Day Pool: Weekly checking showed three Chinook released for two boats (three anglers)",
+        "p: STURGEON",
+        "p: Lower Columbia River: No report.",
+        "p: Bonneville Pool: No report.",
+        "p: The Dalles Pool: Weekly checking showed three sub-legal, 15 legal, and 14 over-legal sized",
+        "p: John Day Pool: Weekly checking showed four legal, and three over-legal sized white sturgeo",
+        "p: WALLEYE",
+        "p: Lower Columbia River (below Bonneville Dam): No report.",
+        "p: Bonneville Pool: Weekly checking showed two walleye kept and one walleye released for one ",
+        "p: The Dalles Pool: Weekly checking showed four walleye kept and one walleye released for fiv",
+        "p: John Day Pool: Weekly checking showed 19 walleye kept, and six walleye released for 17 boa",
+        "h2: Regulation Updates",
+        "p: ‌Please see the regulation update page ."
+      ],
+      "entries": 2
+    }
+  },
+  "recreationSample": [
+    {
+      "name": "Lower Columbia River",
+      "zone": "columbia",
+      "date": null,
+      "url": "https://myodfw.com/recreation-report/fishing-report/columbia-zone",
+      "text": "No report.\nBonneville Pool: No report.\nThe Dalles Pool: Weekly checking showed three sub-legal, 15 legal, and 14 over-legal sized white sturgeon released for two boats (six anglers).\nJohn Day Pool: Weekly checking showed four legal, and three over-legal sized white sturgeon released for two boats (five anglers).\nWALLEYE"
+    },
+    {
+      "name": "Lower Columbia River (below Bonneville Dam)",
+      "zone": "columbia",
+      "date": null,
+      "url": "https://myodfw.com/recreation-report/fishing-report/columbia-zone",
+      "text": "No report.\nBonneville Pool: Weekly checking showed two walleye kept and one walleye released for one boat (one angler; and no catch for two bank anglers.\nThe Dalles Pool: Weekly checking showed four walleye kept and one walleye released for five boats (seven anglers).\nJohn Day Pool: Weekly checking showed 19 walleye kept, and six walleye released for 17 boats (30 anglers)."
+    }
+  ],
+  "mymaps": {
+    "Northwest": 392,
+    "Southwest": 67,
+    "High Desert": 196,
+    "Northeast": 95
+  },
+  "mymapsSample": [
+    {
+      "name": "Alton Baker Canal",
+      "lat": 44.05661,
+      "lon": -123.08177,
+      "about": "Alton Baker Pond and Canoe Canal are located within Alton Baker Park, one of the most popular and multi-functional parks in Eugene.\nThe park is located on the north bank of the Willamette River just east of the Ferry Street Bridge and Coburg Road. It is accessible by foot or bike from either side of the river via the River Bank Trails. By car you can enter via the Club Road underpass off Coburg Road or from Autzen Stadium off MLK/Centennial.\nLocated with in the park are two ponds and a canal, which can be accessed by rented canoes during the summer months.\nTROUT STOCKING SCHEDULE -- https://myodfw.com/fishing/species/trout/stocking-schedul
