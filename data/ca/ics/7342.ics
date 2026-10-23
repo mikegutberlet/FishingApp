@@ -1,0 +1,130 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Echo Park Lake
+X-WR-CALDESC:CDFW fish planting schedule for Echo Park Lake. Plants are sub
+ ject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2025-11-16-7342-trout@tackle-box
+DTSTAMP:20251116T000000Z
+DTSTART;VALUE=DATE:20251116
+DTEND;VALUE=DATE:20251123
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Echo Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Echo Park Lake (Los Angeles County
+ ) the week of 2025-11-16. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7342
+GEO:34.0737;-118.25996
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Echo Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2025-12-07-7342-trout@tackle-box
+DTSTAMP:20251207T000000Z
+DTSTART;VALUE=DATE:20251207
+DTEND;VALUE=DATE:20251214
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Echo Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Echo Park Lake (Los Angeles County
+ ) the week of 2025-12-07. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7342
+GEO:34.0737;-118.25996
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Echo Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-01-11-7342-trout@tackle-box
+DTSTAMP:20260111T000000Z
+DTSTART;VALUE=DATE:20260111
+DTEND;VALUE=DATE:20260118
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Echo Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Echo Park Lake (Los Angeles County
+ ) the week of 2026-01-11. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7342
+GEO:34.0737;-118.25996
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Echo Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-02-08-7342-trout@tackle-box
+DTSTAMP:20260208T000000Z
+DTSTART;VALUE=DATE:20260208
+DTEND;VALUE=DATE:20260215
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Echo Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Echo Park Lake (Los Angeles County
+ ) the week of 2026-02-08. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7342
+GEO:34.0737;-118.25996
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Echo Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-01-7342-trout@tackle-box
+DTSTAMP:20260301T000000Z
+DTSTART;VALUE=DATE:20260301
+DTEND;VALUE=DATE:20260308
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Echo Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Echo Park Lake (Los Angeles County
+ ) the week of 2026-03-01. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7342
+GEO:34.0737;-118.25996
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Echo Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-15-7342-trout@tackle-box
+DTSTAMP:20260315T000000Z
+DTSTART;VALUE=DATE:20260315
+DTEND;VALUE=DATE:20260322
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Echo Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Echo Park Lake (Los Angeles County
+ ) the week of 2026-03-15. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7342
+GEO:34.0737;-118.25996
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Echo Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-16-7342-catfish@tackle-box
+DTSTAMP:20260816T000000Z
+DTSTART;VALUE=DATE:20260816
+DTEND;VALUE=DATE:20260823
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Catfish plant: Echo Park Lake
+DESCRIPTION:CDFW plans to plant Catfish at Echo Park Lake (Los Angeles Coun
+ ty) the week of 2026-08-16. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7342
+GEO:34.0737;-118.25996
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Catfish plant this week at Echo Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

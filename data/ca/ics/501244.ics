@@ -1,0 +1,147 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Santa Ana River South Fork
+X-WR-CALDESC:CDFW fish planting schedule for Santa Ana River South Fork. Pl
+ ants are subject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-05-24-501244-trout@tackle-box
+DTSTAMP:20260524T000000Z
+DTSTART;VALUE=DATE:20260524
+DTEND;VALUE=DATE:20260531
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Santa Ana River South Fork
+DESCRIPTION:CDFW plans to plant Trout at Santa Ana River South Fork (San Be
+ rnardino County) the week of 2026-05-24. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501244
+GEO:34.16852;-116.83154
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Santa Ana River South Fork
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-07-501244-trout@tackle-box
+DTSTAMP:20260607T000000Z
+DTSTART;VALUE=DATE:20260607
+DTEND;VALUE=DATE:20260614
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Santa Ana River South Fork
+DESCRIPTION:CDFW plans to plant Trout at Santa Ana River South Fork (San Be
+ rnardino County) the week of 2026-06-07. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501244
+GEO:34.16852;-116.83154
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Santa Ana River South Fork
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-28-501244-trout@tackle-box
+DTSTAMP:20260628T000000Z
+DTSTART;VALUE=DATE:20260628
+DTEND;VALUE=DATE:20260705
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Santa Ana River South Fork
+DESCRIPTION:CDFW plans to plant Trout at Santa Ana River South Fork (San Be
+ rnardino County) the week of 2026-06-28. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501244
+GEO:34.16852;-116.83154
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Santa Ana River South Fork
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-07-12-501244-trout@tackle-box
+DTSTAMP:20260712T000000Z
+DTSTART;VALUE=DATE:20260712
+DTEND;VALUE=DATE:20260719
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Santa Ana River South Fork
+DESCRIPTION:CDFW plans to plant Trout at Santa Ana River South Fork (San Be
+ rnardino County) the week of 2026-07-12. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501244
+GEO:34.16852;-116.83154
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Santa Ana River South Fork
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-07-26-501244-trout@tackle-box
+DTSTAMP:20260726T000000Z
+DTSTART;VALUE=DATE:20260726
+DTEND;VALUE=DATE:20260802
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Santa Ana River South Fork
+DESCRIPTION:CDFW plans to plant Trout at Santa Ana River South Fork (San Be
+ rnardino County) the week of 2026-07-26. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501244
+GEO:34.16852;-116.83154
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Santa Ana River South Fork
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-09-501244-trout@tackle-box
+DTSTAMP:20260809T000000Z
+DTSTART;VALUE=DATE:20260809
+DTEND;VALUE=DATE:20260816
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Santa Ana River South Fork
+DESCRIPTION:CDFW plans to plant Trout at Santa Ana River South Fork (San Be
+ rnardino County) the week of 2026-08-09. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501244
+GEO:34.16852;-116.83154
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Santa Ana River South Fork
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-23-501244-trout@tackle-box
+DTSTAMP:20260823T000000Z
+DTSTART;VALUE=DATE:20260823
+DTEND;VALUE=DATE:20260830
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Santa Ana River South Fork
+DESCRIPTION:CDFW plans to plant Trout at Santa Ana River South Fork (San Be
+ rnardino County) the week of 2026-08-23. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501244
+GEO:34.16852;-116.83154
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Santa Ana River South Fork
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-09-20-501244-trout@tackle-box
+DTSTAMP:20260920T000000Z
+DTSTART;VALUE=DATE:20260920
+DTEND;VALUE=DATE:20260927
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Santa Ana River South Fork
+DESCRIPTION:CDFW plans to plant Trout at Santa Ana River South Fork (San Be
+ rnardino County) the week of 2026-09-20. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501244
+GEO:34.16852;-116.83154
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Santa Ana River South Fork
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

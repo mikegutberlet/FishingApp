@@ -5,6 +5,7 @@ import { parseStockingCsv } from '../../data-sources.js';
 import { $, esc, fmtDate, status } from '../../ui.js';
 import { openLake } from '../lake.js';
 import { renderStateReport } from '../state-report.js';
+import { isNew, markPlantsSeen } from '../new-plants.js';
 
 export async function renderStocking(lake, body) {
   if (lake.unsaved) {
@@ -76,12 +77,18 @@ async function renderStateStocking(lake, el) {
   // NDOW reports the day, count and size of each stocking; CDFW only the week and species.
   const when = p => p.week === p.weekEnd ? fmtDate(p.week + 'T12:00') : `week of ${fmtDate(p.week + 'T12:00')}`;
   const what = p => `${p.count ? `${p.count.toLocaleString()} ` : ''}${esc(p.species)}${p.inches ? ` (${p.inches}″)` : ''}`;
+  const tag = p => isNew(lake, p) && !lake.unsaved ? ' <span class="badge">new</span>' : '';
   const fishPerYear = past.reduce((m, p) => { const y = p.week.slice(0, 4); m[y] = (m[y] || 0) + (p.count || 0); return m; }, {});
+  // A calendar feed only where the state publishes one (California's nightly ICS job).
+  const feed = S.plantCalendarUrl?.(stockId);
   el.innerHTML = `<div class="card"><h3>${S.agency} plants</h3>
-    ${upcoming.length ? `<p>🟢 <b>${upcoming.map(p => `${what(p)} planned ${when(p)}`).join('<br>')}</b></p>` : ''}
-    ${past.length ? `<p class="small">Last plant: ${when(past[0])} (${what(past[0])})</p>` : '<p class="muted small">No plants in the schedule window yet.</p>'}
+    ${upcoming.length ? `<p>🟢 <b>${upcoming.map(p => `${what(p)} planned ${when(p)}${tag(p)}`).join('<br>')}</b></p>` : ''}
+    ${past.length ? `<p class="small">Last plant: ${when(past[0])} (${what(past[0])})${tag(past[0])}</p>` : '<p class="muted small">No plants in the schedule window yet.</p>'}
+    ${feed ? `<p class="small">📅 Subscribe to plants: <a href="${esc(feed.replace(/^https?:/, 'webcal:'))}">iPhone / Mac calendar</a> · <a href="https://calendar.google.com/calendar/r?cid=${encodeURIComponent(feed.replace(/^https?:/, 'webcal:'))}" target="_blank" rel="noopener">Google Calendar</a> · <a href="${esc(feed)}" download>.ics file</a>
+      <br><span class="muted">Your calendar app checks this water's public plant feed on this app's site; no account, and no list of who subscribed.</span></p>` : ''}
     ${perYear.length ? `<div class="bars">${perYear.map(([y, n]) => `<div class="barrow"><span class="lbl">${y}</span><div class="fill" style="width:${n / maxN * 70}%"></div><span>${n} plant${n > 1 ? 's' : ''}${fishPerYear[y] ? ` · ${fishPerYear[y].toLocaleString()} fish` : ''}</span></div>`).join('')}</div>` : ''}
     ${past.length ? `<details><summary class="small">All ${past.length} plants</summary><table>${past.map(p => `<tr><td>${fmtDate(p.week + 'T12:00')}</td><td>${what(p)}</td></tr>`).join('')}</table></details>` : ''}
     <p class="muted small">${S.plantsNote} <a href="${esc(S.waterUrl(stockId))}" target="_blank" rel="noopener">${S.agency} page ↗</a></p></div><div id="state-report"></div>`;
+  markPlantsSeen(lake, plants);
   renderStateReport(lake, el.querySelector('#state-report'));
 }

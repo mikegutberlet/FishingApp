@@ -41,6 +41,15 @@ It is a PWA: open it once in Safari/Chrome, choose **Add to Home Screen**, and i
 * **From photos**: pick old fish photos and Tackle Box reads the date and GPS on the device, matches the water (yours or any California water), and makes draft catches to confirm.
 * **Units**: inches or cm, pounds or kg, feet or meters (Data view). Records are stored in inches, pounds and feet.
 
+## Water data and safety
+
+* **Regs & safety tab** on every water: special regulations that name the water (Title 14 §7.50 trout, §7.40 salmon/steelhead, §5.00 black bass, §5.15 catfish, plus county-wide rules), matched by name, kind of water and county, with 🟢/🔴 for open or closed today; the statewide rules for the species; current toxic algae advisories; and OEHHA advice on how often you can eat each fish. The CDFW booklet and posted signs are still the final word.
+* **Toxic algae banner** at the top of a water's page when the Water Boards have a Caution, Warning or Danger advisory on it, and a *Toxic algae advisories* map layer (on by default).
+* **Access & facilities** on the Info tab: boat ramps, fishing piers, parking near them, campgrounds, marinas, boat rentals and bait & tackle from OpenStreetMap, with distance and directions; map layer *Ramps & access* when zoomed in.
+* **Plant calendars:** each stocked water has a calendar feed (`data/ca/ics/<stockId>.ics`); *Subscribe to plants* on the Stocking tab adds it to Apple or Google Calendar, with no server knowing who subscribed.
+* **New since last visit:** the lake list badges saved waters with CDFW plants added since you last opened their Stocking tab.
+* **Catch form warnings:** as you log a catch, a *Check the regs* box above Save flags a closed season, catch-and-release-only rules, wild fish that must go back, size minimums and the daily bag limit (counting what you've kept there that day). It never blocks saving. `CA.regsFor(lake)` and `CA.catchWarnings(lake, catch)` are the API behind it.
+
 ## California
 
 * **Find stocked waters**: Lakes → *Find California stocked waters* lists every CDFW-stocked lake and river, filtered to recent and upcoming plants, with one-tap *Add*. The map also has a *CA stocked waters* layer (green = planted in the last 30 days).
@@ -71,6 +80,11 @@ Data is refreshed daily by `.github/workflows/update-data.yml` running `scripts/
 | Historical introductions and plantings | USGS Nonindigenous Aquatic Species database, plus documented early events (Fish Bulletin 178) | weekly |
 | Current plants and stocking history | CDFW planting schedule | nightly |
 | Lake levels | CDEC | nightly |
+| Toxic algae advisories | California Water Boards FHAB bloom reports (data.ca.gov) | nightly |
+| Plant calendar feeds | built from the CDFW planting schedule | nightly |
+| Fishing regulations | California Code of Regulations Title 14 (Cornell LII), county lines from US Census TIGERweb | weekly |
+| Fish consumption advisories | OEHHA (data.ca.gov) | weekly |
+| Ramps, piers, parking, campgrounds, marinas, tackle shops | OpenStreetMap via Overpass | monthly |
 
 ### What the records can and can't tell you
 
@@ -100,10 +114,18 @@ Pick the state at the top of **Lakes** (or *📍 Where I am*). The map labels ev
 
 NDOW pages don't carry coordinates, so each water is placed by matching its name (and the county or mountain range in names like "Carson River – Douglas" or "Willow Creek- Santa Rosa Range"). A few dozen small creeks and ponds have no point yet and show only in search; the job's report (`data/nv/update-report.json`) lists them.
 
+## Maps, depth and offline
+
+* **Save a lake for offline**: open a water → *⬇ Offline*. It downloads the satellite map for the lake's area (zoom 10–17, capped at about 6,000 tiles with a size estimate first), its USGS depth chart and the California data the lake page uses. Saved lakes are listed under Data → *Offline maps*, where you can delete them. The street map isn't downloaded in advance because OpenStreetMap's tile policy doesn't allow offline prefetching; street areas you've already viewed stay cached.
+* **Contour map from your Deeper scans**: Depth tab → *Contour map*. Every scan of the lake is merged on the phone into one grid (inverse-distance weighting over nearby soundings; areas you haven't scanned stay blank), traced into labeled contour lines with optional shading. On import the app asks for the scan date (read from the file when it has timestamps) and fills in that day's lake level from CDEC when the gauge has it, so scans taken at different water levels line up; the map is drawn at today's level.
+* **Water temperature**: Depth tab → *Water temperature*. Surface temperature by date from Deeper scans that carry a temperature column (a Deeper floats, so it measures the surface) and from catches, a map of each scan's surface temperature, and temperature-by-depth profiles you enter from a drop thermometer, with the thermocline marked.
+* **Catch heatmap**: map layers → *Catch heatmap*, filtered by species and season.
+* **Waypoints**: long-press the map, or tap *📌 Mark* and use GPS or a tap, to mark a spot, structure, brush pile, drop-off, hazard or ramp with a name and note. They show as a *Waypoints* map layer, are listed on the lake's Depth tab, export as GPX, and go with a shared lake only if you include your notes and spots.
+
 ## Sharing with friends
 
 * Everyone installs the same link. Each person's catches, notes and spots stay on their own phone. There are no shared accounts.
-* **Share a lake**: open a lake → *Share*. It sends a small file through Messages, AirDrop, email and so on, containing the lake, your Deeper depth maps and (if you choose) your notes and pinned spots. Catches are never included. Your friend opens the app → Data → *Import backup or shared lake*.
+* **Share a lake**: open a lake → *Share*. It sends a small file through Messages, AirDrop, email and so on, containing the lake, your Deeper depth maps and (if you choose) your notes, pinned spots and waypoints. Catches are never included. Your friend opens the app → Data → *Import backup or shared lake*.
 
 ## Installing on iPhone and Android
 
@@ -158,6 +180,8 @@ Reverse-engineering other apps isn't needed: the public sources above cover cond
 * `scripts/update-ca-data.mjs`: nightly CDFW plants, stocked waters and CDEC levels → `data/ca/`
 * `scripts/build-ca-waters.mjs`, `build-ca-history.mjs`: weekly statewide water list and history
 * `scripts/build-ca-bathymetry.mjs`: monthly depth contours → `data/ca/bathymetry/`
+* `scripts/build-ca-hab.mjs`, `build-ca-ics.mjs`: nightly algae advisories → `data/ca/hab.json`, plant calendars → `data/ca/ics/`
+* `scripts/build-ca-regs.mjs`, `build-ca-oehha.mjs`, `build-ca-access.mjs`: weekly regulations and county lines, fish advisories; monthly access → `data/ca/`
 * `data/ca/logs/`: output of each data job, committed so problems can be read from the repo
 * `scripts/nv/update-nv-data.mjs`: nightly NDOW waters, stockings and reports, lake levels, algae → `data/nv/`
 * `scripts/nv/build-nv-regs.mjs`: weekly regulations and mercury advisories

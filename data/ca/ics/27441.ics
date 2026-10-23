@@ -1,0 +1,164 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Santa Fe Reservoir
+X-WR-CALDESC:CDFW fish planting schedule for Santa Fe Reservoir. Plants are
+  subject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2025-11-02-27441-trout@tackle-box
+DTSTAMP:20251102T000000Z
+DTSTART;VALUE=DATE:20251102
+DTEND;VALUE=DATE:20251109
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Santa Fe Reservoir
+DESCRIPTION:CDFW plans to plant Trout at Santa Fe Reservoir (Los Angeles Co
+ unty) the week of 2025-11-02. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=27441
+GEO:34.11356;-117.95051
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Santa Fe Reservoir
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2025-11-23-27441-trout@tackle-box
+DTSTAMP:20251123T000000Z
+DTSTART;VALUE=DATE:20251123
+DTEND;VALUE=DATE:20251130
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Santa Fe Reservoir
+DESCRIPTION:CDFW plans to plant Trout at Santa Fe Reservoir (Los Angeles Co
+ unty) the week of 2025-11-23. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=27441
+GEO:34.11356;-117.95051
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Santa Fe Reservoir
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2025-12-07-27441-trout@tackle-box
+DTSTAMP:20251207T000000Z
+DTSTART;VALUE=DATE:20251207
+DTEND;VALUE=DATE:20251214
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Santa Fe Reservoir
+DESCRIPTION:CDFW plans to plant Trout at Santa Fe Reservoir (Los Angeles Co
+ unty) the week of 2025-12-07. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=27441
+GEO:34.11356;-117.95051
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Santa Fe Reservoir
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2025-12-14-27441-trout@tackle-box
+DTSTAMP:20251214T000000Z
+DTSTART;VALUE=DATE:20251214
+DTEND;VALUE=DATE:20251221
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Santa Fe Reservoir
+DESCRIPTION:CDFW plans to plant Trout at Santa Fe Reservoir (Los Angeles Co
+ unty) the week of 2025-12-14. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=27441
+GEO:34.11356;-117.95051
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Santa Fe Reservoir
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-01-11-27441-trout@tackle-box
+DTSTAMP:20260111T000000Z
+DTSTART;VALUE=DATE:20260111
+DTEND;VALUE=DATE:20260118
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Santa Fe Reservoir
+DESCRIPTION:CDFW plans to plant Trout at Santa Fe Reservoir (Los Angeles Co
+ unty) the week of 2026-01-11. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=27441
+GEO:34.11356;-117.95051
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Santa Fe Reservoir
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-02-15-27441-trout@tackle-box
+DTSTAMP:20260215T000000Z
+DTSTART;VALUE=DATE:20260215
+DTEND;VALUE=DATE:20260222
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Santa Fe Reservoir
+DESCRIPTION:CDFW plans to plant Trout at Santa Fe Reservoir (Los Angeles Co
+ unty) the week of 2026-02-15. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=27441
+GEO:34.11356;-117.95051
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Santa Fe Reservoir
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-08-27441-trout@tackle-box
+DTSTAMP:20260308T000000Z
+DTSTART;VALUE=DATE:20260308
+DTEND;VALUE=DATE:20260315
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Santa Fe Reservoir
+DESCRIPTION:CDFW plans to plant Trout at Santa Fe Reservoir (Los Angeles Co
+ unty) the week of 2026-03-08. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=27441
+GEO:34.11356;-117.95051
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Santa Fe Reservoir
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-15-27441-trout@tackle-box
+DTSTAMP:20260315T000000Z
+DTSTART;VALUE=DATE:20260315
+DTEND;VALUE=DATE:20260322
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Santa Fe Reservoir
+DESCRIPTION:CDFW plans to plant Trout at Santa Fe Reservoir (Los Angeles Co
+ unty) the week of 2026-03-15. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=27441
+GEO:34.11356;-117.95051
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Santa Fe Reservoir
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-05-17-27441-catfish@tackle-box
+DTSTAMP:20260517T000000Z
+DTSTART;VALUE=DATE:20260517
+DTEND;VALUE=DATE:20260524
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Catfish plant: Santa Fe Reservoir
+DESCRIPTION:CDFW plans to plant Catfish at Santa Fe Reservoir (Los Angeles 
+ County) the week of 2026-05-17. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=27441
+GEO:34.11356;-117.95051
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Catfish plant this week at Santa Fe Reservoir
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

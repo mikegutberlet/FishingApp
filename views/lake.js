@@ -5,6 +5,7 @@ import { $, esc, showView } from '../ui.js';
 import { map, refreshMap } from '../map.js';
 import { renderLakeList, editLake } from './lakes.js';
 import { shareLake } from './settings.js';
+import { offlineButton } from '../offline.js';
 import { renderConditions } from './tabs/conditions.js';
 import { renderDepth } from './tabs/depth.js';
 import { renderStocking } from './tabs/stocking.js';
@@ -13,6 +14,7 @@ import { renderLakeCatches } from './tabs/catches.js';
 import { renderNotes } from './tabs/notes.js';
 import { renderInfo } from './tabs/info.js';
 import { renderStateSafety, renderNvBanner } from './tabs/nv-safety.js';
+import { renderSafety, renderSafetyBanner } from './tabs/safety.js';
 import { toggleFavorite } from './today.js';
 
 // Opens a statewide water: the saved lake if you already have it, otherwise a read-only page you can save.
@@ -48,7 +50,7 @@ export const LAKE_TABS = {
   history: { label: 'History', render: renderHistory },
   catches: { label: 'Catches', render: renderLakeCatches },
   notes: { label: 'Notes', render: renderNotes },
-  safety: { label: 'Regs & safety', render: renderStateSafety },
+  safety: { label: 'Regs & safety', render: (l, b) => forLake(l)?.code === 'CA' ? renderSafety(l, b) : renderStateSafety(l, b) },
   info: { label: 'Info', render: renderInfo },
 };
 // Tabs on a water you haven't saved yet (only the ones that work without your own data).
@@ -70,9 +72,10 @@ export async function openLake(id, tab = 'conditions') {
   $('#center').onclick = () => { showView('map'); map.setView([lake.lat, lake.lon], 14); };
   $('#share').onclick = () => shareLake(lake);
   $('#fav').onclick = () => toggleFavorite(lake, $('#fav'));
+  $('#share').after(' ', offlineButton(lake));
   d.querySelectorAll('.tabs button').forEach(b => b.onclick = () => openLake(id, b.dataset.tab));
   const body = $('#tab-body');
-  renderNvBanner(lake, d);
+  if (forLake(lake)?.code === 'CA') renderSafetyBanner(lake, d); else renderNvBanner(lake, d);
   await LAKE_TABS[tab].render(lake, body);
 }
 
@@ -87,7 +90,8 @@ function openUnsaved(lake, tab) {
     <div id="tab-body"></div>`;
   $('#back', d).onclick = () => showView('map');
   $('#save').onclick = () => saveWater(lake, tab);
+  $('#save').after(' ', offlineButton(lake));
   d.querySelectorAll('.tabs button').forEach(b => b.onclick = () => openUnsaved(lake, b.dataset.tab));
-  renderNvBanner(lake, d);
+  if (forLake(lake)?.code === 'CA') renderSafetyBanner(lake, d); else renderNvBanner(lake, d);
   LAKE_TABS[tab].render(lake, $('#tab-body'));
 }

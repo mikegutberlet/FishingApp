@@ -1,0 +1,317 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Carrville Pond
+X-WR-CALDESC:CDFW fish planting schedule for Carrville Pond. Plants are sub
+ ject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-04-12-679-trout@tackle-box
+DTSTAMP:20260412T000000Z
+DTSTART;VALUE=DATE:20260412
+DTEND;VALUE=DATE:20260419
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Carrville Pond
+DESCRIPTION:CDFW plans to plant Trout at Carrville Pond (Trinity County) th
+ e week of 2026-04-12. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=679
+GEO:41.05329;-122.70036
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Carrville Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-04-19-679-trout@tackle-box
+DTSTAMP:20260419T000000Z
+DTSTART;VALUE=DATE:20260419
+DTEND;VALUE=DATE:20260426
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Carrville Pond
+DESCRIPTION:CDFW plans to plant Trout at Carrville Pond (Trinity County) th
+ e week of 2026-04-19. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=679
+GEO:41.05329;-122.70036
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Carrville Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-05-03-679-trout@tackle-box
+DTSTAMP:20260503T000000Z
+DTSTART;VALUE=DATE:20260503
+DTEND;VALUE=DATE:20260510
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Carrville Pond
+DESCRIPTION:CDFW plans to plant Trout at Carrville Pond (Trinity County) th
+ e week of 2026-05-03. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=679
+GEO:41.05329;-122.70036
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Carrville Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-05-10-679-trout@tackle-box
+DTSTAMP:20260510T000000Z
+DTSTART;VALUE=DATE:20260510
+DTEND;VALUE=DATE:20260517
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Carrville Pond
+DESCRIPTION:CDFW plans to plant Trout at Carrville Pond (Trinity County) th
+ e week of 2026-05-10. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=679
+GEO:41.05329;-122.70036
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Carrville Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-05-17-679-trout@tackle-box
+DTSTAMP:20260517T000000Z
+DTSTART;VALUE=DATE:20260517
+DTEND;VALUE=DATE:20260524
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Carrville Pond
+DESCRIPTION:CDFW plans to plant Trout at Carrville Pond (Trinity County) th
+ e week of 2026-05-17. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=679
+GEO:41.05329;-122.70036
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Carrville Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-05-31-679-trout@tackle-box
+DTSTAMP:20260531T000000Z
+DTSTART;VALUE=DATE:20260531
+DTEND;VALUE=DATE:20260607
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Carrville Pond
+DESCRIPTION:CDFW plans to plant Trout at Carrville Pond (Trinity County) th
+ e week of 2026-05-31. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=679
+GEO:41.05329;-122.70036
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Carrville Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-14-679-trout@tackle-box
+DTSTAMP:20260614T000000Z
+DTSTART;VALUE=DATE:20260614
+DTEND;VALUE=DATE:20260621
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Carrville Pond
+DESCRIPTION:CDFW plans to plant Trout at Carrville Pond (Trinity County) th
+ e week of 2026-06-14. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=679
+GEO:41.05329;-122.70036
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Carrville Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-28-679-trout@tackle-box
+DTSTAMP:20260628T000000Z
+DTSTART;VALUE=DATE:20260628
+DTEND;VALUE=DATE:20260705
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Carrville Pond
+DESCRIPTION:CDFW plans to plant Trout at Carrville Pond (Trinity County) th
+ e week of 2026-06-28. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=679
+GEO:41.05329;-122.70036
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Carrville Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-07-12-679-trout@tackle-box
+DTSTAMP:20260712T000000Z
+DTSTART;VALUE=DATE:20260712
+DTEND;VALUE=DATE:20260719
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Carrville Pond
+DESCRIPTION:CDFW plans to plant Trout at Carrville Pond (Trinity County) th
+ e week of 2026-07-12. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=679
+GEO:41.05329;-122.70036
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Carrville Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-07-26-679-trout@tackle-box
+DTSTAMP:20260726T000000Z
+DTSTART;VALUE=DATE:20260726
+DTEND;VALUE=DATE:20260802
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Carrville Pond
+DESCRIPTION:CDFW plans to plant Trout at Carrville Pond (Trinity County) th
+ e week of 2026-07-26. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=679
+GEO:41.05329;-122.70036
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Carrville Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-02-679-trout@tackle-box
+DTSTAMP:20260802T000000Z
+DTSTART;VALUE=DATE:20260802
+DTEND;VALUE=DATE:20260809
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Carrville Pond
+DESCRIPTION:CDFW plans to plant Trout at Carrville Pond (Trinity County) th
+ e week of 2026-08-02. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=679
+GEO:41.05329;-122.70036
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Carrville Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-16-679-trout@tackle-box
+DTSTAMP:20260816T000000Z
+DTSTART;VALUE=DATE:20260816
+DTEND;VALUE=DATE:20260823
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Carrville Pond
+DESCRIPTION:CDFW plans to plant Trout at Carrville Pond (Trinity County) th
+ e week of 2026-08-16. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=679
+GEO:41.05329;-122.70036
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Carrville Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-30-679-trout@tackle-box
+DTSTAMP:20260830T000000Z
+DTSTART;VALUE=DATE:20260830
+DTEND;VALUE=DATE:20260906
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Carrville Pond
+DESCRIPTION:CDFW plans to plant Trout at Carrville Pond (Trinity County) th
+ e week of 2026-08-30. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=679
+GEO:41.05329;-122.70036
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Carrville Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-09-06-679-trout@tackle-box
+DTSTAMP:20260906T000000Z
+DTSTART;VALUE=DATE:20260906
+DTEND;VALUE=DATE:20260913
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Carrville Pond
+DESCRIPTION:CDFW plans to plant Trout at Carrville Pond (Trinity County) th
+ e week of 2026-09-06. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=679
+GEO:41.05329;-122.70036
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Carrville Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-09-13-679-trout@tackle-box
+DTSTAMP:20260913T000000Z
+DTSTART;VALUE=DATE:20260913
+DTEND;VALUE=DATE:20260920
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Carrville Pond
+DESCRIPTION:CDFW plans to plant Trout at Carrville Pond (Trinity County) th
+ e week of 2026-09-13. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=679
+GEO:41.05329;-122.70036
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Carrville Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-09-20-679-trout@tackle-box
+DTSTAMP:20260920T000000Z
+DTSTART;VALUE=DATE:20260920
+DTEND;VALUE=DATE:20260927
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Carrville Pond
+DESCRIPTION:CDFW plans to plant Trout at Carrville Pond (Trinity County) th
+ e week of 2026-09-20. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=679
+GEO:41.05329;-122.70036
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Carrville Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-09-27-679-trout@tackle-box
+DTSTAMP:20260927T000000Z
+DTSTART;VALUE=DATE:20260927
+DTEND;VALUE=DATE:20261004
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Carrville Pond
+DESCRIPTION:CDFW plans to plant Trout at Carrville Pond (Trinity County) th
+ e week of 2026-09-27. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=679
+GEO:41.05329;-122.70036
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Carrville Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-18-679-trout@tackle-box
+DTSTAMP:20261018T000000Z
+DTSTART;VALUE=DATE:20261018
+DTEND;VALUE=DATE:20261025
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Carrville Pond
+DESCRIPTION:CDFW plans to plant Trout at Carrville Pond (Trinity County) th
+ e week of 2026-10-18. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=679
+GEO:41.05329;-122.70036
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Carrville Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

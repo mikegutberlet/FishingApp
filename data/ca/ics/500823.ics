@@ -1,0 +1,96 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Lee Vining Creek South Fork
+X-WR-CALDESC:CDFW fish planting schedule for Lee Vining Creek South Fork. P
+ lants are subject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-05-10-500823-trout@tackle-box
+DTSTAMP:20260510T000000Z
+DTSTART;VALUE=DATE:20260510
+DTEND;VALUE=DATE:20260517
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Lee Vining Creek South Fork
+DESCRIPTION:CDFW plans to plant Trout at Lee Vining Creek South Fork (Mono 
+ County) the week of 2026-05-10. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=500823
+GEO:37.93755;-119.24546
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Lee Vining Creek South Fork
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-21-500823-trout@tackle-box
+DTSTAMP:20260621T000000Z
+DTSTART;VALUE=DATE:20260621
+DTEND;VALUE=DATE:20260628
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Lee Vining Creek South Fork
+DESCRIPTION:CDFW plans to plant Trout at Lee Vining Creek South Fork (Mono 
+ County) the week of 2026-06-21. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=500823
+GEO:37.93755;-119.24546
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Lee Vining Creek South Fork
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-07-19-500823-trout@tackle-box
+DTSTAMP:20260719T000000Z
+DTSTART;VALUE=DATE:20260719
+DTEND;VALUE=DATE:20260726
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Lee Vining Creek South Fork
+DESCRIPTION:CDFW plans to plant Trout at Lee Vining Creek South Fork (Mono 
+ County) the week of 2026-07-19. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=500823
+GEO:37.93755;-119.24546
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Lee Vining Creek South Fork
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-02-500823-trout@tackle-box
+DTSTAMP:20260802T000000Z
+DTSTART;VALUE=DATE:20260802
+DTEND;VALUE=DATE:20260809
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Lee Vining Creek South Fork
+DESCRIPTION:CDFW plans to plant Trout at Lee Vining Creek South Fork (Mono 
+ County) the week of 2026-08-02. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=500823
+GEO:37.93755;-119.24546
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Lee Vining Creek South Fork
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-09-06-500823-trout@tackle-box
+DTSTAMP:20260906T000000Z
+DTSTART;VALUE=DATE:20260906
+DTEND;VALUE=DATE:20260913
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Lee Vining Creek South Fork
+DESCRIPTION:CDFW plans to plant Trout at Lee Vining Creek South Fork (Mono 
+ County) the week of 2026-09-06. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=500823
+GEO:37.93755;-119.24546
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Lee Vining Creek South Fork
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

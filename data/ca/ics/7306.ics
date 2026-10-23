@@ -1,0 +1,164 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Puddingstone Lake
+X-WR-CALDESC:CDFW fish planting schedule for Puddingstone Lake. Plants are 
+ subject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2025-11-02-7306-trout@tackle-box
+DTSTAMP:20251102T000000Z
+DTSTART;VALUE=DATE:20251102
+DTEND;VALUE=DATE:20251109
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Puddingstone Lake
+DESCRIPTION:CDFW plans to plant Trout at Puddingstone Lake (Los Angeles Cou
+ nty) the week of 2025-11-02. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7306
+GEO:34.08501;-117.80117
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Puddingstone Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2025-11-23-7306-trout@tackle-box
+DTSTAMP:20251123T000000Z
+DTSTART;VALUE=DATE:20251123
+DTEND;VALUE=DATE:20251130
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Puddingstone Lake
+DESCRIPTION:CDFW plans to plant Trout at Puddingstone Lake (Los Angeles Cou
+ nty) the week of 2025-11-23. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7306
+GEO:34.08501;-117.80117
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Puddingstone Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2025-12-07-7306-trout@tackle-box
+DTSTAMP:20251207T000000Z
+DTSTART;VALUE=DATE:20251207
+DTEND;VALUE=DATE:20251214
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Puddingstone Lake
+DESCRIPTION:CDFW plans to plant Trout at Puddingstone Lake (Los Angeles Cou
+ nty) the week of 2025-12-07. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7306
+GEO:34.08501;-117.80117
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Puddingstone Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2025-12-14-7306-trout@tackle-box
+DTSTAMP:20251214T000000Z
+DTSTART;VALUE=DATE:20251214
+DTEND;VALUE=DATE:20251221
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Puddingstone Lake
+DESCRIPTION:CDFW plans to plant Trout at Puddingstone Lake (Los Angeles Cou
+ nty) the week of 2025-12-14. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7306
+GEO:34.08501;-117.80117
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Puddingstone Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-01-11-7306-trout@tackle-box
+DTSTAMP:20260111T000000Z
+DTSTART;VALUE=DATE:20260111
+DTEND;VALUE=DATE:20260118
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Puddingstone Lake
+DESCRIPTION:CDFW plans to plant Trout at Puddingstone Lake (Los Angeles Cou
+ nty) the week of 2026-01-11. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7306
+GEO:34.08501;-117.80117
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Puddingstone Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-02-15-7306-trout@tackle-box
+DTSTAMP:20260215T000000Z
+DTSTART;VALUE=DATE:20260215
+DTEND;VALUE=DATE:20260222
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Puddingstone Lake
+DESCRIPTION:CDFW plans to plant Trout at Puddingstone Lake (Los Angeles Cou
+ nty) the week of 2026-02-15. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7306
+GEO:34.08501;-117.80117
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Puddingstone Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-08-7306-trout@tackle-box
+DTSTAMP:20260308T000000Z
+DTSTART;VALUE=DATE:20260308
+DTEND;VALUE=DATE:20260315
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Puddingstone Lake
+DESCRIPTION:CDFW plans to plant Trout at Puddingstone Lake (Los Angeles Cou
+ nty) the week of 2026-03-08. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7306
+GEO:34.08501;-117.80117
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Puddingstone Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-15-7306-trout@tackle-box
+DTSTAMP:20260315T000000Z
+DTSTART;VALUE=DATE:20260315
+DTEND;VALUE=DATE:20260322
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Puddingstone Lake
+DESCRIPTION:CDFW plans to plant Trout at Puddingstone Lake (Los Angeles Cou
+ nty) the week of 2026-03-15. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7306
+GEO:34.08501;-117.80117
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Puddingstone Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-04-12-7306-trout@tackle-box
+DTSTAMP:20260412T000000Z
+DTSTART;VALUE=DATE:20260412
+DTEND;VALUE=DATE:20260419
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Puddingstone Lake
+DESCRIPTION:CDFW plans to plant Trout at Puddingstone Lake (Los Angeles Cou
+ nty) the week of 2026-04-12. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7306
+GEO:34.08501;-117.80117
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Puddingstone Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

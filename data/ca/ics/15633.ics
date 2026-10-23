@@ -1,0 +1,181 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: White Pines Lake
+X-WR-CALDESC:CDFW fish planting schedule for White Pines Lake. Plants are s
+ ubject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-04-19-15633-trout@tackle-box
+DTSTAMP:20260419T000000Z
+DTSTART;VALUE=DATE:20260419
+DTEND;VALUE=DATE:20260426
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: White Pines Lake
+DESCRIPTION:CDFW plans to plant Trout at White Pines Lake (Calaveras County
+ ) the week of 2026-04-19. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=15633
+GEO:38.26902;-120.34225
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at White Pines Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-04-26-15633-trout@tackle-box
+DTSTAMP:20260426T000000Z
+DTSTART;VALUE=DATE:20260426
+DTEND;VALUE=DATE:20260503
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: White Pines Lake
+DESCRIPTION:CDFW plans to plant Trout at White Pines Lake (Calaveras County
+ ) the week of 2026-04-26. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=15633
+GEO:38.26902;-120.34225
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at White Pines Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-05-03-15633-trout@tackle-box
+DTSTAMP:20260503T000000Z
+DTSTART;VALUE=DATE:20260503
+DTEND;VALUE=DATE:20260510
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: White Pines Lake
+DESCRIPTION:CDFW plans to plant Trout at White Pines Lake (Calaveras County
+ ) the week of 2026-05-03. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=15633
+GEO:38.26902;-120.34225
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at White Pines Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-05-17-15633-trout@tackle-box
+DTSTAMP:20260517T000000Z
+DTSTART;VALUE=DATE:20260517
+DTEND;VALUE=DATE:20260524
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: White Pines Lake
+DESCRIPTION:CDFW plans to plant Trout at White Pines Lake (Calaveras County
+ ) the week of 2026-05-17. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=15633
+GEO:38.26902;-120.34225
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at White Pines Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-05-31-15633-trout@tackle-box
+DTSTAMP:20260531T000000Z
+DTSTART;VALUE=DATE:20260531
+DTEND;VALUE=DATE:20260607
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: White Pines Lake
+DESCRIPTION:CDFW plans to plant Trout at White Pines Lake (Calaveras County
+ ) the week of 2026-05-31. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=15633
+GEO:38.26902;-120.34225
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at White Pines Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-14-15633-trout@tackle-box
+DTSTAMP:20260614T000000Z
+DTSTART;VALUE=DATE:20260614
+DTEND;VALUE=DATE:20260621
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: White Pines Lake
+DESCRIPTION:CDFW plans to plant Trout at White Pines Lake (Calaveras County
+ ) the week of 2026-06-14. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=15633
+GEO:38.26902;-120.34225
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at White Pines Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-28-15633-trout@tackle-box
+DTSTAMP:20260628T000000Z
+DTSTART;VALUE=DATE:20260628
+DTEND;VALUE=DATE:20260705
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: White Pines Lake
+DESCRIPTION:CDFW plans to plant Trout at White Pines Lake (Calaveras County
+ ) the week of 2026-06-28. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=15633
+GEO:38.26902;-120.34225
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at White Pines Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-07-12-15633-trout@tackle-box
+DTSTAMP:20260712T000000Z
+DTSTART;VALUE=DATE:20260712
+DTEND;VALUE=DATE:20260719
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: White Pines Lake
+DESCRIPTION:CDFW plans to plant Trout at White Pines Lake (Calaveras County
+ ) the week of 2026-07-12. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=15633
+GEO:38.26902;-120.34225
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at White Pines Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-07-26-15633-trout@tackle-box
+DTSTAMP:20260726T000000Z
+DTSTART;VALUE=DATE:20260726
+DTEND;VALUE=DATE:20260802
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: White Pines Lake
+DESCRIPTION:CDFW plans to plant Trout at White Pines Lake (Calaveras County
+ ) the week of 2026-07-26. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=15633
+GEO:38.26902;-120.34225
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at White Pines Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-18-15633-trout@tackle-box
+DTSTAMP:20261018T000000Z
+DTSTART;VALUE=DATE:20261018
+DTEND;VALUE=DATE:20261025
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: White Pines Lake
+DESCRIPTION:CDFW plans to plant Trout at White Pines Lake (Calaveras County
+ ) the week of 2026-10-18. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=15633
+GEO:38.26902;-120.34225
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at White Pines Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

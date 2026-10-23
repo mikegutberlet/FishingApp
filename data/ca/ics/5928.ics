@@ -1,0 +1,96 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: El Estero Lake
+X-WR-CALDESC:CDFW fish planting schedule for El Estero Lake. Plants are sub
+ ject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-01-04-5928-trout@tackle-box
+DTSTAMP:20260104T000000Z
+DTSTART;VALUE=DATE:20260104
+DTEND;VALUE=DATE:20260111
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: El Estero Lake
+DESCRIPTION:CDFW plans to plant Trout at El Estero Lake (Monterey County) t
+ he week of 2026-01-04. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=5928
+GEO:36.59793;-121.88673
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at El Estero Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-01-25-5928-trout@tackle-box
+DTSTAMP:20260125T000000Z
+DTSTART;VALUE=DATE:20260125
+DTEND;VALUE=DATE:20260201
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: El Estero Lake
+DESCRIPTION:CDFW plans to plant Trout at El Estero Lake (Monterey County) t
+ he week of 2026-01-25. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=5928
+GEO:36.59793;-121.88673
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at El Estero Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-02-08-5928-trout@tackle-box
+DTSTAMP:20260208T000000Z
+DTSTART;VALUE=DATE:20260208
+DTEND;VALUE=DATE:20260215
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: El Estero Lake
+DESCRIPTION:CDFW plans to plant Trout at El Estero Lake (Monterey County) t
+ he week of 2026-02-08. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=5928
+GEO:36.59793;-121.88673
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at El Estero Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-02-22-5928-trout@tackle-box
+DTSTAMP:20260222T000000Z
+DTSTART;VALUE=DATE:20260222
+DTEND;VALUE=DATE:20260301
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: El Estero Lake
+DESCRIPTION:CDFW plans to plant Trout at El Estero Lake (Monterey County) t
+ he week of 2026-02-22. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=5928
+GEO:36.59793;-121.88673
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at El Estero Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-15-5928-trout@tackle-box
+DTSTAMP:20260315T000000Z
+DTSTART;VALUE=DATE:20260315
+DTEND;VALUE=DATE:20260322
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: El Estero Lake
+DESCRIPTION:CDFW plans to plant Trout at El Estero Lake (Monterey County) t
+ he week of 2026-03-15. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=5928
+GEO:36.59793;-121.88673
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at El Estero Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR
