@@ -71,8 +71,8 @@ async function layerIds() {
   const find = re => layers.find(l => re.test(l.name))?.id;
   return {
     waterbody: find(/^Waterbody - Large Scale$/i) ?? 12,
-    flowline: find(/^Flowline - Large Scale$/i),
-    flowlineSmall: find(/^Flowline - Small Scale$/i),
+    flowline: find(/^Flowline - Large Scale$/i) ?? 6,
+    flowlineSmall: find(/^Flowline - Small Scale$/i) ?? 4,
   };
 }
 
@@ -188,8 +188,11 @@ async function attachElevations(lakes) {
 }
 
 // Rivers: merge every named flowline segment by GNIS id, then place label points every ~15 km along it.
+// A state with dense streams (Oregon) reads the small-scale flowlines: the large-scale query times out on its
+// tiles, and the small-scale layer still has every river and long creek a label needs.
+const riverLayer = ids => STATE.riverScale === 'small' ? ids.flowlineSmall : ids.flowline ?? ids.flowlineSmall;
 async function buildRivers(ids) {
-  const layer = ids.flowline ?? ids.flowlineSmall;
+  const layer = riverLayer(ids);
   const feats = await queryTiled(layer, "GNIS_NAME IS NOT NULL AND (GNIS_NAME LIKE '% River%' OR GNIS_NAME LIKE '% Creek%' OR GNIS_NAME LIKE '% Fork%' OR GNIS_NAME LIKE '% Slough%')",
     'GNIS_ID,GNIS_NAME,LENGTHKM', '0.002', 0.5);
   report.steps.rivers = { layer, segments: feats.length };
@@ -378,7 +381,8 @@ function attachDepths(lakes, depths, source) {
 
 await mkdir(OUT, { recursive: true });
 const save = (name, data) => writeFile(new URL(name, OUT), JSON.stringify(data) + '\n');
-let ids = { waterbody: 12 };
+// The service's usual layer ids, for when its layer list doesn't answer.
+let ids = { waterbody: 12, flowline: 6, flowlineSmall: 4 };
 try { ids = await layerIds(); } catch (e) { report.steps.nhdLayersError = e.message; }
 
 // A lake list from the last few days is kept as is, so a code push that re-runs the job only spends its time on the
@@ -409,7 +413,7 @@ if (lakes) {
 }
 try {
   const rivers = await buildRivers(ids);
-  report.steps.rivers.carriedOver = carryOver(rivers, (await readOldFile('rivers.json'))?.rivers, ids.flowline ?? ids.flowlineSmall, r => r.points);
+  report.steps.rivers.carriedOver = carryOver(rivers, (await readOldFile('rivers.json'))?.rivers, riverLayer(ids), r => r.points);
   await save('rivers.json', { updatedAt: new Date().toISOString(), source: 'USGS National Hydrography Dataset', rivers });
 } catch (e) { report.steps.riversError = e.message; console.error('rivers:', e.message); }
 
