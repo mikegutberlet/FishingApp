@@ -21,9 +21,15 @@ export function addSafetyLayers() {
   hab.addTo(map); // on by default: it's safety information
 }
 
+let habRetry = 31e3;
 async function drawHab(layer) {
   const data = await CA.habAdvisories();
-  for (const a of data?.advisories ?? []) {
+  if (!data) { // offline at startup, or the file failed: try again later (backing off), since the layer is on by default
+    setTimeout(() => map.hasLayer(layer) && !layer.getLayers().length && drawHab(layer), habRetry);
+    habRetry = Math.min(habRetry * 2, 10 * 60e3);
+    return;
+  }
+  for (const a of data.advisories ?? []) {
     const l = HAB_LEVELS[a.level];
     const big = ['danger', 'warning'].includes(a.level);
     for (const [lat, lon] of a.pts) {
@@ -36,9 +42,9 @@ async function drawHab(layer) {
 }
 
 // Thousands of places statewide, so only the ones in view are drawn, and only when zoomed in.
-let places = null;
+let places = [];
 async function drawAccess(layer) {
-  places ??= await CA.accessPlaces();
+  if (!places.length) places = await CA.accessPlaces(); // asks again after a failed load
   layer.clearLayers();
   if (map.getZoom() < 11) return;
   const b = map.getBounds().pad(0.1);

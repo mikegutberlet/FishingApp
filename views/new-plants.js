@@ -5,7 +5,7 @@ import { db } from '../db.js';
 import * as CA from '../states/ca.js';
 
 const FRESH_DAYS = 14; // only plants from the last two weeks (or coming up) can count as new
-const KEEP_DAYS = 30; // seen keys go back further than that, so a plant you've seen never turns new again
+const KEEP_DAYS = 30; // seen keys (by plant week) go back further than that, so a plant you've seen never turns new again
 
 const localDay = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 const daysAgo = n => localDay(new Date(Date.now() - n * 864e5));
@@ -21,14 +21,17 @@ export async function newPlants(lake) {
   return (await CA.plantsFor(lake.cdfwStockId)).filter(p => isNew(lake, p));
 }
 
-// Called when the Stocking tab shows the CDFW plants. Updates the page's lake object too, so a later save from the same
+// Called when the Stocking tab shows the CDFW plants. Adds them to the keys already seen (so a failed plant load can't
+// wipe them) and drops keys older than KEEP_DAYS. Updates the page's lake object too, so a later save from the same
 // page (star, Edit) keeps it, and re-reads the stored lake so a concurrent edit isn't overwritten.
 export async function markPlantsSeen(lake, plants) {
   if (lake.unsaved || !lake.id) return;
-  const keys = plants.filter(p => lastDay(p) >= daysAgo(KEEP_DAYS)).map(keyOf).sort();
-  lake.plantsSeen = keys;
+  const merge = prev => [...new Set([...(Array.isArray(prev) ? prev : []), ...plants.map(keyOf)])].filter(k => k.slice(0, 10) >= daysAgo(KEEP_DAYS)).sort();
+  lake.plantsSeen = merge(lake.plantsSeen);
   const fresh = await db.get('lakes', lake.id);
-  if (fresh && JSON.stringify(fresh.plantsSeen) !== JSON.stringify(keys)) await db.put('lakes', { ...fresh, plantsSeen: keys });
+  if (!fresh) return;
+  const keys = lake.plantsSeen = merge(fresh.plantsSeen);
+  if (JSON.stringify(fresh.plantsSeen) !== JSON.stringify(keys)) await db.put('lakes', { ...fresh, plantsSeen: keys });
 }
 
 // Fills the <span data-new-plants="<lake id>"> placeholders on the lake list.
