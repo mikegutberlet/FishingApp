@@ -1,5 +1,5 @@
 {
- "startedAt": "2026-10-23T10:51:52.641Z",
+ "startedAt": "2026-10-23T10:52:49.564Z",
  "pages": {
   "license-tag-permit-fees": [
    "# License, Tag & Permit Fees (40p 71r)"
@@ -748,14 +748,27 @@
   ]
  ],
  "advisories": [
-  "STATEWIDE: All State Waterbodies Technical report: Information OHA used to warrant a statewide advisory Frequently asked questions → All State Waterbodies Technical report: Information OHA used to warrant a statewide advisory Frequently asked questions (1)",
-  "MULTIPLE: Columbia River and its Oregon tributaries (for example, Willamette, Hood, John Day) Press release Factsheet Technical report → Columbia River (1)",
-  "COLUMBIA: Bonneville Dam at Bradford Island , extending one mile upstream to Ruckel Creek → Bonneville Dam at Bradford Island , extending one mile upstream to Ruckel Creek (3)",
-  "SOUTHWEST: Applegate Lake → Applegate Lake (5)",
-  "CENTRAL: East Lake → East Lake (1)",
-  "SOUTHEAST: Antelope Reservoir → Antelope Reservoir (11)",
-  "SNAKE RIVER: Snake River, from just south of Adrien, OR north to the WA border Includes: Brownlee Reservoir and the Powder River arm → Snake River | OR north to the WA border Includes: Brownlee Reservoir | Powder River arm (1)",
-  "OREGON COAST: Softshell clams (Mya arenaria) Gaper clams (Tresus capax) → Softshell clams (Mya arenaria) Gaper clams (Tresus capax) (1)"
+  "Statewide: All State Waterbodies: → All State Waterbodies: (1)",
+  "Multiple: Columbia River and its Oregon tributaries (for example, Willamette, Hood, John Day) → Columbia River (1)",
+  "Columbia: Bonneville Dam at Bradford Island, extending one mile upstream to Ruckel Creek → Bonneville Dam at Bradford Island, extending one mile upstream to Ruckel Creek (1)",
+  "Columbia: Mid-Columbia River, from Ruckel Creek to McNary Dam → Mid-Columbia River (1)",
+  "Columbia: Lower Columbia River → Lower Columbia River (1)",
+  "Southwest: Applegate Lake → Applegate Lake (1)",
+  "Southwest: Cooper Creek Reservoir → Cooper Creek Reservoir (1)",
+  "Southwest: Emigrant Reservoir → Emigrant Reservoir (1)",
+  "Southwest: Galesville Reservoir → Galesville Reservoir (1)",
+  "Southwest: Plat I Reservoir → Plat I Reservoir (1)",
+  "Central: East Lake → East Lake (1)",
+  "Southeast: Antelope Reservoir → Antelope Reservoir (1)",
+  "Southeast: Jordan Creek,from Antelope Reservoir to the creek's confluence with the Owyhee River → Jordan Creek | from Antelope Reservoir to the creek's confluence with the Owyhee River (1)",
+  "Southeast: Owyhee Reservoir → Owyhee Reservoir (1)",
+  "Southeast: Owyhee River upstream to Three Forks → Owyhee River (1)",
+  "Southeast: Phillips Reservoir → Phillips Reservoir (1)",
+  "Southeast: WILLAMETTE → WILLAMETTE (1)",
+  "Southeast: Cottage Grove Reservoirs → Cottage Grove Reservoirs (2)",
+  "Southeast: Lower Willamette River → Lower Willamette River (1)",
+  "Southeast: Willamette River, from its mouth on the Columbia River southward to Eugene Includes: Coast Fork to Cottage Grove Reservoir Does not apply to: Middle Fork, North Fork of the Middle Fork, or to any other tributary emptying into the Willamette → Willamette River | Coast Fork to Cottage Grove Reservoir Does not apply to: Middle Fork (2)",
+  "Snake River: Snake River, from just south of Adrien, OR north to the WA border Includes: Brownlee Reservoir and the Powder River arm → Snake River | Brownlee Reservoir | Powder River arm (1)"
  ],
  "zones": [
   "Central: 1 parts",
@@ -769,5 +782,5 @@
   "Northwest: 1 parts"
  ],
  "counties": 36,
- "finishedAt": "2026-10-23T10:51:57.624Z"
+ "finishedAt": "2026-10-23T10:52:52.362Z"
 }
