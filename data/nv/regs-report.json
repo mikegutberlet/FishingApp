@@ -1,0 +1,1803 @@
+{
+ "startedAt": "2026-10-23T07:10:06.951Z",
+ "pages": {
+  "statewide": {
+   "blocks": 108,
+   "outline": [
+    "# General Statewide Regulations (3p 3r)",
+    "## License Requirements (1p 0r)",
+    "## Daily Limit (3p 0r)",
+    "## Possession Limit (7p 0r)",
+    "## Size Limit (1p 0r)",
+    "## Seasons and Hours (1p 0r)",
+    "## “Fishes,” “Fishing,” “Fished” and “To Fish” Defined (1p 0r)",
+    "## Filleting Fish (1p 0r)",
+    "## Methods of Fishing (1p 0r)",
+    "## Spearfishing/Bowfishing (1p 0r)",
+    "## General Statewide Bait Use (7p 0r)",
+    "## Chumming (1p 0r)",
+    "## Unprotected Fish (1p 0r)",
+    "## Ice Fishing (2p 0r)",
+    "## Artificial Lures (1p 0r)",
+    "## Artificial Lures with Single Barbless Hooks (1p 0r)",
+    "## Northern Pike (1p 0r)",
+    "## Game Fish Transportation (1p 0r)",
+    "## Bullfrogs (1p 0r)",
+    "## Crayfish (1p 0r)",
+    "## Coldwater Game Fish (1p 0r)",
+    "## Warmwater Game Fish (1p 0r)",
+    "## Protected Fish and Amphibians (43p 0r)"
+   ],
+   "sample": [
+    {
+     "tag": "h1",
+     "text": "General Statewide Regulations"
+    },
+    {
+     "tag": "p",
+     "text": "Last Updated: September 23, 2026"
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Topic",
+      "Previous (2025)",
+      "New (2026)"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Ice Fishing – Comins Lake Northern Pike Hole",
+      "Ice fishing holes limited to 10 inches in diameter statewide, with no exception for Comins Lake",
+      "New for 2026 – anglers spear or bow fishing northern pike through the ice at Comins Lake may now cut a hole up to 12 inches wide by 24 inches long (one hole per site, with ice-block replacement and hazard-marking requirements) (NAC 503.583, adopted under R053-25)"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Northern Pike Handling",
+      "Northern pike classified as a prohibited species; anglers required to kill them upon capture",
+      "Clarified for 2026 – it is now explicitly unlawful to release a northern pike alive into any Nevada waterbody; any northern pike caught by any method must be killed immediately (NAC 503.110, adopted under R053-25)"
+     ]
+    },
+    {
+     "tag": "p",
+     "text": "Fishing regulations are effective Jan. 1, 2026 - Dec. 31, 2026."
+    },
+    {
+     "tag": "p",
+     "text": "All Regulations are applicable to CR 25-16."
+    },
+    {
+     "tag": "h2",
+     "text": "License Requirements"
+    },
+    {
+     "tag": "p",
+     "text": "Any resident 12 years of age or older who fishes in Nevada is required to have a fishing license. Nonresident anglers under 12 years of age are not required to have a license, but the number of fish taken must not exceed 50 percent of the limit. For example, if the limit is five fish, these young anglers may take only two fish. These license requirements are for all Nevada waters except for some “interstate waters” (Lake Tahoe, Topaz Lake, Lake Mead, Lake Mohave, Colorado River). (Refer to NRS 502.010)"
+    },
+    {
+     "tag": "h2",
+     "text": "Daily Limit"
+    },
+    {
+     "tag": "p",
+     "text": "“Daily Limit” means the maximum number of game fish that may be lawfully taken and reduced to possession by a person in one day. The daily limit applies across all water bodies. You cannot take a daily limit of fish from one body of water then move to another body of water to take another limit of the same species there. However, if the daily limit of a specific species is higher in a particular body of water (for example, 1 fish per day in one body of water and 5 fish per day of the same species in another) you can take your 1 fish limit from the body of water where the limit is 1 and move to the body of water with the higher daily limit of 5 and take an additional 4 from there which would give you your daily limit of 5."
+    },
+    {
+     "tag": "p",
+     "text": "As another example, if you go to a local urban pond (daily limit is 3 game fish) and catch your limit of 3 fish in the morning, you cannot take those fish home to your freezer and then visit another urban pond which has the same 3 game fish limit in the afternoon to harvest additional fish."
+    },
+    {
+     "tag": "p",
+     "text": "Fish that are caught and immediately released back to the water alive are not considered to be reduced to possession or part of the daily limit."
+    },
+    {
+     "tag": "h2",
+     "text": "Possession Limit"
+    },
+    {
+     "tag": "p",
+     "text": "Nevada has implemented a “Possession Limit” which allows anglers to keep two times the daily limit for the water in which the fish were caught."
+    },
+    {
+     "tag": "p",
+     "text": "The “Possession Limit” is two times the daily limit for the water in which the fish are caught. Possession limits apply to the specific body of water you’re fishing. For example,"
+    },
+    {
+     "tag": "li",
+     "text": "Day 1 - An angler is fishing Knott Creek Reservoir (daily limit 1) and harvests their 1 trout. They can then move to Onion Reservoir (daily limit 5) later in the day and harvest 4 more trout."
+    },
+    {
+     "tag": "li",
+     "text": "Day 2 - The angler again fishes Knott Creek Reservoir and harvests 1 trout, they have now met their Possession Limit for Knott Creek Reservoir and can no longer fish the water until they have eaten at least 1 fish. The angler moves to Onion Reservoir and harvests an additional 4 trout to reach the total allowed daily limit of 5 for a second consecutive day."
+    },
+    {
+     "tag": "li",
+     "text": "Day 3 – The angler fishes Onion Reservoir for a third day and harvests 2 more trout and has now harvested 10 total over 3 days to reach their Possession Limit for Onion Reservoir. Their total harvest and take is 12 trout reduced to possession in their cooler (10 from Onion and 2 from Knott). They can no longer fish Knott Creek Reservoir or Onion Reservoir until your possession limit has been reduced at least one fish."
+    },
+    {
+     "tag": "p",
+     "text": "A person shall not reduce game fish to possession if he already has the number of that fish in possession which equals or exceeds the possession limit of the water being fished. A daily/possession limit includes fish caught in Nevada which have been processed or preserved and are stored at any location."
+    },
+    {
+     "tag": "p",
+     "text": "General limits are listed by region in the regional regulations. Exceptions to general limits are included as “special regulations” and are listed by individual water."
+    },
+    {
+     "tag": "h2",
+     "text": "Size Limit"
+    },
+    {
+     "tag": "p",
+     "text": "Unless otherwise noted under Region General Regulations or Region Special Regulations, there is no size limit. Where size limits do apply, this shall mean the total length of the fish including the head and tail, measured as illustrated in the diagram. (Refer to NAC 503.500)"
+    },
+    {
+     "tag": "h2",
+     "text": "Seasons and Hours"
+    },
+    {
+     "tag": "p",
+     "text": "Unless otherwise noted under Region Special Regulations, the season is open year around and fishing hours are any time of the day or night. Where specified, “open season” includes the first and last day designated. (Refer to NRS 501.065)"
+    },
+    {
+     "tag": "h2",
+     "text": "“Fishes,” “Fishing,” “Fished” and “To Fish” Defined"
+    },
+    {
+     "tag": "p",
+     "text": "The words “to fish” and their derivatives, “fishes,” “fishing” and “fished,” mean catching, taking, capturing, killing, injuring or crippling of a fish and every attempt to do so. (Refer to NRS 501.030)"
+    },
+    {
+     "tag": "h2",
+     "text": "Filleting Fish"
+    },
+    {
+     "tag": "p",
+     "text": "Where size limits apply, fish may be filleted before transport if the remainder of the carcass of each fish filleted is kept in one piece so size and possession limits can be immediately determined. It is unlawful for any person to cause through carelessness, neglect or otherwise any edible portion of any game fish to go to waste needlessly. In the case of game fish, the fillet meat from the operculum (gill plate) to the caudal fin (tail fin) as shown below. (NAC 503.586)"
+    },
+    {
+     "tag": "h2",
+     "text": "Methods of Fishing"
+    },
+    {
+     "tag": "p",
+     "text": "Fish may be taken only with hook and line attached to rod or reel and closely attended in the manner known as angling (Except as noted under Spearfishing / Bowfishing” and “Unprotected Fish”). No more than three baited hooks, nor more than three fly hooks, or two lures or plugs irrespective of the number of hooks or attractor blades attached thereto, may be attached to the line. No more than two lines may be used. Refer to further tackle restrictions for Lake Mead, Lake Mohave and the Colorado River . (Refer to NRS 503.290)"
+    },
+    {
+     "tag": "h2",
+     "text": "Spearfishing/Bowfishing"
+    },
+    {
+     "tag": "p",
+     "text": "Persons may spearfish for unprotected fish in all Nevada waters except Lake Tahoe and Topaz Lake. Persons may spearfish for striped bass in Lake Mead and Lake Mohave from Cottonwood Cove to the cable below Hoover Dam. Spearfishing for striped bass is prohibited in that portion of Lake Mohave from Cottonwood Cove to Davis Dam and from Davis Dam down river to the Nevada state line. In Lakes Mead and Mohave and the Colorado River system, spearfishing is prohibited within 1/2 mile of any dock or swimming area. When spearfishing, a person must display, within 100 feet, an appropriate diver’s flag. A mechanical spearing device may be used only under the surface of the water, and the spear must be attached to the device by a lanyard. Fishing license regulations apply to persons taking fish by means of spear or bow and arrow. (Refer to NAC 503.590-592) Only unprotected fish may be taken with a bow and arrow except where prohibited (Refer to NAC 503.580) Please contact the county you’ll be fishing in prior to assure you are in compliance with county regulations."
+    },
+    {
+     "tag": "h2",
+     "text": "General Statewide Bait Use"
+    },
+    {
+     "tag": "p",
+     "text": "Any person possessing a fishing license or permit, or otherwise exempted from such licenses, may capture, transport and use live bait fish, aquatic bait, or commercially prepared and preserved bait fish for fishing or personal consumption where specified by Region."
+    },
+    {
+     "tag": "p",
+     "text": "Live bait fish means live, unprotected species of freshwater fish.",
+     "lead": "Live bait fish"
+    },
+    {
+     "tag": "p",
+     "text": "Aquatic bait means live, unprotected amphibians (such as bullfrogs), crustaceans (such as crayfish), mollusks (such as clams and snails), insects (such as grasshoppers), or worms (such as natural earthworms or purchased nightcrawlers or redworms).",
+     "lead": "Aquatic bait"
+    },
+    {
+     "tag": "p",
+     "text": "The use of any game fish or protected species as bait and parts thereof is prohibited, except preserved salmon eggs."
+    },
+    {
+     "tag": "p",
+     "text": "Any fresh, dead or frozen saltwater species of fish or aquatic bait (such as sardines, anchovies or shrimp) or parts thereof may be used as bait only in waters where the use of aquatic bait is authorized."
+    },
+    {
+     "tag": "p",
+     "text": "Commercially prepared or preserved bait means dead fish or parts thereof, or other aquatic bait, that have been dried (such as in salt or Borax), frozen, brined in salt solutions, or otherwise preserved or cured through proprietary commercial methods.",
+     "lead": "Commercially prepared or preserved bait"
+    },
+    {
+     "tag": "p",
+     "text": "Any bait obtained from a licensed dealer of live bait fish must be accompanied by a current dated receipt by that dealer. See regulations for bait fishing by region . (Refer to NAC 503.502)"
+    },
+    {
+     "tag": "h2",
+     "text": "Chumming"
+    },
+    {
+     "tag": "p",
+     "text": "“Chumming” means placing fish, parts of fish or other material upon which fish feed, in the water for the purpose of attracting fish to a particu­lar area so that they may be taken. Chumming is prohibited in Lake Tahoe, Topaz Lake, Spooner Lake and the entire Ruby Lake National Wildlife Refuge. (Refer to NRS 501.013)"
+    },
+    {
+     "tag": "h2",
+     "text": "Unprotected Fish"
+    },
+    {
+     "tag": "p",
+     "text": "Unprotected fish are all species not classified as game or protected. Unprotected fish may be taken by bow and arrow, hook and line, dipnet, cast net, minnow seine or minnow trap, and, except where prohibited, by spear. In the Colorado River and Lakes Mead and Mohave, the taking of fish by bow and arrow is prohibited within 1/2 mile of any dock or swimming area. Fishing license regulations apply to persons taking unprotected fish by means of hook and line, bow and arrow or spear."
+    },
+    {
+     "tag": "h2",
+     "text": "Ice Fishing"
+    },
+    {
+     "tag": "p",
+     "text": "For the purposes of ice fishing, holes cut through the ice must not exceed 10 inches in diameter. For spear or bow-and-arrow fishing northern pike through the ice at Comins Lake only , a person may cut a hole through the ice not exceeding 12 inches in width and 24 inches in length. Only one hole per fishing site is allowed. The person is required to retain possession of the ice block removed to create the hole; before leaving the site, they must replace the ice block into the hole. For holes exceeding 10 inches in diameter, the person must mark the hazard using natural vegetation, or a brightly painted marker at least 36 inches tall which is visible from 100 feet. The marker must be in the possession of the person when cutting the hole."
+    },
+    {
+     "tag": "p",
+     "text": "(Refer to NAC 503.583/R053-25)"
+    },
+    {
+     "tag": "h2",
+     "text": "Artificial Lures"
+    },
+    {
+     "tag": "p",
+     "text": "“Artificial Lures” means any device with a hook or hooks attached which is made partly or entirely of rubber, wood, metal, glass, plastic or feathers. (Please note: PowerBait® or similar products are not considered artificial lures.) (Refer to NAC 503.500)"
+    },
+    {
+     "tag": "h2",
+     "text": "Artificial Lures with Single Barbless Hooks"
+    },
+    {
+     "tag": "p",
+     "text": "A “single barbless hook” means a fish hook having one point, manufactured without barbs or on which the barbs have been bent com­pletely closed or filed off. Double or treble hooks having a common shank are not a single barbless hook even when the barbs are closed or filed off. When single barbless hooks are required, only one single b­arbless hook­ may be attached to each hook eye or ring of the lure. (Refer to NAC 503.500)"
+    },
+    {
+     "tag": "h2",
+     "text": "Northern Pike"
+    },
+    {
+     "tag": "p",
+     "text": "Northern pike are not classified as game fish; they are a prohibited and injurious species. There is no limit for northern pike. Any person who takes a northern pike by any method shall immediately kill the fish. It is unlawful to release a northern pike alive into any waterbody of the State (Refer to NAC503.110).",
+     "lead": "Northern pike are not classified as game fish; they are a prohibited and injurious species."
+    },
+    {
+     "tag": "h2",
+     "text": "Game Fish Transportation"
+    },
+    {
+     "tag": "p",
+     "text": "Game fish taken under the authority of a fishing license or fishing permit may not be transported alive from the body of water where the game fish is taken. It is legal to keep game fish alive and in a live well or a net while at the body of water from which they are caught. Anglers must kill fish to be transported away from the body of water. Under no circumstances can game fish be transported in a manner which would allow for their release alive at another body of water. The transport and release of live wildlife without a permit is illegal. (Refer to NAC 503.115)"
+    },
+    {
+     "tag": "h2",
+     "text": "Bullfrogs"
+    },
+    {
+     "tag": "p",
+     "text": "There is no license requirement or limit on bullfrogs if they are taken by gig, spear, bow and arrow or by hand. However, a fishing license is required to take bullfrogs by hook and line. Season is open year around anytime of the day or night in waters that are open to fishing or f­rogging. Bullfrogs are a non-indigenous species that may not be transported alive from the body of water where taken. (Refer to NAC 503.580 and 503.100)"
+    },
+    {
+     "tag": "h2",
+     "text": "Crayfish"
+    },
+    {
+     "tag": "p",
+     "text": "A fishing license is not required to capture crayfish for personal consumption or use as bait. When used as bait, crayfish may only be used in the water where captured and other bait restrictions apply . There is no limit on crayfish. A license is required to take crayfish by hook and line. A permit is required to take crayfish for commercial purposes at Lake Tahoe (crayfish may not be taken for commercial purposes from any other Nevada water.) (Refer to NAC 503.100 and 503.540)"
+    }
+   ]
+  },
+  "western": {
+   "blocks": 134,
+   "outline": [
+    "# Western Region Regulations (4p 3r)",
+    "## Western Region General Regulations (2p 0r)",
+    "## Western Region Daily Limits (2p 0r)",
+    "## Possession Limits (1p 0r)",
+    "## Artificial Lure Waters (1p 0r)",
+    "## Bait Regulations (5p 74r)",
+    "#### The Nevada Division of Public and Behavioral Health has issued health advisories that recommend limited consumption of fish species due to elevated mercury levels in their flesh. For more information about mercury in fish, visit the Nevada Department of Wildlife mercury in fish blog . (27p 8r)"
+   ],
+   "sample": [
+    {
+     "tag": "h1",
+     "text": "Western Region Regulations"
+    },
+    {
+     "tag": "p",
+     "text": "Last Updated: September 23, 2026"
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Topic",
+      "Previous (2025)",
+      "New (2026)"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Hobart Reservoir Closure",
+      "No closure notice for Hobart Reservoir",
+      "New for 2026 – Hobart Reservoir is expected to be closed for the 2026 and 2027 seasons for dam restoration work"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Marlette Lake Closure & Contact Update",
+      "Expected to be closed for the 2025 season for dam repairs; contact number 775-749-5988",
+      "Closure window updated to a portion of 2026 for dam restoration work; contact number updated to (775) 749-5980 for Spooner Lake and Backcountry State Park"
+     ]
+    },
+    {
+     "tag": "p",
+     "text": "The Western Region includes the nine counties of northwestern Nevada: Carson City, Churchill, Douglas, Humboldt, Lyon, Mineral, Pershing, Storey and Washoe. Several popular fishing waters are located within this region including Lake Tahoe, Topaz Lake, Knott Creek Reservoir, Pyramid Lake, and the Truckee, Carson and Walker River systems. Pyramid Lake is managed by Pyramid Lake Paiute Tribe. Please contact the Pyramid Lake Paiute Tribe for regulations and license requirements pertaining to Pyramid Lake. Waters that are popular for warmwater species are Lahontan, Chimney and Rye Patch reservoirs, Humboldt River, Washoe Lake, Mason Valley Wildlife Management Area and several canals and drains in the Lahontan Valley. The Western Region office is located at 1100 Valley Road, Reno, NV 89512, (775) 688-1506 ."
+    },
+    {
+     "tag": "p",
+     "text": "Important Note: Within the Western Region the general fishing seasons, hours, limits, and regulations apply to all waters EXCEPT those listed under “Western Region Special Regulations.” If the water in which you intend to fish is not listed under the Region’s Special Regulations, then the General Regulations shall apply."
+    },
+    {
+     "tag": "p",
+     "text": "All game fish must be dead before being transported away from the body of water where caught."
+    },
+    {
+     "tag": "h2",
+     "text": "Western Region General Regulations"
+    },
+    {
+     "tag": "p",
+     "text": "Open year around, any hour of the day or night."
+    },
+    {
+     "tag": "p",
+     "text": "An AIS Decal is not required for California registered watercraft on Topaz Lake or Lake Tahoe. All Nevada registered motorized and non-motorized vessels must display a current Nevada AIS Decal."
+    },
+    {
+     "tag": "h2",
+     "text": "Western Region Daily Limits"
+    },
+    {
+     "tag": "p",
+     "text": "Except as noted under “Special Regulations” the daily limits are as follows:"
+    },
+    {
+     "tag": "p",
+     "text": "Carson City, Churchill County, Douglas County, Lyon County, Humbolt County, Mineral County, Pershing County, Storey County and Washoe County: The limit is 5 trout, 5 mountain whitefish and 15 warmwater game fish of which not more than 5 may be black bass and 5 may be walleye.",
+     "lead": "Carson City, Churchill County, Douglas County, Lyon County, Humbolt County, Mineral County, Pershing County, Storey County and Washoe County:"
+    },
+    {
+     "tag": "h2",
+     "text": "Possession Limits"
+    },
+    {
+     "tag": "p",
+     "text": "The possession limit is two times the daily limit for the water in which the fish are caught. Possession limits apply to both general and special regulation waters ."
+    },
+    {
+     "tag": "h2",
+     "text": "Artificial Lure Waters"
+    },
+    {
+     "tag": "p",
+     "text": "See General Fishing Regulations ."
+    },
+    {
+     "tag": "h2",
+     "text": "Bait Regulations"
+    },
+    {
+     "tag": "p",
+     "text": "See regulations on the use of bait fish in the western region."
+    },
+    {
+     "tag": "p",
+     "text": "NOTE: Changes to regulations are marked in blue, bold italics .",
+     "lead": "NOTE:"
+    },
+    {
+     "tag": "p",
+     "text": "Interstate Waters Fishing License Information"
+    },
+    {
+     "tag": "p",
+     "text": "Lake Tahoe and Topaz Lake: Persons under 16 years of age are not required to have a fishing license. Persons 16 years of age or older must have either a Nevada fishing license or a Nevada Interstate Boundary Waters license; a Nevada short-term fishing permit or a California fishing license."
+    },
+    {
+     "tag": "p",
+     "text": "All Regulations are applicable to CR 25-16."
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Western Region Special Regulations"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Area",
+      "Season and hours",
+      "Daily Limit"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Carson City"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Baily Fishing Pond",
+      "Year round; hours are when the park is open to public use.",
+      "3 game fish."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Lake Tahoe",
+      "Special Regulations: Persons under 16 years of age are not required to have a fishing license. Persons 16 years of age or older must have either a Nevada fishing license or a Nevada Interstate Boundary Waters license; a Nevada short-term fishing permit or a California fishing license."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Carson City (Continued)"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Lake Tahoe and Tributaries",
+      "Year round; 1 hour before sunrise to 2 hours after sunset. Closed areas: within a 200 yard radius of the mouths of Third, Incline and Wood Creeks; 500 yard radius from Sand Harbor Boat Ramp; and within the boat launch area inside the jetty at Cave Rock Boat Ramp.",
+      "5 game fish."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Special Regulations: New in 2026: The 2025 Legislature passed a new law requiring that vessels on Lake Tahoe must be operated at a speed that leaves a flat wake when within 600 feet of the shoreline. (Refer to NRS 488.600(3))"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Churchill County"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Lahontan Reservoir",
+      "Year round; any hour of the day or night except for the Lahontan Dam spilling pool (bowl) which is closed to fishing.",
+      "15 game fish of which not more than 5 may be black bass, 5 may be walleye, and 2 may be white bass or white bass hybrids (wiper) 15 inches total length or longer. White bass or white bass hybrids (wiper) under 15 inches may be included in the 15 game fish limit."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Health Advisory: The Nevada Division of Public and Behavioral Health has issued a health advisory recommending no consumption of any fish from the Carson River from Dayton to Lahontan Dam and all waters in Lahontan Valley due to elevated mercury levels in their flesh."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Carson River below Lahontan Reservoir and all waters in Lahontan Valley",
+      "Year round; any hour of the day or night.",
+      "25 game fish of which not more than 5 may be black bass and 5 may be walleye."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Health Advisory: The Nevada Division of Public and Behavioral Health has issued a health advisory recommending no consumption of any fish from the Carson River from Dayton to Lahontan Dam and all waters in Lahontan Valley due to elevated mercury levels in their flesh."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Liberty Pond",
+      "Year round; hours are when the park is open to public use.",
+      "3 game fish."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "CHURCHILL COUNTY CLOSED WATERS: Lahontan Dam spilling pool (bowl) on the Carson River below Lahontan Dam. All waters within the boundaries of the Stillwater NWR."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Douglas County"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Lake Tahoe and Tributaries",
+      "See Carson City.",
+      ""
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Douglas County Community Fishing Ponds: Mitch Park Pond, Lampe Park, Martin Slough Pond, Seeman Pond, Mountain View Park Pond",
+      "Year round; hours are when the park is open to public use.",
+      "3 game fish."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Spooner Lake",
+      "Year round; 1 hour before sunrise to 2 hours after sunset.",
+      "5 trout."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Topaz Lake",
+      "Year round; one hour before sunrise to two hours after sunset, except for the area within the jetties of Topaz Marina which is closed to fishing.",
+      "5 trout, 5 mountain whitefish, and 25 warmwater game fish of which not more than 5 may be black bass."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Special Regulations: There is no chumming at Topaz Lake ."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "DOUGLAS COUNTY CLOSED WATERS: Lake Tahoe within the boat launch area, inside the jetty at the Cave Rock boat ramp, north end. Glenbrook Creek from Lake Tahoe to Hwy 50. Topaz Lake within the jetties of Topaz Marina."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Humboldt County"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Bilk Creek Reservoir",
+      "Year round; any hour of the day or night.",
+      "5 game fish."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Chimney Reservoir",
+      "Year round; any hour of the day or night.",
+      "15 gamefish of which not more than 5 may be black bass, 5 may be walleye, 2 may be white bass hybrid (wiper) and zero (0) may be tiger muskie (catch and release only). The minimum length for white bass hybrid is 15 inches total length."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Health Advisory: The Nevada Division of Public and Behavioral Health has issued a health advisory recommending no consumption of walleye from Chimney Reservoir due to elevated mercury levels in their flesh."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "James Kinney Pond",
+      "Year round; during the hours the park is open to the public.",
+      "3 game fish."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Knott Creek Reservoir including inlet and outlet streams",
+      "Season is open year round; any hour of the day or night.",
+      "1 trout"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Special Regulations: Only artificial lures with single barbless hooks may be used. Only boats without motors or boats with electric motors are permitted."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "HUMBOLDT COUNTY CLOSED WATERS: All tributaries to Summit Lake. All waters of the Sheldon National Wildlife Refuge (within Humboldt County) except Big Springs Reservoir and Dufurrena Ponds. Crowley Creek in the Montana Mountains. Eightmile Creek in the Santa Rosa Range. Donnelly Creek in the Calico Range."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Lyon County"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "East Walker River",
+      "Year round; any hour of the day or night.",
+      "5 trout, 10 mountain whitefish and 15 warmwater game fish of which not more than 5 may be black bass."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Special Regulations: Except in that portion of the East Walker River which is from ¼ mile above the confluence of the East Walker River and Sweetwater Creek downstream to ½ mile below the confluence of the East Walker River and Red Wash Creek, which is catch and release fishing only. Only artificial lures with single barbless hooks may be used."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Lahontan Reservoir",
+      "See Churchill County.",
+      ""
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Mason Valley Wildlife Management Area Fort Churchill Cooling Pond Cooperative Management Area",
+      "Season is open the second Saturday in February through September 30; 1 hour before sunrise to 2 hours after sunset.",
+      "5 trout and 15 warmwater game fish of which not more than 2 may be black bass. Minimum size for black bass is 14 inches total length."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Special Regulations: Fishing is prohibited from the center dike and posted areas. Wading or the use of boats and other floating devices is prohibited."
+     ]
+    }
+   ]
+  },
+  "southern": {
+   "blocks": 90,
+   "outline": [
+    "# Southern Region Regulations (4p 3r)",
+    "## Southern Region General Regulations (2p 0r)",
+    "## Southern Region Daily Limits (2p 0r)",
+    "## Possession Limits (1p 0r)",
+    "## Bait Regulations (1p 0r)",
+    "## Tackle Restrictions (1p 0r)",
+    "## Artificial Lure Waters (1p 0r)",
+    "## Spearfishing (34p 33r)"
+   ],
+   "sample": [
+    {
+     "tag": "h1",
+     "text": "Southern Region Regulations"
+    },
+    {
+     "tag": "p",
+     "text": "Last Updated: September 23, 2026"
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Topic",
+      "Previous (2025)",
+      "New (2026)"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Striped Bass Limit – Lake Mead",
+      "Unlimited striped bass under 20 inches; daily limit of 20 fish for striped bass 20 inches or longer",
+      "Size and number limit removed entirely – unlimited striped bass of any size now allowed"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Striped Bass Limit – Lake Mohave",
+      "Unlimited striped bass under 20 inches; daily limit of 20 fish for striped bass 20 inches or longer",
+      "Size and number limit removed entirely – unlimited striped bass of any size now allowed"
+     ]
+    },
+    {
+     "tag": "p",
+     "text": "The Southern Region includes the four counties of southern Nevada: Clark, Esmeralda, Lincoln and Nye. Popular fishing waters within this region include Lake Mead, Lake Mohave, the Colorado River, Eagle Valley Reservoir, Echo Canyon Reservoir, and the reservoirs on Kirch Wildlife Management Area. A number of small streams in northern Nye County provide wild trout fishing and a few are stocked with hatchery-reared rainbow trout. The Southern Region NDOW Office is located at 3373 Pepper Ln., Las Vegas, NV 89120, (702) 486-5127 ."
+    },
+    {
+     "tag": "p",
+     "text": "Important Note: Within the Southern Region the following general fishing seasons, hours, limits and regulations apply to all waters EXCEPT those listed under “Southern Region Special Regulations.” If the water in which you intend to fish is not listed under the Region’s Special Regulations, then the General Regulations shall apply."
+    },
+    {
+     "tag": "p",
+     "text": "All game fish must be dead before being transported away from the body of water where caught."
+    },
+    {
+     "tag": "h2",
+     "text": "Southern Region General Regulations"
+    },
+    {
+     "tag": "p",
+     "text": "Open year around, any hour of the day or night."
+    },
+    {
+     "tag": "p",
+     "text": "An AIS Decal Is not required for Arizona registered watercraft on Lake Mead/Mohave and the Colorado River. All Nevada registered motorized and non-motorized vessels must display a current Nevada AIS Decal."
+    },
+    {
+     "tag": "h2",
+     "text": "Southern Region Daily Limits"
+    },
+    {
+     "tag": "p",
+     "text": "Except as noted under “Southern Region Special Regulations” the daily limits are as follows:"
+    },
+    {
+     "tag": "p",
+     "text": "Clark, Esmeralda, Lincoln and Nye counties: the limit is 10 trout and 15 warmwater game fish of which not more than 10 may be black bass.",
+     "lead": "Clark, Esmeralda, Lincoln and Nye counties:"
+    },
+    {
+     "tag": "h2",
+     "text": "Possession Limits"
+    },
+    {
+     "tag": "p",
+     "text": "The possession limit is two times the daily limit for the water in which the fish are caught. Possession limits apply to both general and special regulation waters ."
+    },
+    {
+     "tag": "h2",
+     "text": "Bait Regulations"
+    },
+    {
+     "tag": "p",
+     "text": "See regulations on the use of bait fish ."
+    },
+    {
+     "tag": "h2",
+     "text": "Tackle Restrictions"
+    },
+    {
+     "tag": "p",
+     "text": "In Lake Mead, Lake Mohave, and the Colorado River, the use of more than two hooks for bait or flies is prohibited (Refer to NAC 503.590). See below and General Regulations for further information."
+    },
+    {
+     "tag": "h2",
+     "text": "Artificial Lure Waters"
+    },
+    {
+     "tag": "p",
+     "text": "See General Fishing Information ."
+    },
+    {
+     "tag": "h2",
+     "text": "Spearfishing"
+    },
+    {
+     "tag": "p",
+     "text": "Persons may spearfish for striped bass in Lake Mead and in Lake Mohave from Cottonwood Cove to the cable below Hoover Dam. Spearfishing for striped bass is prohibited in that portion of Lake Mohave from Cottonwood Cove to Davis Dam and from Davis Dam down river to the Nevada state line. In Lakes Mead and Mohave and the Colorado River system, spearfishing is prohibited within 1/2 mile of any dock or swimming area. See General Regulations for further information."
+    },
+    {
+     "tag": "p",
+     "text": "When spearfishing, a person must display, within 100 feet, an appropriate diver’s flag. A mechanical spearing device may be used only under the surface of the water, and the spear must be attached to the device by a lanyard. Fishing license regulations apply when spearfishing. (Refer to NAC 503.590-592)",
+     "lead": "When spearfishing, a person must display, within 100 feet, an appropriate diver’s flag."
+    },
+    {
+     "tag": "p",
+     "text": "Please contact the county you will be fishing in prior to assure you are in compliance with county regulations."
+    },
+    {
+     "tag": "p",
+     "text": "Interstate Waters Fishing License Information"
+    },
+    {
+     "tag": "p",
+     "text": "Lake Mead, Mohave, Colorado River: Persons under 12 years of age are not required to have a fishing license. Persons 12 years of age or older must have either a Nevada fishing license or a Nevada Interstate Boundary Waters license; a Nevada short-term fishing permit or an Arizona fishing license."
+    },
+    {
+     "tag": "p",
+     "text": "NOTE: Changes to regulations are marked in blue, bold italics .",
+     "lead": "NOTE:"
+    },
+    {
+     "tag": "p",
+     "text": "All Regulations are applicable to CR 25-16."
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Southern Region Special Regulations"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Area",
+      "Season and hours",
+      "Daily Limit"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Clark County"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Carpenter Canyon Creek",
+      "Year round; any hour of the day or night",
+      "2 trout"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Clark County Community Fishing Ponds: (Boulder City Pond/Veteran’s Memorial Park, Lorenzi Park Pond, Mesquite Urban Pond - Hafen Lane Pond, Sunset Park Pond, and Floyd Lamb Park Pond)",
+      "Year round; hours are when the park is open to public use.",
+      "3 game fish"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Cold Creek Pond and Cold Creek",
+      "Year round; any hour of the day or night",
+      "3 game fish"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Clark County (Continued)"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Colorado River below Davis Dam",
+      "Year round; any hour of the day or night except in areas as posted.",
+      "5 trout, 6 black bass, 10 striped bass, and 25 catfish. Minimum size for black bass is 13 inches total length. No limit on other game fish."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Special Regulations: See bait restrictions ."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Lake Mead",
+      "Year round; any hour of the day or night, except in areas as posted.",
+      "5 trout, 6 black bass, 25 catfish and 15 crappie. No limit on striped bass. No limit on other game fish."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Special Regulations: See bait restrictions ."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Lake Mohave",
+      "Year round; any hour of the day or night, except in areas as posted.",
+      "5 trout, 6 black bass, 25 catfish and 15 crappie. No limit on striped bass. No limit on other game fish."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Special Regulations: See bait restrictions ."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Virgin River and Muddy (Moapa) River systems",
+      "Year round; any hour of the day or night",
+      "5 trout, 6 black bass, 25 catfish, 15 crappie, and 20 striped bass. No limit restriction on other game fish."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "CLARK COUNTY CLOSED WATERS: Lakes Mead and Mohave and the Colorado River areas as posted immediately above and below Hoover and Davis Dams; and except as otherwise posted by the National Park Service, all harbors, in or from marinas, from boats moored within marinas, and in mooring areas for those waters to include, but not limited to, the following on Lake Mead: Calville Bay Marina, Boulder Harbor, Hemenway Harbor, and the Las Vegas Boat Harbor/Lake Mead Marina Harbor Complex and on Lake Mohave: Cottonwood Cove. Spring Mountain Ranch State Park Pond. Veteran’s Memorial Park, Boulder City, all waters except the Boulder City Pond as posted in Clark County. Las Vegas Wash, all waters within the Clark County Wetlands Park. Cornerstone Park, all waters within Cornerstone Park as posted by Henderson Municipality."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Lincoln County"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Eagle Valley Reservoir and Meadow Valley Wash above the reservoir",
+      "Year round; any hour of the day or night.",
+      "5 trout and 15 warmwater game fish of which not more than 10 may be black bass."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Echo Canyon Reservoir",
+      "Year round; any hour of the day or night.",
+      "5 trout and 15 warmwater game fish of which not more than 10 may be black bass."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Nesbitt Lake (Key Pittman Wildlife Management Area)",
+      "Year round; any hour of the day or night except the portion above the old fence line as posted closed to entry from Feb. 15 - August 15 and closed to fishing during waterfowl season.",
+      "15 warmwater game fish of which not more than 10 may be black bass. No limit on bullheads (unlimited possession)"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Special Regulations: See boat restrictions ."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Pahranagat National Wildlife Refuge",
+      "Year round; any hour of the day or night except North Marsh which is closed to fishing during the waterfowl hunting season.",
+      "3 trout and 15 warmwater game fish of which not more than 5 may be black bass."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "LINCOLN COUNTY CLOSED WATERS: Ash Springs outflow through the River Ranch to beginning of the concrete ditch, in Lincoln County. Crystal Springs and outflow for one half mile to beginning of the concrete ditch, in Lincoln County."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Nye County"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Beatty Urban Pond",
+      "Year round; any hour of the day or night.",
+      "3 game fish"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Kirch Wildlife Management Area",
+      "Year round; any hour of the day or night, except the upper portions of Adams-McGill, Cold Springs and Haymeadow Reservoirs, which are closed to trespass Feb. 15 - August 15 as posted. A 100-yard area as posted around the inflow from Hot Creek to Adams-McGill Reservoirs is closed to fishing Jan. 1 - April 1.",
+      "5 trout and 15 warmwater game fish of which not more than 10 may be black bass. No limit on bullheads (unlimited possession). You may only possess 5 black bass from April 1 - June 30."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Special Regulations: See boat restrictions ."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Kirch Wildlife Management Area Tule Reservoir",
+      "Open Aug. 16 - Feb. 14, any hour of the day or night.",
+      "5 trout and 15 warmwater game fish of which not more than 10 may be black bass. No limit on bullheads (unlimited possession)."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Kirch Wildlife Management Area Dacey Reservoir",
+      "Year round except the upper portions of Dacey Reservoir closed to trespass Feb. 15 - Aug. 15 as posted. A 100-yard area as posted around the inflow from Hot Creek to Dacey Reservoir is closed to fishing Jan. 1 - April 1.",
+      "1 trout and 15 warmwater game fish of which not more than 10 may be black bass. No limit on bullheads (unlimited possession). Zero black bass (catch and release only) from April 1 through June 30."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Special Regulation: Artificial lures only ."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Upper Reese River and tributaries from the Arc Dome wilderness boundary south of the Yomba Shoshone Tribe Reservation to its headwaters",
+      "Year round; any hour of the day or night.",
+      "No limit on trout"
+     ]
+    }
+   ]
+  },
+  "eastern": {
+   "blocks": 83,
+   "outline": [
+    "# Eastern Region Regulations (4p 2r)",
+    "## Eastern Region General Regulations (1p 0r)",
+    "## Eastern Region Daily Limits (2p 0r)",
+    "## Possession Limits (1p 0r)",
+    "## Artificial Lure Waters (1p 0r)",
+    "## Bait Regulations (5p 0r)",
+    "#### The Nevada Division of Public and Behavioral Health has issued health advisories that recommend limited consumption of fish species due to elevated mercury levels in their flesh. For more information about mercury levels in fish, visit the Nevada Department of Wildlife mercury in fish blog . (28p 32r)"
+   ],
+   "sample": [
+    {
+     "tag": "h1",
+     "text": "Eastern Region Regulations"
+    },
+    {
+     "tag": "p",
+     "text": "Last Updated: September 23, 2026"
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Topic",
+      "Previous (2025)",
+      "New (2026)"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Comins Lake – Northern Pike Handling",
+      "No mandatory-kill instruction specific to Comins Lake beyond the general statewide northern pike rule",
+      "Updated for 2026 – the Comins Lake entry now explicitly states any northern pike caught must be killed immediately, consistent with the statewide requirement (NAC 503.110, adopted under R053-25)"
+     ]
+    },
+    {
+     "tag": "p",
+     "text": "The Eastern Region includes the four counties of northeastern Nevada: Elko, Eureka, Lander and White Pine. Popular fishing waters include Wildhorse, Wilson, Willow Creek, Jakes Creek, Illipah and South Fork reservoirs, Groves Lake, Cave Lake, Ruby Lake, other high mountain lakes and several streams located throughout the area. The Eastern Region NDOW Office is located at 60 Youth Center Road, Elko, NV 89801, (775) 777-2300 ."
+    },
+    {
+     "tag": "p",
+     "text": "Important Note: Within the Eastern Region the general fishing seasons, hours, limits, and regulations apply to all waters EXCEPT those listed under “Eastern Region Special Regulations” . If the water in which you intend to fish is not listed under the Eastern Region’s Special Regulations, then the General Regulations shall apply."
+    },
+    {
+     "tag": "p",
+     "text": "All game fish must be dead before being transported away from the body of water where caught."
+    },
+    {
+     "tag": "h2",
+     "text": "Eastern Region General Regulations"
+    },
+    {
+     "tag": "p",
+     "text": "Open year around, any hour of the day or night."
+    },
+    {
+     "tag": "h2",
+     "text": "Eastern Region Daily Limits"
+    },
+    {
+     "tag": "p",
+     "text": "Except as noted under “Special Regulations,” the daily limits are as follows:"
+    },
+    {
+     "tag": "p",
+     "text": "Elko, Eureka, Lander and White Pine Counties: The daily limit is 5 trout, 5 mountain whitefish and 15 warmwater game fish of which not more than 10 may be black bass. No limit on northern pike or yellow perch (unlimited possession). No bull trout are allowed in possession.",
+     "lead": "Elko, Eureka, Lander and White Pine Counties:"
+    },
+    {
+     "tag": "h2",
+     "text": "Possession Limits"
+    },
+    {
+     "tag": "p",
+     "text": "The possession limit is two times the daily limit for the water in which the fish are caught. Possession limits apply to both general and special regulation waters ."
+    },
+    {
+     "tag": "h2",
+     "text": "Artificial Lure Waters"
+    },
+    {
+     "tag": "p",
+     "text": "See General Fishing Regulations ."
+    },
+    {
+     "tag": "h2",
+     "text": "Bait Regulations"
+    },
+    {
+     "tag": "p",
+     "text": "The use of bait fish, whether dead or alive or parts thereof, other than preserved salmon eggs and any unprotected species of freshwater bait fish or parts thereof which are commercially prepared or preserved, is prohibited. Aquatic bait may be used only in the water from which it is taken. See more regulations on the use of bait fish ."
+    },
+    {
+     "tag": "p",
+     "text": "Attention Trout Anglers – Identify Your Catch in the Jarbidge"
+    },
+    {
+     "tag": "p",
+     "text": "When fishing in the Jarbidge River drainage area it is essential to be able to differentiate between rainbow trout and the threatened bull trout. The most common trout you will find is rainbow trout."
+    },
+    {
+     "tag": "p",
+     "text": "The possession of bull trout is prohibited! All captured bull trout must be immediately released unharmed. Knowing how to identify your catch is important.",
+     "lead": "The possession of bull trout is prohibited!"
+    },
+    {
+     "tag": "p",
+     "text": "Bull trout have light colored spots scattered over a dark (olive-green color) background. The fins have no black spotting. Rainbow trout have a light colored background with a pink to red colored stripe across the side of the body. In addition, there is black spotting over the body, tail fin and dorsal fin."
+    },
+    {
+     "tag": "h4",
+     "text": "The Nevada Division of Public and Behavioral Health has issued health advisories that recommend limited consumption of fish species due to elevated mercury levels in their flesh. For more information about mercury levels in fish, visit the Nevada Department of Wildlife mercury in fish blog ."
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Health Advisory"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Area",
+      "Species",
+      "Advisory"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Eastern Region"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Comins Lake",
+      "Largemouth Bass, Northern Pike",
+      "No consumption"
+     ]
+    },
+    {
+     "tag": "p",
+     "text": "All Regulations are applicable to CR 25-16."
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Eastern Region Special Regulations"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Area",
+      "Season and hours",
+      "Daily Limit"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Elko County"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Jarbidge River, West Fork and East Fork and its tributary streams",
+      "Year round; any hour of the day or night",
+      "5 trout and 5 mountain whitefish, except the possession of bull trout is prohibited."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Special Regulations: All captured bull trout must be released immediately. Please report the capture of bull trout to NDOW Eastern Region Office."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Ruby Lake National Wildlife Refuge",
+      "Year round in all areas except as posted. Refuge is open 1 hour before sunrise to 1 hour after sunset.",
+      "From Jan. 1 - June 14: limit is 5 trout and 5 black bass*. From June 15 - Dec. 31: limit is 5 trout and 10 black bass*. *Minimum size for black bass is 10 inches total length."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Special Regulations: The areas of the Collection Ditch that are open to fishing may be fished with artificial lures only. Chumming is prohibited. It is unlawful to clean or fillet fish within the boundaries of the Ruby Lake National Wildlife Refuge. The possession or use of live or dead bait fish (including crayfish and amphibians) is prohibited anywhere on the refuge. See boating regulations and refer to the refuge website. The Gallagher Hatchery rearing, brood and spring ponds, and Cave Creek on the west side of the County Road are closed to fishing."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "South Fork Reservoir and the South Fork of the Humboldt River from the Lucky Nugget Subdivision causeway downstream to its confluence with the Humboldt River",
+      "Year round; any hour of the day or night. Exception: March 1 - June 30, catch and release fishing only for black bass.",
+      "5 trout, 1 black bass, 1 white bass hybrid (wiper) and 5 channel catfish. Minimum size for black bass and white bass hybrids is 15 inches total length."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "South Fork of the Humboldt River from the Lucky Nugget Subdivision causeway upstream to Lee",
+      "Year round; any hour of the day or night",
+      "1 trout"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Special Regulations: Only artificial lures with single barbless hooks may be used."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Wildhorse Reservoir and all inlet and outlet streams including Penrod Creek up to the bridge below the Gold Creek Ranger Station",
+      "Year round; any hour of the day or night. Exception: March 1 - June 30, catch and release fishing only for black bass.",
+      "5 trout, 1 black bass, 1 white bass hybrid (wiper) and 5 channel catfish. Minimum size for black bass and white bass hybrids is 15 inches total length. No limit on yellow perch (unlimited possession)."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "ELKO COUNTY CLOSED WATERS: In Ruby Valley, fishing is prohibited in Gallagher Hatchery rearing, brood and spring ponds; in Cave Creek west of the county road; and on Franklin Lake Wildlife Management Area. For Reese River regulations please see the Southern Region regulations for Nye County."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Eureka County"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Tonkin Springs Reservoir",
+      "Year round; any hour of the day or night",
+      "5 trout"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Special Regulations: Artificial lures only. Stream above reservoir is closed to fishing. Only boats without motors or boats with electric motors are permitted."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "EUREKA COUNTY CLOSED WATERS: Tonkin Springs Creek (Denay Creek) from origin to its confluence with Tonkin Springs Reservoir."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Lander County"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Willow Creek Pond and Reservoir including inlet and outlet streams",
+      "Year round; 1 hour before sunrise to 2 hours after sunset.",
+      "5 trout and 5 black bass. Minimum size for black bass is 10 inches total length. No limit on yellow perch (unlimited possession)."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Lander County Closed Waters : Smith Creek Reservoir."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "White Pine County"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Cold Creek Reservoir",
+      "Year round; any hour of the day or night.",
+      "5 trout and 5 black bass; Minimum size for black bass is 10 inches total length."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Comins Lake",
+      "Year round; any hour of the day or night.",
+      "5 trout and 5 black bass. No limit on northern pike (unlimited possession). Any northern pike caught must be killed immediately."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Health Advisory: The Nevada Division of Public and Behavioral Health has issued a health advisory recommending no consumption of largemouth bass or northern pike from Comins Lake due to elevated mercury levels in their flesh."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Ruby Lake National Wildlife Refuge in Elko and White Pine Counties",
+      "Year round in all areas except as posted. Refuge is open 1 hour before sunrise to 1 hour after sunset.",
+      "From Jan. 1 through June 14: 5 trout and 5 black bass*. From June 15 through Dec. 31: 5 trout and 10 black bass*. *Minimum size for black bass is 10 inches total length."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Special Regulations: Those areas of the Collection Ditch that are open to fishing may be fished with artificial lures only. Chumming is prohibited. It is unlawful to clean or fillet fish within the boundaries of the Ruby Lake National Wildlife Refuge. The possession or use of live or dead bait fish (including crayfish and amphibians) is prohibited anywhere on the refuge. See boating regulations and refer to the refuge website. The Gallagher Hatchery rearing, brood and spring ponds, and Cave Creek on the west side of the County Road are closed to fishing."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Snake Range High Lakes",
+      "Year round; any hour of the day or night.",
+      "Catch and Release Only"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Special Regulations: Only artificial lures with single barbless hooks may be used."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "WHITE PINE COUNTY CLOSED WATERS: Cold Creek Springs (Spring Pond) and creek above Cold Creek Reservoir in the Diamond Range of White Pine County."
+     ]
+    },
+    {
+     "tag": "li",
+     "text": "General Info Game Fish of Nevada"
+    },
+    {
+     "tag": "li",
+     "text": "State Record Fish"
+    },
+    {
+     "tag": "li",
+     "text": "Accessible (ADA) Fishing"
+    },
+    {
+     "tag": "li",
+     "text": "Wildlife Offices"
+    }
+   ]
+  },
+  "stripers": {
+   "blocks": 41,
+   "outline": [
+    "# New Striper Limit on Lakes Mead and Mohave (40p 0r)"
+   ],
+   "sample": [
+    {
+     "tag": "h1",
+     "text": "New Striper Limit on Lakes Mead and Mohave"
+    },
+    {
+     "tag": "p",
+     "text": "Last Updated: February 11, 2026"
+    },
+    {
+     "tag": "p",
+     "text": "Imagine there was no limit on striped bass at Lake Mead or Lake Mohave. Would you be more likely to keep your catch rather than practice catch-and-release?"
+    },
+    {
+     "tag": "p",
+     "text": "Fisheries biologists with the Nevada Department of Wildlife hope you will keep your catch because as of 2026 you no longer have to imagine there is no limit on striped bass."
+    },
+    {
+     "tag": "p",
+     "text": "For nearly two decades, the striped bass regulations on Lakes Mead and Mohave allowed anglers to keep an unlimited number of stripers less than 20 inches in length, but limited anglers to no more than 20 fish measuring 20 inches or longer. That regulation has now been revised and the size restriction removed, allowing anglers to harvest unlimited numbers of striped bass of any size at the two reservoirs."
+    },
+    {
+     "tag": "p",
+     "text": "The change does not apply to the Colorado River below Davis Dam."
+    },
+    {
+     "tag": "p",
+     "text": "Such a change may have some anglers questioning the thoughts behind it. The answer is found in Nevada’s striped bass history."
+    },
+    {
+     "tag": "p",
+     "text": "Since their introduction in Lake Mead in 1969, striped bass have been one of Nevada’s most sought-after game fish. By the early 1980s they were also found in Lake Mohave and the sister reservoirs were soon acknowledged as two of the state’s most popular fisheries."
+    },
+    {
+     "tag": "p",
+     "text": "Striped bass populations in both reservoirs flourished due to the abundant threadfin shad population. So too did the number of anglers who pursue the popular sport fish."
+    },
+    {
+     "tag": "p",
+     "text": "Overtime, however, conditions in Lake Mead and Lake Mohave began to change. The rapid expansion of the striped bass population, coupled with competition from the introduced gizzard shad and quagga mussels, resulted in a reduction in the threadfin shad population in both reservoirs."
+    },
+    {
+     "tag": "p",
+     "text": "While gizzard shad also provide forage for striped bass, they quickly outgrow the gape (open mouth) size of most stripers. Moreover, they are not a pelagic species and spend their time in proximity to the shoreline, making them less suitable as a forage base than threadfin shad."
+    },
+    {
+     "tag": "p",
+     "text": "Results from two studies looking at growth rates of Lake Mead stripers highlight these changes. In the 1970s, researchers found that striped bass reached 20 inches in length by age three. In contrast, a similar study from 2015-2018 showed that striped bass did not reach 20 inches in length until age seven. Furthermore, measurements of striped bass harvested by anglers during 2010-2019 creel surveys showed that most striped bass being harvested from Lake Mead are under 20 inches. During those years, the nearly 4,000 stripers checked during creel surveys averaged just 16.5 inches long."
+    },
+    {
+     "tag": "p",
+     "text": "The previous striped bass regulation was intended to address these changes by reducing the number of small striped bass in the two reservoirs and at the same time limit the number of larger striped bass harvested by anglers. This, biologists hoped, would free up additional forage and increase the number of larger striped bass available to anglers."
+    },
+    {
+     "tag": "p",
+     "text": "That, however, was not the case. Over the years, creel surveys have shown that anglers are not often harvesting fish over 20 inches. Therefore, the previous size and limit restrictions are not having the intended effect and change was needed. In recent years, the Department’s Fisheries Division has made a concerted effort to simplify regulations when possible, and this most recent regulation change is a good example of that effort. This change will simplify regulations for anglers and allow them to put more fish in their freezer while not negatively impacting the fishery."
+    },
+    {
+     "tag": "li",
+     "text": "General Info Game Fish of Nevada"
+    },
+    {
+     "tag": "li",
+     "text": "State Record Fish"
+    },
+    {
+     "tag": "li",
+     "text": "Accessible (ADA) Fishing"
+    },
+    {
+     "tag": "li",
+     "text": "Wildlife Offices"
+    },
+    {
+     "tag": "li",
+     "text": "Chasing Nevada’s Native Fish Slam"
+    },
+    {
+     "tag": "li",
+     "text": "Nevada Department of Wildlife"
+    },
+    {
+     "tag": "li",
+     "text": "Public Photo Submissions"
+    },
+    {
+     "tag": "li",
+     "text": "Licenses, Permits & Fees Licenses, Permits & Fees"
+    },
+    {
+     "tag": "li",
+     "text": "FREE Fishing License for Kids"
+    },
+    {
+     "tag": "li",
+     "text": "Fishing Regulations General Statewide Regulations"
+    },
+    {
+     "tag": "li",
+     "text": "Reglas de la Pesca"
+    },
+    {
+     "tag": "li",
+     "text": "Fishing with Bait Fish"
+    },
+    {
+     "tag": "li",
+     "text": "Regional Fish Stocking Schedule"
+    },
+    {
+     "tag": "li",
+     "text": "New Striper Limit on Lakes Mead and Mohave"
+    },
+    {
+     "tag": "li",
+     "text": "Wildlife Management Areas"
+    },
+    {
+     "tag": "li",
+     "text": "Boating Regulations"
+    },
+    {
+     "tag": "li",
+     "text": "Boating Safety & Critical Equipment"
+    },
+    {
+     "tag": "li",
+     "text": "Features Seeman Pond"
+    },
+    {
+     "tag": "li",
+     "text": "Battle Born Pond"
+    },
+    {
+     "tag": "li",
+     "text": "Elko Community Ponds"
+    },
+    {
+     "tag": "li",
+     "text": "Regional Regulations Western Region Regulations"
+    },
+    {
+     "tag": "li",
+     "text": "Southern Region Regulations"
+    },
+    {
+     "tag": "li",
+     "text": "Eastern Region Regulations"
+    },
+    {
+     "tag": "li",
+     "text": "PDF Downloads Trophy Fish Entry Form"
+    },
+    {
+     "tag": "li",
+     "text": "Fish Slam Entry Form"
+    },
+    {
+     "tag": "li",
+     "text": "Clean, Drain & Dry"
+    },
+    {
+     "tag": "li",
+     "text": "First Fish Entry Form"
+    }
+   ]
+  },
+  "baitfish": {
+   "blocks": 50,
+   "outline": [
+    "# Fishing with Bait Fish (2p 0r)",
+    "## Eastern Region (1p 0r)",
+    "## Southern Region (2p 12r)",
+    "## Western Region (29p 0r)"
+   ],
+   "sample": [
+    {
+     "tag": "h1",
+     "text": "Fishing with Bait Fish"
+    },
+    {
+     "tag": "p",
+     "text": "Last Updated: April 17, 2026"
+    },
+    {
+     "tag": "p",
+     "text": "The use of bait fish, whether dead or alive or the parts thereof, other than preserved salmon eggs and any unprotected species of freshwater bait fish or parts thereof which are commercially prepared or preserved, is prohibited.",
+     "lead": "The use of bait fish, whether dead or alive or the parts thereof, other than preserved salmon eggs and any unprotected species of freshwater bait fish or parts thereof which are commercially prepared or preserved, is prohibited."
+    },
+    {
+     "tag": "h2",
+     "text": "Eastern Region"
+    },
+    {
+     "tag": "p",
+     "text": "The capture, possession, or use of fish as bait, whether dead or alive or the parts thereof, other than preserved salmon eggs and any unprotected species of freshwater bait fish or parts thereof which are commercially prepared or preserved, is prohibited. Aquatic bait may be used only in the water from which it is taken. (Refer to NAC 503.502 - NAC 503.507)"
+    },
+    {
+     "tag": "h2",
+     "text": "Southern Region"
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Southern Region Bait Regulations"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Specific Waters Where Bait Fish May Be Used",
+      "* Species Approved For Use As Live Bait Taken Only",
+      "* Species Approved For Use As Live Bait Taken or Purchased"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Lake Mead, Lake Mohave and the Colorado River located in Clark County",
+      "Mosquitofish, Carp, Gizzard Shad",
+      "Fathead Minnow, Golden Shiner, Threadfin Shad, Goldfish"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "All other waters of the southern region",
+      "Capture, possession or use of bait fish whether alive or dead is prohibited. Commercially prepared or preserved bait fish and salmon eggs may be used as bait."
+     ]
+    },
+    {
+     "tag": "p",
+     "text": "In Lake Mead, Lake Mohave, and the Colorado River, only golden shiner, fathead minnow, threadfin shad, and goldfish may be lawfully purchased or may be personally taken from and used only in these waters. In addition, carp, gizzard shad, and mosquitofish may be used as bait, but only may be taken from and used in Lake Mead, Lake Mohave, and the Colorado River. Live bait fish in the Colorado River, Lake Mead, or Lake Mohave, may be taken for a person’s own use with a dipnet, a cast net having a radius not exceeding four feet from horn to leadline, a seine not exceeding 10 feet in length and four feet in width, or a minnow trap not exceeding 12 inches in width, 12 inches in depth, and 24 inches in length. Commercially prepared or preserved bait fish or their parts may be used as bait. Aquatic bait may be used only in the water from which it is taken."
+    },
+    {
+     "tag": "p",
+     "text": "In all other waters of the Southern Region, the capture, possession, or use of bait fish, whether dead or alive or the parts thereof, other than preserved salmon eggs and commercially prepared or preserved bait fish, is prohibited. Aquatic bait may be used only in the water from which it is taken. (Refer to NAC 503.502 - NAC 503.507)"
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Western Region Bait Regulations"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Where Live Bait Fish May Be Used",
+      "Bait Regulations"
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Carson River Basin",
+      "Live bait fish and aquatic bait may be used only in the river basin from which it is taken. Commercially prepared or preserved bait fish or their parts may be used as bait."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Humboldt River Basin, in the Humboldt River from Stall Diversion Dam (near Golconda, Humboldt County) downstream, including in Rye Patch Reservoir, the Pitt-Taylor and Chimney reservoirs. All waters of the Lovelock Valley and the Little Humboldt River downstream of Chimney Reservoir."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "The Lake Tahoe Basin located in Carson City and Douglas and Washoe Counties."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "The Truckee River Basin, except in the Truckee River from the E Mustang Road bridge (I-80 Exit 23) downstream to the Pyramid Lake Paiute Reservation boundary."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "Walker River, from the railroad bridge near Wabuska downstream to and including Walker Lake, excluding waters on the Walker River Paiute Tribe Reservation."
+     ]
+    },
+    {
+     "tag": "tr",
+     "cells": [
+      "All other waters of the western region",
+      "Capture, possession or use of bait fish whether alive or dead is prohibited. Commercially prepared or preserved bait fish or salmon eggs may be used as bait."
+     ]
+    },
+    {
+     "tag": "h2",
+     "text": "Western Region"
+    },
+    {
+     "tag": "p",
+     "text": "In the waters described in the table below, live bait fish and aquatic bait may be used only in the river basin from which it is taken. Commercially prepared or preserved bait fish or their parts may be used as bait in these waters."
+    },
+    {
+     "tag": "p",
+     "text": "In all other waters of the Western Region, the capture, possession, or use of bait fish, whether dead or alive or the parts thereof, other than preserved salmon eggs and commercially prepared or preserved bait fish, is prohibited. Aquatic bait may be used only in the water from which it is taken. (Refer to NAC 503.502-NAC 503.507)"
+    },
+    {
+     "tag": "li",
+     "text": "General Info Game Fish of Nevada"
+    },
+    {
+     "tag": "li",
+     "text": "State Record Fish"
+    },
+    {
+     "tag": "li",
+     "text": "Accessible (ADA) Fishing"
+    },
+    {
+     "tag": "li",
+     "text": "Wildlife Offices"
+    },
+    {
+     "tag": "li",
+     "text": "Chasing Nevada’s Native Fish Slam"
+    },
+    {
+     "tag": "li",
+     "text": "Nevada Department of Wildlife"
+    },
+    {
+     "tag": "li",
+     "text": "Public Photo Submissions"
+    },
+    {
+     "tag": "li",
+     "text": "Licenses, Permits & Fees Licenses, Permits & Fees"
+    },
+    {
+     "tag": "li",
+     "text": "FREE Fishing License for Kids"
+    },
+    {
+     "tag": "li",
+     "text": "Fishing Regulations General Statewide Regulations"
+    },
+    {
+     "tag": "li",
+     "text": "Reglas de la Pesca"
+    },
+    {
+     "tag": "li",
+     "text": "Fishing with Bait Fish"
+    },
+    {
+     "tag": "li",
+     "text": "Regional Fish Stocking Schedule"
+    },
+    {
+     "tag": "li",
+     "text": "New Striper Limit on Lakes Mead and Mohave"
+    },
+    {
+     "tag": "li",
+     "text": "Wildlife Management Areas"
+    },
+    {
+     "tag": "li",
+     "text": "Boating Regulations"
+    },
+    {
+     "tag": "li",
+     "text": "Boating Safety & Critical Equipment"
+    },
+    {
+     "tag": "li",
+     "text": "Features Seeman Pond"
+    },
+    {
+     "tag": "li",
+     "text": "Battle Born Pond"
+    },
+    {
+     "tag": "li",
+     "text": "Elko Community Ponds"
+    },
+    {
+     "tag": "li",
+     "text": "Regional Regulations Western Region Regulations"
+    },
+    {
+     "tag": "li",
+     "text": "Southern Region Regulations"
+    },
+    {
+     "tag": "li",
+     "text": "Eastern Region Regulations"
+    },
+    {
+     "tag": "li",
+     "text": "PDF Downloads Trophy Fish Entry Form"
+    },
+    {
+     "tag": "li",
+     "text": "Fish Slam Entry Form"
+    },
+    {
+     "tag": "li",
+     "text": "Clean, Drain & Dry"
+    },
+    {
+     "tag": "li",
+     "text": "First Fish Entry Form"
+    }
+   ]
+  }
+ },
+ "finishedAt": "2026-10-23T07:10:08.950Z"
+}

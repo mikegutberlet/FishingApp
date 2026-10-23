@@ -1,0 +1,131 @@
+depth: 403 https://pasta.lternet.edu/package/search/eml?defType=edismax&q=title:%22LAGOS-US%20DEPTH%22&fl=packageid,title,pubdate&rows=20
+rivers: 504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?where=GNIS_NAME+IS+NOT+NULL+AND+%28GNIS_NAME+LIKE+%27%25+River%25%27+OR+GNIS_NAME+LIKE+%27%25+Creek%25%27+OR+GNIS_NAME+LIKE+%27
+{
+  "startedAt": "2026-10-23T06:52:55.611Z",
+  "steps": {
+    "nhdLayers": [
+      {
+        "id": 0,
+        "name": "Point"
+      },
+      {
+        "id": 1,
+        "name": "Point Event"
+      },
+      {
+        "id": 2,
+        "name": "Line - Large Scale "
+      },
+      {
+        "id": 3,
+        "name": "Flow Direction"
+      },
+      {
+        "id": 4,
+        "name": "Flowline - Small Scale"
+      },
+      {
+        "id": 5,
+        "name": "Flowline - Small Scale (HI, PR, VI, Pacific Territories)"
+      },
+      {
+        "id": 6,
+        "name": "Flowline - Large Scale"
+      },
+      {
+        "id": 7,
+        "name": "Area - Small Scale"
+      },
+      {
+        "id": 8,
+        "name": "Area - Small Scale (HI, PR, VI, Pacific Territories)"
+      },
+      {
+        "id": 9,
+        "name": "Area - Large Scale"
+      },
+      {
+        "id": 10,
+        "name": "Waterbody - Small Scale"
+      },
+      {
+        "id": 11,
+        "name": "Waterbody - Small Scale (HI, PR, VI, Pacific Territories)"
+      },
+      {
+        "id": 12,
+        "name": "Waterbody - Large Scale"
+      }
+    ],
+    "lakes": {
+      "features": 1975,
+      "polygons": 371,
+      "inState": 351
+    },
+    "elevations": {
+      "nhdKept": 85,
+      "fromDem": 266,
+      "missing": 0
+    },
+    "depthProbe": "403 https://pasta.lternet.edu/package/eml/edi/1043?filter=newest",
+    "depth": {
+      "package": "edi.1043.1",
+      "pastaError": "403 https://pasta.lternet.edu/package/data/eml/edi/1043/1",
+      "portalUrls": [],
+      "portalResponse": " <!DOCTYPE html> <html lang=\"en\"> <head> <title>Data Portal - Login | Environmental Data Initiative (EDI) </title> <meta charset=\"UTF-8\"/> <meta content=\"width=device-width, initial-scale=1, maximum-scale=1\" name=\"viewport\"> <link rel=\"shortcut icon\" href=\"./images/favicon.ico\" type=\"image/x-icon\"/>",
+      "matchedWikidata": 4,
+      "unmatchedWikidata": [
+        "Mono Lake 38.0165908,-119.0093116 56ft",
+        "Biggin 37.133257,-116.041124 795ft nearest Railroad Tanks 19.6km",
+        "Q172822 36.015833333,-114.737777777 594ft nearest Lake Las Vegas 19.7km",
+        "Pile Driver 37.227022,-116.056412 1518ft",
+        "Abilene 37.01311,-116.045193 804ft nearest Railroad Tanks 6.2km"
+      ],
+      "lakesWithDepth": 4
+    },
+    "depthPackageError": "No depth table found via portal",
+    "depthError": "403 https://pasta.lternet.edu/package/search/eml?defType=edismax&q=title:%22LAGOS-US%20DEPTH%22&fl=packageid,title,pubdate&rows=20",
+    "wikidata": {
+      "rows": 9,
+      "sample": [
+        {
+          "lat": 38.0165908,
+          "lon": -119.0093116,
+          "maxFt": 56,
+          "meanFt": null,
+          "name": "Mono Lake"
+        },
+        {
+          "lat": 35.437222222,
+          "lon": -114.643611111,
+          "maxFt": 75,
+          "meanFt": null,
+          "name": "Lake Mohave"
+        },
+        {
+          "lat": 37.133257,
+          "lon": -116.041124,
+          "maxFt": 795,
+          "meanFt": null,
+          "name": "Biggin"
+        },
+        {
+          "lat": 40.033333333,
+          "lon": -119.566666666,
+          "maxFt": 356,
+          "meanFt": null,
+          "name": "Pyramid Lake"
+        },
+        {
+          "lat": 36.015833333,
+          "lon": -114.737777777,
+          "maxFt": 594,
+          "meanFt": null,
+          "name": "Q172822"
+        }
+      ]
+    },
+    "riversError": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?where=GNIS_NAME+IS+NOT+NULL+AND+%28GNIS_NAME+LIKE+%27%25+River%25%27+OR+GNIS_NAME+LIKE+%27%25+Creek%25%27+OR+GNIS_NAME+LIKE+%27"
+  },
+  "finishedAt": "2026-10-23T07:09:39.151Z"
+}
