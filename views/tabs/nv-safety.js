@@ -22,7 +22,7 @@ export async function renderNvBanner(lake, page) {
   const l = NV_HAB[top.level];
   const el = document.createElement('div');
   h2.after(el);
-  el.innerHTML = `<div class="banner hab-${top.level}"><b>${l.icon} Toxic algae: ${l.label}</b> · ${esc(top.name)}${top.date ? `, since ${day(top.date)}` : ''}
+  el.innerHTML = `<div class="banner hab-${top.level}"><b>${l.icon} Toxic algae: ${l.label}</b> · ${esc(top.name)}${top.date ? `, updated ${day(top.date)}` : ''}
     <div class="small">${l.advice}</div><a href="#" class="small" data-safety-tab>Details ›</a></div>`;
   el.querySelector('[data-safety-tab]').onclick = e => { e.preventDefault(); document.querySelector('.tabs button[data-tab="safety"]')?.click(); };
 }

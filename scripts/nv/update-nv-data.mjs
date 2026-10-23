@@ -389,7 +389,7 @@ async function habAdvisories(waters) {
     const date = dm ? `${dm[3].length === 2 ? '20' + dm[3] : dm[3]}-${dm[1].padStart(2, '0')}-${dm[2].padStart(2, '0')}` : null;
     const key = norm(name.split(/\s+(?:including|incl\.?)\s+|[(,]/i)[0]);
     const spot = waters.find(w => w.lat != null && norm(parseName(w.name).names.at(-1)) === key) ?? lakes.filter(l => norm(l.name) === key).sort((a, b) => b.acres - a.acres)[0];
-    advisories.push({ name, level: HAB_LEVEL[level.toLowerCase()], advisory: `HAB ${level[0].toUpperCase()}${level.slice(1).toLowerCase()}`, date, detail: body.slice(0, 400), landmark: '', lat: spot?.lat ?? null, lon: spot?.lon ?? null });
+    advisories.push({ name, level: HAB_LEVEL[level.toLowerCase()], advisory: `HAB ${level[0].toUpperCase()}${level.slice(1).toLowerCase()}`, date, detail: body.length > 400 ? body.slice(0, body.lastIndexOf('.', 400) + 1 || 400) : body, landmark: '', lat: spot?.lat ?? null, lon: spot?.lon ?? null });
   }
   report.hab = advisories.map(a => `${a.name}: ${a.advisory} ${a.date} ${a.lat != null ? 'located' : 'NO POINT'}`);
   return { updatedAt: new Date().toISOString(), source: url, portal: url, advisories };
