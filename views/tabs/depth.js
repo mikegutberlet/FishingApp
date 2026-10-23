@@ -5,6 +5,7 @@ import { parseDepthCsv, parseDepthXml } from '../../data-sources.js';
 import { $, esc, fmtDate, status, M_TO_FT } from '../../ui.js';
 import { showDepthSet, showSurvey } from '../../map.js';
 import { openLake } from '../lake.js';
+import { renderWaypointCard } from '../../waypoints.js';
 
 async function renderSurveys(lake, el) {
   const surveys = await CA.bathymetryFor(lake);
@@ -47,7 +48,8 @@ export async function renderDepth(lake, body) {
       <label class="file-btn">Choose file… <input type="file" name="file" accept=".csv,.txt,.gpx,.kml" hidden></label></form>
     ${await depthFacts(lake)}</div>
     ${sets.map(s => `<div class="card lake-item"><div><b>${esc(s.name)}</b><div class="muted small">${s.points.length.toLocaleString()} points · max ${Math.max(...s.points.map(p => p[2])).toFixed(1)} ft · ${fmtDate(s.createdAt)}</div></div>
-      <div><button data-show="${s.id}">Show</button> <button class="danger" data-del="${s.id}">✕</button></div></div>`).join('')}`;
+      <div><button data-show="${s.id}">Show</button> <button class="danger" data-del="${s.id}">✕</button></div></div>`).join('')}
+    <div id="waypoints"></div>`;
   body.querySelector('input[type=file]').onchange = async e => {
     const file = e.target.files[0];
     if (!file) return;
@@ -64,5 +66,6 @@ export async function renderDepth(lake, body) {
   };
   body.querySelectorAll('[data-show]').forEach(b => b.onclick = () => showDepthSet(b.dataset.show));
   renderSurveys(lake, $('#surveys'));
+  renderWaypointCard(lake, $('#waypoints'), () => openLake(lake.id, 'depth'));
   body.querySelectorAll('[data-del]').forEach(b => b.onclick = async () => { if (confirm('Delete this depth map?')) { await db.del('depthSets', b.dataset.del); openLake(lake.id, 'depth'); } });
 }

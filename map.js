@@ -10,6 +10,7 @@ L.control.zoom({ position: 'topleft' }).addTo(map);
 const street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' });
 const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: 'Esri' });
 satellite.addTo(map);
+export const baseLayers = { Satellite: satellite, Streets: street };
 const lakeLayer = L.layerGroup().addTo(map);
 const catchLayer = L.layerGroup().addTo(map);
 export const depthLayer = L.layerGroup().addTo(map);

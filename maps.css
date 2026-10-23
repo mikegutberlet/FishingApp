@@ -1,0 +1,16 @@
+/* Maps, depth and offline: sheets (dialogs), waypoint markers and the map overlays' controls. */
+dialog.sheet { border: 0; border-radius: 14px; padding: 16px; width: min(440px, calc(100vw - 24px)); max-height: calc(100vh - 48px); overflow-y: auto; background: var(--card); color: var(--text); box-shadow: 0 8px 32px rgba(0,0,0,.35); }
+dialog.sheet::backdrop { background: rgba(0,0,0,.45); }
+dialog.sheet .row { margin-top: 8px; }
+dialog.sheet .row button { flex: 1; }
+dialog.sheet progress { width: 100%; height: 10px; }
+.kinds { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px; }
+.kinds label { margin: 0; }
+.kinds input { position: absolute; opacity: 0; width: 0; }
+.kinds span { display: block; text-align: center; padding: 6px 2px; border: 1px solid var(--line); border-radius: 8px; font-size: 12px; color: var(--text); line-height: 1.5; }
+.kinds span::first-line { font-size: 20px; }
+.kinds input:checked + span { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); }
+.wpt { background: none; border: 0; }
+.wpt span { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; font-size: 16px; border-radius: 50%; background: rgba(255,255,255,.92); box-shadow: 0 1px 4px rgba(0,0,0,.45); }
+.acts { display: flex; gap: 6px; flex-shrink: 0; margin-left: 8px; }
+.acts button { margin-left: 0; }

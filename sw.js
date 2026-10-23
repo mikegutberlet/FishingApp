@@ -1,5 +1,5 @@
 // Caches the app shell so it opens with no signal on the water. Your data is in IndexedDB, not here.
-const CACHE = 'tackle-box-v5';
+const CACHE = 'tackle-box-v6';
 // One file per line. Add new files here and bump CACHE.
 const SHELL = [
   './',
@@ -12,6 +12,14 @@ const SHELL = [
   'icons/icon-192.png',
   'vendor/leaflet/leaflet.css',
   'vendor/leaflet/leaflet.js',
+  'vendor/leaflet/images/marker-icon.png',
+  'vendor/leaflet/images/marker-icon-2x.png',
+  'vendor/leaflet/images/marker-shadow.png',
+  'vendor/leaflet/images/layers.png',
+  'vendor/leaflet/images/layers-2x.png',
+  'maps.css',
+  'offline.js',
+  'waypoints.js',
   'app.js',
   'ui.js',
   'map.js',
@@ -38,20 +46,21 @@ const SHELL = [
 ];
 
 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())));
-// Drop old app-shell caches, but keep the map tiles you've already viewed.
+// Drop old app-shell caches, but keep the map tiles you've already viewed and lakes saved for offline (offline.js).
 self.addEventListener('activate', e => e.waitUntil(
-  caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE && k !== 'tiles').map(k => caches.delete(k)))).then(() => self.clients.claim())));
+  caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE && k !== 'tiles' && !k.startsWith('offline-')).map(k => caches.delete(k)))).then(() => self.clients.claim())));
 
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   const isTile = /tile\.openstreetmap\.org|arcgisonline\.com/.test(url.host);
   const isShell = url.origin === location.origin;
+  if (url.hash === '#offline') return; // offline.js saving a lake: it keeps its own copy
   if (isTile) {
-    // Map tiles: cache what you've viewed so lakes you've looked at work offline.
-    e.respondWith(caches.open('tiles').then(async c => (await c.match(e.request)) || fetch(e.request).then(r => { if (r.ok || r.type === 'opaque') c.put(e.request, r.clone()); return r; })));
+    // Map tiles: from a saved offline lake or what you've viewed before, otherwise fetch and keep a copy.
+    e.respondWith(caches.open('tiles').then(async c => (await caches.match(e.request)) || fetch(e.request).then(r => { if (r.ok || r.type === 'opaque') c.put(e.request, r.clone()); return r; })));
   } else if (isShell) {
     // Network first so updates land, cache as fallback for offline.
-    e.respondWith(fetch(e.request).then(r => { const copy = r.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)); return r; }).catch(() => caches.match(e.request)));
+    e.respondWith(fetch(e.request).then(r => { const copy = r.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)); return r; }).catch(async () => (await (await caches.open(CACHE)).match(e.request)) || caches.match(e.request)));
   }
   // Weather/USGS calls go straight to the network.
 });

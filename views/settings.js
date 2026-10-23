@@ -6,10 +6,11 @@ import { refreshMap } from '../map.js';
 // ---------- Sharing with friends ----------
 // A lake pack holds the lake, its depth maps and stocking notes. Catches and notes stay private unless included.
 export async function shareLake(lake) {
-  const includeNotes = confirm(`Share ${lake.name} with its depth maps.\n\nAlso include your notes and pinned spots? (Catches are never included.)`);
+  const includeNotes = confirm(`Share ${lake.name} with its depth maps.\n\nAlso include your notes, pinned spots and waypoints? (Catches are never included.)`);
   const pack = { app: 'tackle-box', version: 1, sharedAt: new Date().toISOString(), lakes: [lake],
     depthSets: await db.byLake('depthSets', lake.id), stocking: await db.byLake('stocking', lake.id),
-    notes: includeNotes ? await db.byLake('notes', lake.id) : [], catches: [] };
+    notes: includeNotes ? await db.byLake('notes', lake.id) : [], catches: [],
+    waypoints: includeNotes ? await db.byLake('waypoints', lake.id) : [] };
   const file = new File([JSON.stringify(pack)], `${lake.name.replace(/[^\w-]+/g, '-')}.tacklebox.json`, { type: 'application/json' });
   if (navigator.canShare?.({ files: [file] })) {
     try { await navigator.share({ files: [file], title: lake.name, text: `${lake.name} for Tackle Box. Open the app, go to Data → Import.` }); return; }
