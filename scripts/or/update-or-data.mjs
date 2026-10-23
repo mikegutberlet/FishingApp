@@ -264,6 +264,10 @@ const BOILER = /regulation update page|table of contents|^recreation report$|bes
 async function recreationReport() {
   const out = [];
   report.recreation = {};
+  // Zone pages don't all carry a date; the Recreation Report's front page does.
+  let weekOf = null;
+  try { weekOf = isoDate(clean(await getText(`${ODFW}/recreation-report`)).match(/(?:January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{4}/)?.[0] ?? ''); } catch {}
+  report.recreation.weekOf = weekOf;
   for (const [z, zone] of Object.entries(REPORT_ZONES)) {
     const url = `${ODFW}/recreation-report/fishing-report/${z}-zone`;
     const log = report.recreation[z] = {};
@@ -282,7 +286,7 @@ async function recreationReport() {
         items.push(section && section === section.toUpperCase() && !t.toUpperCase().includes(section) ? `${section[0]}${section.slice(1).toLowerCase()}. ${t}` : t);
       }
       log.date = date; log.items = items.length; log.first = items.slice(0, 3);
-      out.push({ zone, date, url, items: [...new Set(items)].slice(0, 80) });
+      out.push({ zone, date: date ?? weekOf, url, items: [...new Set(items)].slice(0, 80) });
     } catch (e) { log.error = e.message; }
   }
   return out;
@@ -290,7 +294,7 @@ async function recreationReport() {
 
 // Whether a report line talks about this water: its name without the "Lake"/"River" part, as a whole word, in a
 // line that names the same kind of water ("Siltcoos and Tahkenitch lakes" is about Siltcoos Lake).
-const KIND = [[/\b(lake|lakes|reservoir|reservoirs|res|pond|ponds|canal)\b/i], [/\b(river|rivers|creek|creeks)\b/i]];
+const KIND = [[/\b(lake|lakes|reservoir|reservoirs|res|pond|ponds)\b/i], [/\b(river|rivers|creek|creeks)\b/i], [/\b(canal|canals)\b/i]];
 export function mentions(text, name) {
   const bare = name.replace(/\s*\(.*?\)\s*/g, ' ').trim();
   const base = bare.replace(/^Lake\s+/i, '').replace(/\s+(Lake|Lakes|Reservoir|Pond|Ponds|River|Creek|Canal)$/i, '').trim();
@@ -457,7 +461,7 @@ async function hydrometLevels() {
       const day = d => /\//.test(d) ? isoDate(d) : d.slice(0, 10);
       const elevation = rows.filter(r => Number.isFinite(parseFloat(r[1]))).map(r => [day(r[0]), +parseFloat(r[1]).toFixed(2)]);
       const storage = rows.filter(r => Number.isFinite(parseFloat(r[2]))).map(r => [day(r[0]), Math.round(parseFloat(r[2]))]);
-      log[id] = `${elevation.length} elev, ${storage.length} storage; ${rows.length} rows; ${csv.slice(0, 300).replace(/\s+/g, ' ')}`;
+      log[id] = `${elevation.length} elev, ${storage.length} storage; ${rows.length} rows; ${JSON.stringify(rows.slice(0, 2))}; ${csv.slice(csv.search(/DATE|Date/), csv.search(/DATE|Date/) + 300).replace(/\s+/g, ' ')}`;
       if (elevation.length || storage.length) out.push({ id, name, lat, lon, source: 'USBR', elevation, storage });
     } catch (err) { log[id] = err.message; }
   }
@@ -465,45 +469,41 @@ async function hydrometLevels() {
 }
 
 // ---------- Toxic algae ----------
-// OHA's advisory table: a status icon (red advisory, yellow precaution, blue lifted), the water, county, dates.
+// OHA's advisory table is a SharePoint list the page draws in the browser (CurrentCyanobacteriaAdvisories); the
+// job reads the list through SharePoint's REST API. Each row: waterbody, county, status (advisory, precaution,
+// lifted) and dates.
+const OHA_SITE = 'https://www.oregon.gov/oha/PH/HEALTHYENVIRONMENTS/RECREATION/HARMFULALGAEBLOOMS';
+const OHA_PAGE = `${OHA_SITE}/Pages/Blue-GreenAlgaeAdvisories.aspx`;
 async function habAdvisories(waters) {
-  const page = 'https://www.oregon.gov/oha/ph/healthyenvironments/recreation/harmfulalgaeblooms/pages/blue-greenalgaeadvisories.aspx';
-  const html = await getText(page);
+  const listUrl = `${OHA_SITE}/_api/web/GetList('${encodeURIComponent('/oha/PH/HEALTHYENVIRONMENTS/RECREATION/HARMFULALGAEBLOOMS/Lists/CurrentCyanobacteriaAdvisories')}')/items?$top=500`;
+  const json = await getJson(listUrl, { headers: { ...BROWSER, Accept: 'application/json;odata=nometadata' } });
+  const items = json.value ?? json.d?.results ?? [];
   const lakes = (await readOld('lakes.json'))?.lakes ?? [];
-  const rows = tableRows(html);
-  const log = report.hab = { length: html.length, tables: (html.match(/<table/gi) ?? []).length,
-    hints: [...html.matchAll(/(Advisory-Red|Precaution-Yellow|Lifted-Blue|\/_api\/|\/Lists\/|arcgis\.com[^"'\s]*|\.json)/gi)].slice(0, 30).map(m => html.slice(Math.max(0, m.index - 150), m.index + 150).replace(/\s+/g, ' ')),
-    rows: rows.length, sample: rows.slice(0, 8).map(r => r.map(c => `${c.text}${/<img/i.test(c.html) ? ` [img ${c.html.match(/(?:alt|src)="([^"]+)"/i)?.[1] ?? ''}]` : ''}`)) };
-  let header = null;
+  const log = report.hab = { items: items.length, fields: Object.keys(items[0] ?? {}).filter(k => !/^(odata|__|FileSystem|ServerRedirected|ContentType|Compliance|OData_|Attachments|GUID|AuthorId|EditorId|Created|Modified|ID$|Id$)/.test(k)), sample: items.slice(0, 3) };
+  // Field names in this list aren't documented; pick them by name.
+  const field = (it, re, not) => { const k = Object.keys(it).find(k => re.test(k) && !(not && not.test(k)) && it[k] != null && it[k] !== ''); return k ? it[k] : null; };
+  const text = v => typeof v === 'string' ? clean(v) : v && typeof v === 'object' ? clean(v.Description ?? v.Label ?? v.Url ?? JSON.stringify(v)) : v == null ? '' : String(v);
   const advisories = [];
-  for (const cells of rows) {
-    const texts = cells.map(c => c.text);
-    if (!header && texts.some(t => /water\s*body|waterbody|location/i.test(t)) && texts.some(t => /county|date|issued/i.test(t))) { header = texts.map(t => t.toLowerCase()); continue; }
-    const all = cells.map(c => `${c.text} ${c.html.match(/(?:alt|src|title)="([^"]+)"/gi)?.join(' ') ?? ''}`).join(' ');
-    const status = /lifted|blue/i.test(all) ? 'lifted' : /precaution|yellow/i.test(all) ? 'caution' : /advisory|red/i.test(all) ? 'warning' : null;
-    if (!status || status === 'lifted') continue;
-    const col = re => header?.findIndex(h => re.test(h)) ?? -1;
-    const pick = (re, fallback) => { const i = col(re); return i >= 0 ? texts[i] : fallback; };
-    const name = pick(/water|location/, texts.find(t => t && WATERISH.test(t)) ?? '');
+  for (const it of items) {
+    const name = text(field(it, /water ?body|waterbody|^Title$|location|lake/i, /county|date|status/i));
     if (!name) continue;
-    const county = pick(/county/, '');
-    const date = isoDate(pick(/issued|date/, texts.find(t => isoDate(t)) ?? '')) ?? null;
+    const status = text(field(it, /status|type|advisory|level/i, /date|title|waterbody/i)) ;
+    const lifted = field(it, /lift/i);
+    const level = /lift/i.test(status) || (lifted && Date.parse(lifted) < Date.now()) ? 'lifted' : /precaution|yellow/i.test(status) ? 'caution' : 'warning';
+    if (level === 'lifted') continue;
+    const county = text(field(it, /county/i)).replace(/\s*County$/i, '');
+    const issued = field(it, /issue|date/i, /lift|modified|created/i);
+    const date = issued ? (String(issued).match(/^\d{4}-\d{2}-\d{2}/)?.[0] ?? isoDate(String(issued))) : null;
+    const lat = +field(it, /^lat|latitude/i), lon = +field(it, /^lon|^long|longitude/i);
     const key = norm(name.split(/[(,]/)[0]);
-    const spot = waters.find(w => w.lat != null && norm(w.name) === key) ?? lakes.filter(l => norm(l.name) === key).sort((a, b) => b.acres - a.acres)[0];
-    advisories.push({ name, county, level: status, advisory: status === 'warning' ? 'Recreational use health advisory' : 'Precaution', date, detail: texts.filter(t => t && t !== name && t !== county).join(' · ').slice(0, 400), lat: spot?.lat ?? null, lon: spot?.lon ?? null });
-  }
-  // The permanent advisories are written as headings, not table rows.
-  for (const m of html.matchAll(/<(h[2-5]|strong)\b[^>]*>([^<]*Permanent[^<]*Advisory[^<]*)<\/\1>([\s\S]{0,1500}?)(?=<h[2-5]|<table)/gi)) {
-    const title = clean(m[2]);
-    const what = title.replace(/^.*?Advisory:\s*/i, '');
-    for (const n of what.split(/\s+and\s+|,\s*/).map(s => s.replace(/^(the\s+)?mainstem\s+/i, '').trim()).filter(Boolean)) {
-      const key = norm(n);
-      const spot = lakes.find(l => norm(l.name) === key);
-      advisories.push({ name: n.replace(/^\w/, c => c.toUpperCase()), county: title.match(/^(\w+) County/)?.[1] ?? '', level: 'warning', permanent: true, advisory: 'Permanent recreational use advisory', date: null, detail: clean(m[3]).slice(0, 400), lat: spot?.lat ?? null, lon: spot?.lon ?? null });
-    }
+    const spot = Number.isFinite(lat) && lat && Number.isFinite(lon) && lon ? { lat: round(lat), lon: round(lon) }
+      : waters.find(w => w.lat != null && norm(w.name) === key) ?? lakes.filter(l => norm(l.name) === key).sort((a, b) => b.acres - a.acres)[0];
+    const permanent = /permanent/i.test(`${status} ${name}`);
+    advisories.push({ name, county, level, permanent, advisory: permanent ? 'Permanent recreational use advisory' : level === 'warning' ? 'Recreational use health advisory' : 'Precaution', date,
+      detail: text(field(it, /comment|detail|description|note|area/i, /title|waterbody|county/i)).slice(0, 400), lat: spot?.lat ?? null, lon: spot?.lon ?? null });
   }
   log.advisories = advisories.map(a => `${a.name} (${a.county}): ${a.level} ${a.date ?? ''} ${a.lat != null ? 'located' : 'NO POINT'}`);
-  return { updatedAt: new Date().toISOString(), source: page, portal: page, advisories };
+  return { updatedAt: new Date().toISOString(), source: 'Oregon Health Authority, current cyanobacteria advisories', portal: OHA_PAGE, advisories };
 }
 
 // ---------- Run ----------
