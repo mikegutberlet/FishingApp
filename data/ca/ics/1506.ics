@@ -1,0 +1,45 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Graeagle Mill Pond
+X-WR-CALDESC:CDFW fish planting schedule for Graeagle Mill Pond. Plants are
+  subject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-02-01-1506-trout@tackle-box
+DTSTAMP:20260201T000000Z
+DTSTART;VALUE=DATE:20260201
+DTEND;VALUE=DATE:20260208
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Graeagle Mill Pond
+DESCRIPTION:CDFW plans to plant Trout at Graeagle Mill Pond (Plumas County)
+  the week of 2026-02-01. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=1506
+GEO:39.76675;-120.61568
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Graeagle Mill Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-05-10-1506-trout@tackle-box
+DTSTAMP:20260510T000000Z
+DTSTART;VALUE=DATE:20260510
+DTEND;VALUE=DATE:20260517
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Graeagle Mill Pond
+DESCRIPTION:CDFW plans to plant Trout at Graeagle Mill Pond (Plumas County)
+  the week of 2026-05-10. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=1506
+GEO:39.76675;-120.61568
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Graeagle Mill Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

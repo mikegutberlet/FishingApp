@@ -1,0 +1,62 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Collins Lake
+X-WR-CALDESC:CDFW fish planting schedule for Collins Lake. Plants are subje
+ ct to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2025-11-16-1904-trout@tackle-box
+DTSTAMP:20251116T000000Z
+DTSTART;VALUE=DATE:20251116
+DTEND;VALUE=DATE:20251123
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Collins Lake
+DESCRIPTION:CDFW plans to plant Trout at Collins Lake (Yuba County) the wee
+ k of 2025-11-16. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=1904
+GEO:39.34433;-121.3182
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Collins Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-02-15-1904-trout@tackle-box
+DTSTAMP:20260215T000000Z
+DTSTART;VALUE=DATE:20260215
+DTEND;VALUE=DATE:20260222
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Collins Lake
+DESCRIPTION:CDFW plans to plant Trout at Collins Lake (Yuba County) the wee
+ k of 2026-02-15. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=1904
+GEO:39.34433;-121.3182
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Collins Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-02-22-1904-trout@tackle-box
+DTSTAMP:20260222T000000Z
+DTSTART;VALUE=DATE:20260222
+DTEND;VALUE=DATE:20260301
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Collins Lake
+DESCRIPTION:CDFW plans to plant Trout at Collins Lake (Yuba County) the wee
+ k of 2026-02-22. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=1904
+GEO:39.34433;-121.3182
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Collins Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

@@ -1,0 +1,28 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Briles Reservoir
+X-WR-CALDESC:CDFW fish planting schedule for Briles Reservoir. Plants are s
+ ubject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-05-10-8630-trout@tackle-box
+DTSTAMP:20260510T000000Z
+DTSTART;VALUE=DATE:20260510
+DTEND;VALUE=DATE:20260517
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Briles Reservoir
+DESCRIPTION:CDFW plans to plant Trout at Briles Reservoir (Modoc County) th
+ e week of 2026-05-10. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=8630
+GEO:41.76604;-120.35232
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Briles Reservoir
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

@@ -1,0 +1,28 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Black Rock Reservoir
+X-WR-CALDESC:CDFW fish planting schedule for Black Rock Reservoir. Plants a
+ re subject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-03-29-21340-trout@tackle-box
+DTSTAMP:20260329T000000Z
+DTSTART;VALUE=DATE:20260329
+DTEND;VALUE=DATE:20260405
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Black Rock Reservoir
+DESCRIPTION:CDFW plans to plant Trout at Black Rock Reservoir (Fresno Count
+ y) the week of 2026-03-29. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=21340
+GEO:36.92051;-119.01726
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Black Rock Reservoir
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

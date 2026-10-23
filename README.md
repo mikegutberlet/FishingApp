@@ -41,6 +41,15 @@ It is a PWA: open it once in Safari/Chrome, choose **Add to Home Screen**, and i
 * **From photos**: pick old fish photos and Tackle Box reads the date and GPS on the device, matches the water (yours or any California water), and makes draft catches to confirm.
 * **Units**: inches or cm, pounds or kg, feet or meters (Data view). Records are stored in inches, pounds and feet.
 
+## Water data and safety
+
+* **Regs & safety tab** on every water: special regulations that name the water (Title 14 §7.50 trout, §7.40 salmon/steelhead, §5.00 black bass, §5.15 catfish, plus county-wide rules), matched by name, kind of water and county, with 🟢/🔴 for open or closed today; the statewide rules for the species; current toxic algae advisories; and OEHHA advice on how often you can eat each fish. The CDFW booklet and posted signs are still the final word.
+* **Toxic algae banner** at the top of a water's page when the Water Boards have a Caution, Warning or Danger advisory on it, and a *Toxic algae advisories* map layer (on by default).
+* **Access & facilities** on the Info tab: boat ramps, fishing piers, parking near them, campgrounds, marinas, boat rentals and bait & tackle from OpenStreetMap, with distance and directions; map layer *Ramps & access* when zoomed in.
+* **Plant calendars:** each stocked water has a calendar feed (`data/ca/ics/<stockId>.ics`); *Subscribe to plants* on the Stocking tab adds it to Apple or Google Calendar, with no server knowing who subscribed.
+* **New since last visit:** the lake list badges saved waters with CDFW plants added since you last opened their Stocking tab.
+* **Catch form warnings:** as you log a catch, a *Check the regs* box above Save flags a closed season, catch-and-release-only rules, wild fish that must go back, size minimums and the daily bag limit (counting what you've kept there that day). It never blocks saving. `CA.regsFor(lake)` and `CA.catchWarnings(lake, catch)` are the API behind it.
+
 ## California
 
 * **Find stocked waters**: Lakes → *Find California stocked waters* lists every CDFW-stocked lake and river, filtered to recent and upcoming plants, with one-tap *Add*. The map also has a *CA stocked waters* layer (green = planted in the last 30 days).
@@ -71,12 +80,39 @@ Data is refreshed daily by `.github/workflows/update-data.yml` running `scripts/
 | Historical introductions and plantings | USGS Nonindigenous Aquatic Species database, plus documented early events (Fish Bulletin 178) | weekly |
 | Current plants and stocking history | CDFW planting schedule | nightly |
 | Lake levels | CDEC | nightly |
+| Toxic algae advisories | California Water Boards FHAB bloom reports (data.ca.gov) | nightly |
+| Plant calendar feeds | built from the CDFW planting schedule | nightly |
+| Fishing regulations | California Code of Regulations Title 14 (Cornell LII), county lines from US Census TIGERweb | weekly |
+| Fish consumption advisories | OEHHA (data.ca.gov) | weekly |
+| Ramps, piers, parking, campgrounds, marinas, tackle shops | OpenStreetMap via Overpass | monthly |
 
 ### What the records can and can't tell you
 
 * CDFW's digital planting records begin in the 2000s, and the public schedule shows about a year; the app keeps every day it sees, so history grows from October 2025 forward.
 * Before that, the record is species introductions: the state Fish Commission (founded 1870), the U.S. Fish Commission and private parties moved shad, carp, bass, catfish, brown and brook trout into California waters from 1871 on. Those events, where they were recorded, show on the History tab.
 * Native fish planted inside their native range, such as most rainbow trout plants in Sierra streams, were rarely logged by water before the 1930s and are not in any public database. Miners and settlers did carry trout into fishless high-country lakes from the 1870s; the golden trout transplant of 1876 is the best documented.
+
+## Nevada
+
+Pick the state at the top of **Lakes** (or *📍 Where I am*). The map labels every named lake and river in whichever state you're looking at, and the *Stocked waters* layer shows both states. A water belongs to the state it sits in (or the state saved on it), so Topaz Lake and Lake Tahoe use Nevada's data when you open them from the Nevada side.
+
+* **Stocked waters**: every water NDOW publishes a page for (about 550 lakes, ponds, rivers and creeks), with each stocking's **date, number of fish and average length**. NDOW's pages keep a few years of stockings; the nightly job keeps everything it has seen, so history only grows.
+* **NDOW fishing report** for the water (Stocking tab) and NDOW's write-up, history and angler guides (Info tab).
+* **Lake levels**: USGS lake gauges (Walker, Topaz, Lahontan, Weber, Marlette, Wild Horse and others) and Reclamation's daily Lake Mead and Lake Mohave levels and storage. River flows come live from USGS for any water, as in California.
+* **Regs & safety tab**: the special regulations NDOW lists for the water (season, hours, daily limit, notes), the region's general limits, closed waters in the county, statewide rules, active toxic algae advisories (HAB Watch / Warning / Danger) and mercury advisories on eating fish.
+* **Depth**: HydroLAKES estimates, Wikidata max depths and any USGS survey the monthly job can contour.
+
+| Data | Source | Refreshed |
+|---|---|---|
+| Waters, stockings, fishing reports | NDOW water pages (ndow.org) | nightly |
+| Map points for NDOW waters | USGS NHD names, NDOW fishable-waters layer, OpenStreetMap (cached) | nightly |
+| Lake levels | USGS Water Services, Reclamation RISE (Mead, Mohave) | nightly |
+| Toxic algae | Nevada Office of State Epidemiology HAB list | nightly |
+| Regulations, mercury advisories | Nevada Fishing Regulations on eRegulations (linked from NDOW) | weekly |
+| Lakes and rivers, history | USGS NHD, USGS NAS | weekly |
+| Depth surveys, HydroLAKES | USGS ScienceBase, HydroSHEDS | monthly |
+
+NDOW pages don't carry coordinates, so each water is placed by matching its name (and the county or mountain range in names like "Carson River – Douglas" or "Willow Creek- Santa Rosa Range"). A few dozen small creeks and ponds have no point yet and show only in search; the job's report (`data/nv/update-report.json`) lists them.
 
 ## Maps, depth and offline
 
@@ -127,7 +163,7 @@ Reverse-engineering other apps isn't needed: the public sources above cover cond
 
 ## Next steps
 
-* Nevada and Oregon stocking and lake levels (see above).
+* Oregon stocking and lake levels.
 * Depth contour lines (not just colored points) and spot waypoints with icons.
 * Water-temp/thermocline log from Deeper readings.
 * Optional encrypted sync between your own devices (e.g. to a folder you control) if you want phone + desktop.
@@ -138,9 +174,16 @@ Reverse-engineering other apps isn't needed: the public sources above cover cond
 * `app.js`: views, map, catch log, stats
 * `db.js`: IndexedDB storage and backup
 * `data-sources.js`: Open-Meteo, USGS, moon phase, CSV/GPX/KML parsers
+* `states/index.js`: which state's data serves a water, and the state picked in Lakes
 * `states/ca.js`: California stocking, reservoir, statewide water, depth-survey and history lookups
+* `states/nv.js`, `states/common.js`: Nevada, built on lookups shared by states added after California
 * `scripts/update-ca-data.mjs`: nightly CDFW plants, stocked waters and CDEC levels → `data/ca/`
 * `scripts/build-ca-waters.mjs`, `build-ca-history.mjs`: weekly statewide water list and history
 * `scripts/build-ca-bathymetry.mjs`: monthly depth contours → `data/ca/bathymetry/`
+* `scripts/build-ca-hab.mjs`, `build-ca-ics.mjs`: nightly algae advisories → `data/ca/hab.json`, plant calendars → `data/ca/ics/`
+* `scripts/build-ca-regs.mjs`, `build-ca-oehha.mjs`, `build-ca-access.mjs`: weekly regulations and county lines, fish advisories; monthly access → `data/ca/`
 * `data/ca/logs/`: output of each data job, committed so problems can be read from the repo
+* `scripts/nv/update-nv-data.mjs`: nightly NDOW waters, stockings and reports, lake levels, algae → `data/nv/`
+* `scripts/nv/build-nv-regs.mjs`: weekly regulations and mercury advisories
+* `scripts/build-state-waters.mjs`, `build-state-history.mjs`, `build-state-bathymetry.mjs` with `scripts/states.mjs`: the California jobs, for any other state (`node scripts/build-state-waters.mjs nv`)
 * `sw.js`, `manifest.json`: offline + install

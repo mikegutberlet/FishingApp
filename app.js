@@ -3,7 +3,7 @@
 // functions. Keep it that way: no top-level code that touches another app module's const or let exports.
 import { map, refreshMap } from './map.js';
 import { db } from './db.js';
-import * as CA from './states/ca.js';
+import { STATES } from './states/index.js';
 import { $, showView, onShow, COMMON_SPECIES } from './ui.js';
 import { openLake, openWater } from './views/lake.js';
 import { addStateWater } from './views/lakes.js';
@@ -15,6 +15,7 @@ import './views/stats.js';
 import './views/settings.js';
 import './radar.js';
 import './wind-layer.js';
+import { addSafetyLayers } from './safety-map.js';
 import './views/today.js';
 import './views/planner.js';
 import { initOffline } from './offline.js';
@@ -27,16 +28,17 @@ initHeatmap();
 
 document.querySelectorAll('nav button').forEach(b => b.onclick = () => showView(b.dataset.view));
 
-// Links inside map popups and lists: data-open-lake="<id>", data-add-water="<CDFW stock id>".
+// Links inside map popups and lists: data-open-lake="<id>", data-add-water="<state's stock id>" data-state="CA|NV".
 document.addEventListener('click', e => {
   const id = e.target.dataset?.openLake;
   if (id) { e.preventDefault(); openLake(id); }
   const waterId = e.target.dataset?.addWater;
-  if (waterId) { e.preventDefault(); addStateWater(+waterId); }
+  if (waterId) { e.preventDefault(); addStateWater(waterId, e.target.dataset.state ?? 'CA'); }
 });
 
 // ---------- Startup ----------
 $('#species-list').innerHTML = COMMON_SPECIES.map(s => `<option value="${s}">`).join('');
+addSafetyLayers();
 navigator.storage?.persist?.(); // ask the browser not to evict our data
 resumeTrip();
 if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js');
@@ -56,4 +58,4 @@ refreshMap().then(async () => {
 });
 // Size the map as soon as it's shown, so a fitBounds right after showView('map') (depth maps, surveys) sees its real size.
 onShow('map', () => { map.invalidateSize(); frame(); });
-window.__app = { db, openLake, showView, openWater, CA }; window.__map = map; // handy for debugging from the console
+window.__app = { db, openLake, showView, openWater, ...STATES }; window.__map = map; // handy for debugging from the console

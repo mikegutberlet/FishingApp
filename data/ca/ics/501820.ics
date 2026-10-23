@@ -1,0 +1,79 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Nacimiento River\, Upper
+X-WR-CALDESC:CDFW fish planting schedule for Nacimiento River\, Upper. Plan
+ ts are subject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-04-19-501820-trout@tackle-box
+DTSTAMP:20260419T000000Z
+DTSTART;VALUE=DATE:20260419
+DTEND;VALUE=DATE:20260426
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Nacimiento River\, Upper
+DESCRIPTION:CDFW plans to plant Trout at Nacimiento River\, Upper (Monterey
+  County) the week of 2026-04-19. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501820
+GEO:36.00757;-121.402
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Nacimiento River\, Upper
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-05-03-501820-trout@tackle-box
+DTSTAMP:20260503T000000Z
+DTSTART;VALUE=DATE:20260503
+DTEND;VALUE=DATE:20260510
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Nacimiento River\, Upper
+DESCRIPTION:CDFW plans to plant Trout at Nacimiento River\, Upper (Monterey
+  County) the week of 2026-05-03. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501820
+GEO:36.00757;-121.402
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Nacimiento River\, Upper
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-05-31-501820-trout@tackle-box
+DTSTAMP:20260531T000000Z
+DTSTART;VALUE=DATE:20260531
+DTEND;VALUE=DATE:20260607
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Nacimiento River\, Upper
+DESCRIPTION:CDFW plans to plant Trout at Nacimiento River\, Upper (Monterey
+  County) the week of 2026-05-31. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501820
+GEO:36.00757;-121.402
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Nacimiento River\, Upper
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-07-501820-trout@tackle-box
+DTSTAMP:20260607T000000Z
+DTSTART;VALUE=DATE:20260607
+DTEND;VALUE=DATE:20260614
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Nacimiento River\, Upper
+DESCRIPTION:CDFW plans to plant Trout at Nacimiento River\, Upper (Monterey
+  County) the week of 2026-06-07. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501820
+GEO:36.00757;-121.402
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Nacimiento River\, Upper
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

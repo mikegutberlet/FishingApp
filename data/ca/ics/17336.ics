@@ -1,0 +1,79 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Tioga Lake
+X-WR-CALDESC:CDFW fish planting schedule for Tioga Lake. Plants are subject
+  to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-06-14-17336-trout@tackle-box
+DTSTAMP:20260614T000000Z
+DTSTART;VALUE=DATE:20260614
+DTEND;VALUE=DATE:20260621
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Tioga Lake
+DESCRIPTION:CDFW plans to plant Trout at Tioga Lake (Mono County) the week 
+ of 2026-06-14. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=17336
+GEO:37.92328;-119.25451
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Tioga Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-07-12-17336-trout@tackle-box
+DTSTAMP:20260712T000000Z
+DTSTART;VALUE=DATE:20260712
+DTEND;VALUE=DATE:20260719
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Tioga Lake
+DESCRIPTION:CDFW plans to plant Trout at Tioga Lake (Mono County) the week 
+ of 2026-07-12. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=17336
+GEO:37.92328;-119.25451
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Tioga Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-07-19-17336-trout@tackle-box
+DTSTAMP:20260719T000000Z
+DTSTART;VALUE=DATE:20260719
+DTEND;VALUE=DATE:20260726
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Tioga Lake
+DESCRIPTION:CDFW plans to plant Trout at Tioga Lake (Mono County) the week 
+ of 2026-07-19. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=17336
+GEO:37.92328;-119.25451
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Tioga Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-16-17336-trout@tackle-box
+DTSTAMP:20260816T000000Z
+DTSTART;VALUE=DATE:20260816
+DTEND;VALUE=DATE:20260823
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Tioga Lake
+DESCRIPTION:CDFW plans to plant Trout at Tioga Lake (Mono County) the week 
+ of 2026-08-16. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=17336
+GEO:37.92328;-119.25451
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Tioga Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

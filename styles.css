@@ -63,6 +63,21 @@ iframe.windy { width: 100%; height: 360px; border: 0; border-radius: 8px; }
 .hist { display: flex; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
 .hist:last-child { border-bottom: 0; }
 .hist > b { min-width: 48px; color: var(--accent); }
+.state-pick { display: flex; align-items: center; gap: 8px; margin: -4px 0 10px; color: var(--muted); }
+.state-pick select { width: auto; flex: 1; }
+.badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 10px; background: #2fbf71; color: #fff; vertical-align: middle; }
+.banner { border-radius: 10px; padding: 8px 10px; margin: 6px 0 8px; border-left: 5px solid; background: var(--bg); }
+.banner.hab-danger { border-color: #b3261e; background: rgba(179,38,30,.12); }
+.banner.hab-warning { border-color: #f28c28; background: rgba(242,140,40,.14); }
+.banner.hab-caution { border-color: #e0b000; background: rgba(242,201,76,.18); }
+.reg { padding: 8px 0; border-bottom: 1px solid var(--line); } .reg:last-of-type { border-bottom: 0; }
+.reg table { margin-top: 4px; } .dont { color: var(--danger); }
+.banner.hab-awareness { border-color: #2fbf71; } .banner.hab-reported { border-color: #9aa5ab; }
+.reg { padding: 8px 0; border-bottom: 1px solid var(--line); } .reg:last-of-type { border-bottom: 0; }
+.reg table { margin-top: 4px; } .dont { color: var(--danger); }
+.acc { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; padding: 4px 0; border-bottom: 1px solid var(--line); }
+.acc .nowrap { white-space: nowrap; flex-shrink: 0; }
+.acc-icon { font-size: 16px; line-height: 22px; text-align: center; background: rgba(255,255,255,.9); border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,.35); }
 /* Trip mode and journal */
 .trip-cta { width: 100%; padding: 12px; margin-bottom: 4px; font-weight: 600; border-color: var(--accent); color: var(--accent); }
 .trip-cta.live { background: #2fbf71; border-color: #2fbf71; color: #04161d; }
@@ -97,3 +112,4 @@ body:has(#view-trip.active) #trip-pill { display: none; }
 details summary { cursor: pointer; }
 details table { margin-top: 8px; }
 .form .label { margin-bottom: 10px; font-size: 13px; color: var(--muted); }
+.catch-warn .banner { margin: 4px 0 10px; } .catch-warn .banner div { margin-top: 2px; }

@@ -1,0 +1,249 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Fresno City Woodward Park Lake
+X-WR-CALDESC:CDFW fish planting schedule for Fresno City Woodward Park Lake
+ . Plants are subject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2025-11-16-28286-trout@tackle-box
+DTSTAMP:20251116T000000Z
+DTSTART;VALUE=DATE:20251116
+DTEND;VALUE=DATE:20251123
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Fresno City Woodward Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Fresno City Woodward Park Lake (Fr
+ esno County) the week of 2025-11-16. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=28286
+GEO:36.86399;-119.78361
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Fresno City Woodward Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2025-11-30-28286-trout@tackle-box
+DTSTAMP:20251130T000000Z
+DTSTART;VALUE=DATE:20251130
+DTEND;VALUE=DATE:20251207
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Fresno City Woodward Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Fresno City Woodward Park Lake (Fr
+ esno County) the week of 2025-11-30. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=28286
+GEO:36.86399;-119.78361
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Fresno City Woodward Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2025-12-21-28286-trout@tackle-box
+DTSTAMP:20251221T000000Z
+DTSTART;VALUE=DATE:20251221
+DTEND;VALUE=DATE:20251228
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Fresno City Woodward Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Fresno City Woodward Park Lake (Fr
+ esno County) the week of 2025-12-21. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=28286
+GEO:36.86399;-119.78361
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Fresno City Woodward Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-01-04-28286-trout@tackle-box
+DTSTAMP:20260104T000000Z
+DTSTART;VALUE=DATE:20260104
+DTEND;VALUE=DATE:20260111
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Fresno City Woodward Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Fresno City Woodward Park Lake (Fr
+ esno County) the week of 2026-01-04. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=28286
+GEO:36.86399;-119.78361
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Fresno City Woodward Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-01-18-28286-trout@tackle-box
+DTSTAMP:20260118T000000Z
+DTSTART;VALUE=DATE:20260118
+DTEND;VALUE=DATE:20260125
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Fresno City Woodward Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Fresno City Woodward Park Lake (Fr
+ esno County) the week of 2026-01-18. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=28286
+GEO:36.86399;-119.78361
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Fresno City Woodward Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-01-25-28286-trout@tackle-box
+DTSTAMP:20260125T000000Z
+DTSTART;VALUE=DATE:20260125
+DTEND;VALUE=DATE:20260201
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Fresno City Woodward Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Fresno City Woodward Park Lake (Fr
+ esno County) the week of 2026-01-25. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=28286
+GEO:36.86399;-119.78361
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Fresno City Woodward Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-02-08-28286-trout@tackle-box
+DTSTAMP:20260208T000000Z
+DTSTART;VALUE=DATE:20260208
+DTEND;VALUE=DATE:20260215
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Fresno City Woodward Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Fresno City Woodward Park Lake (Fr
+ esno County) the week of 2026-02-08. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=28286
+GEO:36.86399;-119.78361
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Fresno City Woodward Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-02-15-28286-trout@tackle-box
+DTSTAMP:20260215T000000Z
+DTSTART;VALUE=DATE:20260215
+DTEND;VALUE=DATE:20260222
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Fresno City Woodward Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Fresno City Woodward Park Lake (Fr
+ esno County) the week of 2026-02-15. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=28286
+GEO:36.86399;-119.78361
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Fresno City Woodward Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-02-22-28286-trout@tackle-box
+DTSTAMP:20260222T000000Z
+DTSTART;VALUE=DATE:20260222
+DTEND;VALUE=DATE:20260301
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Fresno City Woodward Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Fresno City Woodward Park Lake (Fr
+ esno County) the week of 2026-02-22. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=28286
+GEO:36.86399;-119.78361
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Fresno City Woodward Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-01-28286-trout@tackle-box
+DTSTAMP:20260301T000000Z
+DTSTART;VALUE=DATE:20260301
+DTEND;VALUE=DATE:20260308
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Fresno City Woodward Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Fresno City Woodward Park Lake (Fr
+ esno County) the week of 2026-03-01. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=28286
+GEO:36.86399;-119.78361
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Fresno City Woodward Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-15-28286-trout@tackle-box
+DTSTAMP:20260315T000000Z
+DTSTART;VALUE=DATE:20260315
+DTEND;VALUE=DATE:20260322
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Fresno City Woodward Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Fresno City Woodward Park Lake (Fr
+ esno County) the week of 2026-03-15. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=28286
+GEO:36.86399;-119.78361
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Fresno City Woodward Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-29-28286-trout@tackle-box
+DTSTAMP:20260329T000000Z
+DTSTART;VALUE=DATE:20260329
+DTEND;VALUE=DATE:20260405
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Fresno City Woodward Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Fresno City Woodward Park Lake (Fr
+ esno County) the week of 2026-03-29. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=28286
+GEO:36.86399;-119.78361
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Fresno City Woodward Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-04-05-28286-trout@tackle-box
+DTSTAMP:20260405T000000Z
+DTSTART;VALUE=DATE:20260405
+DTEND;VALUE=DATE:20260412
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Fresno City Woodward Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Fresno City Woodward Park Lake (Fr
+ esno County) the week of 2026-04-05. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=28286
+GEO:36.86399;-119.78361
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Fresno City Woodward Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-04-12-28286-trout@tackle-box
+DTSTAMP:20260412T000000Z
+DTSTART;VALUE=DATE:20260412
+DTEND;VALUE=DATE:20260419
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Fresno City Woodward Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Fresno City Woodward Park Lake (Fr
+ esno County) the week of 2026-04-12. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=28286
+GEO:36.86399;-119.78361
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Fresno City Woodward Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

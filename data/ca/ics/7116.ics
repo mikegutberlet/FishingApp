@@ -1,0 +1,164 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Gregory Lake
+X-WR-CALDESC:CDFW fish planting schedule for Gregory Lake. Plants are subje
+ ct to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2025-11-02-7116-trout@tackle-box
+DTSTAMP:20251102T000000Z
+DTSTART;VALUE=DATE:20251102
+DTEND;VALUE=DATE:20251109
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Gregory Lake
+DESCRIPTION:CDFW plans to plant Trout at Gregory Lake (San Bernardino Count
+ y) the week of 2025-11-02. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7116
+GEO:34.24305;-117.27052
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Gregory Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-04-05-7116-trout@tackle-box
+DTSTAMP:20260405T000000Z
+DTSTART;VALUE=DATE:20260405
+DTEND;VALUE=DATE:20260412
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Gregory Lake
+DESCRIPTION:CDFW plans to plant Trout at Gregory Lake (San Bernardino Count
+ y) the week of 2026-04-05. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7116
+GEO:34.24305;-117.27052
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Gregory Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-04-19-7116-trout@tackle-box
+DTSTAMP:20260419T000000Z
+DTSTART;VALUE=DATE:20260419
+DTEND;VALUE=DATE:20260426
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Gregory Lake
+DESCRIPTION:CDFW plans to plant Trout at Gregory Lake (San Bernardino Count
+ y) the week of 2026-04-19. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7116
+GEO:34.24305;-117.27052
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Gregory Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-05-10-7116-trout@tackle-box
+DTSTAMP:20260510T000000Z
+DTSTART;VALUE=DATE:20260510
+DTEND;VALUE=DATE:20260517
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Gregory Lake
+DESCRIPTION:CDFW plans to plant Trout at Gregory Lake (San Bernardino Count
+ y) the week of 2026-05-10. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7116
+GEO:34.24305;-117.27052
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Gregory Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-05-24-7116-trout@tackle-box
+DTSTAMP:20260524T000000Z
+DTSTART;VALUE=DATE:20260524
+DTEND;VALUE=DATE:20260531
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Gregory Lake
+DESCRIPTION:CDFW plans to plant Trout at Gregory Lake (San Bernardino Count
+ y) the week of 2026-05-24. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7116
+GEO:34.24305;-117.27052
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Gregory Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-07-7116-trout@tackle-box
+DTSTAMP:20260607T000000Z
+DTSTART;VALUE=DATE:20260607
+DTEND;VALUE=DATE:20260614
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Gregory Lake
+DESCRIPTION:CDFW plans to plant Trout at Gregory Lake (San Bernardino Count
+ y) the week of 2026-06-07. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7116
+GEO:34.24305;-117.27052
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Gregory Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-28-7116-trout@tackle-box
+DTSTAMP:20260628T000000Z
+DTSTART;VALUE=DATE:20260628
+DTEND;VALUE=DATE:20260705
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Gregory Lake
+DESCRIPTION:CDFW plans to plant Trout at Gregory Lake (San Bernardino Count
+ y) the week of 2026-06-28. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7116
+GEO:34.24305;-117.27052
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Gregory Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-04-7116-trout@tackle-box
+DTSTAMP:20261004T000000Z
+DTSTART;VALUE=DATE:20261004
+DTEND;VALUE=DATE:20261011
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Gregory Lake
+DESCRIPTION:CDFW plans to plant Trout at Gregory Lake (San Bernardino Count
+ y) the week of 2026-10-04. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7116
+GEO:34.24305;-117.27052
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Gregory Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-25-7116-trout@tackle-box
+DTSTAMP:20261025T000000Z
+DTSTART;VALUE=DATE:20261025
+DTEND;VALUE=DATE:20261101
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Gregory Lake
+DESCRIPTION:CDFW plans to plant Trout at Gregory Lake (San Bernardino Count
+ y) the week of 2026-10-25. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7116
+GEO:34.24305;-117.27052
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Gregory Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

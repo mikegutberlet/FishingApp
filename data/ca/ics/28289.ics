@@ -1,0 +1,79 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Hidden Valley Pond
+X-WR-CALDESC:CDFW fish planting schedule for Hidden Valley Pond. Plants are
+  subject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2025-12-14-28289-trout@tackle-box
+DTSTAMP:20251214T000000Z
+DTSTART;VALUE=DATE:20251214
+DTEND;VALUE=DATE:20251221
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Hidden Valley Pond
+DESCRIPTION:CDFW plans to plant Trout at Hidden Valley Pond (Contra Costa C
+ ounty) the week of 2025-12-14. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=28289
+GEO:37.98196;-122.09087
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Hidden Valley Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-01-04-28289-trout@tackle-box
+DTSTAMP:20260104T000000Z
+DTSTART;VALUE=DATE:20260104
+DTEND;VALUE=DATE:20260111
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Hidden Valley Pond
+DESCRIPTION:CDFW plans to plant Trout at Hidden Valley Pond (Contra Costa C
+ ounty) the week of 2026-01-04. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=28289
+GEO:37.98196;-122.09087
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Hidden Valley Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-02-08-28289-trout@tackle-box
+DTSTAMP:20260208T000000Z
+DTSTART;VALUE=DATE:20260208
+DTEND;VALUE=DATE:20260215
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Hidden Valley Pond
+DESCRIPTION:CDFW plans to plant Trout at Hidden Valley Pond (Contra Costa C
+ ounty) the week of 2026-02-08. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=28289
+GEO:37.98196;-122.09087
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Hidden Valley Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-01-28289-trout@tackle-box
+DTSTAMP:20260301T000000Z
+DTSTART;VALUE=DATE:20260301
+DTEND;VALUE=DATE:20260308
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Hidden Valley Pond
+DESCRIPTION:CDFW plans to plant Trout at Hidden Valley Pond (Contra Costa C
+ ounty) the week of 2026-03-01. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=28289
+GEO:37.98196;-122.09087
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Hidden Valley Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

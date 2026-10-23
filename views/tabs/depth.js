@@ -1,6 +1,6 @@
 // Depth tab: published depth facts, USGS survey contours, and your own sonar imports.
 import { db } from '../../db.js';
-import * as CA from '../../states/ca.js';
+import { forLake } from '../../states/index.js';
 import { parseDepthCsv, parseDepthXml } from '../../data-sources.js';
 import { $, esc, fmtDate, status, M_TO_FT } from '../../ui.js';
 import { showDepthSet, showSurvey } from '../../map.js';
@@ -11,15 +11,16 @@ import { renderTempCard } from '../../thermo.js';
 import { sonarExtras, scanDateOf } from '../../sonar.js';
 
 async function renderSurveys(lake, el) {
-  const surveys = await CA.bathymetryFor(lake);
+  const surveys = await forLake(lake)?.bathymetryFor(lake) ?? [];
   if (!surveys.length || !el.isConnected) return;
   el.innerHTML = `<div class="card"><h3>Depth chart</h3>${surveys.map((s, i) => `<div class="lake-item" style="margin:6px 0"><span class="small">${esc(s.title)}</span><button data-survey="${i}">Show</button></div>`).join('')}
-    <p class="muted small">Public USGS survey contours, shown as depth at today's level when the lake has a CDEC gauge.</p></div>`;
+    <p class="muted small">Public USGS survey contours, shown as depth at today's level when the lake has a level gauge.</p></div>`;
   el.querySelectorAll('[data-survey]').forEach(b => b.onclick = () => showSurvey(surveys[+b.dataset.survey], lake));
 }
 
 async function depthFacts(lake) {
-  const [est, surveys] = await Promise.all([CA.hydroFor(lake).catch(() => null), CA.bathymetryFor(lake).catch(() => [])]);
+  const S = forLake(lake);
+  const [est, surveys] = await Promise.all([S?.hydroFor(lake).catch(() => null), S?.bathymetryFor(lake).catch(() => []) ?? []]);
   const stat = (v, label) => v ? `<div class="stat"><b>${v}</b><span>${label}</span></div>` : '';
   let html = '';
   if (lake.maxDepth || lake.meanDepth) {
@@ -95,7 +96,7 @@ export async function renderDepth(lake, body) {
 
 const day = d => fmtDate(`${d}T12:00`); // a date without a time, shown as that calendar day
 
-// Name, scan date and the lake level that day, filled from CDEC when the lake has a gauge with a reading then.
+// Name, scan date and the lake level that day, filled from the lake's gauge (CDEC, USGS, Reclamation) when it has with a reading then.
 // The level is what lets scans from different water levels share one contour map.
 function scanForm(lake, el, draft, save, cancel) {
   el.innerHTML = `<form class="form inset" id="scan-form"><h4 class="sub">${draft.isNew ? 'Check the scan, then save' : 'Edit scan'}</h4>
@@ -108,9 +109,12 @@ function scanForm(lake, el, draft, save, cancel) {
   const form = $('#scan-form', el), hintEl = $('#level-hint', el);
   // The level last filled in from the gauge, the date it was for, and the gauge. Seeded from the saved scan, so an
   // edit keeps a CDEC level the app no longer has a reading for (it only keeps about 30 days).
-  const fromGauge = /^CDEC ./.test(draft.levelSource ?? '') && typeof draft.levelFt === 'number';
-  let auto = fromGauge ? draft.levelFt : null, autoDate = fromGauge ? draft.scanDate : null, station = fromGauge ? draft.levelSource.slice(5) : null;
-  const cdecLink = id => `<a href="https://cdec.water.ca.gov/dynamicapp/staMeta?station_id=${esc(id)}" target="_blank" rel="noopener">CDEC ↗</a>`;
+  const fromGauge = /^(CDEC|USGS|USBR) ./.test(draft.levelSource ?? '') && typeof draft.levelFt === 'number';
+  let auto = fromGauge ? draft.levelFt : null, autoDate = fromGauge ? draft.scanDate : null;
+  let station = fromGauge ? draft.levelSource.slice(5) : null, source = fromGauge ? draft.levelSource.slice(0, 4) : 'CDEC';
+  // Where to look an older reading up: the gauge's own page.
+  const GAUGE_PAGES = { CDEC: id => `https://cdec.water.ca.gov/dynamicapp/staMeta?station_id=${id}`, USGS: id => `https://waterdata.usgs.gov/monitoring-location/${id}/`, USBR: () => 'https://www.usbr.gov/lc/region/g4000/hourly/levels.html' };
+  const cdecLink = id => `<a href="${esc((GAUGE_PAGES[source] ?? GAUGE_PAGES.CDEC)(encodeURIComponent(id)))}" target="_blank" rel="noopener">${esc(source)} ↗</a>`;
   const hint = async () => {
     const date = form.scanDate.value;
     // A gauge reading belongs to its date: clear it only when the date has changed and the value wasn't retyped.
@@ -118,10 +122,10 @@ function scanForm(lake, el, draft, save, cancel) {
     if (!date) { stale(); hintEl.textContent = 'Add the date you scanned so scans from different water levels line up.'; return; }
     const lv = await levelOn(lake, date);
     if (form.scanDate.value !== date) return; // the date changed again while this was looking it up
-    if (lv.station) station = lv.station;
+    if (lv.station) { station = lv.station; source = lv.source ?? 'CDEC'; }
     if (lv.levelFt != null) {
       if (form.levelFt.value === '' || +form.levelFt.value === auto) { form.levelFt.value = lv.levelFt; auto = lv.levelFt; autoDate = date; }
-      hintEl.textContent = `CDEC ${lv.station} read ${lv.levelFt.toLocaleString()} ft on ${day(lv.date)}.`;
+      hintEl.textContent = `${source} ${lv.station} read ${lv.levelFt.toLocaleString()} ft on ${day(lv.date)}.`;
     } else if (lv.station) {
       stale();
       hintEl.innerHTML = lv.first
@@ -141,7 +145,7 @@ function scanForm(lake, el, draft, save, cancel) {
     if (saveBtn.disabled) return; // a second tap while a big scan is still saving
     saveBtn.disabled = true;
     const level = form.levelFt.value === '' ? null : +form.levelFt.value;
-    try { await save({ name: form.name.value.trim(), scanDate: form.scanDate.value || null, levelFt: level, levelSource: level == null ? null : level === auto && station ? `CDEC ${station}` : 'entered' }); }
+    try { await save({ name: form.name.value.trim(), scanDate: form.scanDate.value || null, levelFt: level, levelSource: level == null ? null : level === auto && station ? `${source} ${station}` : 'entered' }); }
     catch (err) { saveBtn.disabled = false; alert(err.message); }
   };
 }

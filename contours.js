@@ -6,21 +6,21 @@
 // date (from CDEC, or typed in), its depths are shifted to a common level, today's when the lake has a gauge, so
 // scans from a full spring and a low fall line up.
 import { db } from './db.js';
-import * as CA from './states/ca.js';
+import { reservoirFor } from './states/index.js';
 import { $, esc, fmtDate, status, showView } from './ui.js';
 import { map, depthLayer, depthColor } from './map.js';
 
-const reservoirFor = lake => CA.nearestReservoir(lake.lat, lake.lon, lake.cdecStation, { name: lake.name, acres: lake.acres });
 
-// Lake surface elevation (ft) on a date from the nearest CDEC gauge: the reading that day, or within 2 days.
+// Lake surface elevation (ft) on a date from the water's lake gauge (CDEC, USGS, Reclamation): the reading that day, or within 2 days.
 export async function levelOn(lake, date) {
   const res = await reservoirFor(lake).catch(() => null);
   // first is null for gauges that report storage but no lake level (about 20 of them, e.g. Shaver Lake).
-  if (!res?.elevation?.length || !date) return { station: res?.id ?? null, levelFt: null, first: res?.elevation?.[0]?.[0] ?? null };
+  const source = res?.source ?? 'CDEC';
+  if (!res?.elevation?.length || !date) return { station: res?.id ?? null, source, levelFt: null, first: res?.elevation?.[0]?.[0] ?? null };
   const t = Date.parse(date);
   let best = null;
   for (const [d, v] of res.elevation) { const off = Math.abs(Date.parse(d) - t); if (off <= 2 * 864e5 && (!best || off < best.off)) best = { off, v, d }; }
-  return { station: res.id, levelFt: best?.v ?? null, date: best?.d ?? null, first: res.elevation[0][0] };
+  return { station: res.id, source, levelFt: best?.v ?? null, date: best?.d ?? null, first: res.elevation[0][0] };
 }
 
 // Soundings from every scan, shifted to one water level. Only scans with a level can be shifted, so with none the
@@ -29,7 +29,7 @@ export async function mergedSoundings(lake, sets) {
   const res = await reservoirFor(lake).catch(() => null);
   const today = res?.elevation?.at(-1);
   const dated = sets.filter(s => typeof s.levelFt === 'number').sort((a, b) => (b.scanDate ?? '').localeCompare(a.scanDate ?? ''));
-  const ref = !dated.length ? null : today ? { levelFt: today[1], date: today[0], station: res.id } : { levelFt: dated[0].levelFt, date: dated[0].scanDate };
+  const ref = !dated.length ? null : today ? { levelFt: today[1], date: today[0], station: res.id, source: res.source ?? 'CDEC' } : { levelFt: dated[0].levelFt, date: dated[0].scanDate };
   const raw = [], steps = [];
   for (const [n, s] of sets.entries()) {
     const off = ref && typeof s.levelFt === 'number' ? ref.levelFt - s.levelFt : 0;
@@ -226,7 +226,7 @@ export async function showContours(lake) {
   for (const { at, level } of labels) L.marker(at, { icon: L.divIcon({ className: 'clabel', html: `<span>${level}</span>`, iconSize: null }), interactive: false, keyboard: false }).addTo(depthLayer);
   const legend = $('#depth-legend');
   const grad = [0, .25, .5, .75, 1].map(t => depthColor(t * g.max, g.max)).join(',');
-  const datum = ref?.station ? `Depths at today's level, ${Math.round(ref.levelFt).toLocaleString()} ft (CDEC ${esc(ref.station)})` : ref ? (ref.date ? `Depths at the level of ${fmtDate(`${ref.date}T12:00`)}` : `Depths at a lake level of ${Math.round(ref.levelFt).toLocaleString()} ft`) : 'Depths as scanned (no lake level for these scans)';
+  const datum = ref?.station ? `Depths at today's level, ${Math.round(ref.levelFt).toLocaleString()} ft (${esc(ref.source)} ${esc(ref.station)})` : ref ? (ref.date ? `Depths at the level of ${fmtDate(`${ref.date}T12:00`)}` : `Depths at a lake level of ${Math.round(ref.levelFt).toLocaleString()} ft`) : 'Depths as scanned (no lake level for these scans)';
   legend.innerHTML = `<b>${esc(lake.name)}: your scans</b><div class="bar" style="background:linear-gradient(90deg,${grad})"></div>0 ft <span style="float:right">${Math.round(g.max)} ft</span>
     <div class="muted" style="font-size:11px">Every ${step} ft · ${sets.length} scan${sets.length > 1 ? 's' : ''}, ${points.length.toLocaleString()} soundings<br>${datum}${shifted ? `, ${shifted} shifted` : ''}${unleveled ? ` · ${unleveled} without a level` : ''}${dropped ? `<br>${dropped.toLocaleString()} stray GPS points ignored` : ''}</div>
     <label style="font-size:12px"><input type="checkbox" id="depth-fill" ${fillOn ? 'checked' : ''}> Shading</label> · <a href="#" id="hide-depth">Hide</a>`;

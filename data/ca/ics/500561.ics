@@ -1,0 +1,96 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Goodale Creek
+X-WR-CALDESC:CDFW fish planting schedule for Goodale Creek. Plants are subj
+ ect to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-04-26-500561-trout@tackle-box
+DTSTAMP:20260426T000000Z
+DTSTART;VALUE=DATE:20260426
+DTEND;VALUE=DATE:20260503
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Goodale Creek
+DESCRIPTION:CDFW plans to plant Trout at Goodale Creek (Inyo County) the we
+ ek of 2026-04-26. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=500561
+GEO:36.97766;-118.2562
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Goodale Creek
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-05-31-500561-trout@tackle-box
+DTSTAMP:20260531T000000Z
+DTSTART;VALUE=DATE:20260531
+DTEND;VALUE=DATE:20260607
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Goodale Creek
+DESCRIPTION:CDFW plans to plant Trout at Goodale Creek (Inyo County) the we
+ ek of 2026-05-31. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=500561
+GEO:36.97766;-118.2562
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Goodale Creek
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-07-05-500561-trout@tackle-box
+DTSTAMP:20260705T000000Z
+DTSTART;VALUE=DATE:20260705
+DTEND;VALUE=DATE:20260712
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Goodale Creek
+DESCRIPTION:CDFW plans to plant Trout at Goodale Creek (Inyo County) the we
+ ek of 2026-07-05. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=500561
+GEO:36.97766;-118.2562
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Goodale Creek
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-30-500561-trout@tackle-box
+DTSTAMP:20260830T000000Z
+DTSTART;VALUE=DATE:20260830
+DTEND;VALUE=DATE:20260906
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Goodale Creek
+DESCRIPTION:CDFW plans to plant Trout at Goodale Creek (Inyo County) the we
+ ek of 2026-08-30. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=500561
+GEO:36.97766;-118.2562
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Goodale Creek
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-09-13-500561-trout@tackle-box
+DTSTAMP:20260913T000000Z
+DTSTART;VALUE=DATE:20260913
+DTEND;VALUE=DATE:20260920
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Goodale Creek
+DESCRIPTION:CDFW plans to plant Trout at Goodale Creek (Inyo County) the we
+ ek of 2026-09-13. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=500561
+GEO:36.97766;-118.2562
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Goodale Creek
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

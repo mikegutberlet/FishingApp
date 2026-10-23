@@ -1,0 +1,147 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Little Lake
+X-WR-CALDESC:CDFW fish planting schedule for Little Lake. Plants are subjec
+ t to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2025-11-09-7498-trout@tackle-box
+DTSTAMP:20251109T000000Z
+DTSTART;VALUE=DATE:20251109
+DTEND;VALUE=DATE:20251116
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Little Lake
+DESCRIPTION:CDFW plans to plant Trout at Little Lake (Riverside County) the
+  week of 2025-11-09. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7498
+GEO:33.72804;-116.91688
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Little Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2025-11-23-7498-trout@tackle-box
+DTSTAMP:20251123T000000Z
+DTSTART;VALUE=DATE:20251123
+DTEND;VALUE=DATE:20251130
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Little Lake
+DESCRIPTION:CDFW plans to plant Trout at Little Lake (Riverside County) the
+  week of 2025-11-23. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7498
+GEO:33.72804;-116.91688
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Little Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2025-12-07-7498-trout@tackle-box
+DTSTAMP:20251207T000000Z
+DTSTART;VALUE=DATE:20251207
+DTEND;VALUE=DATE:20251214
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Little Lake
+DESCRIPTION:CDFW plans to plant Trout at Little Lake (Riverside County) the
+  week of 2025-12-07. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7498
+GEO:33.72804;-116.91688
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Little Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2025-12-21-7498-trout@tackle-box
+DTSTAMP:20251221T000000Z
+DTSTART;VALUE=DATE:20251221
+DTEND;VALUE=DATE:20251228
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Little Lake
+DESCRIPTION:CDFW plans to plant Trout at Little Lake (Riverside County) the
+  week of 2025-12-21. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7498
+GEO:33.72804;-116.91688
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Little Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-01-04-7498-trout@tackle-box
+DTSTAMP:20260104T000000Z
+DTSTART;VALUE=DATE:20260104
+DTEND;VALUE=DATE:20260111
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Little Lake
+DESCRIPTION:CDFW plans to plant Trout at Little Lake (Riverside County) the
+  week of 2026-01-04. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7498
+GEO:33.72804;-116.91688
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Little Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-01-18-7498-trout@tackle-box
+DTSTAMP:20260118T000000Z
+DTSTART;VALUE=DATE:20260118
+DTEND;VALUE=DATE:20260125
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Little Lake
+DESCRIPTION:CDFW plans to plant Trout at Little Lake (Riverside County) the
+  week of 2026-01-18. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7498
+GEO:33.72804;-116.91688
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Little Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-02-15-7498-trout@tackle-box
+DTSTAMP:20260215T000000Z
+DTSTART;VALUE=DATE:20260215
+DTEND;VALUE=DATE:20260222
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Little Lake
+DESCRIPTION:CDFW plans to plant Trout at Little Lake (Riverside County) the
+  week of 2026-02-15. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7498
+GEO:33.72804;-116.91688
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Little Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-01-7498-trout@tackle-box
+DTSTAMP:20260301T000000Z
+DTSTART;VALUE=DATE:20260301
+DTEND;VALUE=DATE:20260308
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Little Lake
+DESCRIPTION:CDFW plans to plant Trout at Little Lake (Riverside County) the
+  week of 2026-03-01. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7498
+GEO:33.72804;-116.91688
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Little Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

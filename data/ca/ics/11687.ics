@@ -1,0 +1,45 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Antelope Reservoir
+X-WR-CALDESC:CDFW fish planting schedule for Antelope Reservoir. Plants are
+  subject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2025-11-09-11687-trout@tackle-box
+DTSTAMP:20251109T000000Z
+DTSTART;VALUE=DATE:20251109
+DTEND;VALUE=DATE:20251116
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Antelope Reservoir
+DESCRIPTION:CDFW plans to plant Trout at Antelope Reservoir (Plumas County)
+  the week of 2025-11-09. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=11687
+GEO:40.18386;-120.59571
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Antelope Reservoir
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-07-19-11687-trout@tackle-box
+DTSTAMP:20260719T000000Z
+DTSTART;VALUE=DATE:20260719
+DTEND;VALUE=DATE:20260726
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Antelope Reservoir
+DESCRIPTION:CDFW plans to plant Trout at Antelope Reservoir (Plumas County)
+  the week of 2026-07-19. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=11687
+GEO:40.18386;-120.59571
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Antelope Reservoir
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

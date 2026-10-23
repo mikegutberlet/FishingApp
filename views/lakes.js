@@ -1,9 +1,10 @@
-// The Lakes view: your saved waters, statewide search, the CDFW stocked-waters finder, and the lake editor.
+// The Lakes view: your saved waters, statewide search, the state stocked-waters finder (CDFW, NDOW), and the lake editor.
 import { db } from '../db.js';
-import * as CA from '../states/ca.js';
-import { $, esc, fmtDate, showView, onShow } from '../ui.js';
-import { refreshMap, statewide as loadedStatewide } from '../map.js';
+import { STATES, list as stateList, selected, select, stateAt } from '../states/index.js';
+import { $, esc, fmtDate, status, showView, onShow } from '../ui.js';
+import { refreshMap, locate } from '../map.js';
 import { openLake, openWater } from './lake.js';
+import { showNewPlantBadges } from './new-plants.js';
 import { activeTrip } from './trips.js';
 import { refreshWaypoints } from '../waypoints.js';
 import { deletePack, packId } from '../offline.js';
@@ -13,23 +14,34 @@ export async function renderLakeList() {
   const list = $('#lake-list');
   list.classList.remove('hidden');
   const lakes = (await db.all('lakes')).sort((a, b) => a.name.localeCompare(b.name));
-  list.innerHTML = `<h2>Lakes & rivers</h2><div class="row" style="margin-bottom:12px"><button id="find-any" style="flex:1">🔎 Any California water</button><button id="find-waters" style="flex:1">🐟 Stocked waters</button></div>`
+  const S = selected(lakes);
+  list.innerHTML = `<h2>Lakes & rivers</h2><label class="state-pick small">State <select id="state-pick">${stateList.map(s => `<option value="${s.code}" ${s === S ? 'selected' : ''}>${s.name}</option>`).join('')}<option value="here">📍 Where I am</option></select></label>
+    <div class="row" style="margin-bottom:12px"><button id="find-any" style="flex:1">🔎 Any ${S.name} water</button><button id="find-waters" style="flex:1">🐟 Stocked waters</button></div>`
     + (lakes.length ? '' : `<div class="card muted">No waters yet. Find one above, or use “＋ Lake here” on the map.</div>`)
-    + lakes.map(l => `<div class="card lake-item" data-id="${l.id}"><div><b>${esc(l.name)}</b><div class="muted small">${esc(l.type)}${l.county ? ' · ' + esc(l.county) : ''}${l.state ? ', ' + esc(l.state) : ''}</div></div><span>›</span></div>`).join('');
+    + lakes.map(l => `<div class="card lake-item" data-id="${l.id}"><div><b>${esc(l.name)}</b> <span data-new-plants="${l.id}"></span><div class="muted small">${esc(l.type)}${l.county ? ' · ' + esc(l.county) : ''}${l.state ? ', ' + esc(l.state) : ''}</div></div><span>›</span></div>`).join('');
   list.querySelectorAll('.lake-item').forEach(el => el.onclick = () => openLake(el.dataset.id));
-  $('#find-waters').onclick = renderFindWaters;
-  $('#find-any').onclick = renderFindAny;
+  $('#find-waters').onclick = () => renderFindWaters(S);
+  $('#find-any').onclick = () => renderFindAny(S);
+  $('#state-pick').onchange = async e => {
+    if (e.target.value === 'here') {
+      try { const p = await locate(); const here = stateAt(p.lat, p.lon); if (here) select(here.code); else status('No state data for where you are yet'); }
+      catch (err) { status(err.message); }
+    } else select(e.target.value);
+    renderLakeList();
+  };
+  showNewPlantBadges(list, lakes);
 }
 
-// Search every named California lake, reservoir and river from the statewide list.
-async function renderFindAny() {
-  let statewide = loadedStatewide;
+// Search every named lake, reservoir and river in a state from its statewide list.
+async function renderFindAny(S) {
   const list = $('#lake-list');
-  list.innerHTML = `<button id="back">‹ My waters</button><h2>California lakes & rivers</h2>
-    <div class="card form"><label>Name <input id="asearch" type="search" placeholder="Shasta, Kern River, Convict…" autofocus></label></div>
-    <div id="aresults" class="muted">Type a name to search ${statewide ? (statewide.lakes.length + new Set(statewide.riverLabels.map(r => r.id)).size).toLocaleString() : ''} waters.</div>`;
+  list.innerHTML = `<button id="back">‹ My waters</button><h2>${S.name} lakes & rivers</h2>
+    <div class="card form"><label>Name <input id="asearch" type="search" placeholder="${S.searchHint}" autofocus></label></div>
+    <div id="aresults" class="muted">Loading…</div>`;
   $('#back').onclick = renderLakeList;
-  statewide ??= await CA.statewide();
+  const statewide = await S.statewide();
+  if (!$('#aresults')) return;
+  $('#aresults').textContent = statewide.lakes.length ? `Type a name to search ${(statewide.lakes.length + new Set(statewide.riverLabels.map(r => r.id)).size).toLocaleString()} waters.` : `The ${S.name} water list hasn't been downloaded yet. It's rebuilt weekly.`;
   const rivers = [...new Map(statewide.riverLabels.map(r => [r.id, r])).values()];
   const draw = () => {
     const q = $('#asearch').value.trim().toLowerCase();
@@ -44,18 +56,18 @@ async function renderFindAny() {
   $('#asearch').oninput = draw;
 }
 
-// Browse CDFW stocked waters and add one as a lake in a tap.
-async function renderFindWaters() {
+// Browse a state's stocked waters and add one as a lake in a tap.
+async function renderFindWaters(S) {
   const list = $('#lake-list');
-  list.innerHTML = `<button id="back">‹ My waters</button><h2>California stocked waters</h2>
-    <div class="card form"><label>Search by name or county <input id="wsearch" type="search" placeholder="Lake Cachuma, Shasta, Mono…"></label>
+  list.innerHTML = `<button id="back">‹ My waters</button><h2>${S.name} stocked waters</h2>
+    <div class="card form"><label>Search by name or ${S.code === 'NV' ? 'region' : 'county'} <input id="wsearch" type="search" placeholder="${S.stockedHint}"></label>
       <label class="check"><input type="checkbox" id="wrecent" checked> Planted in the last 30 days or coming up</label></div>
-    <div id="wresults" class="muted">Loading CDFW data…</div><p class="muted small" id="wdates"></p>`;
+    <div id="wresults" class="muted">Loading ${S.agency} data…</div><p class="muted small" id="wdates"></p>`;
   $('#back').onclick = renderLakeList;
-  const [all, mine, dates] = await Promise.all([CA.waters(), db.all('lakes'), CA.dataDates()]);
-  if (!all.length) { $('#wresults').textContent = 'California data has not been downloaded yet. It refreshes nightly; check back tomorrow.'; return; }
-  $('#wdates').textContent = `CDFW planting schedule, updated ${fmtDate(dates.plants)}. Plants are subject to change.`;
-  const added = new Map(mine.filter(l => l.cdfwStockId).map(l => [+l.cdfwStockId, l.id]));
+  const [all, mine, dates] = await Promise.all([S.waters(), db.all('lakes'), S.dataDates()]);
+  if (!all.length) { $('#wresults').textContent = `${S.name} data has not been downloaded yet. It refreshes nightly; check back tomorrow.`; return; }
+  $('#wdates').textContent = `${S.agency} stocking reports, updated ${fmtDate(dates.plants)}. Plants are subject to change.`;
+  const added = new Map(mine.filter(l => l[S.stockField] != null).map(l => [String(l[S.stockField]), l.id]));
   const cutoff = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10);
   const draw = () => {
     const q = $('#wsearch').value.trim().toLowerCase();
@@ -66,8 +78,8 @@ async function renderFindWaters() {
       .sort((a, b) => (b.lastPlant ?? '').localeCompare(a.lastPlant ?? '') || a.name.localeCompare(b.name))
       .slice(0, 100);
     $('#wresults').innerHTML = hits.length ? hits.map(w => `<div class="card lake-item"><div><b>${esc(w.name)}</b>
-        <div class="muted small">${esc(w.counties)} · ${w.lastPlant ? `${w.lastPlant > new Date().toISOString().slice(0, 10) ? 'Planned' : 'Planted'} week of ${fmtDate(w.lastPlant)}: ${esc(w.plants[0].species)} · ${w.plants.length} plants on record` : `last stocked ${w.lastYearStocked ?? 'unknown'}`}</div></div>
-        ${added.has(w.id) ? `<button data-open-lake="${added.get(w.id)}">Open</button>` : `<button data-add-water="${w.id}">＋ Add</button>`}</div>`).join('')
+        <div class="muted small">${esc(w.counties)} · ${w.lastPlant ? `${w.lastPlant > new Date().toISOString().slice(0, 10) ? 'Planned' : 'Planted'} ${w.plants[0].weekEnd === w.lastPlant ? '' : 'week of '}${fmtDate(w.lastPlant + 'T12:00')}: ${esc(w.plants[0].species)} · ${w.plants.length} plants on record` : `last stocked ${w.lastYearStocked ?? 'unknown'}`}</div></div>
+        ${added.has(String(w.id)) ? `<button data-open-lake="${added.get(String(w.id))}">Open</button>` : `<button data-add-water="${esc(w.id)}" data-state="${S.code}">＋ Add</button>`}</div>`).join('')
       : '<div class="card muted">No matches.</div>';
   };
   $('#wsearch').oninput = draw;
@@ -75,14 +87,16 @@ async function renderFindWaters() {
   draw();
 }
 
-export async function addStateWater(stockId) {
-  const existing = (await db.all('lakes')).find(l => +l.cdfwStockId === stockId);
+// stockId is the state's id for a stocked water (a CDFW number, an NDOW slug), as text from a data-add-water link.
+export async function addStateWater(stockId, code = 'CA') {
+  const S = STATES[code];
+  const existing = (await db.all('lakes')).find(l => l[S.stockField] != null && String(l[S.stockField]) === String(stockId));
   if (existing) return openLake(existing.id);
-  const w = (await CA.waters()).find(x => x.id === stockId);
+  const w = (await S.waters()).find(x => String(x.id) === String(stockId));
   if (!w) return;
   const lake = await db.put('lakes', {
-    name: w.name, type: /river|creek|fork|section/i.test(w.name) ? 'River' : 'Lake', state: 'CA', county: w.counties,
-    lat: w.lat, lon: w.lon, cdfwStockId: w.id, stockingUrl: CA.waterUrl(w.id), infoUrl: CA.waterUrl(w.id),
+    name: w.name, type: w.type ?? (/river|creek|fork|section/i.test(w.name) ? 'River' : 'Lake'), state: S.code, county: w.county ?? w.counties,
+    lat: w.lat, lon: w.lon, [S.stockField]: w.id, stockingUrl: S.waterUrl(w.id), infoUrl: S.waterUrl(w.id),
   });
   await refreshMap();
   openLake(lake.id, 'stocking');
@@ -108,7 +122,7 @@ export function editLake(lake) {
       <label>State lake page (DNR) URL <input name="infoUrl" type="url" value="${esc(lake.infoUrl)}"></label>
       <label>Stocking report URL <input name="stockingUrl" type="url" value="${esc(lake.stockingUrl)}"></label>
       <label>USGS gauge id (optional, pins a specific gauge) <input name="usgsSite" value="${esc(lake.usgsSite)}"></label>
-      <label>CDEC reservoir station (California, optional, e.g. SHA) <input name="cdecStation" value="${esc(lake.cdecStation)}"></label>
+      <label>Lake level station (optional: CDEC id like SHA in California, USGS site number in Nevada) <input name="cdecStation" value="${esc(lake.cdecStation)}"></label>
       <div class="row"><label>Lat <input name="lat" type="number" step="any" required value="${lake.lat ?? ''}"></label>
         <label>Lon <input name="lon" type="number" step="any" required value="${lake.lon ?? ''}"></label></div>
       <button class="primary">Save</button>

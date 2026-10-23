@@ -1,0 +1,96 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Lake Isabella
+X-WR-CALDESC:CDFW fish planting schedule for Lake Isabella. Plants are subj
+ ect to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2025-11-09-21584-trout@tackle-box
+DTSTAMP:20251109T000000Z
+DTSTART;VALUE=DATE:20251109
+DTEND;VALUE=DATE:20251116
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Lake Isabella
+DESCRIPTION:CDFW plans to plant Trout at Lake Isabella (Kern County) the we
+ ek of 2025-11-09. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=21584
+GEO:35.68022;-118.42449
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Lake Isabella
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-01-25-21584-trout@tackle-box
+DTSTAMP:20260125T000000Z
+DTSTART;VALUE=DATE:20260125
+DTEND;VALUE=DATE:20260201
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Lake Isabella
+DESCRIPTION:CDFW plans to plant Trout at Lake Isabella (Kern County) the we
+ ek of 2026-01-25. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=21584
+GEO:35.68022;-118.42449
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Lake Isabella
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-02-22-21584-trout@tackle-box
+DTSTAMP:20260222T000000Z
+DTSTART;VALUE=DATE:20260222
+DTEND;VALUE=DATE:20260301
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Lake Isabella
+DESCRIPTION:CDFW plans to plant Trout at Lake Isabella (Kern County) the we
+ ek of 2026-02-22. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=21584
+GEO:35.68022;-118.42449
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Lake Isabella
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-15-21584-trout@tackle-box
+DTSTAMP:20260315T000000Z
+DTSTART;VALUE=DATE:20260315
+DTEND;VALUE=DATE:20260322
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Lake Isabella
+DESCRIPTION:CDFW plans to plant Trout at Lake Isabella (Kern County) the we
+ ek of 2026-03-15. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=21584
+GEO:35.68022;-118.42449
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Lake Isabella
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-04-26-21584-trout@tackle-box
+DTSTAMP:20260426T000000Z
+DTSTART;VALUE=DATE:20260426
+DTEND;VALUE=DATE:20260503
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Lake Isabella
+DESCRIPTION:CDFW plans to plant Trout at Lake Isabella (Kern County) the we
+ ek of 2026-04-26. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=21584
+GEO:35.68022;-118.42449
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Lake Isabella
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

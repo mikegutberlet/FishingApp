@@ -1,0 +1,45 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Cherry Valley Reservoir
+X-WR-CALDESC:CDFW fish planting schedule for Cherry Valley Reservoir. Plant
+ s are subject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-06-07-17177-trout@tackle-box
+DTSTAMP:20260607T000000Z
+DTSTART;VALUE=DATE:20260607
+DTEND;VALUE=DATE:20260614
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Cherry Valley Reservoir
+DESCRIPTION:CDFW plans to plant Trout at Cherry Valley Reservoir (Tuolumne 
+ County) the week of 2026-06-07. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=17177
+GEO:38.00765;-119.89968
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Cherry Valley Reservoir
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-07-05-17177-trout@tackle-box
+DTSTAMP:20260705T000000Z
+DTSTART;VALUE=DATE:20260705
+DTEND;VALUE=DATE:20260712
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Cherry Valley Reservoir
+DESCRIPTION:CDFW plans to plant Trout at Cherry Valley Reservoir (Tuolumne 
+ County) the week of 2026-07-05. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=17177
+GEO:38.00765;-119.89968
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Cherry Valley Reservoir
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

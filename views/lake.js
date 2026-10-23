@@ -1,6 +1,6 @@
 // One water's page: a saved lake with all its tabs, or a statewide water you can look at before saving it.
 import { db } from '../db.js';
-import * as CA from '../states/ca.js';
+import { forLake } from '../states/index.js';
 import { $, esc, showView } from '../ui.js';
 import { map, refreshMap } from '../map.js';
 import { renderLakeList, editLake } from './lakes.js';
@@ -13,6 +13,8 @@ import { renderHistory } from './tabs/history.js';
 import { renderLakeCatches } from './tabs/catches.js';
 import { renderNotes } from './tabs/notes.js';
 import { renderInfo } from './tabs/info.js';
+import { renderStateSafety, renderNvBanner } from './tabs/nv-safety.js';
+import { renderSafety, renderSafetyBanner } from './tabs/safety.js';
 import { toggleFavorite } from './today.js';
 
 // Opens a statewide water: the saved lake if you already have it, otherwise a read-only page you can save.
@@ -22,13 +24,14 @@ export async function openWater(w, tab = 'conditions') {
   openLake(await waterRecord(w), tab);
 }
 
-// A lake record for a statewide water, not yet saved.
+// A lake record for a statewide water, not yet saved, linked to its state's stocked water when there is one.
 export async function waterRecord(w) {
-  const stocked = await CA.matchStockedWater(w);
+  const S = forLake(w);
+  const stocked = await S?.matchStockedWater(w);
   return {
-    unsaved: true, nhdId: String(w.id), kind: w.kind, name: w.name, type: w.type, state: 'CA', lat: w.lat, lon: w.lon,
+    unsaved: true, nhdId: String(w.id), kind: w.kind, name: w.name, type: w.type, state: S?.code ?? w.state, lat: w.lat, lon: w.lon,
     acres: w.acres ?? null, elevationFt: w.elevationFt ?? null, maxDepth: w.maxDepthFt ?? null, meanDepth: w.meanDepthFt ?? null, depthSource: w.depthSource ?? null,
-    lengthKm: w.km ?? null, cdfwStockId: stocked?.id ?? null, stockingUrl: stocked ? CA.waterUrl(stocked.id) : null,
+    lengthKm: w.km ?? null, ...(S && { [S.stockField]: stocked?.id ?? null }), stockingUrl: stocked ? S.waterUrl(stocked.id) : null,
   };
 }
 
@@ -47,10 +50,11 @@ export const LAKE_TABS = {
   history: { label: 'History', render: renderHistory },
   catches: { label: 'Catches', render: renderLakeCatches },
   notes: { label: 'Notes', render: renderNotes },
+  safety: { label: 'Regs & safety', render: (l, b) => forLake(l)?.code === 'CA' ? renderSafety(l, b) : renderStateSafety(l, b) },
   info: { label: 'Info', render: renderInfo },
 };
 // Tabs on a water you haven't saved yet (only the ones that work without your own data).
-export const WATER_TABS = ['conditions', 'stocking', 'depth', 'history', 'info'];
+export const WATER_TABS = ['conditions', 'stocking', 'depth', 'history', 'safety', 'info'];
 
 export async function openLake(id, tab = 'conditions') {
   const lake = typeof id === 'object' ? id : await db.get('lakes', id);
@@ -71,6 +75,7 @@ export async function openLake(id, tab = 'conditions') {
   $('#share').after(' ', offlineButton(lake));
   d.querySelectorAll('.tabs button').forEach(b => b.onclick = () => openLake(id, b.dataset.tab));
   const body = $('#tab-body');
+  if (forLake(lake)?.code === 'CA') renderSafetyBanner(lake, d); else renderNvBanner(lake, d);
   await LAKE_TABS[tab].render(lake, body);
 }
 
@@ -87,5 +92,6 @@ function openUnsaved(lake, tab) {
   $('#save').onclick = () => saveWater(lake, tab);
   $('#save').after(' ', offlineButton(lake));
   d.querySelectorAll('.tabs button').forEach(b => b.onclick = () => openUnsaved(lake, b.dataset.tab));
+  if (forLake(lake)?.code === 'CA') renderSafetyBanner(lake, d); else renderNvBanner(lake, d);
   LAKE_TABS[tab].render(lake, $('#tab-body'));
 }

@@ -1,6 +1,6 @@
 // The map: base layers, overlays, statewide water labels, your lakes and catches, and depth display.
 import { db } from './db.js';
-import * as CA from './states/ca.js';
+import { list as stateList, statesIn, forLake, reservoirFor } from './states/index.js';
 import { $, esc, fmtDate, status, M_TO_FT, showView, onShow } from './ui.js';
 import { openWater } from './views/lake.js';
 import { editLake } from './views/lakes.js';
@@ -17,14 +17,14 @@ export const depthLayer = L.layerGroup().addTo(map);
 const stockedLayer = L.layerGroup();
 const watersLayer = L.layerGroup().addTo(map);
 // Other modules add their own overlays with layersControl.addOverlay(layer, 'Name').
-export const layersControl = L.control.layers({ Satellite: satellite, Streets: street }, { 'California waters': watersLayer, 'My lakes': lakeLayer, Catches: catchLayer, Depth: depthLayer, 'CA stocked waters': stockedLayer }).addTo(map);
+export const layersControl = L.control.layers({ Satellite: satellite, Streets: street }, { 'Lake & river names': watersLayer, 'My lakes': lakeLayer, Catches: catchLayer, Depth: depthLayer, 'Stocked waters': stockedLayer }).addTo(map);
 map.on('overlayadd', async e => {
   if (e.layer !== stockedLayer || stockedLayer.getLayers().length) return;
   const recent = Date.now() - 30 * 864e5;
-  for (const w of await CA.waters()) {
+  for (const S of stateList) for (const w of await S.waters()) {
     const fresh = w.lastPlant && Date.parse(w.lastPlant) > recent;
     L.circleMarker([w.lat, w.lon], { renderer: canvas, radius: fresh ? 6 : 4, color: '#fff', weight: 1, fillColor: fresh ? '#2fbf71' : '#8aa4b0', fillOpacity: 0.9 })
-      .bindPopup(`<b>${esc(w.name)}</b><br>${esc(w.counties)}<br>${w.lastPlant ? `Last plant: week of ${fmtDate(w.lastPlant)} (${esc(w.plants[0].species)})` : `Last stocked ${w.lastYearStocked ?? '?'}`}<br><a href="#" data-add-water="${w.id}">Add to my lakes</a>`)
+      .bindPopup(`<b>${esc(w.name)}</b><br>${esc(w.counties)}<br>${w.lastPlant ? `Last plant: ${w.plants[0].weekEnd === w.lastPlant ? '' : 'week of '}${fmtDate(w.lastPlant + 'T12:00')} (${esc(w.plants[0].species)})` : `Last stocked ${w.lastYearStocked ?? '?'}`}<br><a href="#" data-add-water="${esc(w.id)}" data-state="${S.code}">Add to my lakes</a>`)
       .addTo(stockedLayer);
   }
 });
@@ -38,10 +38,25 @@ map.on('click', e => {
   if (w) openWater(w);
 });
 
-// ---------- Statewide labels: every named California lake and river ----------
+// ---------- Statewide labels: every named lake and river in the states we have data for ----------
+// Each state's list loads the first time the map shows part of that state. `statewide` holds every loaded one.
 export let statewide = null;
 let shownWaters = [];
-CA.statewide().then(d => { statewide = d; drawWaterLabels(); });
+const loadedStates = new Map();
+function loadStates() {
+  for (const S of statesIn(map.getBounds())) {
+    if (loadedStates.has(S.code)) continue;
+    loadedStates.set(S.code, null);
+    S.statewide().then(d => {
+      loadedStates.set(S.code, d);
+      const all = [...loadedStates.values()].filter(Boolean);
+      statewide = { lakes: all.flatMap(x => x.lakes), riverLabels: all.flatMap(x => x.riverLabels) };
+      drawWaterLabels();
+    });
+  }
+}
+map.whenReady(loadStates);
+map.on('moveend', loadStates);
 map.on('moveend', drawWaterLabels);
 map.on('overlayadd overlayremove', drawWaterLabels);
 
@@ -150,10 +165,11 @@ export async function showDepthSet(setId) {
 
 // Contour surveys store elevations; depth = surface elevation - contour elevation.
 export async function showSurvey(survey, lake) {
-  const [gj, res] = await Promise.all([fetch(CA.bathymetryUrl(survey.id)).then(r => r.json()), CA.nearestReservoir(lake.lat, lake.lon, lake.cdecStation, { name: lake.name, acres: lake.acres })]);
+  const S = forLake(lake);
+  const [gj, res] = await Promise.all([fetch(S.bathymetryUrl(survey.id)).then(r => r.json()), reservoirFor(lake)]);
   const toFt = survey.units === 'm' ? M_TO_FT : 1;
   const current = res?.elevation?.at(-1)?.[1];
-  // Only trust the CDEC level if it falls within the survey's range (same datum, same lake).
+  // Only trust the gauge level if it falls within the survey's range (same datum, same lake).
   const surfaceFt = current && current > survey.minElev * toFt && current < survey.maxElev * toFt + 30 ? current : survey.maxElev * toFt;
   const maxDepth = surfaceFt - survey.minElev * toFt;
   depthLayer.clearLayers();
@@ -165,7 +181,7 @@ export async function showSurvey(survey, lake) {
   const legend = $('#depth-legend');
   const grad = [0, .25, .5, .75, 1].map(t => depthColor(t * maxDepth, maxDepth)).join(',');
   legend.innerHTML = `<b>${esc(lake.name)} contours</b><div class="bar" style="background:linear-gradient(90deg,${grad})"></div>0 ft <span style="float:right">${Math.round(maxDepth)} ft</span>
-    <div class="muted" style="font-size:11px">${surfaceFt === current ? `At today's level, ${Math.round(current)} ft (CDEC ${esc(res.id)})` : 'At full pool'} · USGS survey</div><a href="#" id="hide-depth">Hide</a>`;
+    <div class="muted" style="font-size:11px">${surfaceFt === current ? `At today's level, ${Math.round(current)} ft (${esc(res.source ?? 'CDEC')} ${esc(res.id)})` : 'At full pool'} · USGS survey</div><a href="#" id="hide-depth">Hide</a>`;
   legend.classList.remove('hidden');
   $('#hide-depth').onclick = e => { e.preventDefault(); depthLayer.clearLayers(); legend.classList.add('hidden'); };
   if (!map.hasLayer(depthLayer)) depthLayer.addTo(map);
