@@ -1,0 +1,65 @@
+lakes: 504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/12/query?where=GNIS_NAME+IS+NOT+NULL+AND+FTYPE+IN+%28390%2C436%29+AND+AREASQKM+%3E%3D+0.008&outFields=PERMANENT_IDENTIFIER%2CGNIS_ID%2C
+rivers: 504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?where=GNIS_NAME+IS+NOT+NULL+AND+%28GNIS_NAME+LIKE+%27%25+River%25%27+OR+GNIS_NAME+LIKE+%27%25+Creek%25%27+OR+GNIS_NAME+LIKE+%27
+{
+  "startedAt": "2026-10-23T15:34:44.692Z",
+  "steps": {
+    "nhdLayers": [
+      {
+        "id": 0,
+        "name": "Point"
+      },
+      {
+        "id": 1,
+        "name": "Point Event"
+      },
+      {
+        "id": 2,
+        "name": "Line - Large Scale "
+      },
+      {
+        "id": 3,
+        "name": "Flow Direction"
+      },
+      {
+        "id": 4,
+        "name": "Flowline - Small Scale"
+      },
+      {
+        "id": 5,
+        "name": "Flowline - Small Scale (HI, PR, VI, Pacific Territories)"
+      },
+      {
+        "id": 6,
+        "name": "Flowline - Large Scale"
+      },
+      {
+        "id": 7,
+        "name": "Area - Small Scale"
+      },
+      {
+        "id": 8,
+        "name": "Area - Small Scale (HI, PR, VI, Pacific Territories)"
+      },
+      {
+        "id": 9,
+        "name": "Area - Large Scale"
+      },
+      {
+        "id": 10,
+        "name": "Waterbody - Small Scale"
+      },
+      {
+        "id": 11,
+        "name": "Waterbody - Small Scale (HI, PR, VI, Pacific Territories)"
+      },
+      {
+        "id": 12,
+        "name": "Waterbody - Large Scale"
+      }
+    ],
+    "splitTiles": 10,
+    "lakesError": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/12/query?where=GNIS_NAME+IS+NOT+NULL+AND+FTYPE+IN+%28390%2C436%29+AND+AREASQKM+%3E%3D+0.008&outFields=PERMANENT_IDENTIFIER%2CGNIS_ID%2C",
+    "riversError": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?where=GNIS_NAME+IS+NOT+NULL+AND+%28GNIS_NAME+LIKE+%27%25+River%25%27+OR+GNIS_NAME+LIKE+%27%25+Creek%25%27+OR+GNIS_NAME+LIKE+%27"
+  },
+  "finishedAt": "2026-10-23T16:20:55.114Z"
+}

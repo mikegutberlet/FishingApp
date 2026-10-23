@@ -1,10 +1,10 @@
 // Backfill old catches from photos: read each photo's date and GPS on the device, match it to a water,
 // and offer draft catches to confirm. Photos never leave the device.
 import { db } from '../db.js';
-import * as CA from '../states/ca.js';
+import { forLake, stateAt } from '../states/index.js';
 import { haversineKm, moonPhase } from '../data-sources.js';
 import { $, esc, status } from '../ui.js';
-import { refreshMap, statewide as loadedStatewide } from '../map.js';
+import { refreshMap } from '../map.js';
 import { readExif } from '../exif.js';
 import { shrinkPhoto } from './log.js';
 import { waterRecord } from './lake.js';
@@ -29,7 +29,10 @@ export function renderBackfill(el) {
 async function readPhotos(files) {
   if (!files.length) return;
   $('#bf-drafts').innerHTML = `<div class="card muted">Reading ${files.length} photo${files.length > 1 ? 's' : ''}…</div>`;
-  const [lakes, trips, sw, catches] = await Promise.all([db.all('lakes'), db.all('trips'), loadedStatewide ?? CA.statewide(), db.all('catches')]);
+  const [lakes, trips, catches] = await Promise.all([db.all('lakes'), db.all('trips'), db.all('catches')]);
+  // Each photo is matched against the statewide list of the state it was taken in (loaded once per state).
+  const lists = {};
+  const swAt = (lat, lon) => { const S = stateAt(lat, lon); return S ? (lists[S.code] ??= S.statewide()) : null; };
   drafts = [];
   for (const file of files) {
     let ex = {};
@@ -43,7 +46,7 @@ async function readPhotos(files) {
       const p = trip.track.reduce((best, q) => !best || Math.abs(q[2] - t) < Math.abs(best[2] - t) ? q : best, null);
       if (p) [lat, lon] = p;
     }
-    const water = trip ? { lake: lakes.find(l => l.id === trip.lakeId) } : lat != null ? matchWater(lat, lon, lakes, sw) : {};
+    const water = trip ? { lake: lakes.find(l => l.id === trip.lakeId) } : lat != null ? matchWater(lat, lon, lakes, await swAt(lat, lon)) : {};
     if (water.water && !water.lake) water.lake = await savedLakeFor(water.water, lakes);
     const dup = catches.find(c => Math.abs(Date.parse(c.time) - Date.parse(time)) < 10 * 60e3);
     drafts.push({ file, url: URL.createObjectURL(file), time, lat, lon, ...water, waterChoice: water.lake?.id ?? (water.water ? 'new' : ''),
@@ -67,17 +70,18 @@ export function matchWater(lat, lon, lakes, sw) {
 }
 
 // Your saved lake for a statewide water: the same NHD id, or a lake added from the stocked-waters finder (no NHD id)
-// for the same CDFW water. The CDFW match alone can point a big lake at a small stocked water nearby, so the finder lake
+// for the same stocked water (CDFW, NDOW). The stocked match alone can point a big lake at a small stocked water nearby, so the finder lake
 // also has to share the name or sit on the water.
 const norm = s => (s ?? '').toLowerCase().replace(/\b(lake|reservoir|river|creek|pond|the|of)\b|[^a-z0-9]/g, '');
 const sameName = (a, b) => { const x = norm(a), y = norm(b); return !!x && !!y && (x.startsWith(y) || y.startsWith(x)); };
 async function savedLakeFor(water, lakes) {
   const byNhd = lakes.find(l => l.nhdId === String(water.id));
   if (byNhd) return byNhd;
-  const stocked = await CA.matchStockedWater(water);
+  const S = forLake(water);
+  const stocked = await S?.matchStockedWater(water);
   // Same name, or the finder lake's pin lies inside the water (its equivalent-circle radius).
   const inside = l => haversineKm(l.lat, l.lon, water.lat, water.lon) <= Math.sqrt((water.acres ?? 0) / 776);
-  return stocked ? lakes.find(l => !l.nhdId && l.cdfwStockId != null && +l.cdfwStockId === +stocked.id && (sameName(l.name, water.name) || inside(l))) ?? null : null;
+  return stocked ? lakes.find(l => !l.nhdId && l[S.stockField] != null && String(l[S.stockField]) === String(stocked.id) && (sameName(l.name, water.name) || inside(l))) ?? null : null;
 }
 
 function drawDrafts() {

@@ -1,7 +1,7 @@
 // Today: the home screen. Your favourite waters at a glance (wind and which bank it's blowing into, the next
 // bite window, lake-level change, new CDFW plants, weather alerts), and the way into the trip planner.
 import { db } from '../db.js';
-import * as CA from '../states/ca.js';
+import { forLake, stockIdOf, reservoirFor } from '../states/index.js';
 import { WEATHER_CODES } from '../data-sources.js';
 import { weatherFor, fetchAlerts, alertLevel, localKey, addDays, levelChange } from '../forecast.js';
 import { solunar, dayRating, stars, nextWindow, shortTime } from '../solunar.js';
@@ -71,14 +71,15 @@ async function fillCard(card, lake) {
     put(1, `<div class="stat"><b>${arrow(x.from)} ${Math.round(x.speed)} mph</b><span>${x.calm ? 'Calm' : `Into the ${bankName(x.to)} bank`}</span></div>`);
     putBite(w);
   }).catch(() => put(0, '<div class="stat"><b>–</b><span>Forecast unavailable</span></div>'));
-  CA.nearestReservoir(lake.lat, lake.lon, lake.cdecStation, { name: lake.name, acres: lake.acres }).then(res => {
+  reservoirFor(lake).then(res => {
     const ch = levelChange(res?.elevation, 7, 4);
     if (ch != null) put(3, `<div class="stat"><b>${ch > 0 ? '+' : ''}${ch.toFixed(1)} ft</b><span>Level, last 7 days</span></div>`);
   }).catch(() => {});
-  if (lake.cdfwStockId) CA.plantsFor(lake.cdfwStockId).then(plants => {
+  const stockId = stockIdOf(lake);
+  if (stockId) forLake(lake).plantsFor(stockId).then(plants => {
     const today = localKey(now), soon = localKey(addDays(now, 7)), recent = localKey(addDays(now, -14));
     const p = plants.filter(x => x.week >= recent && x.week <= soon).sort((a, b) => b.week.localeCompare(a.week))[0];
-    if (p) put(4, `<div class="stat new-plant"><b>🐟 ${esc(p.species)}</b><span>${p.week > today ? 'Plant planned' : 'Planted'} week of ${fmtDate(p.week + 'T12:00')}</span></div>`);
+    if (p) put(4, `<div class="stat new-plant"><b>🐟 ${esc(p.species)}</b><span>${p.week > today ? 'Plant planned' : 'Planted'} ${p.weekEnd && p.weekEnd !== p.week ? 'week of ' : ''}${fmtDate(p.week + 'T12:00')}</span></div>`);
   }).catch(() => {});
   fetchAlerts(lake.lat, lake.lon).then(alerts => {
     if (!alerts.length) return;

@@ -1,6 +1,7 @@
 // Regulation warnings on the catch form: closed season, release only, size and bag limits for the water, species and date.
 // Shown above Save as you fill in the form; they never block saving.
 import * as CA from '../states/ca.js';
+import { forLake } from '../states/index.js';
 import { db } from '../db.js';
 import { esc } from '../ui.js';
 import { fromLen } from '../units.js';
@@ -21,7 +22,8 @@ export async function showCatchWarnings(form, editingId) {
   const species = form.species.value.trim();
   const lake = form.lakeId.value && species ? await db.get('lakes', form.lakeId.value) : null;
   let warnings = [];
-  if (lake) {
+  // California's regulations only: other states' waters get no warnings rather than the wrong ones.
+  if (lake && forLake(lake) === CA) {
     const when = form.time.value ? new Date(form.time.value) : new Date();
     const group = CA.regGroup(species);
     const kept = group ? (await db.all('catches')).filter(c => c.id !== editingId && c.lakeId === lake.id && !c.released

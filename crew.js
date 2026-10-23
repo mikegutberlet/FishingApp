@@ -5,6 +5,7 @@
 import { db, STORES } from './db.js';
 import { encryptJson, decryptJson, packJson, unpackJson } from './crypto.js';
 import { haversineKm } from './data-sources.js';
+import { forLake, stockIdOf } from './states/index.js';
 import { $, esc, fmtDate, status, showView, onShow } from './ui.js';
 import { map, layersControl, refreshMap } from './map.js';
 import { fmtLen } from './units.js';
@@ -53,7 +54,8 @@ async function buildPack({ catches = [], spots = [] }, { exact = false, photos =
   }
   return {
     app: 'tackle-box', kind: 'crew', v: 1, from: myName(), sharedAt: new Date().toISOString(),
-    lakes: lakeKeys.map(id => { const l = lakes.get(id) ?? {}; return { name: l.name, lat: l.lat, lon: l.lon, nhdId: l.nhdId, cdfwStockId: l.cdfwStockId, acres: l.acres, state: l.state }; }),
+    // stockId is the water's id in its state's stocking data (CDFW stock id, NDOW water slug).
+    lakes: lakeKeys.map(id => { const l = lakes.get(id) ?? {}; return { name: l.name, lat: l.lat, lon: l.lon, nhdId: l.nhdId, state: l.state ?? forLake(l)?.code, stockId: stockIdOf(l) ?? undefined, acres: l.acres }; }),
     items,
   };
 }
@@ -64,8 +66,15 @@ async function buildPack({ catches = [], spots = [] }, { exact = false, photos =
 const KINDS = ['catch', 'spot', 'waypoint'];
 const num = v => v == null || v === '' || !isFinite(+v) ? undefined : +v;
 const str = (v, n = 500) => v == null ? undefined : String(v).slice(0, n);
-const cleanLake = l => ({ name: str(l.name, 120) || 'Shared water', lat: num(l.lat), lon: num(l.lon), acres: num(l.acres), cdfwStockId: num(l.cdfwStockId),
-  nhdId: l.nhdId == null ? undefined : String(l.nhdId).replace(/[^\w-]/g, '').slice(0, 40), state: str(l.state, 4) });
+const token = v => v == null || v === '' ? undefined : String(v).replace(/[^\w-]/g, '').slice(0, 80) || undefined;
+function cleanLake(l) {
+  const out = { name: str(l.name, 120) || 'Shared water', lat: num(l.lat), lon: num(l.lon), acres: num(l.acres), nhdId: token(l.nhdId), state: token(l.state)?.slice(0, 2).toUpperCase() };
+  // The state's stock id goes in that state's own field (packs from before Nevada carry cdfwStockId).
+  const S = forLake(out), id = token(l.stockId ?? l.cdfwStockId);
+  if (S && id) out[S.stockField] = S.stockField === 'cdfwStockId' ? num(id) : id;
+  out.state ??= S?.code;
+  return out;
+}
 function cleanItem(it) {
   const out = { kind: it.kind, lat: num(it.lat), lon: num(it.lon) };
   for (const k of ['length', 'weight', 'weightEst', 'depth', 'waterTemp']) out[k] = num(it[k]);
@@ -80,7 +89,8 @@ function cleanItem(it) {
   return out;
 }
 async function matchLake(l, mine) {
-  return mine.find(m => (l.cdfwStockId && m.cdfwStockId === l.cdfwStockId) || (l.nhdId && m.nhdId === l.nhdId))
+  const sid = stockIdOf(l);
+  return mine.find(m => (sid != null && forLake(m) === forLake(l) && String(stockIdOf(m)) === String(sid)) || (l.nhdId && m.nhdId === l.nhdId))
     ?? mine.find(m => m.name?.toLowerCase() === l.name?.toLowerCase() && haversineKm(m.lat, m.lon, l.lat, l.lon) < 5)
     ?? mine.find(m => l.lat != null && haversineKm(m.lat, m.lon, l.lat, l.lon) < 0.5);
 }

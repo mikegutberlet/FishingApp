@@ -1,8 +1,8 @@
-// "New since last visit": CDFW plants that showed up since you last opened a water's Stocking tab.
+// "New since last visit": state plants (CDFW, NDOW) that showed up since you last opened a water's Stocking tab.
 // The plants you've seen are kept on the lake record (plantsSeen, as "week|species" keys), so nothing leaves the device.
 // Keys rather than a date, because CDFW often adds a plant to a week that has already started.
 import { db } from '../db.js';
-import * as CA from '../states/ca.js';
+import { forLake, stockIdOf } from '../states/index.js';
 
 const FRESH_DAYS = 14; // only plants from the last two weeks (or coming up) can count as new
 const KEEP_DAYS = 30; // seen keys (by plant week) go back further than that, so a plant you've seen never turns new again
@@ -17,8 +17,9 @@ const seen = (lake, plant) => Array.isArray(lake.plantsSeen) ? lake.plantsSeen.i
 export const isNew = (lake, plant) => lastDay(plant) >= daysAgo(FRESH_DAYS) && !seen(lake, plant);
 
 export async function newPlants(lake) {
-  if (!lake.cdfwStockId) return [];
-  return (await CA.plantsFor(lake.cdfwStockId)).filter(p => isNew(lake, p));
+  const id = stockIdOf(lake);
+  if (!id) return [];
+  return (await forLake(lake).plantsFor(id)).filter(p => isNew(lake, p));
 }
 
 // Called when the Stocking tab shows the CDFW plants. Adds them to the keys already seen (so a failed plant load can't

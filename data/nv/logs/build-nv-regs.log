@@ -1,0 +1,20 @@
+{
+ "statewide": {},
+ "western": {
+  "waters": 32,
+  "advisories": 4,
+  "closed": 7
+ },
+ "southern": {
+  "waters": 18,
+  "advisories": 0,
+  "closed": 3
+ },
+ "eastern": {
+  "waters": 11,
+  "advisories": 1,
+  "closed": 4
+ },
+ "stripers": {},
+ "baitfish": {}
+}

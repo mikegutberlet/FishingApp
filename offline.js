@@ -2,7 +2,7 @@
 // the map works with no signal. Each pack is its own cache ("offline-<id>"), which app updates leave alone, and
 // sw.js answers tile and data requests from any cache before going to the network.
 import { db } from './db.js';
-import * as CA from './states/ca.js';
+import { forLake } from './states/index.js';
 import { $, esc, fmtDate, status, showView, onShow } from './ui.js';
 import { map, baseLayers } from './map.js';
 
@@ -14,7 +14,14 @@ const MIN_ZOOM = 10;
 // Street tiles you have already looked at stay in sw.js's tile cache.
 const MAX_ZOOM = { Satellite: 17 };
 const AVG_KB = { Satellite: 20 }; // typical tile size, for the estimate before downloading
-const STATE_FILES = ['lakes', 'rivers', 'waters', 'plants', 'reservoirs', 'hydrolakes', 'history', 'hab', 'regs', 'oehha', 'access', 'counties'].map(n => `data/ca/${n}.json`).concat('data/ca/bathymetry/index.json');
+// The data files a lake page reads, by state (each state's jobs write data/<st>/).
+const SHARED_FILES = ['lakes', 'rivers', 'waters', 'plants', 'reservoirs', 'hydrolakes', 'history'];
+const STATE_EXTRAS = { CA: ['hab', 'regs', 'oehha', 'access', 'counties'], NV: ['hab', 'regs', 'advisories', 'counties'] };
+const stateFiles = S => {
+  if (!S) return [];
+  const dir = `data/${S.code.toLowerCase()}`;
+  return [...SHARED_FILES, ...(STATE_EXTRAS[S.code] ?? [])].map(n => `${dir}/${n}.json`).concat(`${dir}/bathymetry/index.json`);
+};
 
 // Keyed by the NHD id when the water has one, so saving a water you downloaded before saving keeps its pack.
 export const packId = lake => PREFIX + (lake.nhdId ? `nhd-${lake.nhdId}` : lake.id);
@@ -28,7 +35,7 @@ async function lakeBounds(lake) {
   const river = lake.kind === 'river' || !!lake.lengthKm;
   const km = river ? 3 : Math.max(0.8, Math.sqrt((lake.acres ?? 40) * 0.004047 / Math.PI) * 2.2);
   const here = L.latLng(lake.lat, lake.lon), core = here.toBounds(km * 2000);
-  for (const s of await CA.bathymetryFor(lake).catch(() => [])) core.extend([[s.bbox[1], s.bbox[0]], [s.bbox[3], s.bbox[2]]]);
+  for (const s of await forLake(lake)?.bathymetryFor(lake).catch(() => []) ?? []) core.extend([[s.bbox[1], s.bbox[0]], [s.bbox[3], s.bbox[2]]]);
   const near = L.latLngBounds(L.latLng(core.getSouth(), core.getWest()).toBounds(6000).getSouthWest(), L.latLng(core.getNorth(), core.getEast()).toBounds(6000).getNorthEast());
   const b = L.latLngBounds(core.getSouthWest(), core.getNorthEast());
   const pts = [];
@@ -139,7 +146,7 @@ export async function offlineDialog(lake) {
   dlg.className = 'sheet';
   dlg.innerHTML = `<form class="form" method="dialog"><h3>Save ${esc(lake.name)} for offline</h3>
     ${existing ? `<p class="small">Saved ${fmtDate(existing.savedAt)} · ${(existing.bytes / 1e6).toFixed(0)} MB · zoom ${existing.zMin}–${existing.zMax}. Downloading again updates it.</p>` : ''}
-    <p class="muted small">Saves the satellite map, the USGS depth chart and this app's California data for the lake on this phone, so the map, depth and stocking work with no signal. Your catches and depth scans are always on the phone already.</p>
+    <p class="muted small">Saves the satellite map, the USGS depth chart and this app's ${esc(forLake(lake)?.name ?? 'state')} data for the lake on this phone, so the map, depth and stocking work with no signal. Your catches and depth scans are always on the phone already.</p>
     <p class="muted small">The satellite map is saved. The street map can't be downloaded in advance (OpenStreetMap doesn't allow it), but street areas you've already looked at stay cached.</p>
     <label>Area <select name="area"><option value="lake">The whole lake</option><option value="view">What the map shows now</option></select></label>
     <p id="off-est" class="small"></p>
@@ -180,7 +187,8 @@ export async function offlineDialog(lake) {
   $('#off-go', dlg).onclick = async e => {
     e.preventDefault();
     const { bounds, p, kept, own, left } = choice();
-    const surveys = await CA.bathymetryFor(lake).catch(() => []);
+    const S = forLake(lake);
+    const surveys = await S?.bathymetryFor(lake).catch(() => []) ?? [];
     const bar = $('#off-progress', dlg);
     bar.classList.remove('hidden');
     form.querySelectorAll('input, select, #off-go').forEach(el => el.disabled = true);
@@ -190,7 +198,7 @@ export async function offlineDialog(lake) {
     const here = { bounds: [bounds.getSouth(), bounds.getWest(), bounds.getNorth(), bounds.getEast()], zMin: p.zMin, zMax: p.zMax };
     const areas = [...kept, here];
     const all = areas.reduce((u, a) => u.extend(box(a.bounds)), box(here.bounds));
-    const data = [...STATE_FILES, ...surveys.map(s => CA.bathymetryUrl(s.id))];
+    const data = [...stateFiles(S), ...surveys.map(s => S.bathymetryUrl(s.id))];
     const urls = [...data, ...new Set(areas.flatMap(areaTiles))];
     const pack = { id, nhdId: lake.nhdId ?? null, lakeId: lake.unsaved ? null : lake.id, name: lake.name, layers, areas,
       zMin: Math.min(...areas.map(a => a.zMin)), zMax: Math.max(...areas.map(a => a.zMax)),

@@ -1,7 +1,7 @@
 // Trip planner: pick a day in the next 10, and your saved waters are ranked by forecast (wind, rain, temperature,
 // pressure trend), bite windows, days since the last CDFW plant and the lake-level trend.
 import { db } from '../db.js';
-import * as CA from '../states/ca.js';
+import { forLake, stockIdOf, reservoirFor } from '../states/index.js';
 import { WEATHER_CODES } from '../data-sources.js';
 import { weatherFor, localKey, addDays, levelChange } from '../forecast.js';
 import { solunar, dayRating, stars, windowSpan, windowLabel } from '../solunar.js';
@@ -44,18 +44,19 @@ export async function scoreDay(lake, w, date) {
   }
   const sol = solunar(new Date(date + 'T12:00'), lake.lat, lake.lon), r = dayRating(sol, d('sunrise'), d('sunset'));
   if (r >= 2) add(0.5 * r, `${stars(r)} solunar day`); else add(0, `${stars(r)} solunar day`);
-  if (lake.cdfwStockId) {
-    const plants = (await CA.plantsFor(lake.cdfwStockId)).sort((a, b) => b.week.localeCompare(a.week));
+  const stockId = stockIdOf(lake);
+  if (stockId) {
+    const plants = (await forLake(lake).plantsFor(stockId)).sort((a, b) => b.week.localeCompare(a.week));
     const during = plants.find(p => p.week <= date && (p.weekEnd ?? p.week) >= date);
     const last = plants.find(p => p.week <= date);
-    if (during) add(1.5, `${during.species} ${during.week <= dayKey(0) ? 'planted' : 'plant planned'} week of ${fmtDate(during.week + 'T12:00').replace(/, \d{4}$/, '')}`);
+    if (during) add(1.5, `${during.species} ${during.week <= dayKey(0) ? 'planted' : 'plant planned'} ${during.weekEnd && during.weekEnd !== during.week ? 'week of ' : 'on '}${fmtDate(during.week + 'T12:00').replace(/, \d{4}$/, '')}`);
     else if (last) {
       const ago = Math.round((Date.parse(date) - Date.parse(last.weekEnd ?? last.week)) / DAY);
       if (ago <= 7) add(2, `Planted ${ago} day${ago === 1 ? '' : 's'} earlier`);
       else if (ago <= 21) add(1, `Planted ${ago} days earlier`);
     }
   }
-  const res = await CA.nearestReservoir(lake.lat, lake.lon, lake.cdecStation, { name: lake.name, acres: lake.acres });
+  const res = await reservoirFor(lake);
   const ch = levelChange(res?.elevation, 7, 4);
   if (ch != null) {
     if (ch >= 1) add(0.5, `Lake rising ${ch.toFixed(1)} ft/week`);
@@ -75,7 +76,7 @@ export async function renderPlanner() {
   el.innerHTML = `<button id="plan-back">‹ Today</button><h2>Plan a trip</h2>
     <div class="tabs day-pick">${days.map(d => `<button data-k="${d.k}" class="${d.k === picked ? 'active' : ''}">${d.label}</button>`).join('')}</div>
     <div id="plan-list" class="muted">Ranking your waters…</div>
-    <p class="muted small">Scores mix the Open-Meteo forecast, bite windows, CDFW plants and CDEC lake levels. 5 is an ordinary day. Forecasts past 5 days are rough.</p>`;
+    <p class="muted small">Scores mix the Open-Meteo forecast, bite windows, state stocking (CDFW, NDOW) and lake levels. 5 is an ordinary day. Forecasts past 5 days are rough.</p>`;
   $('#plan-back').onclick = () => showView('today');
   el.querySelectorAll('.day-pick button').forEach(b => b.onclick = () => { picked = +b.dataset.k; renderPlanner(); });
   const lakes = await db.all('lakes');

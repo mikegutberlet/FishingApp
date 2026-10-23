@@ -1,6 +1,8 @@
 // Map overlays for water safety and access: current toxic algae advisories, and ramps/piers/parking/campgrounds.
 // Call addSafetyLayers() once at startup (from app.js).
 import * as CA from './states/ca.js';
+import * as NV from './states/nv.js';
+import { NV_HAB } from './views/tabs/nv-safety.js';
 import { map, layersControl, canvas } from './map.js';
 import { esc, fmtDate } from './ui.js';
 import { HAB_LEVELS } from './views/tabs/safety.js';
@@ -38,6 +40,16 @@ async function drawHab(layer) {
           <span style="font-size:12px;color:#666">${esc(a.detail)} · updated ${fmtDate(a.date + 'T12:00')}</span><br><a href="${esc(data.portal)}" target="_blank" rel="noopener">HABs portal ↗</a>`)
         .addTo(layer);
     }
+  }
+  // Nevada's list (one point per water). It loads on its own, so a missing file doesn't hide California's.
+  const nv = await NV.habAdvisories();
+  for (const a of nv?.advisories ?? []) {
+    const l = NV_HAB[a.level];
+    if (!l || a.lat == null) continue;
+    L.circleMarker([a.lat, a.lon], { renderer: canvas, radius: ['danger', 'warning'].includes(a.level) ? 7 : 5, color: '#fff', weight: 1.5, fillColor: HAB_COLORS[a.level], fillOpacity: 0.95 })
+      .bindPopup(`<b>${l.icon} Algae: ${esc(l.label)}</b><br>${esc(a.name)}<br><span style="font-size:12px">${esc(l.advice)}</span><br>
+        <span style="font-size:12px;color:#666">${esc(a.detail)}${a.date ? ` · updated ${fmtDate(a.date + 'T12:00')}` : ''}</span><br><a href="${esc(nv.portal)}" target="_blank" rel="noopener">Nevada HAB reports ↗</a>`)
+      .addTo(layer);
   }
 }
 

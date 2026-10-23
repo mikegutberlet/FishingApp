@@ -1,6 +1,6 @@
 // Conditions tab: weather alerts, weather now, bite windows, 24 hours and 10 days, wind on the water,
-// lake level (CDEC), USGS gauges with flow vs normal, and Windy.
-import * as CA from '../../states/ca.js';
+// lake level (CDEC, USGS, Reclamation), USGS gauges with flow vs normal, and Windy.
+import { reservoirFor } from '../../states/index.js';
 import { pressureTrend, fetchUsgsNearby, moonPhase, WEATHER_CODES, compass } from '../../data-sources.js';
 import { weatherFor, fetchAlerts, alertLevel, fetchFlowStats, flowRating, hourIndex, dayIndex, localKey, levelChange } from '../../forecast.js';
 import { solunar, dayRating, stars, windowAt, windowsAround, windowLabel, windowSpan, shortTime } from '../../solunar.js';
@@ -60,7 +60,7 @@ export async function renderConditions(lake, body) {
     $('#wx').textContent = `Weather: ${e.message} (offline?)`;
     renderBite(solFor(now), around, now);
   }
-  CA.nearestReservoir(lake.lat, lake.lon, lake.cdecStation, { name: lake.name, acres: lake.acres }).then(r => {
+  reservoirFor(lake).then(r => {
     if (!r || !body.isConnected) return;
     const el = $('#res'), e = r.elevation, s = r.storage;
     const change = days => levelChange(e, days);
@@ -69,7 +69,7 @@ export async function renderConditions(lake, body) {
       ${e.length ? `<div class="stat"><b>${e.at(-1)[1].toLocaleString()} ft</b><span>Elevation ${fmtDate(e.at(-1)[0] + 'T12:00')}</span></div>
       <div class="stat"><b>${signed(change(7))}</b><span>Last 7 days</span></div><div class="stat"><b>${signed(change(28))}</b><span>Last 4 weeks</span></div>` : ''}
       ${s.length ? `<div class="stat"><b>${Math.round(s.at(-1)[1]).toLocaleString()}</b><span>Storage, acre-ft</span></div>` : ''}</div>
-      <p class="muted small">CDEC station ${esc(r.id)} · ${r.distKm.toFixed(1)} km away${lake.cdecStation ? '' : ' · wrong lake? set the station under Edit'}</p>`;
+      <p class="muted small">${esc(r.source ?? 'CDEC')} station ${esc(r.id)} · ${r.distKm.toFixed(1)} km away${lake.cdecStation ? '' : ' · wrong lake? set the station under Edit'}</p>`;
     el.classList.remove('hidden');
   });
   try {

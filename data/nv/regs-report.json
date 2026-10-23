@@ -1,0 +1,289 @@
+{
+ "startedAt": "2026-10-23T16:21:16.005Z",
+ "pages": {
+  "statewide": {
+   "blocks": 108,
+   "outline": [
+    "# General Statewide Regulations (3p 3r)",
+    "## License Requirements (1p 0r)",
+    "## Daily Limit (3p 0r)",
+    "## Possession Limit (7p 0r)",
+    "## Size Limit (1p 0r)",
+    "## Seasons and Hours (1p 0r)",
+    "## “Fishes,” “Fishing,” “Fished” and “To Fish” Defined (1p 0r)",
+    "## Filleting Fish (1p 0r)",
+    "## Methods of Fishing (1p 0r)",
+    "## Spearfishing/Bowfishing (1p 0r)",
+    "## General Statewide Bait Use (7p 0r)",
+    "## Chumming (1p 0r)",
+    "## Unprotected Fish (1p 0r)",
+    "## Ice Fishing (2p 0r)",
+    "## Artificial Lures (1p 0r)",
+    "## Artificial Lures with Single Barbless Hooks (1p 0r)",
+    "## Northern Pike (1p 0r)",
+    "## Game Fish Transportation (1p 0r)",
+    "## Bullfrogs (1p 0r)",
+    "## Crayfish (1p 0r)",
+    "## Coldwater Game Fish (1p 0r)",
+    "## Warmwater Game Fish (1p 0r)",
+    "## Protected Fish and Amphibians (43p 0r)"
+   ]
+  },
+  "western": {
+   "blocks": 134,
+   "outline": [
+    "# Western Region Regulations (4p 3r)",
+    "## Western Region General Regulations (2p 0r)",
+    "## Western Region Daily Limits (2p 0r)",
+    "## Possession Limits (1p 0r)",
+    "## Artificial Lure Waters (1p 0r)",
+    "## Bait Regulations (5p 74r)",
+    "#### The Nevada Division of Public and Behavioral Health has issued health advisories that recommend limited consumption of fish species due to elevated mercury levels in their flesh. For more information about mercury in fish, visit the Nevada Department of Wildlife mercury in fish blog . (27p 8r)"
+   ],
+   "waters": 32,
+   "advisories": 4,
+   "closed": 7
+  },
+  "southern": {
+   "blocks": 90,
+   "outline": [
+    "# Southern Region Regulations (4p 3r)",
+    "## Southern Region General Regulations (2p 0r)",
+    "## Southern Region Daily Limits (2p 0r)",
+    "## Possession Limits (1p 0r)",
+    "## Bait Regulations (1p 0r)",
+    "## Tackle Restrictions (1p 0r)",
+    "## Artificial Lure Waters (1p 0r)",
+    "## Spearfishing (34p 33r)"
+   ],
+   "waters": 18,
+   "advisories": 0,
+   "closed": 3
+  },
+  "eastern": {
+   "blocks": 83,
+   "outline": [
+    "# Eastern Region Regulations (4p 2r)",
+    "## Eastern Region General Regulations (1p 0r)",
+    "## Eastern Region Daily Limits (2p 0r)",
+    "## Possession Limits (1p 0r)",
+    "## Artificial Lure Waters (1p 0r)",
+    "## Bait Regulations (5p 0r)",
+    "#### The Nevada Division of Public and Behavioral Health has issued health advisories that recommend limited consumption of fish species due to elevated mercury levels in their flesh. For more information about mercury levels in fish, visit the Nevada Department of Wildlife mercury in fish blog . (28p 32r)"
+   ],
+   "waters": 11,
+   "advisories": 1,
+   "closed": 4
+  },
+  "stripers": {
+   "blocks": 41,
+   "outline": [
+    "# New Striper Limit on Lakes Mead and Mohave (40p 0r)"
+   ]
+  },
+  "baitfish": {
+   "blocks": 50,
+   "outline": [
+    "# Fishing with Bait Fish (2p 0r)",
+    "## Eastern Region (1p 0r)",
+    "## Southern Region (2p 12r)",
+    "## Western Region (29p 0r)"
+   ]
+  }
+ },
+ "sampleWaters": [
+  {
+   "name": "Baily Fishing Pond",
+   "aliases": [
+    "Baily Fishing Pond"
+   ],
+   "region": "Western",
+   "county": "Carson City",
+   "season": "Year round; hours are when the park is open to public use.",
+   "limit": "3 game fish.",
+   "notes": []
+  },
+  {
+   "name": "Lake Tahoe and Tributaries",
+   "aliases": [
+    "Lake Tahoe"
+   ],
+   "region": "Western",
+   "county": "Carson City",
+   "season": "Year round; 1 hour before sunrise to 2 hours after sunset. Closed areas: within a 200 yard radius of the mouths of Third, Incline and Wood Creeks; 500 yard radius from Sand Harbor Boat Ramp; and within the boat launch area inside the jetty at Cave Rock Boat Ramp.",
+   "limit": "5 game fish.",
+   "notes": [
+    "Special Regulations: Persons under 16 years of age are not required to have a fishing license. Persons 16 years of age or older must have either a Nevada fishing license or a Nevada Interstate Boundary Waters license; a Nevada short-term fishing permit or a California fishing license.",
+    "Special Regulations: New in 2026: The 2025 Legislature passed a new law requiring that vessels on Lake Tahoe must be operated at a speed that leaves a flat wake when within 600 feet of the shoreline. (Refer to NRS 488.600(3))"
+   ]
+  },
+  {
+   "name": "Lahontan Reservoir",
+   "aliases": [
+    "Lahontan Reservoir"
+   ],
+   "region": "Western",
+   "county": "Churchill",
+   "season": "Year round; any hour of the day or night except for the Lahontan Dam spilling pool (bowl) which is closed to fishing.",
+   "limit": "15 game fish of which not more than 5 may be black bass, 5 may be walleye, and 2 may be white bass or white bass hybrids (wiper) 15 inches total length or longer. White bass or white bass hybrids (wiper) under 15 inches may be included in the 15 game fish limit.",
+   "notes": [
+    "Health Advisory: The Nevada Division of Public and Behavioral Health has issued a health advisory recommending no consumption of any fish from the Carson River from Dayton to Lahontan Dam and all waters in Lahontan Valley due to elevated mercury levels in their flesh."
+   ]
+  },
+  {
+   "name": "Carson River below Lahontan Reservoir and all waters in Lahontan Valley",
+   "aliases": [
+    "Carson River"
+   ],
+   "region": "Western",
+   "county": "Churchill",
+   "season": "Year round; any hour of the day or night.",
+   "limit": "25 game fish of which not more than 5 may be black bass and 5 may be walleye.",
+   "notes": [
+    "Health Advisory: The Nevada Division of Public and Behavioral Health has issued a health advisory recommending no consumption of any fish from the Carson River from Dayton to Lahontan Dam and all waters in Lahontan Valley due to elevated mercury levels in their flesh."
+   ]
+  },
+  {
+   "name": "Liberty Pond",
+   "aliases": [
+    "Liberty Pond"
+   ],
+   "region": "Western",
+   "county": "Churchill",
+   "season": "Year round; hours are when the park is open to public use.",
+   "limit": "3 game fish.",
+   "notes": []
+  },
+  {
+   "name": "Lake Tahoe and Tributaries",
+   "aliases": [
+    "Lake Tahoe"
+   ],
+   "region": "Western",
+   "county": "Douglas",
+   "season": "Year round; 1 hour before sunrise to 2 hours after sunset. Closed areas: within a 200 yard radius of the mouths of Third, Incline and Wood Creeks; 500 yard radius from Sand Harbor Boat Ramp; and within the boat launch area inside the jetty at Cave Rock Boat Ramp.",
+   "limit": "5 game fish.",
+   "notes": [
+    "Special Regulations: New in 2026: The 2025 Legislature passed a new law requiring that vessels on Lake Tahoe must be operated at a speed that leaves a flat wake when within 600 feet of the shoreline. (Refer to NRS 488.600(3))"
+   ]
+  },
+  {
+   "name": "Douglas County Community Fishing Ponds: Mitch Park Pond, Lampe Park, Martin Slough Pond, Seeman Pond, Mountain View Park Pond",
+   "aliases": [
+    "Mitch Park Pond",
+    "Lampe Park",
+    "Martin Slough Pond",
+    "Seeman Pond",
+    "Mountain View Park Pond"
+   ],
+   "region": "Western",
+   "county": "Douglas",
+   "season": "Year round; hours are when the park is open to public use.",
+   "limit": "3 game fish.",
+   "notes": []
+  },
+  {
+   "name": "Spooner Lake",
+   "aliases": [
+    "Spooner Lake"
+   ],
+   "region": "Western",
+   "county": "Douglas",
+   "season": "Year round; 1 hour before sunrise to 2 hours after sunset.",
+   "limit": "5 trout.",
+   "notes": []
+  }
+ ],
+ "advisories": [
+  {
+   "area": "Carson River from Dayton to Lahontan Dam and all waters in Lahontan Valley",
+   "names": [
+    "Carson River"
+   ],
+   "region": "Western",
+   "fish": [
+    [
+     "All fish",
+     "No consumption"
+    ]
+   ],
+   "areas": [
+    [
+     39.47,
+     -118.78,
+     25
+    ],
+    [
+     39.3,
+     -119.3,
+     30
+    ]
+   ]
+  },
+  {
+   "area": "Little and Big Washoe Lakes",
+   "names": [
+    "Little Washoe Lake",
+    "Big Washoe Lake",
+    "Washoe Lake",
+    "Big Washoe Lakes"
+   ],
+   "region": "Western",
+   "fish": [
+    [
+     "White Bass",
+     "No consumption"
+    ]
+   ],
+   "areas": []
+  },
+  {
+   "area": "Rye Patch Reservoir",
+   "names": [
+    "Rye Patch Reservoir"
+   ],
+   "region": "Western",
+   "fish": [
+    [
+     "Wipers and Walleye",
+     "No consumption"
+    ],
+    [
+     "All other fish",
+     "No more than one eight-ounce meal per week"
+    ]
+   ],
+   "areas": []
+  },
+  {
+   "area": "Chimney Dam Reservoir",
+   "names": [
+    "Chimney Dam Reservoir",
+    "Chimney Reservoir"
+   ],
+   "region": "Western",
+   "fish": [
+    [
+     "Walleye",
+     "No consumption"
+    ]
+   ],
+   "areas": []
+  },
+  {
+   "area": "Comins Lake",
+   "names": [
+    "Comins Lake"
+   ],
+   "region": "Eastern",
+   "fish": [
+    [
+     "Largemouth Bass, Northern Pike",
+     "No consumption"
+    ]
+   ],
+   "areas": []
+  }
+ ],
+ "finishedAt": "2026-10-23T16:21:16.680Z"
+}
