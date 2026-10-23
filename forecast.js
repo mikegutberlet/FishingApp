@@ -2,15 +2,34 @@
 // Like data-sources.js, each call carries only the coordinates (or gauge id) of the water being looked at.
 import { fetchWeather } from './data-sources.js';
 
-// One forecast per water per 20 minutes, so Today, the planner and the lake page share a single request.
+// Local calendar days (the forecast's days), never UTC dates: localKey() -> '2026-10-24'.
+export const localKey = (t = Date.now()) => { const d = new Date(t); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+export const addDays = (t, n) => { const d = new Date(t); d.setDate(d.getDate() + n); return d; }; // calendar days, safe across DST
+// Index of a local day in w.daily (today is 1 for a forecast fetched today, since past_days=1).
+export const dayIndex = (w, t = Date.now()) => { const i = w.daily.time.indexOf(localKey(t)); return i < 0 ? 1 : i; };
+
+// One forecast per water per 20 minutes (never across midnight), so Today, the planner and the lake page share a request.
+// A request that stalls on weak signal gives up after 20 s, so the next screen can try again.
 const wxCache = new Map();
 export function weatherFor(lat, lon) {
   const key = `${lat.toFixed(3)},${lon.toFixed(3)}`, hit = wxCache.get(key);
-  if (hit && Date.now() - hit.at < 20 * 60e3) return hit.p;
-  const p = fetchWeather(lat, lon);
-  wxCache.set(key, { at: Date.now(), p });
-  p.catch(() => wxCache.delete(key));
+  if (hit && Date.now() - hit.at < 20 * 60e3 && localKey(hit.at) === localKey()) return hit.p;
+  const p = Promise.race([fetchWeather(lat, lon), new Promise((_, reject) => setTimeout(() => reject(new Error('Weather timed out')), 20e3))]);
+  const entry = { at: Date.now(), p };
+  wxCache.set(key, entry);
+  p.catch(() => { if (wxCache.get(key) === entry) wxCache.delete(key); });
   return p;
+}
+
+// CDEC lake-level change over `days` days, by date (readings can skip days). Null when the record is too short,
+// or when the gauge's last reading is more than maxAgeDays old (a stopped feed is not a current trend).
+export function levelChange(e, days, maxAgeDays = Infinity) {
+  if (!e?.length) return null;
+  const [lastDay, last] = e.at(-1), lastT = Date.parse(lastDay + 'T12:00');
+  if (Date.now() - lastT > maxAgeDays * 864e5) return null;
+  const cutoff = localKey(addDays(lastT, -days));
+  const base = [...e].reverse().find(([d]) => d <= cutoff);
+  return base ? last - base[1] : null;
 }
 
 // Index into w.hourly for the hour containing `t` (ms).
@@ -23,9 +42,9 @@ export const hourIndex = (w, t) => {
 export async function fetchAlerts(lat, lon) {
   const r = await fetch(`https://api.weather.gov/alerts/active?point=${lat.toFixed(4)},${lon.toFixed(4)}`, { headers: { Accept: 'application/geo+json' } });
   if (!r.ok) throw new Error('NWS alerts unavailable');
-  const seen = new Set();
-  return (await r.json()).features.map(f => f.properties)
-    .filter(a => a.status === 'Actual' && !seen.has(a.event + a.ends) && seen.add(a.event + a.ends))
+  const seen = new Set(), key = a => a.id ?? `${a.event}|${a.ends ?? a.expires}|${a.headline}`;
+  return (await r.json()).features.map(f => ({ id: f.id, ...f.properties }))
+    .filter(a => a.status === 'Actual' && !seen.has(key(a)) && seen.add(key(a)))
     .map(a => ({ event: a.event, headline: a.headline, severity: a.severity, description: a.description, instruction: a.instruction, ends: a.ends ?? a.expires, sender: a.senderName }));
 }
 

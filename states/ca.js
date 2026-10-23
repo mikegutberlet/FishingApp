@@ -3,9 +3,11 @@
 import { haversineKm } from '../data-sources.js';
 
 const cache = {};
+// A failed fetch (offline, or a file the nightly job hasn't written yet) is forgotten after 30 s so it is tried again.
+const fetchJson = (key, url) => cache[key] ??= fetch(url).then(r => r.ok ? r.json() : Promise.reject())
+  .catch(() => { setTimeout(() => delete cache[key], 30e3); return null; });
 async function load(name) {
-  cache[name] ??= fetch(`data/ca/${name}.json`).then(r => r.ok ? r.json() : null).catch(() => null);
-  return cache[name];
+  return fetchJson(name, `data/ca/${name}.json`);
 }
 
 export const code = 'CA';
@@ -127,7 +129,7 @@ export async function hydroFor(lake) {
 
 // Public depth-contour surveys (USGS) covering this water, if any.
 export async function bathymetryFor(lake) {
-  const idx = cache.bathy ??= fetch('data/ca/bathymetry/index.json').then(r => r.ok ? r.json() : null).catch(() => null);
+  const idx = fetchJson('bathy', 'data/ca/bathymetry/index.json');
   const surveys = (await idx)?.surveys ?? [];
   const pad = 0.01;
   return surveys.filter(s => lake.lat >= s.bbox[1] - pad && lake.lat <= s.bbox[3] + pad && lake.lon >= s.bbox[0] - pad && lake.lon <= s.bbox[2] + pad);

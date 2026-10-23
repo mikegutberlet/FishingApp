@@ -5,6 +5,7 @@ import { $, esc, fmtDate, showView, onShow } from '../ui.js';
 import { refreshMap, statewide as loadedStatewide } from '../map.js';
 import { openLake, openWater } from './lake.js';
 import { showNewPlantBadges } from './new-plants.js';
+import { activeTrip } from './trips.js';
 
 export async function renderLakeList() {
   $('#lake-detail').classList.add('hidden');
@@ -112,18 +113,21 @@ export function editLake(lake) {
         <label>Lon <input name="lon" type="number" step="any" required value="${lake.lon ?? ''}"></label></div>
       <button class="primary">Save</button>
     </form>${lake.id ? '<button class="danger" id="del-lake">Delete this lake and everything logged on it</button>' : ''}`;
-  $('#back').onclick = () => lake.id ? openLake(lake.id) : renderLakeList();
+  $('#back', d).onclick = () => lake.id ? openLake(lake.id) : renderLakeList();
   $('#lake-form').onsubmit = async e => {
     e.preventDefault();
     const f = Object.fromEntries(new FormData(e.target));
-    const saved = await db.put('lakes', { ...lake, ...f, lat: +f.lat, lon: +f.lon });
+    const current = lake.id ? await db.get('lakes', lake.id) : null; // fields other screens saved since the form opened
+    const saved = await db.put('lakes', { ...lake, ...current, ...f, lat: +f.lat, lon: +f.lon });
     await refreshMap();
     openLake(saved.id);
   };
   const del = $('#del-lake');
   if (del) del.onclick = async () => {
-    if (!confirm(`Delete ${lake.name} and all its catches, notes, stocking and depth data?`)) return;
-    for (const s of ['catches', 'notes', 'stocking', 'depthSets']) for (const r of await db.byLake(s, lake.id)) await db.del(s, r.id);
+    if ((await activeTrip())?.lakeId === lake.id) return alert('End your trip on this water first.');
+    if (!confirm(`Delete ${lake.name} and all its catches, notes, trips, stocking and depth data?`)) return;
+    for (const s of ['catches', 'notes', 'stocking', 'depthSets', 'trips']) for (const r of await db.byLake(s, lake.id)) await db.del(s, r.id);
+    for (const ev of await db.all('events')) if (ev.lakeId === lake.id) await db.del('events', ev.id);
     await db.del('lakes', lake.id);
     await refreshMap();
     renderLakeList();
