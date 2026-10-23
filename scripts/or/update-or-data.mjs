@@ -450,6 +450,7 @@ async function corpsLevels() {
 }
 
 // Reclamation's Pacific Northwest Hydromet: forebay elevation (fb) and active storage (af) of its Oregon reservoirs.
+// Station codes: the reservoir's (WIC) first, then the dam's (WICO).
 const HYDROMET = [
   ['WICO', 'Wickiup Reservoir', 43.68, -121.69], ['CRAO', 'Crane Prairie Reservoir', 43.80, -121.78], ['PRVO', 'Prineville Reservoir', 44.11, -120.78],
   ['OCHO', 'Ochoco Reservoir', 44.30, -120.73], ['HAYO', 'Haystack Reservoir', 44.49, -121.14], ['OWYO', 'Owyhee Reservoir', 43.64, -117.25],
@@ -460,7 +461,8 @@ async function hydrometLevels() {
   const log = report.hydromet = {};
   const s = new Date(Date.now() - 60 * 864e5), e = new Date();
   const out = [];
-  for (const [id, name, lat, lon] of HYDROMET) {
+  for (const [code, name, lat, lon] of HYDROMET) for (const id of [code.slice(0, 3), code]) {
+    if (out.some(r => r.name === name)) break;
     const params = `parameter=${id}%20fb,${id}%20af&syer=${s.getUTCFullYear()}&smnth=${s.getUTCMonth() + 1}&sdy=${s.getUTCDate()}&eyer=${e.getUTCFullYear()}&emnth=${e.getUTCMonth() + 1}&edy=${e.getUTCDate()}&format=2`;
     try {
       const csv = await getText(`https://www.usbr.gov/pn-bin/daily.pl?${params}`, { headers: BROWSER, tries: 2 });
@@ -468,7 +470,7 @@ async function hydrometLevels() {
       const day = d => /\//.test(d) ? isoDate(d) : d.slice(0, 10);
       const elevation = rows.filter(r => Number.isFinite(parseFloat(r[1]))).map(r => [day(r[0]), +parseFloat(r[1]).toFixed(2)]);
       const storage = rows.filter(r => Number.isFinite(parseFloat(r[2]))).map(r => [day(r[0]), Math.round(parseFloat(r[2]))]);
-      log[id] = `${elevation.length} elev, ${storage.length} storage; ${rows.length} rows; ${JSON.stringify(rows.slice(0, 2))}; ${csv.slice(csv.search(/DATE|Date/), csv.search(/DATE|Date/) + 300).replace(/\s+/g, ' ')}`;
+      log[id] = `${elevation.length} elev, ${storage.length} storage of ${rows.length} days`;
       if (elevation.length || storage.length) out.push({ id, name, lat, lon, source: 'USBR', elevation, storage });
     } catch (err) { log[id] = err.message; }
   }
@@ -492,9 +494,10 @@ async function habAdvisories(waters) {
   const text = v => typeof v === 'string' ? clean(v) : v && typeof v === 'object' ? clean(v.Description ?? v.Label ?? v.Url ?? JSON.stringify(v)) : v == null ? '' : String(v);
   const advisories = [];
   for (const it of items) {
-    const name = text(field(it, /water ?body|waterbody|^Title$|location|lake/i, /county|date|status/i));
+    if (it.Display_x002d_On_x002d_Page === false) continue;
+    const name = text(field(it, /^Title$/) ?? field(it, /water ?body|location|lake/i, /county|date|status/i)).replace(/[\u200b\u00a0]/g, ' ').replace(/\s+/g, ' ').trim();
     if (!name) continue;
-    const status = text(field(it, /status|type|advisory|level/i, /date|title|waterbody/i)) ;
+    const status = [it.Status, it.Status_x0020_Symbol?.Description, field(it, /status|advisory|level/i, /date|title|waterbody|symbol/i)].flat().filter(Boolean).map(text).join(' ');
     const lifted = field(it, /lift/i);
     const level = /lift/i.test(status) || (lifted && Date.parse(lifted) < Date.now()) ? 'lifted' : /precaution|yellow/i.test(status) ? 'caution' : 'warning';
     if (level === 'lifted') continue;
@@ -508,6 +511,11 @@ async function habAdvisories(waters) {
     const permanent = /permanent/i.test(`${status} ${name}`);
     advisories.push({ name, county, level, permanent, advisory: permanent ? 'Permanent recreational use advisory' : level === 'warning' ? 'Recreational use health advisory' : 'Precaution', date,
       detail: text(field(it, /comment|detail|description|note|area/i, /title|waterbody|county/i)).slice(0, 400), lat: spot?.lat ?? null, lon: spot?.lon ?? null });
+  }
+  // A water across a county line is listed once per county: keep one, naming both.
+  for (let i = advisories.length - 1; i >= 0; i--) {
+    const a = advisories[i], first = advisories.findIndex(b => b.name === a.name && b.level === a.level);
+    if (first < i) { if (a.county && !advisories[first].county.includes(a.county)) advisories[first].county += ` and ${a.county}`; advisories.splice(i, 1); }
   }
   log.advisories = advisories.map(a => `${a.name} (${a.county}): ${a.level} ${a.date ?? ''} ${a.lat != null ? 'located' : 'NO POINT'}`);
   return { updatedAt: new Date().toISOString(), source: 'Oregon Health Authority, current cyanobacteria advisories', portal: OHA_PAGE, advisories };
