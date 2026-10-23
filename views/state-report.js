@@ -1,5 +1,6 @@
 // What a state agency writes about a water, for states that publish it (Nevada: NDOW's fishing report and
-// write-up on each water's page). States without it (reportFor not exported) show nothing.
+// write-up on each water's page; Oregon: the weekly Recreation Report and ODFW's stocking-map notes). States
+// without it (reportFor not exported) show nothing.
 import { forLake } from '../states/index.js';
 import { esc, fmtDate } from '../ui.js';
 
@@ -13,7 +14,7 @@ export async function renderStateReport(lake, el) {
   const days = w.reportDate ? Math.round((Date.now() - Date.parse(w.reportDate + 'T12:00')) / 864e5) : null;
   el.innerHTML = `<div class="card"><h3>${S.agency} fishing report</h3>
     ${w.reportDate ? `<p class="muted small">${fmtDate(w.reportDate + 'T12:00')}${days > 60 ? ` · ${Math.round(days / 30)} months old` : ''}</p>` : ''}${paras(w.report)}
-    <p class="muted small">From <a href="${esc(w.url)}" target="_blank" rel="noopener">${esc(w.name)} on ${S.agency.toLowerCase()}.org ↗</a>, refreshed nightly.</p></div>`;
+    <p class="muted small">From <a href="${esc(w.url)}" target="_blank" rel="noopener">${esc(w.name)} on ${esc(new URL(w.url).hostname.replace(/^www\./, ''))} ↗</a>, refreshed nightly.</p></div>`;
 }
 
 // NDOW's write-up (size, species, tactics, facilities), history and angler guides, on the Info tab.

@@ -59,7 +59,7 @@ It is a PWA: open it once in Safari/Chrome, choose **Add to Home Screen**, and i
 
 Data is refreshed daily by `.github/workflows/update-data.yml` running `scripts/update-ca-data.mjs`. It runs on GitHub because the state sites don't let a browser app fetch from them directly. It is all public data, and the job never sees anything from your phone.
 
-**Nevada and Oregon (planned)**: same shape, as `states/nv.js` and `states/or.js` plus a nightly script each. The sources are NDOW's weekly stocking reports and ODFW's trout stocking schedule and past stocking reports. Nevada reservoir levels come from USBR and USGS. Oregon lake levels come from USGS and the Army Corps of Engineers.
+**Nevada and Oregon**: same shape, as `states/nv.js` and `states/or.js` plus nightly and weekly scripts each (below).
 
 ## Every California lake and river
 
@@ -113,6 +113,30 @@ Pick the state at the top of **Lakes** (or *📍 Where I am*). The map labels ev
 | Depth surveys, HydroLAKES | USGS ScienceBase, HydroSHEDS | monthly |
 
 NDOW pages don't carry coordinates, so each water is placed by matching its name (and the county or mountain range in names like "Carson River – Douglas" or "Willow Creek- Santa Rosa Range"). A few dozen small creeks and ponds have no point yet and show only in search; the job's report (`data/nv/update-report.json`) lists them.
+
+## Oregon
+
+Pick *Oregon* at the top of **Lakes**, or just pan the map north: Oregon's lakes and rivers label themselves as soon as the map shows part of the state.
+
+* **Stocked waters**: every water on ODFW's weekly trout stocking schedule, with the **week and the number of legal, trophy, brood and fingerling trout** planned or stocked. ODFW shows two years; the nightly job keeps everything it has seen, so history only grows.
+* **ODFW Recreation Report** entry for the water (Stocking tab), and ODFW's stocking-map notes on access, ramps and other species (Info tab).
+* **Lake levels**: USGS lake gauges, the Army Corps' Willamette and Rogue reservoirs (Detroit, Green Peter, Lookout Point, Hills Creek, Lost Creek…) and Reclamation's central and eastern Oregon reservoirs (Wickiup, Crane Prairie, Prineville, Owyhee, Phillips…). River flows come live from USGS for any water.
+* **Regs & safety tab**: the water's angling zone (from ODFW's zone map), the exceptions ODFW lists for it, the zone's general bag limits and seasons, statewide rules, Oregon Health Authority toxic algae advisories and its fish consumption advice (meals a month, for kids and pregnant or nursing people and for everyone else).
+* **Depth**: HydroLAKES estimates, Wikidata max depths and any USGS survey the monthly job can contour.
+
+| Data | Source | Refreshed |
+|---|---|---|
+| Stocking schedule and history | ODFW weekly trout stocking schedule (myodfw.com) | nightly |
+| Fishing reports | ODFW Recreation Report, by zone | nightly |
+| Map points for stocked waters | ODFW trout stocking maps, USGS NHD names, OpenStreetMap (cached) | nightly |
+| Lake levels | USGS Water Services, Army Corps CWMS, Reclamation Hydromet | nightly |
+| Toxic algae | Oregon Health Authority advisories | nightly |
+| Regulations, angling zones | Oregon Sport Fishing Regulations on eRegulations, ODFW zone map | weekly |
+| Fish consumption advisories | Oregon Health Authority | weekly |
+| Lakes and rivers, history | USGS NHD, USGS NAS | weekly |
+| Depth surveys, HydroLAKES | USGS ScienceBase, HydroSHEDS | monthly |
+
+ODFW writes waters in short form ("HENRY HAGG LK", "SILVER CR RES"); the job spells them out and places them by name within their zone. Any it can't place are listed in `data/or/update-report.json`.
 
 ## Maps, depth and offline
 
@@ -185,5 +209,8 @@ Reverse-engineering other apps isn't needed: the public sources above cover cond
 * `data/ca/logs/`: output of each data job, committed so problems can be read from the repo
 * `scripts/nv/update-nv-data.mjs`: nightly NDOW waters, stockings and reports, lake levels, algae → `data/nv/`
 * `scripts/nv/build-nv-regs.mjs`: weekly regulations and mercury advisories
+* `states/or.js`, `views/tabs/or-safety.js`: Oregon
+* `scripts/or/update-or-data.mjs`: nightly ODFW stocking schedule and Recreation Report, lake levels, algae → `data/or/`
+* `scripts/or/build-or-regs.mjs`: weekly regulations, fish advisories and angling zones
 * `scripts/build-state-waters.mjs`, `build-state-history.mjs`, `build-state-bathymetry.mjs` with `scripts/states.mjs`: the California jobs, for any other state (`node scripts/build-state-waters.mjs nv`)
 * `sw.js`, `manifest.json`: offline + install

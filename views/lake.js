@@ -14,6 +14,7 @@ import { renderLakeCatches } from './tabs/catches.js';
 import { renderNotes } from './tabs/notes.js';
 import { renderInfo } from './tabs/info.js';
 import { renderStateSafety, renderNvBanner } from './tabs/nv-safety.js';
+import { renderOrBanner } from './tabs/or-safety.js';
 import { renderSafety, renderSafetyBanner } from './tabs/safety.js';
 import { toggleFavorite } from './today.js';
 
@@ -75,7 +76,7 @@ export async function openLake(id, tab = 'conditions') {
   $('#share').after(' ', offlineButton(lake));
   d.querySelectorAll('.tabs button').forEach(b => b.onclick = () => openLake(id, b.dataset.tab));
   const body = $('#tab-body');
-  if (forLake(lake)?.code === 'CA') renderSafetyBanner(lake, d); else renderNvBanner(lake, d);
+  if (forLake(lake)?.code === 'CA') renderSafetyBanner(lake, d); else { renderNvBanner(lake, d); renderOrBanner(lake, d); }
   await LAKE_TABS[tab].render(lake, body);
 }
 
@@ -92,6 +93,6 @@ function openUnsaved(lake, tab) {
   $('#save').onclick = () => saveWater(lake, tab);
   $('#save').after(' ', offlineButton(lake));
   d.querySelectorAll('.tabs button').forEach(b => b.onclick = () => openUnsaved(lake, b.dataset.tab));
-  if (forLake(lake)?.code === 'CA') renderSafetyBanner(lake, d); else renderNvBanner(lake, d);
+  if (forLake(lake)?.code === 'CA') renderSafetyBanner(lake, d); else { renderNvBanner(lake, d); renderOrBanner(lake, d); }
   LAKE_TABS[tab].render(lake, $('#tab-body'));
 }

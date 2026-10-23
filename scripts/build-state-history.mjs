@@ -84,7 +84,7 @@ report.species = firsts.size;
 if (places.length || !report.error) {
   await writeFile(new URL('history.json', OUT), JSON.stringify({
     updatedAt: new Date().toISOString(),
-    note: `Introductions and plantings from the USGS Nonindigenous Aquatic Species database plus documented early events. Native fish stocked in their native range, such as Lahontan cutthroat trout plants, are not in these records; ${STATE.code === 'NV' ? 'NDOW stocking reports on the Stocking tab cover recent years' : 'state stocking records cover recent years'}.`,
+    note: `Introductions and plantings from the USGS Nonindigenous Aquatic Species database plus documented early events. Native fish stocked in their native range, such as Lahontan cutthroat trout plants, are not in these records; ${{ NV: 'NDOW stocking reports on the Stocking tab cover recent years', OR: 'ODFW stocking schedules on the Stocking tab cover recent years' }[STATE.code] ?? 'state stocking records cover recent years'}.`,
     statewide,
     fields: ['lat', 'lon', 'year', 'species', 'locality', 'status'],
     places,

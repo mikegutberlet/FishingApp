@@ -5,7 +5,7 @@ import { esc } from '../../ui.js';
 export async function renderHistory(lake, body) {
   body.innerHTML = '<div class="card muted">Loading history…</div>';
   const S = forLake(lake), stockId = stockIdOf(lake);
-  if (!S) { body.innerHTML = '<div class="card muted">Stocking history is only available for California and Nevada waters.</div>'; return; }
+  if (!S) { body.innerHTML = '<div class="card muted">Stocking history is only available for California, Nevada and Oregon waters.</div>'; return; }
   const [hist, plants] = await Promise.all([S.historyFor(lake), stockId ? S.plantsFor(stockId) : []]);
   if (!body.isConnected) return;
   const perYear = Object.entries(plants.reduce((m, p) => { const y = p.week.slice(0, 4); m[y] = (m[y] || 0) + 1; return m; }, {})).sort().reverse();

@@ -7,7 +7,6 @@ export const isRiver = lake => lake.kind === 'river' || /river|creek|stream|slou
 
 // Does a free-text place ("West Walker River near Coleville") name this water? Whole words only, so Lake Mead is
 // not "Truckee Meadows", and a lake is not the river of the same name (Carson Lake vs Carson River).
-const WATER_WORD = /^(lake|lakes|reservoir|pond|ponds|river|creek|slough|wash)$/;
 const TYPE_WORDS = /\b(lake|lakes|reservoir|pond|river|creek|slough|wash)\b/i;
 function namedIn(lake) {
   const name = String(lake.name ?? '').toLowerCase().split(/\s+[–—-]\s+/)[0];
@@ -23,6 +22,9 @@ function namedIn(lake) {
   const type = isRiver(lake) ? /\b(river|creek|slough|wash)\b/i : /\b(lake|lakes|reservoir|pond)\b/i;
   return locality => !!locality && re.test(locality) && (!TYPE_WORDS.test(locality) || type.test(locality));
 }
+
+const nameWords = s => String(s ?? '').toLowerCase().replace(/\(.*?\)/g, ' ').split(/\s+[–—-]\s+/)[0].match(/[a-z0-9]+/g)
+  ?.filter(w => !/^(lake|lakes|reservoir|res|pond|ponds|the|of)$/.test(w)) ?? [];
 
 export function stateData(dir, code) {
   const cache = {};
@@ -97,13 +99,16 @@ export function stateData(dir, code) {
   async function matchStockedWater(water) {
     const radius = water.kind === 'river' ? 3 : Math.max(2, Math.sqrt((water.acres ?? 50) / 247) * 2);
     const near = await nearestWaters(water.lat, water.lon, water.kind === 'river' ? 25 : radius);
-    const key = norm(water.name);
-    const named = near.find(w => key && (norm(w.name).startsWith(key) || key.startsWith(norm(w.name))));
+    // Same name: the same words once lake/reservoir/pond and place notes are dropped ("Timber-Linn Lake" is not
+    // "Timber Lake", "Lemolo Forebay Number Two" is not "Lemolo Reservoir").
+    const key = nameWords(water.name).join('');
+    const named = key.length >= 3 && near.find(w => nameWords(w.name).join('') === key);
     if (named) return named;
-    // Without a matching name, only a stocked point close by: a pond on a big lake's shore isn't the lake.
-    const words = new Set(water.name.toLowerCase().match(/[a-z]{4,}/g)?.filter(w => !WATER_WORD.test(w)) ?? []);
+    // Otherwise a stocked water whose name holds every word of this one ("Hagg Lake" is "Henry Hagg Lake") or one
+    // right on top of it: a pond on a big lake's shore isn't the lake.
+    const words = nameWords(water.name).filter(w => w.length >= 3);
     return water.kind === 'river' ? null
-      : near.find(w => w.distKm <= Math.min(radius, 1.5) || (w.distKm <= radius && w.name.toLowerCase().match(/[a-z]{4,}/g)?.some(x => words.has(x)))) ?? null;
+      : near.find(w => w.distKm <= 0.3 || (words.length && w.distKm <= radius && words.every(x => nameWords(w.name).includes(x)))) ?? null;
   }
 
   // Historical introductions recorded at this water (USGS NAS): nearby records, or records whose locality names it.
