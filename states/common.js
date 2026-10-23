@@ -7,6 +7,7 @@ export const isRiver = lake => lake.kind === 'river' || /river|creek|stream|slou
 
 // Does a free-text place ("West Walker River near Coleville") name this water? Whole words only, so Lake Mead is
 // not "Truckee Meadows", and a lake is not the river of the same name (Carson Lake vs Carson River).
+const WATER_WORD = /^(lake|lakes|reservoir|pond|ponds|river|creek|slough|wash)$/;
 const TYPE_WORDS = /\b(lake|lakes|reservoir|pond|river|creek|slough|wash)\b/i;
 function namedIn(lake) {
   const name = String(lake.name ?? '').toLowerCase().split(/\s+[–—-]\s+/)[0];
@@ -99,7 +100,10 @@ export function stateData(dir, code) {
     const key = norm(water.name);
     const named = near.find(w => key && (norm(w.name).startsWith(key) || key.startsWith(norm(w.name))));
     if (named) return named;
-    return water.kind === 'river' ? null : near.find(w => w.distKm <= radius) ?? null;
+    // Without a matching name, only a stocked point close by: a pond on a big lake's shore isn't the lake.
+    const words = new Set(water.name.toLowerCase().match(/[a-z]{4,}/g)?.filter(w => !WATER_WORD.test(w)) ?? []);
+    return water.kind === 'river' ? null
+      : near.find(w => w.distKm <= Math.min(radius, 1.5) || (w.distKm <= radius && w.name.toLowerCase().match(/[a-z]{4,}/g)?.some(x => words.has(x)))) ?? null;
   }
 
   // Historical introductions recorded at this water (USGS NAS): nearby records, or records whose locality names it.

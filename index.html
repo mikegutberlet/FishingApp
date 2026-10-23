@@ -23,7 +23,10 @@
   </header>
 
   <main>
-    <section id="view-map" class="view active">
+    <section id="view-today" class="view active"><div id="today"></div></section>
+    <section id="view-planner" class="view"><div id="planner"></div></section>
+
+    <section id="view-map" class="view">
       <div id="map"></div>
       <div class="map-actions">
         <button id="btn-locate">📍 Me</button>
@@ -38,7 +41,8 @@
     </section>
 
     <section id="view-log" class="view">
-      <h2>Log a catch</h2>
+      <button id="btn-start-trip" class="trip-cta">▶ Trip mode: one-tap logging with GPS track</button>
+      <h2 id="catch-form-title">Log a catch</h2>
       <form id="catch-form" class="card form">
         <label>Lake / river <select name="lakeId" required></select></label>
         <div class="row">
@@ -46,13 +50,14 @@
           <label>When <input name="time" type="datetime-local" required></label>
         </div>
         <div class="row">
-          <label>Length (in) <input name="length" type="number" step="0.25" inputmode="decimal"></label>
-          <label>Weight (lb) <input name="weight" type="number" step="0.01" inputmode="decimal"></label>
+          <label>Length (<span data-unit="length">in</span>) <input name="length" type="number" step="any" min="0" inputmode="decimal"></label>
+          <label>Weight (<span data-unit="weight">lb</span>) <input name="weight" type="number" step="any" min="0" inputmode="decimal"></label>
         </div>
         <div class="row">
-          <label>Depth (ft) <input name="depth" type="number" step="0.5" inputmode="decimal"></label>
+          <label>Depth (<span data-unit="depth">ft</span>) <input name="depth" type="number" step="any" min="0" inputmode="decimal"></label>
           <label>Water temp (°F) <input name="waterTemp" type="number" step="0.5" inputmode="decimal"></label>
         </div>
+        <label>From your tackle box <select name="tackleId"><option value="">–</option></select></label>
         <label>Lure / bait <input name="lure" list="lure-list"></label>
         <label>Technique <input name="technique" placeholder="jig, drop shot, trolling…"></label>
         <label>Notes <textarea name="notes" rows="3"></textarea></label>
@@ -66,11 +71,15 @@
           <label class="check"><input type="checkbox" name="released" checked> Released</label>
         </div>
         <button type="submit" class="primary">Save catch</button>
+        <button type="button" id="btn-cancel-edit" class="hidden" style="width:100%;margin-top:8px">Cancel editing</button>
         <p class="muted small">Current weather, wind, pressure and moon phase are saved with the catch automatically.</p>
       </form>
       <h2>Recent catches</h2>
       <div id="catch-list"></div>
     </section>
+
+    <section id="view-journal" class="view"><div id="journal"></div></section>
+    <section id="view-trip" class="view"><div id="trip"></div></section>
 
     <section id="view-stats" class="view">
       <h2>Stats</h2>
@@ -88,14 +97,20 @@
         <label class="file-btn">⬆ Import backup or shared lake <input type="file" id="import-file" accept=".json,application/json" hidden></label>
         <p id="storage-info" class="muted small"></p>
       </div>
+      <h2>Units</h2>
+      <form class="card form row" id="units-form">
+        <label>Length <select name="length"><option value="in">inches</option><option value="cm">cm</option></select></label>
+        <label>Weight <select name="weight"><option value="lb">pounds</option><option value="kg">kg</option></select></label>
+        <label>Depth <select name="depth"><option value="ft">feet</option><option value="m">meters</option></select></label>
+      </form>
       <h2>What leaves your device</h2>
       <div class="card small">
         <ul>
-          <li><b>Open-Meteo</b> (weather/wind): the lake's coordinates.</li>
+          <li><b>Open-Meteo</b> (weather/wind): the lake's coordinates. Today, Plan a trip and the <i>Wind on my lakes</i> map layer send each of your starred or saved waters' coordinates, one request per water.</li>
           <li><b>USGS Water Services</b> (flow, level, water temp): a box around the lake.</li>
           <li><b>Map tiles</b> (OpenStreetMap / Esri): the map area you view.</li>
           <li><b>Windy / MyRadar</b>: only when you open those panels or links.</li>
-          <li><b>National Weather Service</b> (weather alerts): the lake's coordinates.</li>
+          <li><b>National Weather Service</b> (weather alerts): the lake's coordinates, and on Today each starred water's.</li>
           <li><b>USGS statistics</b> (flow vs normal): the gauge's id.</li>
           <li><b>RainViewer</b> (rain radar): the map area you view, only while the radar layer is on.</li>
           <li><b>California stocking and lake levels</b> come from this app's own site (refreshed nightly from CDFW and CDEC), so nothing extra is sent.</li>
@@ -107,13 +122,16 @@
   </main>
 
   <nav>
-    <button data-view="map" class="active">🗺️<span>Map</span></button>
+    <button data-view="today" class="active">🌅<span>Today</span></button>
+    <button data-view="map">🗺️<span>Map</span></button>
     <button data-view="lakes">🏞️<span>Lakes</span></button>
     <button data-view="log">🐟<span>Log</span></button>
+    <button data-view="journal">📓<span>Journal</span></button>
     <button data-view="stats">📊<span>Stats</span></button>
     <button data-view="settings">⚙️<span>Data</span></button>
   </nav>
 
+  <button id="trip-pill" class="hidden"></button>
   <datalist id="species-list"></datalist>
   <datalist id="lure-list"></datalist>
 

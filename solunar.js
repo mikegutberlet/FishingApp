@@ -24,7 +24,7 @@ const startOfDay = date => { const d = new Date(date); d.setHours(0, 0, 0, 0); r
 
 // Moon events and bite windows for the local day containing `date`.
 export function solunar(date, lat, lon) {
-  const t0 = startOfDay(date), t1 = t0 + 24 * HOUR, step = 10 * 60e3;
+  const t0 = startOfDay(date), t1 = startOfDay(new Date(t0 + 36 * HOUR)), step = 10 * 60e3; // 23–25 h on DST days
   const events = [];
   let prev = moon(t0, lat, lon);
   for (let t = t0 + step; t <= t1; t += step) {
@@ -54,20 +54,20 @@ export function dayRating(sol, sunrise, sunset) {
 
 export const stars = n => '★'.repeat(n) + '☆'.repeat(4 - n);
 
+// Windows from the day before through the day after `t`, so ones that run across midnight are found from either side.
+// Pass a cached solunar-for-a-day function to avoid recomputing.
+export function windowsAround(t, lat, lon, solFor = d => solunar(d, lat, lon)) {
+  return [-1, 0, 1].flatMap(k => { const d = new Date(t); d.setDate(d.getDate() + k); return solFor(d).windows; }).sort((a, b) => a.start - b.start);
+}
+
 // The bite window (if any) overlapping [from, to): majors win over minors.
-export function windowAt(sol, from, to = from + HOUR) {
-  const hits = sol.windows.filter(w => w.start < to && w.end > from);
+export function windowAt(windows, from, to = from + HOUR) {
+  const hits = windows.filter(w => w.start < to && w.end > from);
   return hits.find(w => w.type === 'major') ?? hits[0] ?? null;
 }
 
-// The current or next bite window from `now`, looking into tomorrow if today's are over.
-export function nextWindow(lat, lon, now = Date.now()) {
-  for (let d = 0; d < 2; d++) {
-    const w = solunar(new Date(now + d * 24 * HOUR), lat, lon).windows.find(w => w.end > now);
-    if (w) return w;
-  }
-  return null;
-}
+// The current or next bite window from `now`, including one that started before midnight.
+export const nextWindow = (lat, lon, now = Date.now()) => windowsAround(now, lat, lon).find(w => w.end > now) ?? null;
 
 const KIND = { transit: 'moon overhead', underfoot: 'moon underfoot', rise: 'moonrise', set: 'moonset' };
 export const windowLabel = w => `${w.type === 'major' ? 'Major' : 'Minor'} (${KIND[w.kind]})`;
