@@ -1,7 +1,16 @@
 // Local-only storage. Everything lives in this browser's IndexedDB; nothing is sent to a server.
 const DB_NAME = 'tackle-box';
-const DB_VERSION = 1;
-export const STORES = ['lakes', 'catches', 'notes', 'stocking', 'depthSets'];
+// Stores and the indexes on each. To add a store or an index, add it here: the version is derived from
+// this list (this set is version 1), so existing installs upgrade on their next open. Never rename or remove one.
+const SCHEMA = {
+  lakes: [],
+  catches: ['lakeId'],
+  notes: ['lakeId'],
+  stocking: ['lakeId'],
+  depthSets: ['lakeId'],
+};
+export const STORES = Object.keys(SCHEMA);
+const DB_VERSION = STORES.reduce((n, name) => n + 1 + SCHEMA[name].length, 0) - 8;
 
 let dbPromise;
 
@@ -11,13 +20,16 @@ function open() {
     const req = indexedDB.open(DB_NAME, DB_VERSION);
     req.onupgradeneeded = () => {
       const db = req.result;
-      for (const name of STORES) {
-        if (db.objectStoreNames.contains(name)) continue;
-        const store = db.createObjectStore(name, { keyPath: 'id' });
-        if (name !== 'lakes') store.createIndex('lakeId', 'lakeId');
+      for (const [name, indexes] of Object.entries(SCHEMA)) {
+        const store = db.objectStoreNames.contains(name) ? req.transaction.objectStore(name) : db.createObjectStore(name, { keyPath: 'id' });
+        for (const index of indexes) if (!store.indexNames.contains(index)) store.createIndex(index, index);
       }
     };
-    req.onsuccess = () => resolve(req.result);
+    req.onsuccess = () => {
+      // A newer version of the app opened in another tab and needs to upgrade: step aside and reload into it.
+      req.result.onversionchange = () => { req.result.close(); location.reload(); };
+      resolve(req.result);
+    };
     req.onerror = () => reject(req.error);
   });
   return dbPromise;
