@@ -73,11 +73,44 @@ export async function exportAll() {
   return out;
 }
 
-// Ids and references to them (id, lakeId, tripId, ...) end up in HTML attributes and URLs, so a file from
-// someone else may only carry plain tokens there. Rows with anything else are skipped.
+// A backup or a friend's shared lake is someone else's data until it's checked. The views put ids, numbers and dates
+// into HTML as they are and escape only free text, so on import: ids must be plain tokens (else the row is skipped),
+// numeric fields must be numbers, links must be http(s), photos must be images, and every other string loses the
+// characters that could open a tag or close an attribute. Free text (names, notes, species, lures...) stays as typed.
 const SAFE_ID = /^[\w.:-]{0,100}$/;
-const safeRow = row => row && typeof row === 'object' && !Array.isArray(row)
-  && Object.entries(row).every(([k, v]) => !(k === 'id' || k.endsWith('Id')) || v == null || typeof v === 'number' || (typeof v === 'string' && SAFE_ID.test(v)));
+const FREE_TEXT = new Set(['name', 'notes', 'note', 'text', 'journal', 'species', 'lure', 'technique', 'companions', 'title', 'color', 'size', 'brand', 'from', 'description', 'county']);
+const NUMERIC = new Set(['lat', 'lon', 'acres', 'elevationFt', 'maxDepth', 'maxDepthFt', 'lengthKm', 'km', 'length', 'weight', 'weightEst', 'depth',
+  'waterTemp', 'airTemp', 'wind', 'windDir', 'gusts', 'cloud', 'pressureInHg', 'levelFt', 'count', 'inches', 'qty', 'rating', 'accuracy']);
+const BAD = Symbol('unsafe id');
+function clean(v, k = '') {
+  if (k === 'id' || k.endsWith('Id')) return v == null || typeof v === 'number' || (typeof v === 'string' && SAFE_ID.test(v)) ? v : BAD;
+  if (v == null || typeof v === 'boolean') return v;
+  if (NUMERIC.has(k)) { const n = typeof v === 'number' ? v : typeof v === 'string' && v.trim() ? Number(v) : NaN; return Number.isFinite(n) ? n : undefined; }
+  if (typeof v === 'number') return Number.isFinite(v) ? v : undefined;
+  if (FREE_TEXT.has(k)) return typeof v === 'string' ? v : undefined;
+  if (typeof v === 'string') {
+    if (k === 'photo' || k === 'photos') return /^data:image\/(?!svg)[\w.+-]+;base64,/.test(v) ? v : undefined;
+    if (/url$/i.test(k)) return /^https?:\/\/[^\s<>"'`]*$/i.test(v) ? v : undefined;
+    return v.replace(/[<>"'`]/g, '');
+  }
+  if (Array.isArray(v)) {
+    const out = [];
+    for (const x of v) { const c = clean(x, k === 'photos' ? k : ''); if (c === BAD) return BAD; if (c !== undefined) out.push(c); }
+    return out;
+  }
+  if (typeof v === 'object') {
+    const out = {};
+    for (const [kk, x] of Object.entries(v)) { const c = clean(x, kk); if (c === BAD) return BAD; if (c !== undefined) out[kk] = c; }
+    return out;
+  }
+}
+// A lake also needs a place on the map: one without coordinates breaks the map for every lake.
+const cleanRow = (row, store) => {
+  if (!row || typeof row !== 'object' || Array.isArray(row) || row.id == null || row.id === '') return null;
+  const c = clean(row);
+  if (c === BAD) return null;
+  return store === 'lakes' && !(Number.isFinite(c.lat) && Number.isFinite(c.lon)) ? null : c;
+};
 
 // Returns how many rows were skipped as unsafe.
 export async function importAll(data, { replace = false } = {}) {
@@ -85,7 +118,7 @@ export async function importAll(data, { replace = false } = {}) {
   let skipped = 0;
   for (const name of STORES) {
     const rows = Array.isArray(data[name]) ? data[name] : [];
-    data[name] = rows.filter(safeRow);
+    data[name] = rows.map(r => cleanRow(r, name)).filter(Boolean);
     skipped += rows.length - data[name].length;
   }
   for (const name of STORES) {
