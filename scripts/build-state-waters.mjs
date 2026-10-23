@@ -77,9 +77,11 @@ async function layerIds() {
 }
 
 // Pages through an ArcGIS query, splitting the state into tiles so no single request is too heavy.
-// The NHD server times out (504) on busy tiles, so a tile that keeps failing is split into quarters.
+// The NHD server times out (502/504) on busy tiles, so a tile that keeps failing is split into quarters, down to
+// about 2 miles across. A handful of tiles that still fail are skipped (and listed in the report) rather than losing
+// the whole state; more than that throws, so the last good file stays.
 async function queryTiled(layerId, where, outFields, offset, tile = 1) {
-  const features = [];
+  const features = [], failed = [];
   const queryTile = async (x, y, size) => {
     const envelope = JSON.stringify({ xmin: x, ymin: y, xmax: x + size, ymax: y + size, spatialReference: { wkid: 4326 } });
     const got = [];
@@ -95,7 +97,12 @@ async function queryTiled(layerId, where, outFields, offset, tile = 1) {
         if (json.features.length < 2000) break;
       }
     } catch (e) {
-      if (size <= 0.13) throw e;
+      if (size <= 0.035) {
+        failed.push({ layerId, x: round(x), y: round(y), size, error: e.message.slice(0, 80) });
+        report.steps.failedTiles = [...(report.steps.failedTiles ?? []), failed.at(-1)];
+        if (failed.length > 6) throw e;
+        return got;
+      }
       report.steps.splitTiles = (report.steps.splitTiles ?? 0) + 1;
       const h = size / 2;
       for (const [dx, dy] of [[0, 0], [h, 0], [0, h], [h, h]]) got.push(...await queryTile(x + dx, y + dy, h));
@@ -371,8 +378,13 @@ const save = (name, data) => writeFile(new URL(name, OUT), JSON.stringify(data) 
 let ids = { waterbody: 12 };
 try { ids = await layerIds(); } catch (e) { report.steps.nhdLayersError = e.message; }
 
+// A lake list from the last few days is kept as is, so a code push that re-runs the job only spends its time on the
+// rivers (the lake build takes over an hour for Oregon). The weekly run always rebuilds.
 let lakes = null;
-try { lakes = await buildLakes(ids); } catch (e) { report.steps.lakesError = e.message; console.error('lakes:', e.message); }
+const recent = await readFile(new URL('lakes.json', OUT), 'utf8').then(JSON.parse).catch(() => null);
+if (recent?.lakes?.length && Date.now() - Date.parse(recent.updatedAt) < 3 * 86400e3 && process.env.GITHUB_EVENT_NAME === 'push') {
+  report.steps.lakes = { reused: recent.updatedAt, inState: recent.lakes.length };
+} else try { lakes = await buildLakes(ids); } catch (e) { report.steps.lakesError = e.message; console.error('lakes:', e.message); }
 if (lakes) {
   try { attachDepths(lakes, await depthTable(), 'LAGOS'); } catch (e) { report.steps.depthError = e.message; console.error('depth:', e.message); }
   try { attachDepths(lakes, await wikidataDepths(), 'Wikidata'); } catch (e) { report.steps.wikidataError = e.message; console.error('wikidata:', e.message); }
