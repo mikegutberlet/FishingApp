@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-23T07:25:31.119Z",
+  "startedAt": "2026-10-23T07:34:03.292Z",
   "items": [
     {
       "id": "631405d3d34e36012efa3434",
@@ -13,6 +13,9 @@
       "downloaded": [
         "sir2007-5012_bathymetry2.zip (346 MB)"
       ],
+      "rasterErrors": [
+        "bathymetry.bil: survey range 0-339873 doesn't fit Walker Lake at 3924 ft"
+      ],
       "skip": "no contours or readable raster",
       "unzipped": [
         "bathymetry.aux",
@@ -20,6 +23,7 @@
         "bathymetry.blw",
         "bathymetry.hdr",
         "bathymetry.stx",
+        "coarse.tif",
         "sir2007-5012_bathymetry2.zip"
       ]
     }
@@ -127,5 +131,5 @@
   "hydrolakes": {
     "rows": 258
   },
-  "finishedAt": "2026-10-23T07:32:53.298Z"
+  "finishedAt": "2026-10-23T07:35:23.200Z"
 }
