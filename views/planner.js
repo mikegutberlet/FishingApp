@@ -80,7 +80,7 @@ export async function renderPlanner() {
   $('#plan-back').onclick = () => showView('today');
   el.querySelectorAll('.day-pick button').forEach(b => b.onclick = () => { picked = +b.dataset.k; renderPlanner(); });
   const lakes = await db.all('lakes');
-  if (!lakes.length) { $('#plan-list').innerHTML = '<div class="card">Save some waters first (Lakes → Any California water), then come back to rank them.</div>'; return; }
+  if (!lakes.length) { $('#plan-list').innerHTML = '<div class="card">Save some waters first (Lakes → pick your state → Any water), then come back to rank them.</div>'; return; }
   const date = days[picked].key;
   const rows = (await Promise.all(lakes.map(async lake => {
     try { return { lake, ...(await scoreDay(lake, await weatherFor(lake.lat, lake.lon), date)) }; } catch { return { lake, error: true }; }
