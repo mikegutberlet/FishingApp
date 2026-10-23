@@ -74,7 +74,7 @@ function sections(bl) {
 const WATERISH = /\b(lake|lakes|reservoir|reservoirs|pond|ponds|river|creek|slough|bay|canal|springs?|channel|marsh)\b/i;
 function aliases(title) {
   const out = new Set();
-  const t = title.replace(/\s*\((?:[^)]*Co\.?|[^)]*County)\)/i, '').replace(/,\s*(mainstem|and tributaries|tributaries).*$/i, '').replace(/\s+and\s+(its\s+)?tributaries\b.*$/i, '');
+  const t = title.replace(/\bIncludes?:/gi, ',').replace(/\s*\((?:[^)]*Co\.?|[^)]*County)\)/i, '').replace(/,\s*(mainstem|and tributaries|tributaries).*$/i, '').replace(/\s+and\s+(its\s+)?tributaries\b.*$/i, '');
   const both = t.match(/^(.+?) and (.+?) (Lake|Reservoir|Pond|Creek|River)s$/i);
   if (both) { out.add(`${both[1]} ${both[3]}`); out.add(`${both[2]} ${both[3]}`); }
   for (let p of t.split(/,|;|\s+and\s+|\s+&\s+|\//)) {
@@ -88,6 +88,8 @@ function aliases(title) {
 }
 const county = title => title.match(/\(([A-Z][a-z]+(?: [A-Z][a-z]+)?) Co(?:\.|unty)\)?/)?.[1] ?? null;
 
+const SKIP = /^Last Updated:/i;
+
 // A zone page: intro rules, the general regulations table, then "Exceptions to ... Zone Regulations" with one
 // heading per water (rules as bullets, reaches as bold sub-headings).
 function zonePage(zone, url, secs) {
@@ -98,7 +100,7 @@ function zonePage(zone, url, secs) {
     if (header && row.length >= 2 && row[0]) general.push({ species: row[0], bag: row[1] ?? '', size: row[2] ?? '', season: row[3] ?? '' });
   }
   const exStart = secs.findIndex(s => /^exceptions/i.test(s.title));
-  const intro = secs.slice(0, exStart < 0 ? secs.length : exStart).filter(s => s.text.length && !s.rows.length).map(s => ({ title: s.title, text: s.text }));
+  const intro = secs.slice(1, exStart < 0 ? secs.length : exStart).map(s => ({ title: s.title, text: s.text.filter(t => !SKIP.test(t)) })).filter(s => s.text.length);
   const waters = exStart < 0 ? [] : secs.slice(exStart + 1).filter(s => s.text.length && s.level >= 3)
     .map(s => ({ name: s.title, aliases: aliases(s.title), county: county(s.title), zone, rules: s.text }));
   return { url, general, intro, waters };
@@ -120,7 +122,7 @@ try {
     try {
       const secs = sections(blocks(await fetchText(`${BASE}/${path}`)));
       report.pages[path] = secs.map(s => `${'#'.repeat(s.level)} ${s.title} (${s.text.length}p ${s.rows.length}r)`).slice(0, 60);
-      statewide.push(...secs.filter(s => s.level >= 2 && s.level <= 3 && s.text.length).map(s => ({ title: s.title, text: s.text.slice(0, 20), url: `${BASE}/${path}` })));
+      statewide.push(...secs.filter(s => s.level >= 2 && s.level <= 3).map(s => ({ title: s.title, text: s.text.filter(t => !SKIP.test(t)).slice(0, 20), url: `${BASE}/${path}` })).filter(s => s.text.length));
     } catch (e) { report.pages[path] = e.message; }
   }
 } catch (e) { report.indexError = e.message; }
@@ -152,12 +154,15 @@ try {
   report.advisoryRows = rows.slice(0, 12);
   const advisories = [];
   let zone = '', last = null;
+  // Link labels that sit in the waterbody cell.
+  const LINKS = /\s*(Press release|Fact ?sheet|Technical report:?|Frequently asked questions|Information OHA used to warrant a statewide advisory|Meal guidance|Map)\b/gi;
   for (const r of rows) {
     if (r.length < 4 || /^zone$/i.test(r[0]) || /contaminant/i.test(r.join(' ')) && /waterbody/i.test(r.join(' '))) continue;
-    // Rows that continue the water above leave out the zone and water cells.
-    const [z, water, contaminant, fish, vulnerable, everyone] = r.length >= 6 ? r : [zone, last?.area ?? '', ...r];
-    if (z) zone = z;
-    if (!water) continue;
+    // Rows that continue the zone above leave out the zone cell; rows that continue the water leave out both.
+    const [z, rawWater, contaminant, fish, vulnerable, everyone] = r.length >= 6 ? r : r.length === 5 ? [zone, ...r] : [zone, last?.area ?? '', ...r];
+    const water = rawWater.replace(LINKS, '').replace(/\s+,/g, ',').replace(/\s+/g, ' ').trim();
+    if (z) zone = z.replace(/\b([A-Z])([A-Z]+)\b/g, (m, a, b) => a + b.toLowerCase());
+    if (!water || /coast/i.test(zone) && /clam/i.test(water)) continue;
     if (last && last.area === water) last.fish.push({ fish, contaminant, vulnerable, everyone });
     else { last = { zone, area: water, names: aliases(water), fish: [{ fish, contaminant, vulnerable, everyone }] }; advisories.push(last); }
   }
