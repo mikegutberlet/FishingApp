@@ -73,13 +73,27 @@ export async function exportAll() {
   return out;
 }
 
+// Ids and references to them (id, lakeId, tripId, ...) end up in HTML attributes and URLs, so a file from
+// someone else may only carry plain tokens there. Rows with anything else are skipped.
+const SAFE_ID = /^[\w.:-]{0,100}$/;
+const safeRow = row => row && typeof row === 'object' && !Array.isArray(row)
+  && Object.entries(row).every(([k, v]) => !(k === 'id' || k.endsWith('Id')) || v == null || typeof v === 'number' || (typeof v === 'string' && SAFE_ID.test(v)));
+
+// Returns how many rows were skipped as unsafe.
 export async function importAll(data, { replace = false } = {}) {
   if (data.app !== 'tackle-box') throw new Error('Not a Tackle Box backup file');
+  let skipped = 0;
+  for (const name of STORES) {
+    const rows = Array.isArray(data[name]) ? data[name] : [];
+    data[name] = rows.filter(safeRow);
+    skipped += rows.length - data[name].length;
+  }
   for (const name of STORES) {
     if (replace) await db.clear(name);
-    for (const row of data[name] || []) {
+    for (const row of data[name]) {
       if (typeof row.photo === 'string' && row.photo.startsWith('data:')) row.photo = await dataUrlToBlob(row.photo);
       await tx(name, 'readwrite', s => s.put(row));
     }
   }
+  return skipped;
 }
