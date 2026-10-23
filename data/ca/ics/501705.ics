@@ -1,0 +1,62 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Russian River\, Upper East Branch
+X-WR-CALDESC:CDFW fish planting schedule for Russian River\, Upper East Bra
+ nch. Plants are subject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2025-10-26-501705-trout@tackle-box
+DTSTAMP:20251026T000000Z
+DTSTART;VALUE=DATE:20251026
+DTEND;VALUE=DATE:20251102
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Russian River\, Upper East Branch
+DESCRIPTION:CDFW plans to plant Trout at Russian River\, Upper East Branch 
+ (Mendocino County) the week of 2025-10-26. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501705
+GEO:39.24831;-123.12194
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Russian River\, Upper East Branch
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-04-19-501705-trout@tackle-box
+DTSTAMP:20260419T000000Z
+DTSTART;VALUE=DATE:20260419
+DTEND;VALUE=DATE:20260426
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Russian River\, Upper East Branch
+DESCRIPTION:CDFW plans to plant Trout at Russian River\, Upper East Branch 
+ (Mendocino County) the week of 2026-04-19. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501705
+GEO:39.24831;-123.12194
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Russian River\, Upper East Branch
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-05-03-501705-trout@tackle-box
+DTSTAMP:20260503T000000Z
+DTSTART;VALUE=DATE:20260503
+DTEND;VALUE=DATE:20260510
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Russian River\, Upper East Branch
+DESCRIPTION:CDFW plans to plant Trout at Russian River\, Upper East Branch 
+ (Mendocino County) the week of 2026-05-03. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501705
+GEO:39.24831;-123.12194
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Russian River\, Upper East Branch
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

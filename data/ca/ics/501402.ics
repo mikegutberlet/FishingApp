@@ -1,0 +1,96 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Susan River Lower
+X-WR-CALDESC:CDFW fish planting schedule for Susan River Lower. Plants are 
+ subject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-04-12-501402-trout@tackle-box
+DTSTAMP:20260412T000000Z
+DTSTART;VALUE=DATE:20260412
+DTEND;VALUE=DATE:20260419
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Susan River Lower
+DESCRIPTION:CDFW plans to plant Trout at Susan River Lower (Lassen County) 
+ the week of 2026-04-12. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501402
+GEO:40.41232;-120.6464
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Susan River Lower
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-05-03-501402-trout@tackle-box
+DTSTAMP:20260503T000000Z
+DTSTART;VALUE=DATE:20260503
+DTEND;VALUE=DATE:20260510
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Susan River Lower
+DESCRIPTION:CDFW plans to plant Trout at Susan River Lower (Lassen County) 
+ the week of 2026-05-03. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501402
+GEO:40.41232;-120.6464
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Susan River Lower
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-21-501402-trout@tackle-box
+DTSTAMP:20260621T000000Z
+DTSTART;VALUE=DATE:20260621
+DTEND;VALUE=DATE:20260628
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Susan River Lower
+DESCRIPTION:CDFW plans to plant Trout at Susan River Lower (Lassen County) 
+ the week of 2026-06-21. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501402
+GEO:40.41232;-120.6464
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Susan River Lower
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-28-501402-trout@tackle-box
+DTSTAMP:20260628T000000Z
+DTSTART;VALUE=DATE:20260628
+DTEND;VALUE=DATE:20260705
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Susan River Lower
+DESCRIPTION:CDFW plans to plant Trout at Susan River Lower (Lassen County) 
+ the week of 2026-06-28. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501402
+GEO:40.41232;-120.6464
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Susan River Lower
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-07-26-501402-trout@tackle-box
+DTSTAMP:20260726T000000Z
+DTSTART;VALUE=DATE:20260726
+DTEND;VALUE=DATE:20260802
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Susan River Lower
+DESCRIPTION:CDFW plans to plant Trout at Susan River Lower (Lassen County) 
+ the week of 2026-07-26. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501402
+GEO:40.41232;-120.6464
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Susan River Lower
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

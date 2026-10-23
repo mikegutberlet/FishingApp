@@ -1,0 +1,28 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Weaver Lake
+X-WR-CALDESC:CDFW fish planting schedule for Weaver Lake. Plants are subjec
+ t to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-06-07-12470-trout@tackle-box
+DTSTAMP:20260607T000000Z
+DTSTART;VALUE=DATE:20260607
+DTEND;VALUE=DATE:20260614
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Weaver Lake
+DESCRIPTION:CDFW plans to plant Trout at Weaver Lake (Nevada County) the we
+ ek of 2026-06-07. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=12470
+GEO:39.46698;-120.65886
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Weaver Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

@@ -1,0 +1,62 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Donner Lake
+X-WR-CALDESC:CDFW fish planting schedule for Donner Lake. Plants are subjec
+ t to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2025-11-02-13306-trout@tackle-box
+DTSTAMP:20251102T000000Z
+DTSTART;VALUE=DATE:20251102
+DTEND;VALUE=DATE:20251109
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Donner Lake
+DESCRIPTION:CDFW plans to plant Trout at Donner Lake (Nevada County) the we
+ ek of 2025-11-02. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=13306
+GEO:39.32638;-120.26527
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Donner Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-02-08-13306-trout@tackle-box
+DTSTAMP:20260208T000000Z
+DTSTART;VALUE=DATE:20260208
+DTEND;VALUE=DATE:20260215
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Donner Lake
+DESCRIPTION:CDFW plans to plant Trout at Donner Lake (Nevada County) the we
+ ek of 2026-02-08. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=13306
+GEO:39.32638;-120.26527
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Donner Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-07-12-13306-trout@tackle-box
+DTSTAMP:20260712T000000Z
+DTSTART;VALUE=DATE:20260712
+DTEND;VALUE=DATE:20260719
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Donner Lake
+DESCRIPTION:CDFW plans to plant Trout at Donner Lake (Nevada County) the we
+ ek of 2026-07-12. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=13306
+GEO:39.32638;-120.26527
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Donner Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

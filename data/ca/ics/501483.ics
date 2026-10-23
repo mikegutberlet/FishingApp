@@ -1,0 +1,181 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Tuolumne River South Fork
+X-WR-CALDESC:CDFW fish planting schedule for Tuolumne River South Fork. Pla
+ nts are subject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-04-19-501483-trout@tackle-box
+DTSTAMP:20260419T000000Z
+DTSTART;VALUE=DATE:20260419
+DTEND;VALUE=DATE:20260426
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Tuolumne River South Fork
+DESCRIPTION:CDFW plans to plant Trout at Tuolumne River South Fork (Tuolumn
+ e County) the week of 2026-04-19. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501483
+GEO:37.81158;-119.9374
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Tuolumne River South Fork
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-05-03-501483-trout@tackle-box
+DTSTAMP:20260503T000000Z
+DTSTART;VALUE=DATE:20260503
+DTEND;VALUE=DATE:20260510
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Tuolumne River South Fork
+DESCRIPTION:CDFW plans to plant Trout at Tuolumne River South Fork (Tuolumn
+ e County) the week of 2026-05-03. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501483
+GEO:37.81158;-119.9374
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Tuolumne River South Fork
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-05-17-501483-trout@tackle-box
+DTSTAMP:20260517T000000Z
+DTSTART;VALUE=DATE:20260517
+DTEND;VALUE=DATE:20260524
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Tuolumne River South Fork
+DESCRIPTION:CDFW plans to plant Trout at Tuolumne River South Fork (Tuolumn
+ e County) the week of 2026-05-17. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501483
+GEO:37.81158;-119.9374
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Tuolumne River South Fork
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-05-31-501483-trout@tackle-box
+DTSTAMP:20260531T000000Z
+DTSTART;VALUE=DATE:20260531
+DTEND;VALUE=DATE:20260607
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Tuolumne River South Fork
+DESCRIPTION:CDFW plans to plant Trout at Tuolumne River South Fork (Tuolumn
+ e County) the week of 2026-05-31. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501483
+GEO:37.81158;-119.9374
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Tuolumne River South Fork
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-14-501483-trout@tackle-box
+DTSTAMP:20260614T000000Z
+DTSTART;VALUE=DATE:20260614
+DTEND;VALUE=DATE:20260621
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Tuolumne River South Fork
+DESCRIPTION:CDFW plans to plant Trout at Tuolumne River South Fork (Tuolumn
+ e County) the week of 2026-06-14. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501483
+GEO:37.81158;-119.9374
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Tuolumne River South Fork
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-28-501483-trout@tackle-box
+DTSTAMP:20260628T000000Z
+DTSTART;VALUE=DATE:20260628
+DTEND;VALUE=DATE:20260705
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Tuolumne River South Fork
+DESCRIPTION:CDFW plans to plant Trout at Tuolumne River South Fork (Tuolumn
+ e County) the week of 2026-06-28. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501483
+GEO:37.81158;-119.9374
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Tuolumne River South Fork
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-07-05-501483-trout@tackle-box
+DTSTAMP:20260705T000000Z
+DTSTART;VALUE=DATE:20260705
+DTEND;VALUE=DATE:20260712
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Tuolumne River South Fork
+DESCRIPTION:CDFW plans to plant Trout at Tuolumne River South Fork (Tuolumn
+ e County) the week of 2026-07-05. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501483
+GEO:37.81158;-119.9374
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Tuolumne River South Fork
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-07-12-501483-trout@tackle-box
+DTSTAMP:20260712T000000Z
+DTSTART;VALUE=DATE:20260712
+DTEND;VALUE=DATE:20260719
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Tuolumne River South Fork
+DESCRIPTION:CDFW plans to plant Trout at Tuolumne River South Fork (Tuolumn
+ e County) the week of 2026-07-12. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501483
+GEO:37.81158;-119.9374
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Tuolumne River South Fork
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-07-26-501483-trout@tackle-box
+DTSTAMP:20260726T000000Z
+DTSTART;VALUE=DATE:20260726
+DTEND;VALUE=DATE:20260802
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Tuolumne River South Fork
+DESCRIPTION:CDFW plans to plant Trout at Tuolumne River South Fork (Tuolumn
+ e County) the week of 2026-07-26. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501483
+GEO:37.81158;-119.9374
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Tuolumne River South Fork
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-09-501483-trout@tackle-box
+DTSTAMP:20260809T000000Z
+DTSTART;VALUE=DATE:20260809
+DTEND;VALUE=DATE:20260816
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Tuolumne River South Fork
+DESCRIPTION:CDFW plans to plant Trout at Tuolumne River South Fork (Tuolumn
+ e County) the week of 2026-08-09. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501483
+GEO:37.81158;-119.9374
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Tuolumne River South Fork
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

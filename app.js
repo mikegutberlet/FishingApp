@@ -15,8 +15,16 @@ import './views/stats.js';
 import './views/settings.js';
 import './radar.js';
 import './wind-layer.js';
+import { addSafetyLayers } from './safety-map.js';
 import './views/today.js';
 import './views/planner.js';
+import { initOffline } from './offline.js';
+import { initWaypoints } from './waypoints.js';
+import { initHeatmap } from './heatmap.js';
+
+initOffline();
+initWaypoints();
+initHeatmap();
 
 document.querySelectorAll('nav button').forEach(b => b.onclick = () => showView(b.dataset.view));
 
@@ -30,6 +38,7 @@ document.addEventListener('click', e => {
 
 // ---------- Startup ----------
 $('#species-list').innerHTML = COMMON_SPECIES.map(s => `<option value="${s}">`).join('');
+addSafetyLayers();
 navigator.storage?.persist?.(); // ask the browser not to evict our data
 resumeTrip();
 if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js');

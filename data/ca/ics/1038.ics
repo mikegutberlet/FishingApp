@@ -1,0 +1,198 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Nora Lake
+X-WR-CALDESC:CDFW fish planting schedule for Nora Lake. Plants are subject 
+ to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-02-01-1038-trout@tackle-box
+DTSTAMP:20260201T000000Z
+DTSTART;VALUE=DATE:20260201
+DTEND;VALUE=DATE:20260208
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Nora Lake
+DESCRIPTION:CDFW plans to plant Trout at Nora Lake (Shasta County) the week
+  of 2026-02-01. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=1038
+GEO:40.47791;-121.8625
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Nora Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-01-1038-trout@tackle-box
+DTSTAMP:20260301T000000Z
+DTSTART;VALUE=DATE:20260301
+DTEND;VALUE=DATE:20260308
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Nora Lake
+DESCRIPTION:CDFW plans to plant Trout at Nora Lake (Shasta County) the week
+  of 2026-03-01. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=1038
+GEO:40.47791;-121.8625
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Nora Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-29-1038-trout@tackle-box
+DTSTAMP:20260329T000000Z
+DTSTART;VALUE=DATE:20260329
+DTEND;VALUE=DATE:20260405
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Nora Lake
+DESCRIPTION:CDFW plans to plant Trout at Nora Lake (Shasta County) the week
+  of 2026-03-29. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=1038
+GEO:40.47791;-121.8625
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Nora Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-04-26-1038-trout@tackle-box
+DTSTAMP:20260426T000000Z
+DTSTART;VALUE=DATE:20260426
+DTEND;VALUE=DATE:20260503
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Nora Lake
+DESCRIPTION:CDFW plans to plant Trout at Nora Lake (Shasta County) the week
+  of 2026-04-26. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=1038
+GEO:40.47791;-121.8625
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Nora Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-05-17-1038-trout@tackle-box
+DTSTAMP:20260517T000000Z
+DTSTART;VALUE=DATE:20260517
+DTEND;VALUE=DATE:20260524
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Nora Lake
+DESCRIPTION:CDFW plans to plant Trout at Nora Lake (Shasta County) the week
+  of 2026-05-17. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=1038
+GEO:40.47791;-121.8625
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Nora Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-07-1038-trout@tackle-box
+DTSTAMP:20260607T000000Z
+DTSTART;VALUE=DATE:20260607
+DTEND;VALUE=DATE:20260614
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Nora Lake
+DESCRIPTION:CDFW plans to plant Trout at Nora Lake (Shasta County) the week
+  of 2026-06-07. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=1038
+GEO:40.47791;-121.8625
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Nora Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-28-1038-trout@tackle-box
+DTSTAMP:20260628T000000Z
+DTSTART;VALUE=DATE:20260628
+DTEND;VALUE=DATE:20260705
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Nora Lake
+DESCRIPTION:CDFW plans to plant Trout at Nora Lake (Shasta County) the week
+  of 2026-06-28. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=1038
+GEO:40.47791;-121.8625
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Nora Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-07-12-1038-trout@tackle-box
+DTSTAMP:20260712T000000Z
+DTSTART;VALUE=DATE:20260712
+DTEND;VALUE=DATE:20260719
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Nora Lake
+DESCRIPTION:CDFW plans to plant Trout at Nora Lake (Shasta County) the week
+  of 2026-07-12. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=1038
+GEO:40.47791;-121.8625
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Nora Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-02-1038-trout@tackle-box
+DTSTAMP:20260802T000000Z
+DTSTART;VALUE=DATE:20260802
+DTEND;VALUE=DATE:20260809
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Nora Lake
+DESCRIPTION:CDFW plans to plant Trout at Nora Lake (Shasta County) the week
+  of 2026-08-02. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=1038
+GEO:40.47791;-121.8625
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Nora Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-30-1038-trout@tackle-box
+DTSTAMP:20260830T000000Z
+DTSTART;VALUE=DATE:20260830
+DTEND;VALUE=DATE:20260906
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Nora Lake
+DESCRIPTION:CDFW plans to plant Trout at Nora Lake (Shasta County) the week
+  of 2026-08-30. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=1038
+GEO:40.47791;-121.8625
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Nora Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-04-1038-trout@tackle-box
+DTSTAMP:20261004T000000Z
+DTSTART;VALUE=DATE:20261004
+DTEND;VALUE=DATE:20261011
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Nora Lake
+DESCRIPTION:CDFW plans to plant Trout at Nora Lake (Shasta County) the week
+  of 2026-10-04. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=1038
+GEO:40.47791;-121.8625
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Nora Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

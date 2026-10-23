@@ -1,0 +1,28 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Plaskett Meadows Pond
+X-WR-CALDESC:CDFW fish planting schedule for Plaskett Meadows Pond. Plants 
+ are subject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-06-28-1522-trout@tackle-box
+DTSTAMP:20260628T000000Z
+DTSTART;VALUE=DATE:20260628
+DTEND;VALUE=DATE:20260705
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Plaskett Meadows Pond
+DESCRIPTION:CDFW plans to plant Trout at Plaskett Meadows Pond (Glenn Count
+ y) the week of 2026-06-28. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=1522
+GEO:39.72699;-122.84373
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Plaskett Meadows Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

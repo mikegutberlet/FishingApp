@@ -4,7 +4,10 @@ import { STATES, list as stateList, selected, select, stateAt } from '../states/
 import { $, esc, fmtDate, status, showView, onShow } from '../ui.js';
 import { refreshMap, locate } from '../map.js';
 import { openLake, openWater } from './lake.js';
+import { showNewPlantBadges } from './new-plants.js';
 import { activeTrip } from './trips.js';
+import { refreshWaypoints } from '../waypoints.js';
+import { deletePack, packId } from '../offline.js';
 
 export async function renderLakeList() {
   $('#lake-detail').classList.add('hidden');
@@ -15,7 +18,7 @@ export async function renderLakeList() {
   list.innerHTML = `<h2>Lakes & rivers</h2><label class="state-pick small">State <select id="state-pick">${stateList.map(s => `<option value="${s.code}" ${s === S ? 'selected' : ''}>${s.name}</option>`).join('')}<option value="here">📍 Where I am</option></select></label>
     <div class="row" style="margin-bottom:12px"><button id="find-any" style="flex:1">🔎 Any ${S.name} water</button><button id="find-waters" style="flex:1">🐟 Stocked waters</button></div>`
     + (lakes.length ? '' : `<div class="card muted">No waters yet. Find one above, or use “＋ Lake here” on the map.</div>`)
-    + lakes.map(l => `<div class="card lake-item" data-id="${l.id}"><div><b>${esc(l.name)}</b><div class="muted small">${esc(l.type)}${l.county ? ' · ' + esc(l.county) : ''}${l.state ? ', ' + esc(l.state) : ''}</div></div><span>›</span></div>`).join('');
+    + lakes.map(l => `<div class="card lake-item" data-id="${l.id}"><div><b>${esc(l.name)}</b> <span data-new-plants="${l.id}"></span><div class="muted small">${esc(l.type)}${l.county ? ' · ' + esc(l.county) : ''}${l.state ? ', ' + esc(l.state) : ''}</div></div><span>›</span></div>`).join('');
   list.querySelectorAll('.lake-item').forEach(el => el.onclick = () => openLake(el.dataset.id));
   $('#find-waters').onclick = () => renderFindWaters(S);
   $('#find-any').onclick = () => renderFindAny(S);
@@ -26,6 +29,7 @@ export async function renderLakeList() {
     } else select(e.target.value);
     renderLakeList();
   };
+  showNewPlantBadges(list, lakes);
 }
 
 // Search every named lake, reservoir and river in a state from its statewide list.
@@ -135,9 +139,11 @@ export function editLake(lake) {
   const del = $('#del-lake');
   if (del) del.onclick = async () => {
     if ((await activeTrip())?.lakeId === lake.id) return alert('End your trip on this water first.');
-    if (!confirm(`Delete ${lake.name} and all its catches, notes, trips, stocking and depth data?`)) return;
-    for (const s of ['catches', 'notes', 'stocking', 'depthSets', 'trips']) for (const r of await db.byLake(s, lake.id)) await db.del(s, r.id);
+    if (!confirm(`Delete ${lake.name} and all its catches, notes, trips, stocking, depth data, waypoints, temperature profiles and offline map?`)) return;
+    for (const s of ['catches', 'notes', 'stocking', 'depthSets', 'trips', 'waypoints', 'tempProfiles']) for (const r of await db.byLake(s, lake.id)) await db.del(s, r.id);
     for (const ev of await db.all('events')) if (ev.lakeId === lake.id) await db.del('events', ev.id);
+    refreshWaypoints();
+    if ('caches' in window) await deletePack(packId(lake));
     await db.del('lakes', lake.id);
     await refreshMap();
     renderLakeList();

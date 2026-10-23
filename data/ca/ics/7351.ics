@@ -1,0 +1,28 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: MacArthur Park Lake
+X-WR-CALDESC:CDFW fish planting schedule for MacArthur Park Lake. Plants ar
+ e subject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-06-28-7351-catfish@tackle-box
+DTSTAMP:20260628T000000Z
+DTSTART;VALUE=DATE:20260628
+DTEND;VALUE=DATE:20260705
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Catfish plant: MacArthur Park Lake
+DESCRIPTION:CDFW plans to plant Catfish at MacArthur Park Lake (Los Angeles
+  County) the week of 2026-06-28. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7351
+GEO:34.05759;-118.27839
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Catfish plant this week at MacArthur Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

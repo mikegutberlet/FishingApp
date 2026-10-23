@@ -1,0 +1,164 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Cuyamaca Lake
+X-WR-CALDESC:CDFW fish planting schedule for Cuyamaca Lake. Plants are subj
+ ect to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2025-11-02-7796-trout@tackle-box
+DTSTAMP:20251102T000000Z
+DTSTART;VALUE=DATE:20251102
+DTEND;VALUE=DATE:20251109
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Cuyamaca Lake
+DESCRIPTION:CDFW plans to plant Trout at Cuyamaca Lake (San Diego County) t
+ he week of 2025-11-02. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7796
+GEO:32.98516;-116.57739
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Cuyamaca Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-04-05-7796-trout@tackle-box
+DTSTAMP:20260405T000000Z
+DTSTART;VALUE=DATE:20260405
+DTEND;VALUE=DATE:20260412
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Cuyamaca Lake
+DESCRIPTION:CDFW plans to plant Trout at Cuyamaca Lake (San Diego County) t
+ he week of 2026-04-05. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7796
+GEO:32.98516;-116.57739
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Cuyamaca Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-04-19-7796-trout@tackle-box
+DTSTAMP:20260419T000000Z
+DTSTART;VALUE=DATE:20260419
+DTEND;VALUE=DATE:20260426
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Cuyamaca Lake
+DESCRIPTION:CDFW plans to plant Trout at Cuyamaca Lake (San Diego County) t
+ he week of 2026-04-19. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7796
+GEO:32.98516;-116.57739
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Cuyamaca Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-05-17-7796-trout@tackle-box
+DTSTAMP:20260517T000000Z
+DTSTART;VALUE=DATE:20260517
+DTEND;VALUE=DATE:20260524
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Cuyamaca Lake
+DESCRIPTION:CDFW plans to plant Trout at Cuyamaca Lake (San Diego County) t
+ he week of 2026-05-17. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7796
+GEO:32.98516;-116.57739
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Cuyamaca Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-07-7796-trout@tackle-box
+DTSTAMP:20260607T000000Z
+DTSTART;VALUE=DATE:20260607
+DTEND;VALUE=DATE:20260614
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Cuyamaca Lake
+DESCRIPTION:CDFW plans to plant Trout at Cuyamaca Lake (San Diego County) t
+ he week of 2026-06-07. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7796
+GEO:32.98516;-116.57739
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Cuyamaca Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-21-7796-trout@tackle-box
+DTSTAMP:20260621T000000Z
+DTSTART;VALUE=DATE:20260621
+DTEND;VALUE=DATE:20260628
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Cuyamaca Lake
+DESCRIPTION:CDFW plans to plant Trout at Cuyamaca Lake (San Diego County) t
+ he week of 2026-06-21. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7796
+GEO:32.98516;-116.57739
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Cuyamaca Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-09-20-7796-trout@tackle-box
+DTSTAMP:20260920T000000Z
+DTSTART;VALUE=DATE:20260920
+DTEND;VALUE=DATE:20260927
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Cuyamaca Lake
+DESCRIPTION:CDFW plans to plant Trout at Cuyamaca Lake (San Diego County) t
+ he week of 2026-09-20. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7796
+GEO:32.98516;-116.57739
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Cuyamaca Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-04-7796-trout@tackle-box
+DTSTAMP:20261004T000000Z
+DTSTART;VALUE=DATE:20261004
+DTEND;VALUE=DATE:20261011
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Cuyamaca Lake
+DESCRIPTION:CDFW plans to plant Trout at Cuyamaca Lake (San Diego County) t
+ he week of 2026-10-04. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7796
+GEO:32.98516;-116.57739
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Cuyamaca Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-25-7796-trout@tackle-box
+DTSTAMP:20261025T000000Z
+DTSTART;VALUE=DATE:20261025
+DTEND;VALUE=DATE:20261101
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Cuyamaca Lake
+DESCRIPTION:CDFW plans to plant Trout at Cuyamaca Lake (San Diego County) t
+ he week of 2026-10-25. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7796
+GEO:32.98516;-116.57739
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Cuyamaca Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

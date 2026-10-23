@@ -1,0 +1,147 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Santa Ana River
+X-WR-CALDESC:CDFW fish planting schedule for Santa Ana River. Plants are su
+ bject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-05-24-501243-trout@tackle-box
+DTSTAMP:20260524T000000Z
+DTSTART;VALUE=DATE:20260524
+DTEND;VALUE=DATE:20260531
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Santa Ana River
+DESCRIPTION:CDFW plans to plant Trout at Santa Ana River (San Bernardino Co
+ unty) the week of 2026-05-24. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501243
+GEO:34.17614;-116.94282
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Santa Ana River
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-07-501243-trout@tackle-box
+DTSTAMP:20260607T000000Z
+DTSTART;VALUE=DATE:20260607
+DTEND;VALUE=DATE:20260614
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Santa Ana River
+DESCRIPTION:CDFW plans to plant Trout at Santa Ana River (San Bernardino Co
+ unty) the week of 2026-06-07. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501243
+GEO:34.17614;-116.94282
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Santa Ana River
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-28-501243-trout@tackle-box
+DTSTAMP:20260628T000000Z
+DTSTART;VALUE=DATE:20260628
+DTEND;VALUE=DATE:20260705
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Santa Ana River
+DESCRIPTION:CDFW plans to plant Trout at Santa Ana River (San Bernardino Co
+ unty) the week of 2026-06-28. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501243
+GEO:34.17614;-116.94282
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Santa Ana River
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-07-12-501243-trout@tackle-box
+DTSTAMP:20260712T000000Z
+DTSTART;VALUE=DATE:20260712
+DTEND;VALUE=DATE:20260719
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Santa Ana River
+DESCRIPTION:CDFW plans to plant Trout at Santa Ana River (San Bernardino Co
+ unty) the week of 2026-07-12. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501243
+GEO:34.17614;-116.94282
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Santa Ana River
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-07-26-501243-trout@tackle-box
+DTSTAMP:20260726T000000Z
+DTSTART;VALUE=DATE:20260726
+DTEND;VALUE=DATE:20260802
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Santa Ana River
+DESCRIPTION:CDFW plans to plant Trout at Santa Ana River (San Bernardino Co
+ unty) the week of 2026-07-26. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501243
+GEO:34.17614;-116.94282
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Santa Ana River
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-09-501243-trout@tackle-box
+DTSTAMP:20260809T000000Z
+DTSTART;VALUE=DATE:20260809
+DTEND;VALUE=DATE:20260816
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Santa Ana River
+DESCRIPTION:CDFW plans to plant Trout at Santa Ana River (San Bernardino Co
+ unty) the week of 2026-08-09. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501243
+GEO:34.17614;-116.94282
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Santa Ana River
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-23-501243-trout@tackle-box
+DTSTAMP:20260823T000000Z
+DTSTART;VALUE=DATE:20260823
+DTEND;VALUE=DATE:20260830
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Santa Ana River
+DESCRIPTION:CDFW plans to plant Trout at Santa Ana River (San Bernardino Co
+ unty) the week of 2026-08-23. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501243
+GEO:34.17614;-116.94282
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Santa Ana River
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-09-20-501243-trout@tackle-box
+DTSTAMP:20260920T000000Z
+DTSTART;VALUE=DATE:20260920
+DTEND;VALUE=DATE:20260927
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Santa Ana River
+DESCRIPTION:CDFW plans to plant Trout at Santa Ana River (San Bernardino Co
+ unty) the week of 2026-09-20. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501243
+GEO:34.17614;-116.94282
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Santa Ana River
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

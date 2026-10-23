@@ -1,0 +1,113 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Lake Sabrina
+X-WR-CALDESC:CDFW fish planting schedule for Lake Sabrina. Plants are subje
+ ct to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-06-07-20257-trout@tackle-box
+DTSTAMP:20260607T000000Z
+DTSTART;VALUE=DATE:20260607
+DTEND;VALUE=DATE:20260614
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Lake Sabrina
+DESCRIPTION:CDFW plans to plant Trout at Lake Sabrina (Inyo County) the wee
+ k of 2026-06-07. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=20257
+GEO:37.20584;-118.61719
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Lake Sabrina
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-21-20257-trout@tackle-box
+DTSTAMP:20260621T000000Z
+DTSTART;VALUE=DATE:20260621
+DTEND;VALUE=DATE:20260628
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Lake Sabrina
+DESCRIPTION:CDFW plans to plant Trout at Lake Sabrina (Inyo County) the wee
+ k of 2026-06-21. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=20257
+GEO:37.20584;-118.61719
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Lake Sabrina
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-07-12-20257-trout@tackle-box
+DTSTAMP:20260712T000000Z
+DTSTART;VALUE=DATE:20260712
+DTEND;VALUE=DATE:20260719
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Lake Sabrina
+DESCRIPTION:CDFW plans to plant Trout at Lake Sabrina (Inyo County) the wee
+ k of 2026-07-12. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=20257
+GEO:37.20584;-118.61719
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Lake Sabrina
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-30-20257-trout@tackle-box
+DTSTAMP:20260830T000000Z
+DTSTART;VALUE=DATE:20260830
+DTEND;VALUE=DATE:20260906
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Lake Sabrina
+DESCRIPTION:CDFW plans to plant Trout at Lake Sabrina (Inyo County) the wee
+ k of 2026-08-30. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=20257
+GEO:37.20584;-118.61719
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Lake Sabrina
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-09-13-20257-trout@tackle-box
+DTSTAMP:20260913T000000Z
+DTSTART;VALUE=DATE:20260913
+DTEND;VALUE=DATE:20260920
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Lake Sabrina
+DESCRIPTION:CDFW plans to plant Trout at Lake Sabrina (Inyo County) the wee
+ k of 2026-09-13. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=20257
+GEO:37.20584;-118.61719
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Lake Sabrina
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-09-20-20257-trout@tackle-box
+DTSTAMP:20260920T000000Z
+DTSTART;VALUE=DATE:20260920
+DTEND;VALUE=DATE:20260927
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Lake Sabrina
+DESCRIPTION:CDFW plans to plant Trout at Lake Sabrina (Inyo County) the wee
+ k of 2026-09-20. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=20257
+GEO:37.20584;-118.61719
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Lake Sabrina
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

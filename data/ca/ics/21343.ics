@@ -1,0 +1,96 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Pine Flat Reservoir
+X-WR-CALDESC:CDFW fish planting schedule for Pine Flat Reservoir. Plants ar
+ e subject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2025-11-16-21343-trout@tackle-box
+DTSTAMP:20251116T000000Z
+DTSTART;VALUE=DATE:20251116
+DTEND;VALUE=DATE:20251123
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Pine Flat Reservoir
+DESCRIPTION:CDFW plans to plant Trout at Pine Flat Reservoir (Fresno County
+ ) the week of 2025-11-16. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=21343
+GEO:36.8741;-119.28403
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Pine Flat Reservoir
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-01-11-21343-trout@tackle-box
+DTSTAMP:20260111T000000Z
+DTSTART;VALUE=DATE:20260111
+DTEND;VALUE=DATE:20260118
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Pine Flat Reservoir
+DESCRIPTION:CDFW plans to plant Trout at Pine Flat Reservoir (Fresno County
+ ) the week of 2026-01-11. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=21343
+GEO:36.8741;-119.28403
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Pine Flat Reservoir
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-02-01-21343-trout@tackle-box
+DTSTAMP:20260201T000000Z
+DTSTART;VALUE=DATE:20260201
+DTEND;VALUE=DATE:20260208
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Pine Flat Reservoir
+DESCRIPTION:CDFW plans to plant Trout at Pine Flat Reservoir (Fresno County
+ ) the week of 2026-02-01. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=21343
+GEO:36.8741;-119.28403
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Pine Flat Reservoir
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-22-21343-trout@tackle-box
+DTSTAMP:20260322T000000Z
+DTSTART;VALUE=DATE:20260322
+DTEND;VALUE=DATE:20260329
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Pine Flat Reservoir
+DESCRIPTION:CDFW plans to plant Trout at Pine Flat Reservoir (Fresno County
+ ) the week of 2026-03-22. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=21343
+GEO:36.8741;-119.28403
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Pine Flat Reservoir
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-29-21343-trout@tackle-box
+DTSTAMP:20260329T000000Z
+DTSTART;VALUE=DATE:20260329
+DTEND;VALUE=DATE:20260405
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Pine Flat Reservoir
+DESCRIPTION:CDFW plans to plant Trout at Pine Flat Reservoir (Fresno County
+ ) the week of 2026-03-29. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=21343
+GEO:36.8741;-119.28403
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Pine Flat Reservoir
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

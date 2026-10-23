@@ -1,0 +1,28 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Southside Park Pond
+X-WR-CALDESC:CDFW fish planting schedule for Southside Park Pond. Plants ar
+ e subject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-03-15-28294-trout@tackle-box
+DTSTAMP:20260315T000000Z
+DTSTART;VALUE=DATE:20260315
+DTEND;VALUE=DATE:20260322
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Southside Park Pond
+DESCRIPTION:CDFW plans to plant Trout at Southside Park Pond (Sacramento Co
+ unty) the week of 2026-03-15. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=28294
+GEO:38.56817;-121.50287
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Southside Park Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

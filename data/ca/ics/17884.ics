@@ -1,0 +1,28 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Crowley Lake
+X-WR-CALDESC:CDFW fish planting schedule for Crowley Lake. Plants are subje
+ ct to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-08-30-17884-trout@tackle-box
+DTSTAMP:20260830T000000Z
+DTSTART;VALUE=DATE:20260830
+DTEND;VALUE=DATE:20260906
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Crowley Lake
+DESCRIPTION:CDFW plans to plant Trout at Crowley Lake (Mono County) the wee
+ k of 2026-08-30. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=17884
+GEO:37.62189;-118.73974
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Crowley Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

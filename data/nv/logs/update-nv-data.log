@@ -1,11 +1,11 @@
 {
-  "startedAt": "2026-10-23T11:38:29.081Z",
+  "startedAt": "2026-10-23T16:03:40.356Z",
   "ndow": {
     "waters": 551
   },
   "counties": 17,
   "points": {
-    "nhd": 1516,
+    "nhd": 1515,
     "fishable": 6142,
     "via": {
       "none": 53,
@@ -68,7 +68,7 @@
       "Galena Canyon Creek (Eastern, Creek or Stream)",
       "Dawley Canyon (Eastern, Creek or Stream)"
     ],
-    "geocoderCalls": 3
+    "geocoderCalls": 0
   },
   "plants": {
     "total": 1698,
@@ -105,8 +105,8 @@
         "storage": 6124
       },
       "points": {
-        "elevation": 61,
-        "storage": 61
+        "elevation": 62,
+        "storage": 62
       }
     },
     "Lake Mohave": {

@@ -1,0 +1,49 @@
+name: Update algae advisories and plant calendars
+
+on:
+  schedule:
+    - cron: '7 14 * * *' # daily, after "Update state fishing data" refreshes the plant schedule
+  workflow_dispatch:
+  push:
+    paths:
+      - scripts/build-ca-hab.mjs
+      - scripts/build-ca-ics.mjs
+      - .github/workflows/update-safety.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Toxic algae advisories
+        continue-on-error: true
+        run: |
+          mkdir -p data/ca/logs
+          node scripts/build-ca-hab.mjs 2>&1 | tee data/ca/logs/build-ca-hab.log
+          exit ${PIPESTATUS[0]}
+      - name: Plant calendar feeds
+        continue-on-error: true
+        run: |
+          mkdir -p data/ca/logs
+          node scripts/build-ca-ics.mjs 2>&1 | tee data/ca/logs/build-ca-ics.log
+          exit ${PIPESTATUS[0]}
+      - name: Commit changes
+        run: |
+          for f in data/ca/hab.json data/ca/ics data/ca/logs; do if [ -e "$f" ]; then git add "$f"; fi; done
+          if git diff --cached --quiet; then echo "No data changes"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update algae advisories and plant calendars"
+          # If the branch moved under us (another run, a rebase), this run's fresh output wins.
+          for i in 1 2 3; do if git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" && git push; then exit 0; fi; git rebase --abort 2>/dev/null || true; sleep 10; done
+          echo "push failed"; exit 1
