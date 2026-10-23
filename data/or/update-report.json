@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-23T18:45:29.725Z",
+  "startedAt": "2026-10-23T20:38:23.036Z",
   "schedule": {
     "windows": [
       "2024-10-23..2024-11-22: 16",
@@ -205,7 +205,7 @@
     }
   ],
   "points": {
-    "nhd": 2219,
+    "nhd": 2217,
     "odfwMaps": 753,
     "via": {
       "none": 55,
@@ -435,33 +435,33 @@
     "USGS 14313000 Lemolo Lake Near Toketee Falls, OR: 2026-10-22 4128.83 / -",
     "USGS 14335040 Lost Creek Lake Near Mcleod, OR: 2026-10-22 1781.61 / -",
     "USGS 14361900 Applegate Lake Near Copper, Or.: 2026-10-22 1887.84 / -",
-    "USACE APP Applegate Lake near Copper: 2026-10-23 1887.61 / -",
-    "USACE BCL Big Cliff Dam: 2026-10-23 1199.2 / -",
-    "USACE BEU Beulah Reservoir: 2026-10-23 3290.98 / -",
-    "USACE BLU Blue River Dam: 2026-10-23 1221.67 / -",
-    "USACE BRN Brownlee Dam: 2026-10-23 2058.59 / -",
-    "USACE BUL Bully Cr Res near Vale: 2026-10-23 2479.5 / -",
-    "USACE CGR Cougar Dam: 2026-10-23 1530.19 / -",
-    "USACE COT Cottage Grove Dam: 2026-10-23 755.13 / -",
-    "USACE DET Detroit Dam: 2026-10-23 1487.87 / -",
-    "USACE DEX Dexter Dam: 2026-10-23 692.68 / -",
-    "USACE DOR Dorena Dam: 2026-10-23 786.27 / -",
+    "USACE APP Applegate Lake near Copper: 2026-10-23 1887.56 / -",
+    "USACE BCL Big Cliff Dam: 2026-10-23 1197.44 / -",
+    "USACE BEU Beulah Reservoir: 2026-10-23 3291.01 / -",
+    "USACE BLU Blue River Dam: 2026-10-23 1221.54 / -",
+    "USACE BRN Brownlee Dam: 2026-10-23 2058.6 / -",
+    "USACE BUL Bully Cr Res near Vale: 2026-10-23 2479.49 / -",
+    "USACE CGR Cougar Dam: 2026-10-23 1530.12 / -",
+    "USACE COT Cottage Grove Dam: 2026-10-23 755.08 / -",
+    "USACE DET Detroit Dam: 2026-10-23 1487.89 / -",
+    "USACE DEX Dexter Dam: 2026-10-23 692.69 / -",
+    "USACE DOR Dorena Dam: 2026-10-23 786.13 / -",
     "USACE EMI Emigrant Dam: 2026-10-23 2159.53 / -",
-    "USACE FAL Fall Creek Dam: 2026-10-23 765.01 / -",
-    "USACE FOS Foster Reservoir: 2026-10-23 613.41 / -",
-    "USACE FRN Fern Ridge Dam: 2026-10-23 365.48 / -",
-    "USACE GPR Green Peter Reservoir: 2026-10-23 855.94 / -",
-    "USACE GSV Galesville Dam: 2026-10-23 1813.46 / -",
+    "USACE FAL Fall Creek Dam: 2026-10-23 764.98 / -",
+    "USACE FOS Foster Reservoir: 2026-10-23 613.42 / -",
+    "USACE FRN Fern Ridge Dam: 2026-10-23 365.45 / -",
+    "USACE GPR Green Peter Reservoir: 2026-10-23 855.8 / -",
+    "USACE GSV Galesville Dam: 2026-10-23 1813.44 / -",
     "USACE HCD Hells Canyon Dam: 2026-10-22 1683.35 / -",
-    "USACE HCR Hills Creek Dam: 2026-10-23 1449.07 / -",
-    "USACE LOP Lookout Point Dam: 2026-10-23 804.75 / -",
-    "USACE LOS Lost Creek Dam: 2026-10-23 1781.53 / -",
+    "USACE HCR Hills Creek Dam: 2026-10-23 1449.05 / -",
+    "USACE LOP Lookout Point Dam: 2026-10-23 804.69 / -",
+    "USACE LOS Lost Creek Dam: 2026-10-23 1781.51 / -",
     "USACE OCH Ochoco Reservoir: 2026-10-23 3080.67 / -",
     "USACE PHL Mason Dam&Phillips Lk nr Baker: 2026-10-23 3982.78 / -",
     "USACE PHLO Powder R nr Sumpter: 2026-10-23 3982.78 / -",
     "USACE PRV Prineville Reservoir: 2026-10-23 3175.43 / -",
-    "USACE SCO Scoggins Dam: 2026-10-23 260.66 / -",
-    "USACE WAR Warm Springs Dam nr Rvrside: 2026-10-23 3343.66 / -",
+    "USACE SCO Scoggins Dam: 2026-10-23 260.63 / -",
+    "USACE WAR Warm Springs Dam nr Rvrside: 2026-10-23 3343.65 / -",
     "USACE WIL Willow Creek Lake at Heppner: 2026-10-23 2047.4 / -",
     "USBR WIC Wickiup Reservoir: 2026-10-22 4300.93 / 2026-10-22 30111",
     "USBR CRA Crane Prairie Reservoir: 2026-10-22 4440.32 / 2026-10-22 33986",
@@ -621,5 +621,5 @@
       "Howard Prairie Lake (Jackson): caution 2026-10-13 located"
     ]
   },
-  "finishedAt": "2026-10-23T18:47:23.609Z"
+  "finishedAt": "2026-10-23T20:39:48.045Z"
 }
