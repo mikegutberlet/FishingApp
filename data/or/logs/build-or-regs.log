@@ -1,5 +1,5 @@
 {
- "startedAt": "2026-10-23T10:55:36.573Z",
+ "startedAt": "2026-10-23T11:02:55.491Z",
  "pages": {
   "license-tag-permit-fees": 1,
   "general-statewide-regulations": 23,
@@ -332,7 +332,7 @@
   ]
  ],
  "advisories": [
-  "Statewide: All State Waterbodies: → All State Waterbodies: (1)",
+  "Statewide: All State Waterbodies → All State Waterbodies (1)",
   "Multiple: Columbia River and its Oregon tributaries (for example, Willamette, Hood, John Day) → Columbia River (1)",
   "Columbia: Bonneville Dam at Bradford Island, extending one mile upstream to Ruckel Creek → Bonneville Dam at Bradford Island, extending one mile upstream to Ruckel Creek (1)",
   "Columbia: Mid-Columbia River, from Ruckel Creek to McNary Dam → Mid-Columbia River (1)",
@@ -341,4 +341,4 @@
   "Southwest: Cooper Creek Reservoir → Cooper Creek Reservoir (1)",
   "Southwest: Emigrant Reservoir → Emigrant Reservoir (1)",
   "Southwest: Galesville Reservoir → Galesville Reservoir (1)",
-  "Southwest: Plat I
+  "Southwest: Plat I R

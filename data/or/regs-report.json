@@ -1,5 +1,5 @@
 {
- "startedAt": "2026-10-23T10:55:36.573Z",
+ "startedAt": "2026-10-23T11:02:55.491Z",
  "pages": {
   "license-tag-permit-fees": [
    "# License, Tag & Permit Fees (40p 71r)"
@@ -924,7 +924,7 @@
   ]
  ],
  "advisories": [
-  "Statewide: All State Waterbodies: → All State Waterbodies: (1)",
+  "Statewide: All State Waterbodies → All State Waterbodies (1)",
   "Multiple: Columbia River and its Oregon tributaries (for example, Willamette, Hood, John Day) → Columbia River (1)",
   "Columbia: Bonneville Dam at Bradford Island, extending one mile upstream to Ruckel Creek → Bonneville Dam at Bradford Island, extending one mile upstream to Ruckel Creek (1)",
   "Columbia: Mid-Columbia River, from Ruckel Creek to McNary Dam → Mid-Columbia River (1)",
@@ -940,11 +940,14 @@
   "Southeast: Owyhee Reservoir → Owyhee Reservoir (1)",
   "Southeast: Owyhee River upstream to Three Forks → Owyhee River (1)",
   "Southeast: Phillips Reservoir → Phillips Reservoir (1)",
-  "Willamette: Columbia Slough 2022 PFOS Appendix to City of Portland Website: Columbia Slough & Translations Story of progress on Columbia Slough sediment clean up project Social Media Cards General Columbia Slough → Columbia Slough 2022 PFOS Appendix | Translations Story of progress on Columbia Slough sediment clean up project Social Media Cards General Columbia Slough (1)",
-  "Willamette: Cottage Grove Reservoirs → Cottage Grove Reservoirs (3)",
+  "Willamette: Columbia Slough → Columbia Slough (2)",
+  "Willamette: Cottage Grove Reservoirs → Cottage Grove Reservoirs (1)",
+  "Willamette: Dorena Reservoirs → Dorena Reservoirs (1)",
+  "Willamette: Lower Willamette River, from the Sellwood Bridge to its confluence with the Columbia, to include Multnomah Channel from its confluence with the Willamette to the Sauvie Island Bridge. → Lower Willamette River (1)",
   "Willamette: Lower Willamette River → Lower Willamette River (1)",
-  "Willamette: Willamette River, from its mouth on the Columbia River southward to Eugene Includes: Coast Fork to Cottage Grove Reservoir Does not apply to: Middle Fork, North Fork of the Middle Fork, or to any other tributary emptying into the Willamette → Willamette River (2)",
-  "Snake River: Snake River, from just south of Adrien, OR north to the WA border Includes: Brownlee Reservoir and the Powder River arm → Snake River | Brownlee Reservoir | Powder River arm (7)"
+  "Willamette: Willamette River, from its mouth on the Columbia River southward to Eugene Includes: Coast Fork to Cottage Grove Reservoir Does not apply to: Middle Fork, North Fork of the Middle Fork, or to any other tributary emptying into the Willamette → Willamette River (1)",
+  "Willamette: Multnomah Channel and Scappoose Bay → Multnomah Channel | Scappoose Bay (1)",
+  "Snake River: Snake River, from just south of Adrien, OR north to the WA border Includes: Brownlee Reservoir and the Powder River arm → Snake River | Brownlee Reservoir | Powder River arm (1)"
  ],
  "zones": [
   "Central: 1 parts",
@@ -958,5 +961,5 @@
   "Northwest: 1 parts"
  ],
  "counties": 36,
- "finishedAt": "2026-10-23T10:55:39.011Z"
+ "finishedAt": "2026-10-23T11:02:58.625Z"
 }
