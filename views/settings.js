@@ -7,7 +7,7 @@ import { refreshMap } from '../map.js';
 // A lake pack holds the lake, its depth maps and stocking notes. Catches and notes stay private unless included.
 export async function shareLake(lake) {
   const includeNotes = confirm(`Share ${lake.name} with its depth maps.\n\nAlso include your notes, pinned spots and waypoints? (Catches are never included.)`);
-  const pack = { app: 'tackle-box', version: 1, sharedAt: new Date().toISOString(), lakes: [lake],
+  const pack = { app: 'tackle-box', version: 1, sharedAt: new Date().toISOString(), lakes: [{ ...lake, favorite: undefined }], // your star stays yours
     depthSets: await db.byLake('depthSets', lake.id), stocking: await db.byLake('stocking', lake.id),
     notes: includeNotes ? await db.byLake('notes', lake.id) : [], catches: [],
     waypoints: includeNotes ? await db.byLake('waypoints', lake.id) : [] };
@@ -33,9 +33,9 @@ $('#import-file').onchange = async e => {
     const data = JSON.parse(await e.target.files[0].text());
     const isPack = !data.exportedAt;
     const replace = !isPack && confirm('Replace everything on this device with the backup? (Cancel = merge)');
-    await importAll(data, { replace });
+    const skipped = await importAll(data, { replace });
     await refreshMap();
-    status(isPack ? `Added ${data.lakes.map(l => l.name).join(', ')}` : 'Backup imported');
+    status((isPack ? `Added ${data.lakes.map(l => l.name).join(', ')}` : 'Backup imported') + (skipped ? ` (${skipped} damaged entries skipped)` : ''));
   } catch (err) { alert(err.message); }
 };
 function renderInstallHelp() {
