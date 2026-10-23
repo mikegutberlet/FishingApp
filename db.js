@@ -112,10 +112,14 @@ function clean(v, k = '') {
   }
 }
 // A lake also needs a place on the map: one without coordinates breaks the map for every lake.
+// A trip's track keeps only [lat, lon, ms] points, which is what the trip page and the journal read.
+const cleanTrack = track => (Array.isArray(track) ? track : []).filter(Array.isArray)
+  .map(([lat, lon, ms]) => [lat, lon, new Date(ms ?? NaN).getTime()]).filter(p => p.every(Number.isFinite));
 const cleanRow = (row, store) => {
   if (!row || typeof row !== 'object' || Array.isArray(row) || row.id == null || row.id === '') return null;
   const c = clean(row);
   if (c === BAD) return null;
+  if (store === 'trips') c.track = cleanTrack(c.track);
   return store === 'lakes' && !(Number.isFinite(c.lat) && Number.isFinite(c.lon)) ? null : c;
 };
 

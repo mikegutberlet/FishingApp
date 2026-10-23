@@ -25,6 +25,8 @@ export async function activeTrip() {
 
 const fmtDur = ms => { const m = Math.max(0, Math.round(ms / 60e3)); return m < 60 ? `${m} min` : `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, '0')} min`; };
 const clock = ms => { const s = Math.max(0, Math.floor(ms / 1000)); return `${Math.floor(s / 3600)}:${String(Math.floor(s / 60) % 60).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; };
+// Track points as [lat, lon, ms]; a damaged or hand-edited backup can hold anything, so bad points are skipped.
+const trackOf = t => (Array.isArray(t.track) ? t.track : []).filter(p => Array.isArray(p) && Number.isFinite(p[0]) && Number.isFinite(p[1]));
 const trackKm = track => track.reduce((km, p, i) => i ? km + haversineKm(track[i - 1][0], track[i - 1][1], p[0], p[1]) : 0, 0);
 const tripCatches = async t => (await db.all('catches')).filter(c => c.tripId === t.id).sort((a, b) => a.time.localeCompare(b.time));
 const tripEvents = async t => (await db.all('events')).filter(e => e.tripId === t.id);
@@ -155,7 +157,7 @@ export async function openTrip(id) {
 
 export async function closeStale(t) {
   if (t.id === localStorage.getItem(KEY)) return t; // the running trip (maybe in another tab) is never closed here
-  const times = [...(await tripCatches(t)).map(c => c.time), ...(await tripEvents(t)).map(e => e.time), ...t.track.map(p => new Date(p[2]).toISOString())];
+  const times = [...(await tripCatches(t)).map(c => c.time), ...(await tripEvents(t)).map(e => e.time), ...trackOf(t).map(p => new Date(p[2])).filter(d => !isNaN(d)).map(d => d.toISOString())];
   const end = times.reduce((a, b) => b > a ? b : a, t.start);
   return db.put('trips', { ...t, end });
 }
@@ -251,11 +253,13 @@ function sizeSheet(t, c) {
 
 async function endTrip(t) {
   if (!confirm('End this trip?')) return;
+  await activeTrip(); // a page left open in another tab: forget a trip that tab already ended
   const running = trip?.id === t.id;
   if (running) await flush();
   const saved = await db.get('trips', t.id);
-  if (running) { trip = null; localStorage.removeItem(KEY); stopTracking(); updatePill(); }
+  if (running) { trip = null; if (localStorage.getItem(KEY) === t.id) localStorage.removeItem(KEY); stopTracking(); updatePill(); }
   if (!saved) return showView('journal'); // removed meanwhile, e.g. by restoring a backup
+  if (saved.end && !running) return renderSummary(saved); // already ended elsewhere: keep its end time
   const ended = await db.put('trips', { ...saved, track: running ? t.track : saved.track, end: new Date().toISOString() });
   await linkCatches(ended);
   renderSummary(ended);
@@ -272,7 +276,7 @@ export async function linkCatches(t) {
 async function renderSummary(t) {
   const [lake, catches, events] = await Promise.all([db.get('lakes', t.lakeId), tripCatches(t), tripEvents(t)]);
   const hours = (Date.parse(t.end) - Date.parse(t.start)) / 3600e3;
-  const km = trackKm(t.track);
+  const track = trackOf(t), km = trackKm(track);
   const bySpecies = Object.entries(catches.reduce((m, c) => (m[c.species] = (m[c.species] || 0) + 1, m), {})).sort((a, b) => b[1] - a[1]);
   const biggest = catches.filter(c => c.length).sort((a, b) => b.length - a.length)[0];
   const el = $('#trip');
@@ -284,11 +288,11 @@ async function renderSummary(t) {
       <div class="stat"><b>${catches.length}</b><span>Fish</span></div>
       <div class="stat"><b>${hours >= 0.25 ? (catches.length / hours).toFixed(1) : '–'}</b><span>Fish / hour</span></div>
       <div class="stat"><b>${events.filter(e => e.kind === 'bite').length} / ${events.filter(e => e.kind === 'lost').length}</b><span>Bites / lost</span></div>
-      ${t.track.length ? `<div class="stat"><b>${units().depth === 'm' ? `${km.toFixed(1)} km` : `${(km * 0.621371).toFixed(1)} mi`}</b><span>Distance</span></div>` : ''}
+      ${track.length ? `<div class="stat"><b>${units().depth === 'm' ? `${km.toFixed(1)} km` : `${(km * 0.621371).toFixed(1)} mi`}</b><span>Distance</span></div>` : ''}
       ${biggest ? `<div class="stat"><b>${fmtLen(biggest.length)}</b><span>Biggest · ${esc(biggest.species)}</span></div>` : ''}
     </div>
     ${bySpecies.length ? `<div class="small" style="margin-bottom:12px">${bySpecies.map(([s, n]) => `${esc(s)} ×${n}`).join(' · ')}</div>` : ''}
-    ${t.track.length || catches.length || events.length ? '<div id="trip-map" class="trip-map"></div>' : ''}
+    ${track.length || catches.length || events.length ? '<div id="trip-map" class="trip-map"></div>' : ''}
     <h2>Journal</h2>
     <form class="card form" id="journal-form">
       <div class="label">Rating <span class="stars">${[1, 2, 3, 4, 5].map(n => `<button type="button" data-star="${n}" class="${n <= (t.rating ?? 0) ? 'on' : ''}">★</button>`).join('')}</span></div>
@@ -339,8 +343,9 @@ function drawTripMap(t, lake, catches, events) {
   miniMap = L.map(div, { zoomControl: false, attributionControl: false });
   L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19 }).addTo(miniMap);
   const pts = [];
-  if (t.track.length) {
-    const line = t.track.map(p => [p[0], p[1]]);
+  const track = trackOf(t);
+  if (track.length) {
+    const line = track.map(p => [p[0], p[1]]);
     L.polyline(line, { color: '#3fb0d4', weight: 3 }).addTo(miniMap);
     L.circleMarker(line[0], { radius: 5, color: '#fff', weight: 2, fillColor: '#2fbf71', fillOpacity: 1 }).bindTooltip('Start').addTo(miniMap);
     pts.push(...line);

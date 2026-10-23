@@ -40,7 +40,7 @@ async function readPhotos(files) {
     const trip = trips.find(t => t.end && time >= t.start && time <= t.end);
     if (lat == null && trip) {
       const t = Date.parse(time);
-      const p = trip.track.reduce((best, q) => !best || Math.abs(q[2] - t) < Math.abs(best[2] - t) ? q : best, null);
+      const p = (Array.isArray(trip.track) ? trip.track : []).filter(Array.isArray).reduce((best, q) => !best || Math.abs(q[2] - t) < Math.abs(best[2] - t) ? q : best, null);
       if (p) [lat, lon] = p;
     }
     const water = trip ? { lake: lakes.find(l => l.id === trip.lakeId) } : lat != null ? matchWater(lat, lon, lakes, sw) : {};
