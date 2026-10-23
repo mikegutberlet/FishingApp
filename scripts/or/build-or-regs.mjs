@@ -155,18 +155,26 @@ try {
   const advisories = [];
   let zone = '', last = null;
   // Link labels that sit in the waterbody cell.
-  const LINKS = /\s*(Press release|Fact ?sheet|Technical report:?|Frequently asked questions|Information OHA used to warrant a statewide advisory|Meal guidance|Map)\b/gi;
-  let contaminant0 = '';
+  const LINKS = /\s*(Press release|Fact ?sheet|Technical report:?|Frequently asked questions|Information OHA used to warrant a statewide advisory|Meal guidance|Map)\b.*$/gi;
+  let prev = { contaminant: '', fish: '' }, started = false;
   for (const r of rows) {
-    if (r.length < 3 || /^zone$/i.test(r[0]) || /contaminant/i.test(r.join(' ')) && /waterbody/i.test(r.join(' ')) || /MEALS PER MONTH/.test(r.join(' '))) continue;
-    // Cells span rows: a new zone has 6 cells (or 5 when the two meal columns merge, as for Columbia Slough), a new
-    // water in the same zone 5, another fish for the same water and contaminant 3.
-    const isZone = r[0] && r[0] === r[0].toUpperCase() && /[A-Z]/.test(r[0]) && r.length >= 5;
-    const cells = isZone ? (r.length === 5 ? [...r, r[4]] : r) : r.length >= 5 ? [zone, ...r] : r.length === 4 ? [zone, last?.area ?? '', ...r] : [zone, last?.area ?? '', contaminant0, ...r];
-    const [z, rawWater, contaminant, fish, vulnerable, everyone] = cells;
-    contaminant0 = contaminant;
+    if (/^zone$/i.test(r[0]) || /MEALS PER MONTH/.test(r.join(' '))) { if (started && /^zone$/i.test(r[0])) break; continue; }
+    // A one-cell row is the note under the table; the shellfish tables after it are a different shape.
+    if (r.length === 1) { if (started) break; continue; }
+    started = true;
+    // Cells span rows, so rows have 2 to 6 cells. Read from the right: meals a month (two numbers, or one merged
+    // cell such as "Fillet only - 1 Whole body - 0"), then fish, contaminant, water and zone as far as they go.
+    const two = r.length >= 3 && /^\d+$/.test(r.at(-1)) && /^\d+$/.test(r.at(-2));
+    const meals = two ? r.slice(-2) : [r.at(-1), r.at(-1)];
+    let rest = r.slice(0, two ? -2 : -1);
+    const isZone = rest.length >= 4 && rest[0] === rest[0].toUpperCase() && /[A-Z]/.test(rest[0]);
+    if (isZone) { zone = rest[0].replace(/\b([A-Z])([A-Z]+)\b/g, (m, a, b) => a + b.toLowerCase()); rest = rest.slice(1); }
+    // One cell left: another fish for the same water, or another water sharing the row above's contaminant and fish.
+    const one = rest.length === 1 && WATERISH.test(rest[0]);
+    const [rawWater, contaminant, fish] = rest.length >= 3 ? rest : rest.length === 2 ? [last?.area ?? '', ...rest] : one ? [rest[0], prev.contaminant, prev.fish] : [last?.area ?? '', prev.contaminant, rest[0]];
+    const [vulnerable, everyone] = meals;
+    prev = { contaminant, fish };
     const water = rawWater.replace(LINKS, '').replace(/\s+,/g, ',').replace(/\s+/g, ' ').trim();
-    if (isZone) zone = z.replace(/\b([A-Z])([A-Z]+)\b/g, (m, a, b) => a + b.toLowerCase());
     if (!water || /coast/i.test(zone) && /clam/i.test(water)) continue;
     if (last && last.area === water) last.fish.push({ fish, contaminant, vulnerable, everyone });
     else { last = { zone, area: water, names: aliases(water.replace(/\s*Does not apply to:.*$/i, '')), fish: [{ fish, contaminant, vulnerable, everyone }] }; advisories.push(last); }
