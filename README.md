@@ -30,6 +30,15 @@ It is a PWA: open it once in Safari/Chrome, choose **Add to Home Screen**, and i
 * **Wind on the water:** which bank the wind is blowing into, with the next big shift; map layer *Wind on my lakes* puts a wind arrow on each saved water.
 * **Flow vs normal:** for USGS stream gauges, today's flow as a percent of the median for this date over the gauge's record, with a fishable / high / blown-out read on rivers.
 
+## Water data and safety
+
+* **Regs & safety tab** on every water: special regulations that name the water (Title 14 §7.50 trout, §7.40 salmon/steelhead, §5.00 black bass, §5.15 catfish, plus county-wide rules), matched by name, kind of water and county, with 🟢/🔴 for open or closed today; the statewide rules for the species; current toxic algae advisories; and OEHHA advice on how often you can eat each fish. The CDFW booklet and posted signs are still the final word.
+* **Toxic algae banner** at the top of a water's page when the Water Boards have a Caution, Warning or Danger advisory on it, and a *Toxic algae advisories* map layer (on by default).
+* **Access & facilities** on the Info tab: boat ramps, fishing piers, parking near them, campgrounds, marinas, boat rentals and bait & tackle from OpenStreetMap, with distance and directions; map layer *Ramps & access* when zoomed in.
+* **Plant calendars:** each stocked water has a calendar feed (`data/ca/ics/<stockId>.ics`); *Subscribe to plants* on the Stocking tab adds it to Apple or Google Calendar, with no server knowing who subscribed.
+* **New since last visit:** the lake list badges saved waters with CDFW plants added since you last opened their Stocking tab.
+* `CA.regsFor(lake)` and `CA.catchWarnings(lake, catch)` return the matched rules and plain-text warnings (closed season, release only, size and bag limits) for a catch form to show.
+
 ## California
 
 * **Find stocked waters**: Lakes → *Find California stocked waters* lists every CDFW-stocked lake and river, filtered to recent and upcoming plants, with one-tap *Add*. The map also has a *CA stocked waters* layer (green = planted in the last 30 days).
@@ -60,6 +69,11 @@ Data is refreshed daily by `.github/workflows/update-data.yml` running `scripts/
 | Historical introductions and plantings | USGS Nonindigenous Aquatic Species database, plus documented early events (Fish Bulletin 178) | weekly |
 | Current plants and stocking history | CDFW planting schedule | nightly |
 | Lake levels | CDEC | nightly |
+| Toxic algae advisories | California Water Boards FHAB bloom reports (data.ca.gov) | nightly |
+| Plant calendar feeds | built from the CDFW planting schedule | nightly |
+| Fishing regulations | California Code of Regulations Title 14 (Cornell LII), county lines from US Census TIGERweb | weekly |
+| Fish consumption advisories | OEHHA (data.ca.gov) | weekly |
+| Ramps, piers, parking, campgrounds, marinas, tackle shops | OpenStreetMap via Overpass | monthly |
 
 ### What the records can and can't tell you
 
@@ -123,5 +137,7 @@ Reverse-engineering other apps isn't needed: the public sources above cover cond
 * `scripts/update-ca-data.mjs`: nightly CDFW plants, stocked waters and CDEC levels → `data/ca/`
 * `scripts/build-ca-waters.mjs`, `build-ca-history.mjs`: weekly statewide water list and history
 * `scripts/build-ca-bathymetry.mjs`: monthly depth contours → `data/ca/bathymetry/`
+* `scripts/build-ca-hab.mjs`, `build-ca-ics.mjs`: nightly algae advisories → `data/ca/hab.json`, plant calendars → `data/ca/ics/`
+* `scripts/build-ca-regs.mjs`, `build-ca-oehha.mjs`, `build-ca-access.mjs`: weekly regulations and county lines, fish advisories; monthly access → `data/ca/`
 * `data/ca/logs/`: output of each data job, committed so problems can be read from the repo
 * `sw.js`, `manifest.json`: offline + install
