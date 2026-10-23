@@ -15,7 +15,7 @@ const NAME_KEY = 'tackle-box-crew-name';
 const QR_MAX = 2900;  // bytes a version-40 QR code holds at low error correction, less a little headroom
 const CATCH_FIELDS = ['species', 'time', 'length', 'weight', 'weightEst', 'depth', 'waterTemp', 'lure', 'technique', 'clarity', 'released', 'moon', 'conditions'];
 
-export const isCrewPack = d => d?.app === 'tackle-box' && d.kind === 'crew';
+export const isCrewPack = d => d?.app === 'tackle-box' && d.kind === 'crew' && Array.isArray(d.lakes) && Array.isArray(d.items);
 
 function myName() {
   let n = localStorage.getItem(NAME_KEY);
@@ -55,6 +55,26 @@ async function buildPack({ catches = [], spots = [] }, { exact = false, photos =
 }
 
 // ---------- Receiving ----------
+// A pack is someone else's file, so only known fields of the expected types come in: never their ids
+// (the lake gets a fresh id), and nothing that would link to your own trips or tackle.
+const KINDS = ['catch', 'spot', 'waypoint'];
+const num = v => v == null || v === '' || !isFinite(+v) ? undefined : +v;
+const str = (v, n = 500) => v == null ? undefined : String(v).slice(0, n);
+const cleanLake = l => ({ name: str(l.name, 120) || 'Shared water', lat: num(l.lat), lon: num(l.lon), acres: num(l.acres), cdfwStockId: num(l.cdfwStockId),
+  nhdId: l.nhdId == null ? undefined : String(l.nhdId).replace(/[^\w-]/g, '').slice(0, 40), state: str(l.state, 4) });
+function cleanItem(it) {
+  const out = { kind: it.kind, lat: num(it.lat), lon: num(it.lon) };
+  for (const k of ['length', 'weight', 'weightEst', 'depth', 'waterTemp']) out[k] = num(it[k]);
+  for (const k of ['species', 'lure', 'technique', 'clarity', 'moon', 'name', 'type']) out[k] = str(it[k], 120);
+  for (const k of ['notes', 'text']) out[k] = str(it[k], 4000);
+  out.time = it.time && !isNaN(Date.parse(it.time)) ? new Date(it.time).toISOString() : undefined;
+  out.released = it.released == null ? undefined : !!it.released;
+  if (it.conditions && typeof it.conditions === 'object') {
+    const c = it.conditions;
+    out.conditions = { airTemp: num(c.airTemp), wind: num(c.wind), windDir: num(c.windDir), gusts: num(c.gusts), pressureInHg: num(c.pressureInHg), cloud: num(c.cloud), pressureTrend: str(c.pressureTrend, 20), sky: str(c.sky, 60) };
+  }
+  return out;
+}
 async function matchLake(l, mine) {
   return mine.find(m => (l.cdfwStockId && m.cdfwStockId === l.cdfwStockId) || (l.nhdId && m.nhdId === l.nhdId))
     ?? mine.find(m => m.name?.toLowerCase() === l.name?.toLowerCase() && haversineKm(m.lat, m.lon, l.lat, l.lon) < 5)
@@ -68,17 +88,18 @@ export async function importCrewPack(pack, { ask = true } = {}) {
   if (ask && !confirm(`${pack.from || 'A friend'} shared ${summary || 'nothing'} on ${pack.lakes.map(l => l.name).join(', ')}.\n\nAdd to your Crew list?`)) return false;
   const mine = await db.all('lakes');
   const ids = [], added = [];
-  for (const l of pack.lakes) {
+  for (const l of pack.lakes.map(cleanLake)) {
     let m = await matchLake(l, mine);
     if (!m) { m = await db.put('lakes', { ...l, notes: `Shared by ${pack.from || 'a friend'}` }); mine.push(m); added.push(m.name); }
     ids.push(m.id);
   }
-  const from = pack.from || 'Friend';
+  const from = String(pack.from || 'Friend').slice(0, 60);
   for (const it of pack.items) {
-    const { lake, photo, id, ...rest } = it;
+    const lakeId = ids[it.lake];
+    if (!lakeId || !KINDS.includes(it.kind)) continue;
     // Same friend + same original id = same row, so getting a pack twice doesn't duplicate anything.
-    await db.put('crew', { ...rest, id: `crew-${from.toLowerCase().replace(/\W+/g, '')}-${id}`, lakeId: ids[lake], from, receivedAt: new Date().toISOString(),
-      photo: typeof photo === 'string' && photo.startsWith('data:') ? await (await fetch(photo)).blob() : null });
+    await db.put('crew', { ...cleanItem(it), id: `crew-${from.toLowerCase().replace(/\W+/g, '')}-${String(it.id).replace(/[^\w-]/g, '').slice(0, 40)}`, lakeId, from, receivedAt: new Date().toISOString(),
+      photo: typeof it.photo === 'string' && /^data:image\/(jpeg|png|webp);base64,/.test(it.photo) ? await (await fetch(it.photo)).blob() : null });
   }
   status(`Added ${summary} from ${from}${added.length ? ` · new water: ${added.join(', ')}` : ''}`);
   await refreshMap(); refreshCrewLayer(); renderCrewCard();
@@ -135,8 +156,8 @@ async function showQr(url, pack) {
   await loadQr();
   const qr = qrcode(0, 'L'); qr.addData(url, 'Byte'); qr.make();
   const sheet = document.createElement('div');
-  sheet.className = 'sheet';
-  sheet.innerHTML = `<div class="sheet-card"><h3>Scan with your friend's phone camera</h3>
+  sheet.className = 'qr-sheet';
+  sheet.innerHTML = `<div class="qr-sheet-card"><h3>Scan with your friend's phone camera</h3>
     <div class="qr">${qr.createSvgTag({ cellSize: 4, margin: 4, scalable: true })}</div>
     <p class="small">${esc(pack.items.length)} item${pack.items.length > 1 ? 's' : ''} from ${esc(pack.from)}. The whole share is inside the code; no server sees it.
       Friends with the app on their home screen: in Tackle Box tap <b>Data → Share with your crew → Scan</b>${'BarcodeDetector' in window ? '' : ' (Android), or open the link and copy the code'}.</p>
@@ -150,8 +171,8 @@ async function showQr(url, pack) {
 async function scanQr() {
   const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
   const sheet = document.createElement('div');
-  sheet.className = 'sheet';
-  sheet.innerHTML = `<div class="sheet-card"><h3>Point at the QR code</h3><video playsinline muted class="qr-video"></video><button class="primary" id="scan-stop">Cancel</button></div>`;
+  sheet.className = 'qr-sheet';
+  sheet.innerHTML = `<div class="qr-sheet-card"><h3>Point at the QR code</h3><video playsinline muted class="qr-video"></video><button class="primary" id="scan-stop">Cancel</button></div>`;
   document.body.append(sheet);
   const video = sheet.querySelector('video'); video.srcObject = stream; await video.play();
   const detector = new BarcodeDetector({ formats: ['qr_code'] });

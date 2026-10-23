@@ -23,8 +23,8 @@
 .reminder span { flex: 1; }
 .reminder button { padding: 4px 10px; font-size: 13px; white-space: nowrap; }
 
-.sheet { position: fixed; inset: 0; z-index: 2500; background: rgba(0,0,0,.55); display: flex; align-items: center; justify-content: center; padding: 16px; }
-.sheet-card { background: var(--card); color: var(--text); border-radius: 16px; padding: 16px; width: 100%; max-width: 420px; max-height: 100%; overflow-y: auto; }
+.qr-sheet { position: fixed; inset: 0; z-index: 2500; background: rgba(0,0,0,.55); display: flex; align-items: center; justify-content: center; padding: 16px; }
+.qr-sheet-card { background: var(--card); color: var(--text); border-radius: 16px; padding: 16px; width: 100%; max-width: 420px; max-height: 100%; overflow-y: auto; }
 .qr { background: #fff; border-radius: 12px; padding: 8px; margin: 8px auto; max-width: 340px; }
 .qr svg { display: block; width: 100%; height: auto; }
 .qr-video { width: 100%; border-radius: 12px; margin-bottom: 10px; background: #000; }
