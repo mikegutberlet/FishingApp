@@ -1,5 +1,5 @@
 // California: CDFW stocking and CDEC reservoir levels, read from the files the nightly job writes to data/ca/.
-// Nevada and Oregon will follow the same shape (states/nv.js, states/or.js).
+// Every state module has the same shape (see states/index.js); Nevada is states/nv.js.
 import { haversineKm } from '../data-sources.js';
 
 const cache = {};
@@ -12,6 +12,15 @@ export const code = 'CA';
 export const name = 'California';
 export const waterUrl = stockId => `https://apps.wildlife.ca.gov/fishing/?stockid=${stockId}`;
 export const scheduleUrl = 'https://nrm.dfg.ca.gov/FishPlants/';
+// What states/index.js needs to route a water here.
+export const agency = 'CDFW';
+export const stockField = 'cdfwStockId';
+export const levelSource = 'CDEC';
+export const bbox = [-124.5, 32.5, -114.1, 42.05];
+export const outline = [[-125, 42], [-120.0, 42], [-120.0, 39.0], [-114.63, 35.0], [-114.57, 34.8], [-114.13, 34.27], [-114.72, 32.72], [-117.12, 32.53], [-125, 32.53]];
+export const plantsNote = 'CDFW publishes the week and species, not counts. History grows each night from the public schedule.';
+export const searchHint = 'Shasta, Kern River, Convict…';
+export const stockedHint = 'Lake Cachuma, Shasta, Mono…';
 
 // Every CDFW stocked water with a map point, newest plant first, plus its planting history.
 export async function waters() {
@@ -69,10 +78,10 @@ export async function nearestReservoir(lat, lon, pinnedId, { name, acres, maxKm 
 // Lakes keep their id; rivers are flattened into one entry per label point, all sharing the river's id.
 export async function statewide() {
   const [l, r] = await Promise.all([load('lakes'), load('rivers')]);
-  const lakes = (l?.lakes ?? []).map(x => ({ ...x, kind: 'lake' }));
+  const lakes = (l?.lakes ?? []).map(x => ({ ...x, kind: 'lake', state: code }));
   const riverLabels = [];
   for (const river of r?.rivers ?? []) {
-    for (const [lat, lon] of river.points) riverLabels.push({ ...river, kind: 'river', lat, lon });
+    for (const [lat, lon] of river.points) riverLabels.push({ ...river, kind: 'river', state: code, lat, lon });
   }
   return { lakes, riverLabels };
 }
