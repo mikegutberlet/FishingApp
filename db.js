@@ -78,7 +78,8 @@ export async function exportAll() {
 // numeric fields must be numbers, links must be http(s), photos must be images, and every other string loses the
 // characters that could open a tag or close an attribute. Free text (names, notes, species, lures...) stays as typed.
 const SAFE_ID = /^[\w.:-]{0,100}$/;
-const FREE_TEXT = new Set(['name', 'notes', 'note', 'text', 'journal', 'species', 'lure', 'technique', 'companions', 'title', 'color', 'size', 'brand', 'from', 'description', 'county']);
+const FREE_TEXT = new Set(['name', 'notes', 'note', 'text', 'journal', 'species', 'lure', 'technique', 'companions', 'title', 'color', 'size', 'brand', 'from', 'description', 'county',
+  'regs', 'access', 'number']);
 const NUMERIC = new Set(['lat', 'lon', 'acres', 'elevationFt', 'maxDepth', 'maxDepthFt', 'lengthKm', 'km', 'length', 'weight', 'weightEst', 'depth',
   'waterTemp', 'airTemp', 'wind', 'windDir', 'gusts', 'cloud', 'pressureInHg', 'levelFt', 'count', 'inches', 'qty', 'rating', 'accuracy']);
 const BAD = Symbol('unsafe id');
