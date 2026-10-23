@@ -38,6 +38,7 @@ const SHELL = [
   'views/tabs/history.js',
   'views/tabs/info.js',
   'views/tabs/notes.js',
+  'views/tabs/nv-safety.js',
   'views/tabs/stocking.js',
 ];
 

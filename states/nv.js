@@ -1,6 +1,6 @@
 // Nevada: NDOW stocking and fishing reports, USGS and Reclamation lake levels, read from the files the Nevada data
 // jobs write to data/nv/ (scripts/nv/*.mjs and scripts/build-state-*.mjs).
-import { stateData, norm } from './common.js';
+import { stateData } from './common.js';
 import { haversineKm } from '../data-sources.js';
 
 const d = stateData('nv', 'NV');
@@ -28,33 +28,70 @@ export async function reportFor(lake) {
   return w?.waters.find(x => x.id === id) ?? null;
 }
 
-// ---------- Safety: toxic algae (nightly), fish consumption advisories and regulations (weekly) ----------
+// ---------- Safety: toxic algae (nightly), regulations and fish consumption advisories (weekly) ----------
+// Names in the regulations and on NDOW's pages are written several ways: "Walker River, East Fork",
+// "East Walker River", "South Fork of the Humboldt River". This key makes those the same.
+const regKey = s => String(s ?? '').toLowerCase().replace(/[’']/g, '').replace(/^(.+?),\s*(.+)$/, '$2 $1').replace(/\s*[–—-]\s+.*$/, '')
+  .replace(/\b(the|of|fork)\b|[^a-z0-9]/g, '');
+const WATER_WORD = /^(lake|reservoir|res|pond|ponds|river|creek|wash)/;
+// Same water: same key, or one is the other plus a place ("Lake Tahoe – Cave Rock"), not plus another water word
+// ("Cold Creek" is not "Cold Creek Reservoir").
+export function sameWater(a, b) {
+  const x = regKey(a), y = regKey(b);
+  if (x.length < 4 || y.length < 4) return false;
+  if (x === y) return true;
+  const [long, short] = x.length > y.length ? [x, y] : [y, x];
+  // A rule for "Jarbidge River" covers its West Fork too.
+  if (/(river|creek)$/.test(short) && long.replace(/^(north|south|east|west|middle)/, '') === short) return true;
+  return long.startsWith(short) && !WATER_WORD.test(long.slice(short.length));
+}
 const reach = lake => /river|creek|stream/i.test(`${lake.kind} ${lake.type}`) ? 3 : Math.max(1.5, Math.sqrt((lake.acres ?? 50) / 247) * 1.5 + 0.5);
-const named = (lake, n) => { const a = norm(lake.name), b = norm(n); return a.length > 2 && b.length > 2 && (a === b || a.startsWith(b) || b.startsWith(a)); };
+
+function inRing([x, y], ring) {
+  let c = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const [xi, yi] = ring[i], [xj, yj] = ring[j];
+    if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) c = !c;
+  }
+  return c;
+}
+// County and NDOW region (Western, Eastern, Southern) a point is in.
+export async function countyAt(lat, lon) {
+  const c = await d.load('counties');
+  const hit = c?.counties.find(k => lon >= k.bbox[0] && lon <= k.bbox[2] && lat >= k.bbox[1] && lat <= k.bbox[3] && k.polys.some(([outer]) => inRing([lon, lat], outer)));
+  return hit ? { county: hit.name, region: hit.region } : null;
+}
 
 export async function habAdvisories() {
   return d.load('hab');
 }
 
-// Current toxic algae advisories on this water (Nevada Office of State Epidemiology list, matched by name).
+// Current toxic algae advisories on this water (Nevada Office of State Epidemiology list, matched by name and place).
 export async function habFor(lake) {
   const h = await d.load('hab');
   return (h?.advisories ?? []).map(a => ({ ...a, distKm: a.lat != null ? haversineKm(lake.lat, lake.lon, a.lat, a.lon) : null }))
-    .filter(a => named(lake, a.name) ? a.distKm == null || a.distKm < 60 : a.distKm != null && a.distKm <= reach(lake));
+    .filter(a => sameWater(lake.name, a.name.split(/\s+(?:including|incl\.?)\s+|[(,]/i)[0]) ? a.distKm == null || a.distKm < 60 : a.distKm != null && a.distKm <= reach(lake));
 }
 
-// Health advisories on eating fish from this water.
+// Health advisories on eating fish caught here.
 export async function fishAdviceFor(lake) {
   const f = await d.load('advisories');
   if (!f) return null;
-  const site = f.advisories.filter(a => a.areas.some(([lat, lon, km]) => haversineKm(lake.lat, lake.lon, lat, lon) <= km) || a.names.some(n => named(lake, n)));
+  const site = f.advisories.filter(a => a.names.some(n => sameWater(lake.name, n)) || a.areas.some(([lat, lon, km]) => haversineKm(lake.lat, lake.lon, lat, lon) <= km));
   return { site, statewide: f.statewide, url: f.url, updatedAt: f.updatedAt };
 }
 
-// Statewide seasons and limits, plus special rules that name this water.
+// The rules for this water: special regulations that name it (in its county), its region's general limits,
+// closed waters in its county, and the statewide rules.
 export async function regsFor(lake) {
   const r = await d.load('regs');
   if (!r) return null;
-  const special = r.waters.filter(w => [w.name, ...(w.aliases ?? [])].some(n => named(lake, n)));
-  return { special, statewide: r.statewide, booklet: r.booklet, updatedAt: r.updatedAt, source: r.source };
+  const at = await countyAt(lake.lat, lake.lon);
+  const ndow = lake.ndowWaterId ? await reportFor(lake) : null;
+  const county = at?.county ?? null, region = at?.region ?? ndow?.region ?? null;
+  const special = r.waters.filter(w => (!county || !w.county || w.county === county) && [w.name, ...w.aliases].some(n => sameWater(lake.name, n)));
+  return {
+    county, region, special, regionRules: region ? r.regions[region] : null, closed: r.closed.filter(c => county && c.county === county),
+    statewide: r.statewide, booklet: r.booklet, source: r.source, updatedAt: r.updatedAt,
+  };
 }

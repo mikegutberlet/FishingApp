@@ -90,7 +90,7 @@ export async function addStateWater(stockId, code = 'CA') {
   const w = (await S.waters()).find(x => String(x.id) === String(stockId));
   if (!w) return;
   const lake = await db.put('lakes', {
-    name: w.name, type: w.type ?? (/river|creek|fork|section/i.test(w.name) ? 'River' : 'Lake'), state: S.code, county: w.counties,
+    name: w.name, type: w.type ?? (/river|creek|fork|section/i.test(w.name) ? 'River' : 'Lake'), state: S.code, county: w.county ?? w.counties,
     lat: w.lat, lon: w.lon, [S.stockField]: w.id, stockingUrl: S.waterUrl(w.id), infoUrl: S.waterUrl(w.id),
   });
   await refreshMap();
