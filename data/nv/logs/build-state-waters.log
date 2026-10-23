@@ -1,7 +1,6 @@
-lakes: 504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/12/query?where=GNIS_NAME+IS+NOT+NULL+AND+FTYPE+IN+%28390%2C436%29+AND+AREASQKM+%3E%3D+0.008&outFields=PERMANENT_IDENTIFIER%2CGNIS_ID%2C
 rivers: 504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?where=GNIS_NAME+IS+NOT+NULL+AND+%28GNIS_NAME+LIKE+%27%25+River%25%27+OR+GNIS_NAME+LIKE+%27%25+Creek%25%27+OR+GNIS_NAME+LIKE+%27
 {
-  "startedAt": "2026-10-23T16:35:55.683Z",
+  "startedAt": "2026-10-23T18:45:29.182Z",
   "steps": {
     "nhdLayers": [
       {
@@ -57,9 +56,64 @@ rivers: 504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/q
         "name": "Waterbody - Large Scale"
       }
     ],
-    "splitTiles": 9,
-    "lakesError": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/12/query?where=GNIS_NAME+IS+NOT+NULL+AND+FTYPE+IN+%28390%2C436%29+AND+AREASQKM+%3E%3D+0.008&outFields=PERMANENT_IDENTIFIER%2CGNIS_ID%2C",
+    "lakes": {
+      "reused": "2026-10-23T11:43:17.332Z",
+      "inState": 350,
+      "outsideOutline": 0
+    },
+    "splitTiles": 6,
+    "failedTiles": [
+      {
+        "layerId": 6,
+        "x": -119.635,
+        "y": 34.99,
+        "size": 0.03125,
+        "error": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?whe"
+      },
+      {
+        "layerId": 6,
+        "x": -119.60375,
+        "y": 34.99,
+        "size": 0.03125,
+        "error": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?whe"
+      },
+      {
+        "layerId": 6,
+        "x": -119.635,
+        "y": 35.02125,
+        "size": 0.03125,
+        "error": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?whe"
+      },
+      {
+        "layerId": 6,
+        "x": -119.60375,
+        "y": 35.02125,
+        "size": 0.03125,
+        "error": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?whe"
+      },
+      {
+        "layerId": 6,
+        "x": -119.54125,
+        "y": 35.02125,
+        "size": 0.03125,
+        "error": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?whe"
+      },
+      {
+        "layerId": 6,
+        "x": -119.60375,
+        "y": 35.0525,
+        "size": 0.03125,
+        "error": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?whe"
+      },
+      {
+        "layerId": 6,
+        "x": -119.635,
+        "y": 35.08375,
+        "size": 0.03125,
+        "error": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?whe"
+      }
+    ],
     "riversError": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?where=GNIS_NAME+IS+NOT+NULL+AND+%28GNIS_NAME+LIKE+%27%25+River%25%27+OR+GNIS_NAME+LIKE+%27%25+Creek%25%27+OR+GNIS_NAME+LIKE+%27"
   },
-  "finishedAt": "2026-10-23T17:18:48.741Z"
+  "finishedAt": "2026-10-23T19:05:22.519Z"
 }

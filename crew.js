@@ -66,7 +66,7 @@ async function buildPack({ catches = [], spots = [] }, { exact = false, photos =
 const KINDS = ['catch', 'spot', 'waypoint'];
 const num = v => v == null || v === '' || !isFinite(+v) ? undefined : +v;
 const str = (v, n = 500) => v == null ? undefined : String(v).slice(0, n);
-const token = v => v == null || v === '' ? undefined : String(v).replace(/[^\w-]/g, '').slice(0, 80) || undefined;
+const token = v => v == null || v === '' ? undefined : String(v).replace(/[^\w.:-]/g, '').slice(0, 80) || undefined; // as db.js SAFE_ID (Oregon ids use dots)
 function cleanLake(l) {
   const out = { name: str(l.name, 120) || 'Shared water', lat: num(l.lat), lon: num(l.lon), acres: num(l.acres), nhdId: token(l.nhdId), state: token(l.state)?.slice(0, 2).toUpperCase() };
   // The state's stock id goes in that state's own field (packs from before Nevada carry cdfwStockId).

@@ -16,6 +16,7 @@ export const scheduleUrl = 'https://www.ndow.org/get-outside/fishing-stocking-re
 export const bbox = [-120.01, 34.99, -114.03, 42.01];
 export const outline = [[-120.0, 42.0], [-114.04, 42.0], [-114.04, 36.2], [-114.0, 36.0], [-114.0, 35.0], [-114.63, 35.0], [-115.27, 35.512], [-115.919, 36.022], [-116.577, 36.528], [-117.244, 37.03], [-117.92, 37.529], [-118.605, 38.024], [-119.298, 38.514], [-120.0, 39.0]];
 export const plantsNote = 'NDOW reports each stocking with the number and average length of the fish. History grows each night from the NDOW water pages.';
+export const searchBy = 'region';
 export const searchHint = 'Pyramid, Truckee River, Wildhorse…';
 export const stockedHint = 'Topaz, Sparks Marina, Wildhorse…';
 

@@ -5,6 +5,7 @@ import './lock.js'; // first, so the lock screen is up before anything else draw
 import { map, refreshMap } from './map.js';
 import { db } from './db.js';
 import { STATES } from './states/index.js';
+import { migrateSavedIds } from './states/or.js';
 import { $, showView, onShow, COMMON_SPECIES } from './ui.js';
 import { openLake, openWater } from './views/lake.js';
 import { addStateWater } from './views/lakes.js';
@@ -33,7 +34,7 @@ import { checkReminders } from './reminders.js';
 
 document.querySelectorAll('nav button').forEach(b => b.onclick = () => showView(b.dataset.view));
 
-// Links inside map popups and lists: data-open-lake="<id>", data-add-water="<state's stock id>" data-state="CA|NV".
+// Links inside map popups and lists: data-open-lake="<id>", data-add-water="<state's stock id>" data-state="CA|NV|OR".
 document.addEventListener('click', e => {
   const id = e.target.dataset?.openLake;
   if (id) { e.preventDefault(); openLake(id); }
@@ -45,6 +46,7 @@ document.addEventListener('click', e => {
 $('#species-list').innerHTML = COMMON_SPECIES.map(s => `<option value="${s}">`).join('');
 addSafetyLayers();
 navigator.storage?.persist?.(); // ask the browser not to evict our data
+migrateSavedIds(db).catch(e => console.warn('Oregon id migration:', e));
 resumeTrip();
 initCrew();
 checkReminders();

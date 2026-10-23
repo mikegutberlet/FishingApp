@@ -116,10 +116,17 @@ function clean(v, k = '') {
   }
 }
 // A lake also needs a place on the map: one without coordinates breaks the map for every lake.
+// A trip's track is [lat, lon, ms] points: numbers written as text become numbers, a time that can't be read becomes
+// null (the route still draws), and a point without a position is dropped.
+const cleanTrack = track => (Array.isArray(track) ? track : []).filter(Array.isArray).map(([lat, lon, ms]) => {
+  const time = new Date(typeof ms === 'string' && ms.trim() && isFinite(ms) ? +ms : ms ?? NaN).getTime();
+  return [clean(lat, 'lat'), clean(lon, 'lon'), Number.isFinite(time) ? time : null];
+}).filter(p => Number.isFinite(p[0]) && Number.isFinite(p[1]));
 const cleanRow = (row, store) => {
   if (!row || typeof row !== 'object' || Array.isArray(row) || row.id == null || row.id === '') return null;
   const c = clean(row);
   if (c === BAD) return null;
+  if (store === 'trips') c.track = cleanTrack(c.track);
   return store === 'lakes' && !(Number.isFinite(c.lat) && Number.isFinite(c.lon)) ? null : c;
 };
 

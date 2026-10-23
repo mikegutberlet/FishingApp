@@ -77,9 +77,13 @@ async function layerIds() {
 }
 
 // Pages through an ArcGIS query, splitting the state into tiles so no single request is too heavy.
-// The NHD server times out (504) on busy tiles, so a tile that keeps failing is split into quarters.
+// The NHD server times out (502/504) on busy tiles, so a tile that keeps failing is split into quarters, down to
+// about 2 miles across. A handful of tiles that still fail are skipped (listed in the report, and last week's waters
+// in them are carried over) rather than losing the whole state; more than that throws, so the last good file stays.
+const FAILED = [];
+const inFailed = (layerId, lat, lon) => FAILED.some(t => t.layerId === layerId && lon >= t.x && lon <= t.x + t.size && lat >= t.y && lat <= t.y + t.size);
 async function queryTiled(layerId, where, outFields, offset, tile = 1) {
-  const features = [];
+  const features = [], failed = [];
   const queryTile = async (x, y, size) => {
     const envelope = JSON.stringify({ xmin: x, ymin: y, xmax: x + size, ymax: y + size, spatialReference: { wkid: 4326 } });
     const got = [];
@@ -95,7 +99,13 @@ async function queryTiled(layerId, where, outFields, offset, tile = 1) {
         if (json.features.length < 2000) break;
       }
     } catch (e) {
-      if (size <= 0.13) throw e;
+      if (size <= 0.035) {
+        failed.push({ layerId, x: round(x), y: round(y), size, error: e.message.slice(0, 80) });
+        FAILED.push(failed.at(-1));
+        report.steps.failedTiles = [...(report.steps.failedTiles ?? []), failed.at(-1)];
+        if (failed.length > 6) throw e;
+        return got;
+      }
       report.steps.splitTiles = (report.steps.splitTiles ?? 0) + 1;
       const h = size / 2;
       for (const [dx, dy] of [[0, 0], [h, 0], [0, h], [h, h]]) got.push(...await queryTile(x + dx, y + dy, h));
@@ -371,9 +381,27 @@ const save = (name, data) => writeFile(new URL(name, OUT), JSON.stringify(data) 
 let ids = { waterbody: 12 };
 try { ids = await layerIds(); } catch (e) { report.steps.nhdLayersError = e.message; }
 
+// A lake list from the last few days is kept as is, so a code push that re-runs the job only spends its time on the
+// rivers (the lake build takes over an hour for Oregon). The weekly run always rebuilds.
+// A reused list is still trimmed to the state's outline, in case the outline changed.
 let lakes = null;
-try { lakes = await buildLakes(ids); } catch (e) { report.steps.lakesError = e.message; console.error('lakes:', e.message); }
+const readOldFile = name => readFile(new URL(name, OUT), 'utf8').then(JSON.parse).catch(() => null);
+const recent = await readOldFile('lakes.json');
+if (recent?.lakes?.length && Date.now() - Date.parse(recent.updatedAt) < 3 * 86400e3 && process.env.GITHUB_EVENT_NAME === 'push') {
+  const kept = recent.lakes.filter(l => inCalifornia([l.lon, l.lat]));
+  report.steps.lakes = { reused: recent.updatedAt, inState: kept.length, outsideOutline: recent.lakes.length - kept.length };
+  if (kept.length < recent.lakes.length) await save('lakes.json', { ...recent, lakes: kept });
+} else try { lakes = await buildLakes(ids); } catch (e) { report.steps.lakesError = e.message; console.error('lakes:', e.message); }
+// Last week's waters inside tiles that failed tonight, so a busy server doesn't drop them for a week.
+function carryOver(list, old, layerId, points) {
+  if (!old || !FAILED.some(t => t.layerId === layerId)) return 0;
+  const have = new Set(list.map(x => String(x.id)));
+  const back = old.filter(x => !have.has(String(x.id)) && points(x).some(([lat, lon]) => inFailed(layerId, lat, lon)));
+  list.push(...back);
+  return back.length;
+}
 if (lakes) {
+  report.steps.lakes.carriedOver = carryOver(lakes, recent?.lakes, ids.waterbody, l => [[l.lat, l.lon]]);
   try { attachDepths(lakes, await depthTable(), 'LAGOS'); } catch (e) { report.steps.depthError = e.message; console.error('depth:', e.message); }
   try { attachDepths(lakes, await wikidataDepths(), 'Wikidata'); } catch (e) { report.steps.wikidataError = e.message; console.error('wikidata:', e.message); }
   report.steps.depth = { ...report.steps.depth, lakesWithDepth: lakes.filter(l => l.maxDepthFt).length };
@@ -381,9 +409,12 @@ if (lakes) {
 }
 try {
   const rivers = await buildRivers(ids);
+  report.steps.rivers.carriedOver = carryOver(rivers, (await readOldFile('rivers.json'))?.rivers, ids.flowline ?? ids.flowlineSmall, r => r.points);
   await save('rivers.json', { updatedAt: new Date().toISOString(), source: 'USGS National Hydrography Dataset', rivers });
 } catch (e) { report.steps.riversError = e.message; console.error('rivers:', e.message); }
 
+// Skipped tiles or a failed list show as a failed step (the workflow carries on and commits what it has).
+if (FAILED.length || report.steps.lakesError || report.steps.riversError) process.exitCode = 1;
 report.finishedAt = new Date().toISOString();
 await writeFile(new URL('build-report.json', OUT), JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify(report, null, 2).slice(0, 4000));

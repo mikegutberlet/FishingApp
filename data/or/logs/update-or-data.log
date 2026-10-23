@@ -1,0 +1,241 @@
+{
+  "startedAt": "2026-10-23T18:45:29.725Z",
+  "schedule": {
+    "windows": [
+      "2024-10-23..2024-11-22: 16",
+      "2024-11-23..2024-12-23: 7",
+      "2024-12-24..2025-01-23: 4",
+      "2025-01-24..2025-02-23: 41",
+      "2025-02-24..2025-03-26: 109",
+      "2025-03-27..2025-04-26: 203",
+      "2025-04-27..2025-05-27: 231",
+      "2025-05-28..2025-06-27: 197",
+      "2025-06-28..2025-07-28: 102",
+      "2025-07-29..2025-08-28: 35",
+      "2025-08-29..2025-09-28: 43",
+      "2025-09-29..2025-10-29: 29",
+      "2025-10-30..2025-11-29: 15",
+      "2025-11-30..2025-12-30: 4",
+      "2025-12-31..2026-01-30: 5",
+      "2026-01-31..2026-03-02: 53",
+      "2026-03-03..2026-04-02: 119",
+      "2026-04-03..2026-05-03: 248",
+      "2026-05-04..2026-06-03: 212",
+      "2026-06-04..2026-07-04: 152",
+      "2026-07-05..2026-08-04: 56",
+      "2026-08-05..2026-09-04: 33",
+      "2026-09-05..2026-10-05: 50",
+      "2026-10-06..2026-11-05: 23",
+      "2026-11-06..2026-12-06: 11",
+      "2026-12-07..2027-01-06: 5",
+      "2027-01-07..2027-02-06: 20",
+      "2027-02-07..2027-03-09: 51",
+      "2027-03-10..2027-04-09: 187",
+      "2027-04-10..2027-05-10: 262",
+      "2027-05-11..2027-06-10: 237",
+      "2027-06-11..2027-07-11: 129",
+      "2027-07-12..2027-08-11: 50",
+      "2027-08-12..2027-09-11: 37",
+      "2027-09-12..2027-10-12: 52",
+      "2027-10-13..2027-10-23: 12"
+    ],
+    "rows": 2925,
+    "weeks": [
+      "2024-10-21",
+      "2027-10-18"
+    ],
+    "sample": [
+      {
+        "week": "2024-10-21",
+        "weekEnd": "2024-10-25",
+        "raw": "ROW R NATURE PK-Fmr Cott. Grv. Pd",
+        "zone": "Willamette",
+        "office": "Springfield",
+        "legals": 500,
+        "trophy": 0,
+        "brood": 0,
+        "fingerling": 0,
+        "total": 500
+      },
+      {
+        "week": "2024-10-21",
+        "weekEnd": "2024-10-25",
+        "raw": "ALTON BAKER CANAL",
+        "zone": "Willamette",
+        "office": "Springfield",
+        "legals": 750,
+        "trophy": 0,
+        "brood": 0,
+        "fingerling": 0,
+        "total": 750
+      },
+      {
+        "week": "2024-10-21",
+        "weekEnd": "2024-10-25",
+        "raw": "BRADLEY LK",
+        "zone": "Southwest",
+        "office": "Charleston",
+        "legals": 0,
+        "trophy": 800,
+        "brood": 0,
+        "fingerling": 0,
+        "total": 800
+      }
+    ]
+  },
+  "recreation": {
+    "weekOf": "2026-10-16",
+    "northwest": {
+      "date": null,
+      "items": 6,
+      "first": [
+        "Fall salmon fishing is fair on Nehalem, Tillamook, and Nestucca bays although fishing did slow a little over the past week. All basins are still producing Chinook and coho salmon. The North Coast rivers are still at low flows, so fishing is best in the bays and tidewaters. Wednesday 10/28/2026 will be the last day of wild coho retention on these basins, no wild coho adults may be retained after that date. See the regulation updates online at Fall Coastal Salmon Management for details on seasons and bag limits.",
+        "The Nestucca and Wilson Rivers still have summer steelhead available, mostly in the upper reaches. Fall can be a good time to target these fish that have been holding most of the summer, as the dropping water temperatures and fall rains can get them more active and willing to bite.",
+        "Many coastal streams are open for cutthroat trout fishing through Oct 31. There are resident and sea-run cutthroat available for catching. Check the regulations for open areas."
+      ]
+    },
+    "southwest": {
+      "date": null,
+      "items": 3,
+      "first": [
+        "Weather has been near perfect for some late season trout fishing on either Garrison or Floras Lakes. Garrison Lake in particular usually has some fairly good numbers of trout that carry over from the spring stockings.",
+        "Anglers are still picking up fall chinook trolling the Chetco River estuary.",
+        "Empire, Saunders, and Butterfield Lakes will be stocked by end of week 10/23/26 with legal trout."
+      ]
+    },
+    "willamette": {
+      "date": null,
+      "items": 2,
+      "first": [
+        "Coho salmon are moving into the lower parts of the North Santiam. Spinners such as Blue Fox are usually effective but bobbers and eggs will work as well. Best sections currently are from Green's Bridge down to Jefferson, as well as further down into the mainstem of the Santiam River.",
+        "Walleye fishing has been good along stretches of the Willamette River from Peoria downstream to Independence. A jet boat is the best option for getting at fish on some stretches, but fishing in 12-18 feet of water, especially trolling a worm spinner downstream a little faster than the currant has been netting some good-sized walleye."
+      ]
+    },
+    "central": {
+      "date": null,
+      "items": 2,
+      "first": [
+        "Following trophy trout stockings, the Fall River has been fishing exceptionally well.",
+        "Pine Nursery Pond in Bend was recently stocked with brown trout."
+      ]
+    },
+    "northeast": {
+      "date": null,
+      "items": 3,
+      "first": [
+        "Tiger Muskie fishing at Phillips Reservoir should be good as fish are aggressively feeding to stock up on forage before winter sets in. Water temperature is prime right now in the low 50°F. Fishing should remain hot until water temps drop below 45°F. As an added bonus, the low water levels will concentrate fish and may make catching fish easier.",
+        "Coho fishing has been great on the lower Umatilla River. Expect fishing to remain good into November. Summer steelhead are also present and will become more prominent as the season progresses.",
+        "Anglers are catching steelhead in both the Grande Ronde and Imnaha Rivers. Focus lower on both rivers this time of year. Kokanee anglers are finding bright fish on the north end of Wallowa Lake. These kokanee will be smaller in size as many larger fish are spawning at the other end of the lake. Kinney Lake was stocked for the winter with trout."
+      ]
+    },
+    "southeast": {
+      "date": null,
+      "items": 7,
+      "first": [
+        "Fishing for trout at Lost Creek Reservoir.",
+        "Malheur Reservoir – great for Rainbow Trout from 10-22\". Common sizes are 12-16\" but fish up to 22\" were captured in our sampling this week. We also fly-fished it in the evening and morning and had catches of 10+ trout/hr. People were observed being successful trolling and bank fishing with bait too. Water temperatures were in the mid 50's. You can launch a boat from the boat ramp. Water is up to the old school bus (a school bus frame in the reservoir used by those who are familiar with it to gauge how full the reservoir is).",
+        "Yellowjacket Reservoir – Great fishing without a crowd! We sampled this last week and found fish from 8-18\" with a common size of 12-15\". We fished leech patterns under an indicator mid-day and had non-stop action. Water temperatures are in the mid-50's here too."
+      ]
+    },
+    "columbia": {
+      "date": "2026-10-22",
+      "items": 26,
+      "first": [
+        "Current and upcoming fishing opportunities:",
+        "Angling for coho has been fair to good near the mouths of some tributaries.",
+        "Forecasts for 2026 Columbia River Spring Chinook, Summer Chinook, Fall Chinook, Coho, and Sockeye are available here."
+      ]
+    },
+    "marine": {
+      "date": "2026-10-22",
+      "items": 37,
+      "first": [
+        "Marine fishing. As of Jan 1, 2026 , an Ocean Endorsement is needed for most recreational anglers fishing in the ocean. Check the Ocean Endorsement page for more information.",
+        "Marine fishing. Report unusual fish and ocean conditions",
+        "Marine fishing. Have you encountered unusual fish or ocean conditions off the Oregon Coast this year? With warm El Niño waters pushing up the coast, we're starting to see unusual tropical visitors migrating north! Report your on-the-water observations to CaCurrent.Observations@noaa.gov (more information available here ). Your observations are critical to understanding how changing ocean conditions affect what we see offshore."
+      ]
+    }
+  },
+  "mymaps": {
+    "Northwest": 394,
+    "Southwest": 67,
+    "High Desert": 196,
+    "Northeast": 96
+  },
+  "mymapsSample": [
+    {
+      "name": "Alton Baker Canal",
+      "raws": [
+        "ALTON BAKER CANAL"
+      ],
+      "lat": 44.05661,
+      "lon": -123.08177,
+      "about": "Alton Baker Pond and Canoe Canal are located within Alton Baker Park, one of the most popular and multi-functional parks in Eugene.\nThe park is located on the north bank of the Willamette River just east of the Ferry Street Bridge and Coburg Road. It is accessible by foot or bike from either side of the river via the River Bank Trails. By car you can enter via the Club Road underpass off Coburg Road or from Autzen Stadium off MLK/Centennial.\nLocated with in the park are two ponds and a canal, which can be accessed by rented canoes during the summer months.",
+      "region": "Northwest"
+    },
+    {
+      "name": "Benson Lake",
+      "raws": [
+        "BENSON LAKE"
+      ],
+      "lat": 45.57666,
+      "lon": -122.12607,
+      "about": "This is a 40-acre lake located in Benson State Park in the Columbia River Gorge. From Portland, head east on I-84, park is located on the south side of the freeway approx. 1/2 mile west of Multnomah Falls.\nFish species: rainbow trout, white crappie, largemouth bass, brown bullhead\nBenson State Recreation Area (http://www.oregonstateparks.org/park_147.php)",
+      "region": "Northwest"
+    },
+    {
+      "name": "Bethany Pond",
+      "raws": [
+        "BETHANY PD"
+      ],
+      "lat": 45.55675,
+      "lon": -122.86787,
+      "about": "This is a 10-acre pond located at Bethany west of Portland. The pond is maintained by Tualatin Hills Park and Rec. (http://www.thprd.org/parks/parkdetail.cfm?id=23) Amenities include picnic tables, restrooms, and a paved, ADA accessible trail.\nFish species: rainbow trout, largemouth bass, crappie, bluegill, bullhead",
+      "region": "Northwest"
+    },
+    {
+      "name": "Big Creek Reservoir #1",
+      "raws": [
+        "BIG CR RES-1"
+      ],
+      "lat": 44.65815,
+      "lon": -124.04049,
+      "about": "This is a 20-acre reservoir on Big Creek Road northeast of Newport, offering year-round fishing.\nFish species: rainbow trout, bass, brown bullhead",
+      "region": "Northwest"
+    }
+  ],
+  "points": {
+    "nhd": 2219,
+    "odfwMaps": 753,
+    "via": {
+      "none": 55,
+      "odfw": 187,
+      "nhd": 18,
+      "osm": 7
+    },
+    "unmatched": [
+      "ROW R NATURE PK-Fmr Cott. Grv. Pd → Row River Nature PK-Fmr Cott. Grv. Pond (Willamette)",
+      "PRINEVILLE FISHING PD → Prineville Fishing Pond (Central)",
+      "SALISH PD, W → West Salish Pond (Willamette)",
+      "JOHNSONS MILL PD → Johnsons Mill Pond (Southwest)",
+      "EXPO PD 1 (ROGUE) → Expo Pond 1 (Rogue) (Southwest)",
+      "LADD (PEACH) PD → Ladd (Peach) Pond (Northeast)",
+      "NORTH POWDER PD-1 → North Powder Pond 1 (Southeast)",
+      "TATONE PD → Tatone Pond (Northeast)",
+      "HAT ROCK PD → Hat Rock Pond (Northeast)",
+      "MCNARY CHANNEL PDS → McNary Channel Ponds (Northeast)",
+      "BIKINI PD → Bikini Pond (Central)",
+      "PINE NURSERY PD → Pine Nursery Pond (Central)",
+      "RUNNING Y PD → Running Y Pond (Southeast)",
+      "TROJAN RECREATION LK → Trojan Recreation Lake (Willamette)",
+      "LAIRD LK → Laird Lake (Southwest)",
+      "BURNS GRAVEL PD → Burns Gravel Pond (Southeast)",
+      "HOLLIDAY PARK PD → Holliday Park Pond (Northeast)",
+      "LONG CREEK PD → Long Creek Pond (Northeast)",
+      "Weaver Road Pd → Weaver Road Pond (Southwest)",
+      "BURMA PD, L → Little Burma Pond (Southwest)",
+      "SEVENTH ST PD → Seventh St. Pond (Northeast)",
+      "RED TOP LK → Red Top Lake (Southwest)",
+      "SMOCK PRAIRIE RES → Smock Prairie Reservoir (Central)",
+      "KINGSLEY RES, UPR → Upper Kingsley Reservoir (Central)",
+      "HAINES PD-1 → Haines Pond 1 
