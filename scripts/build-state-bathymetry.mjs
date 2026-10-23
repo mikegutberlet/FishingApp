@@ -223,7 +223,7 @@ async function processItem(it, parentTitle) {
     }
     if (shp) break;
   }
-  if (!shp) { entry.skip = 'no contours or readable raster'; return null; }
+  if (!shp) { entry.skip = 'no contours or readable raster'; entry.unzipped = (await walk(dir).catch(() => [])).map(f => basename(f)).slice(0, 40); return null; }
   if (!field) {
     const probe = join(dir, 'probe.geojson');
     sh('ogr2ogr', ['-f', 'GeoJSON', '-t_srs', 'EPSG:4326', '-simplify', '0.001', probe, shp]);
@@ -284,6 +284,15 @@ for (const q of QUERIES) {
 }
 const caBox = it => { const b = bboxOf(it); return b ? inState(b) : new RegExp(STATE.name, 'i').test(it.title); };
 const candidates = [...seen.values()].filter(it => INCLUDE.test(it.title) && TOPIC.test(it.title) && !EXCLUDE.test(it.title) && caBox(it));
+// Regional collections ("Selected Lakes in Closed Basins of the Great Basin States") cover several states; their
+// children are one lake each, so keep the children that fall in this state.
+for (const it of [...seen.values()].filter(it => it.hasChildren && !candidates.includes(it) && TOPIC.test(it.title) && new RegExp(`Great Basin|${STATE.name}`, 'i').test(it.title))) {
+  try {
+    for (const ch of await children(it.id)) {
+      if (caBox(ch) && !EXCLUDE.test(ch.title) && !candidates.some(c => c.id === ch.id)) candidates.push({ ...ch, title: /lake|reservoir/i.test(ch.title) ? ch.title : `${ch.title} (${it.title})`, hasChildren: false });
+    }
+  } catch (e) { report.searchErrors = (report.searchErrors ?? []).concat(`children of ${it.title}: ${e.message}`); }
+}
 report.searched = seen.size;
 report.candidates = candidates.map(c => c.title);
 // Everything the searches found and why it was left out, to tune the filters for a new state.
