@@ -69,7 +69,7 @@ Data is refreshed daily by `.github/workflows/update-data.yml` running `scripts/
 
 ## Maps, depth and offline
 
-* **Save a lake for offline**: open a water → *⬇ Offline*. It downloads the map tiles for the lake's area (satellite and/or streets, zoom 10–17, capped at about 6,000 tiles with a size estimate first), its USGS depth chart and the California data the lake page uses. Saved lakes are listed under Data → *Offline maps*, where you can delete them. Street tiles stop at zoom 16 because OpenStreetMap doesn't allow bulk downloads closer than that.
+* **Save a lake for offline**: open a water → *⬇ Offline*. It downloads the satellite map for the lake's area (zoom 10–17, capped at about 6,000 tiles with a size estimate first), its USGS depth chart and the California data the lake page uses. Saved lakes are listed under Data → *Offline maps*, where you can delete them. The street map isn't downloaded in advance because OpenStreetMap's tile policy doesn't allow offline prefetching; street areas you've already viewed stay cached.
 * **Waypoints**: long-press the map, or tap *📌 Mark* and use GPS or a tap, to mark a spot, structure, brush pile, drop-off, hazard or ramp with a name and note. They show as a *Waypoints* map layer, are listed on the lake's Depth tab, export as GPX, and go with a shared lake only if you include your notes and spots.
 
 ## Sharing with friends

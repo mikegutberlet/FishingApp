@@ -10,9 +10,10 @@ const PREFIX = 'offline-';
 const META = 'offline-meta.json'; // each pack's cache describes itself at this key
 const MAX_TILES = 6000;
 const MIN_ZOOM = 10;
-// OpenStreetMap's tile policy forbids bulk downloads at zoom 17 and up, so street tiles stop at 16.
-const MAX_ZOOM = { Satellite: 17, Streets: 16 };
-const AVG_KB = { Satellite: 20, Streets: 12 }; // typical tile size, for the estimate before downloading
+// Only the satellite map is downloaded: OpenStreetMap's tile policy doesn't allow bulk or offline prefetching.
+// Street tiles you have already looked at stay in sw.js's tile cache.
+const MAX_ZOOM = { Satellite: 17 };
+const AVG_KB = { Satellite: 20 }; // typical tile size, for the estimate before downloading
 const STATE_FILES = ['lakes', 'rivers', 'waters', 'plants', 'reservoirs', 'hydrolakes', 'history'].map(n => `data/ca/${n}.json`).concat('data/ca/bathymetry/index.json');
 
 const packId = lake => PREFIX + (lake.id && !lake.unsaved ? lake.id : `nhd-${lake.nhdId}`);
@@ -111,12 +112,10 @@ export async function offlineDialog(lake) {
   const lakeBox = await lakeBounds(lake);
   const dlg = document.createElement('dialog');
   dlg.className = 'sheet';
-  const active = map.hasLayer(baseLayers.Streets) ? 'Streets' : 'Satellite';
   dlg.innerHTML = `<form class="form" method="dialog"><h3>Save ${esc(lake.name)} for offline</h3>
     ${existing ? `<p class="small">Saved ${fmtDate(existing.savedAt)} · ${(existing.bytes / 1e6).toFixed(0)} MB · zoom ${existing.zMin}–${existing.zMax}. Downloading again updates it.</p>` : ''}
-    <p class="muted small">Saves the map, the USGS depth chart and this app's California data for the lake on this phone, so the map, depth and stocking work with no signal. Your catches and depth scans are always on the phone already.</p>
-    <label class="check"><input type="checkbox" name="Satellite" ${active === 'Satellite' || existing?.layers.includes('Satellite') ? 'checked' : ''}> Satellite map</label>
-    <label class="check"><input type="checkbox" name="Streets" ${active === 'Streets' || existing?.layers.includes('Streets') ? 'checked' : ''}> Street map</label>
+    <p class="muted small">Saves the satellite map, the USGS depth chart and this app's California data for the lake on this phone, so the map, depth and stocking work with no signal. Your catches and depth scans are always on the phone already.</p>
+    <p class="muted small">The satellite map is saved. The street map can't be downloaded in advance (OpenStreetMap doesn't allow it), but street areas you've already looked at stay cached.</p>
     <label>Area <select name="area"><option value="lake">The whole lake</option><option value="view">What the map shows now</option></select></label>
     <p id="off-est" class="small"></p>
     <progress id="off-progress" max="1" value="0" class="hidden"></progress>
@@ -124,15 +123,14 @@ export async function offlineDialog(lake) {
   document.body.append(dlg);
   const form = dlg.querySelector('form');
   const choice = () => {
-    const layers = ['Satellite', 'Streets'].filter(n => form[n].checked);
+    const layers = ['Satellite'];
     const bounds = form.area.value === 'view' ? map.getBounds() : lakeBox;
-    return { layers, bounds, plan: layers.length ? plan(bounds, layers) : null };
+    return { layers, bounds, plan: plan(bounds, layers) };
   };
   const estimate = () => {
     const { plan: p } = choice();
-    $('#off-go', dlg).disabled = !p || p.tooBig;
-    $('#off-est', dlg).innerHTML = !p ? 'Pick at least one map.'
-      : p.tooBig ? 'That area is too big to save. Zoom the map in on the part you fish and choose <b>What the map shows now</b>.'
+    $('#off-go', dlg).disabled = p.tooBig;
+    $('#off-est', dlg).innerHTML = p.tooBig ? 'That area is too big to save. Zoom the map in on the part you fish and choose <b>What the map shows now</b>.'
       : `About ${p.tiles.toLocaleString()} map tiles, roughly ${Math.max(1, Math.round(p.mb))} MB, zoom ${p.zMin}–${p.zMax}.${p.capped ? ' Big area, so the closest zoom levels are left out.' : ''}`;
   };
   form.onchange = estimate;
