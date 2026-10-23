@@ -1,6 +1,6 @@
 depth: 403 https://pasta.lternet.edu/package/search/eml?defType=edismax&q=title:%22LAGOS-US%20DEPTH%22&fl=packageid,title,pubdate&rows=20
 {
-  "startedAt": "2026-10-23T07:28:08.116Z",
+  "startedAt": "2026-10-23T10:37:31.574Z",
   "steps": {
     "nhdLayers": [
       {
@@ -131,5 +131,5 @@ depth: 403 https://pasta.lternet.edu/package/search/eml?defType=edismax&q=title:
       "kept": 634
     }
   },
-  "finishedAt": "2026-10-23T08:05:44.085Z"
+  "finishedAt": "2026-10-23T11:00:42.436Z"
 }
