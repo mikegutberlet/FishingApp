@@ -1,5 +1,5 @@
 {
- "startedAt": "2026-10-23T10:52:49.564Z",
+ "startedAt": "2026-10-23T10:55:36.573Z",
  "pages": {
   "license-tag-permit-fees": [
    "# License, Tag & Permit Fees (40p 71r)"
@@ -745,6 +745,182 @@
    "All resident fish",
    "1",
    "4"
+  ],
+  [
+   "Plat I Reservoir",
+   "Mercury",
+   "All resident fish",
+   "2",
+   "6"
+  ],
+  [
+   "CENTRAL",
+   "East Lake",
+   "Mercury",
+   "All resident fish",
+   "1",
+   "3"
+  ],
+  [
+   "Brown trout (16 inches or longer)",
+   "0",
+   "1"
+  ],
+  [
+   "SOUTHEAST",
+   "Antelope Reservoir",
+   "Mercury",
+   "All resident fish",
+   "0",
+   "1"
+  ],
+  [
+   "Jordan Creek,from Antelope Reservoir to the creek's confluence with the Owyhee River",
+   "Mercury",
+   "All resident fish",
+   "0",
+   "1"
+  ],
+  [
+   "Owyhee Reservoir",
+   "Mercury",
+   "All resident fish",
+   "1",
+   "3"
+  ],
+  [
+   "Owyhee River upstream to Three Forks",
+   "Mercury",
+   "All resident fish",
+   "2",
+   "6"
+  ],
+  [
+   "Phillips Reservoir",
+   "Mercury",
+   "Yellow perch",
+   "2",
+   "5"
+  ],
+  [
+   "WILLAMETTE",
+   "Columbia Slough Press Release 2022 PFOS Appendix to Technical Report Technical Report City of Portland Website: Columbia Slough Factsheet & Translations Story Map of progress on Columbia Slough sediment clean up project Social Media Cards General Columbia Slough",
+   "PCBs and PFOS",
+   "All resident fish including crayfish",
+   "Fillet only - 1 Whole body - 0"
+  ],
+  [
+   "Largescale sucker",
+   "Fillet only - 2 Whole body - 0"
+  ],
+  [
+   "Cottage Grove Reservoirs",
+   "Mercury",
+   "All resident fish except stocked, fin-clipped rainbow trout (12 inches or less)",
+   "0",
+   "1"
+  ],
+  [
+   "Dorena Reservoirs",
+   "1",
+   "4"
+  ],
+  [
+   "Lower Willamette River , from the Sellwood Bridge to its confluence with the Columbia, to include Multnomah Channel from its confluence with the Willamette to the Sauvie Island Bridge.",
+   "PCBs",
+   "All resident fish",
+   "Meal recommendations and information"
+  ],
+  [
+   "Lower Willamette River Technical Report",
+   "PCBs",
+   "Sturgeon",
+   "1",
+   "1"
+  ],
+  [
+   "Willamette River, from its mouth on the Columbia River southward to Eugene Includes: Coast Fork to Cottage Grove Reservoir Does not apply to: Middle Fork, North Fork of the Middle Fork, or to any other tributary emptying into the Willamette",
+   "Mercury",
+   "All resident fish",
+   "1",
+   "4"
+  ],
+  [
+   "Multnomah Channel and Scappoose Bay Press Release Technical Report",
+   "PCBs",
+   "All resident fish",
+   "Meal recommendations and information"
+  ],
+  [
+   "SNAKE RIVER",
+   "Snake River, from just south of Adrien, OR north to the WA border Includes: Brownlee Reservoir and the Powder River arm",
+   "Mercury",
+   "All resident fish",
+   "3",
+   "8"
+  ],
+  [
+   "Vulnerable population includes children under age 6, people who are or may become pregnant and people who are nursing. Contaminant Information: Mercury , PCBs = PCBs, dioxins and/or certain pesticides, PFOS “Resident” fish spend their entire lives within a certain territory, and do not migrate. “Migratory” fish such as salmon, steelhead, shad and lamprey, spend most of their lives at sea, and contain less localized contaminants. In general, smaller, younger fish have fewer contaminants."
+  ],
+  [
+   "MEALS PER MONTH"
+  ],
+  [
+   "Zone",
+   "Affected species",
+   "Contaminant",
+   "Location",
+   "Consumption guidelines *Meal sizes by age",
+   "Resources"
+  ],
+  [
+   "OREGON COAST",
+   "Softshell clams (Mya arenaria) Gaper clams (Tresus capax)",
+   "Inorganic Arsenic",
+   "North Coast (Mouth of Columbia to Neskowin)",
+   "Siphon skin intact - 1 Siphon skin removed - 11",
+   "Questions and Answers (pdf) Video: How to remove siphon skin from softshell clams Oregon clam identification chart"
+  ],
+  [
+   "Central Coast (Cascade Head to mouth of Umpqua River)",
+   "Siphon skin intact - 2 Siphon skin removed - 26"
+  ],
+  [
+   "South Coast (Mouth of Umpqua River to California Border)",
+   "Siphon skin intact - 4 Siphon skin removed - 33"
+  ],
+  [
+   "Softshell and Gaper clams: Meal sizes for different age groups"
+  ],
+  [
+   "Age group",
+   "Meal size by clam weight (excluding shells)",
+   "Meal size by clam volume(excluding shells)"
+  ],
+  [
+   "Adult (17 years and older)",
+   "8 ounces",
+   "1 cup"
+  ],
+  [
+   "12-16 years old",
+   "6 ounces",
+   "3/4 cup"
+  ],
+  [
+   "7-11 years old",
+   "4 ounces",
+   "1/2 cup"
+  ],
+  [
+   "4-6 years old",
+   "3 ounces",
+   "1/3 cup"
+  ],
+  [
+   "2-3 years old",
+   "2 ounces",
+   "1/4 cup"
   ]
  ],
  "advisories": [
@@ -753,22 +929,22 @@
   "Columbia: Bonneville Dam at Bradford Island, extending one mile upstream to Ruckel Creek → Bonneville Dam at Bradford Island, extending one mile upstream to Ruckel Creek (1)",
   "Columbia: Mid-Columbia River, from Ruckel Creek to McNary Dam → Mid-Columbia River (1)",
   "Columbia: Lower Columbia River → Lower Columbia River (1)",
-  "Southwest: Applegate Lake → Applegate Lake (1)",
+  "Southwest: Applegate Lake → Applegate Lake (2)",
   "Southwest: Cooper Creek Reservoir → Cooper Creek Reservoir (1)",
   "Southwest: Emigrant Reservoir → Emigrant Reservoir (1)",
   "Southwest: Galesville Reservoir → Galesville Reservoir (1)",
   "Southwest: Plat I Reservoir → Plat I Reservoir (1)",
-  "Central: East Lake → East Lake (1)",
+  "Central: East Lake → East Lake (2)",
   "Southeast: Antelope Reservoir → Antelope Reservoir (1)",
-  "Southeast: Jordan Creek,from Antelope Reservoir to the creek's confluence with the Owyhee River → Jordan Creek | from Antelope Reservoir to the creek's confluence with the Owyhee River (1)",
+  "Southeast: Jordan Creek,from Antelope Reservoir to the creek's confluence with the Owyhee River → Jordan Creek (1)",
   "Southeast: Owyhee Reservoir → Owyhee Reservoir (1)",
   "Southeast: Owyhee River upstream to Three Forks → Owyhee River (1)",
   "Southeast: Phillips Reservoir → Phillips Reservoir (1)",
-  "Southeast: WILLAMETTE → WILLAMETTE (1)",
-  "Southeast: Cottage Grove Reservoirs → Cottage Grove Reservoirs (2)",
-  "Southeast: Lower Willamette River → Lower Willamette River (1)",
-  "Southeast: Willamette River, from its mouth on the Columbia River southward to Eugene Includes: Coast Fork to Cottage Grove Reservoir Does not apply to: Middle Fork, North Fork of the Middle Fork, or to any other tributary emptying into the Willamette → Willamette River | Coast Fork to Cottage Grove Reservoir Does not apply to: Middle Fork (2)",
-  "Snake River: Snake River, from just south of Adrien, OR north to the WA border Includes: Brownlee Reservoir and the Powder River arm → Snake River | Brownlee Reservoir | Powder River arm (1)"
+  "Willamette: Columbia Slough 2022 PFOS Appendix to City of Portland Website: Columbia Slough & Translations Story of progress on Columbia Slough sediment clean up project Social Media Cards General Columbia Slough → Columbia Slough 2022 PFOS Appendix | Translations Story of progress on Columbia Slough sediment clean up project Social Media Cards General Columbia Slough (1)",
+  "Willamette: Cottage Grove Reservoirs → Cottage Grove Reservoirs (3)",
+  "Willamette: Lower Willamette River → Lower Willamette River (1)",
+  "Willamette: Willamette River, from its mouth on the Columbia River southward to Eugene Includes: Coast Fork to Cottage Grove Reservoir Does not apply to: Middle Fork, North Fork of the Middle Fork, or to any other tributary emptying into the Willamette → Willamette River (2)",
+  "Snake River: Snake River, from just south of Adrien, OR north to the WA border Includes: Brownlee Reservoir and the Powder River arm → Snake River | Brownlee Reservoir | Powder River arm (7)"
  ],
  "zones": [
   "Central: 1 parts",
@@ -782,5 +958,5 @@
   "Northwest: 1 parts"
  ],
  "counties": 36,
- "finishedAt": "2026-10-23T10:52:52.362Z"
+ "finishedAt": "2026-10-23T10:55:39.011Z"
 }
