@@ -51,8 +51,6 @@ const km = (a, b) => {
   return 12742 * Math.asin(Math.sqrt(h));
 };
 
-// NDOW's three regions, roughly, to pick between same-named waters (there are many Mill Creeks).
-const regionOf = ([lat, lon]) => lat < 38.0 ? 'Southern' : lon > -117.2 ? 'Eastern' : 'Western';
 
 // ---------- NDOW waters ----------
 async function ndowWaters() {
@@ -94,8 +92,35 @@ const TYPE = { 'Lake or Reservoir': 'Lake', 'Creek or Stream': 'Stream', River: 
 const isFlowing = w => /Creek|River/.test(w.ndowType ?? '') || /\b(creek|river|fork|canal|ditch|slough)\b/i.test(w.name);
 
 // ---------- Map points ----------
-// Candidates by name from three places, best first: last run (so points don't wander), USGS NHD (the weekly
-// statewide list), NDOW's own fishable-waters layer, then OpenStreetMap's geocoder for whatever is left.
+// NDOW pages carry no coordinates, so each water is found by name: in the USGS NHD statewide list (weekly job),
+// then NDOW's own fishable-waters map layer, then OpenStreetMap's geocoder for whatever is left. Names like
+// "Carson River – Douglas" or "Willow Creek- Santa Rosa Range" pick the stretch in that county or near that range.
+
+// NDOW's three regions by county, used to choose between same-named waters (Nevada has dozens of Willow Creeks).
+const REGION = {
+  Western: ['Washoe', 'Carson City', 'Douglas', 'Lyon', 'Storey', 'Churchill', 'Pershing', 'Humboldt', 'Mineral'],
+  Eastern: ['Elko', 'Eureka', 'Lander', 'White Pine'],
+  Southern: ['Clark', 'Nye', 'Lincoln', 'Esmeralda'],
+};
+const regionOfCounty = c => Object.keys(REGION).find(r => REGION[r].includes(c)) ?? null;
+let COUNTIES = [];
+async function loadCounties() {
+  const params = new URLSearchParams({ where: "STATE='32'", outFields: 'BASENAME', outSR: '4326', maxAllowableOffset: '0.004', f: 'geojson' });
+  const json = await getJson(`https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?${params}`);
+  COUNTIES = json.features.map(f => ({ name: f.properties.BASENAME, polys: f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates }));
+  report.counties = COUNTIES.length;
+  // The app uses these to tell which county (and so which regulations) a water is in.
+  const r4 = n => +n.toFixed(4);
+  await save('counties.json', { updatedAt: new Date().toISOString(), source: 'US Census TIGERweb', counties: COUNTIES.map(c => {
+    const pts = c.polys.flat(2);
+    return { name: c.name, region: regionOfCounty(c.name), bbox: [Math.min(...pts.map(p => p[0])), Math.min(...pts.map(p => p[1])), Math.max(...pts.map(p => p[0])), Math.max(...pts.map(p => p[1]))].map(r4),
+      polys: c.polys.map(poly => poly.map(ring => ring.map(([x, y]) => [r4(x), r4(y)]))) };
+  }) });
+}
+const countyAt = (lat, lon) => COUNTIES.find(c => c.polys.some(([outer]) => inOutline([lon, lat], outer)))?.name ?? null;
+// Fallback when the county outlines can't be fetched.
+const regionAt = (lat, lon) => { const c = countyAt(lat, lon); return c ? regionOfCounty(c) : lat < 38.0 ? 'Southern' : lon > -117.2 ? 'Eastern' : 'Western'; };
+
 async function fishableWaters() {
   const out = [];
   for (const [layer, kind] of [[1, 'lake'], [0, 'stream']]) {
@@ -108,13 +133,17 @@ async function fishableWaters() {
         const pts = g.type === 'Polygon' ? g.coordinates[0] : g.type === 'MultiPolygon' ? g.coordinates.sort((a, b) => b[0].length - a[0].length)[0][0]
           : g.type === 'LineString' ? g.coordinates : g.coordinates.flat();
         if (!pts?.length) continue;
-        // Lakes: the vertex nearest the ring's average point; streams: the middle vertex.
-        let p = pts[Math.floor(pts.length / 2)];
+        // Lakes: the vertex nearest the ring's average point. Streams: points spaced along the line, so a
+        // county-named stretch can find one inside its county.
+        const names = [...new Set([f.properties.NAME, f.properties.MAP_LABEL].filter(Boolean))];
         if (kind === 'lake') {
           const cx = pts.reduce((s, q) => s + q[0], 0) / pts.length, cy = pts.reduce((s, q) => s + q[1], 0) / pts.length;
-          p = pts.reduce((best, q) => (q[0] - cx) ** 2 + (q[1] - cy) ** 2 < (best[0] - cx) ** 2 + (best[1] - cy) ** 2 ? q : best);
+          const p = pts.reduce((best, q) => (q[0] - cx) ** 2 + (q[1] - cy) ** 2 < (best[0] - cx) ** 2 + (best[1] - cy) ** 2 ? q : best);
+          for (const n of names) out.push({ name: n, kind, lat: round(p[1]), lon: round(p[0]) });
+        } else {
+          const step = Math.max(1, Math.floor(pts.length / 6));
+          for (let i = Math.floor(step / 2); i < pts.length; i += step) for (const n of names) out.push({ name: n, kind, lat: round(pts[i][1]), lon: round(pts[i][0]), line: f.id ?? names[0] });
         }
-        for (const n of new Set([f.properties.NAME, f.properties.MAP_LABEL].filter(Boolean))) out.push({ name: n, kind, lat: round(p[1]), lon: round(p[0]), county: f.properties.COUNTY_NAM });
       }
       if ((json.features ?? []).length < 1000) break;
     }
@@ -125,69 +154,118 @@ async function fishableWaters() {
 async function nhdWaters() {
   const [l, r] = await Promise.all([readOld('lakes.json'), readOld('rivers.json')]);
   const out = [];
-  for (const x of l?.lakes ?? []) out.push({ name: x.name, kind: 'lake', lat: x.lat, lon: x.lon, acres: x.acres, gnis: x.gnis });
-  for (const x of r?.rivers ?? []) {
-    const mid = x.points[Math.floor(x.points.length / 2)];
-    out.push({ name: x.name, kind: 'stream', lat: mid[0], lon: mid[1], km: x.km, gnis: x.gnis });
-  }
+  for (const x of l?.lakes ?? []) out.push({ name: x.name, kind: 'lake', lat: x.lat, lon: x.lon, acres: x.acres });
+  for (const x of r?.rivers ?? []) for (const [lat, lon] of x.points) out.push({ name: x.name, kind: 'stream', lat, lon, km: x.km, line: x.id });
   return out;
 }
 
-// OpenStreetMap Nominatim, at most one request a second as its policy asks, and only for waters with no point yet.
-async function geocode(w) {
-  const q = `${w.name.replace(/\(.*?\)/g, '').trim()}, Nevada`;
-  const params = new URLSearchParams({ q, format: 'json', limit: '5', countrycodes: 'us', viewbox: `${NV.bbox.xmin},${NV.bbox.ymax},${NV.bbox.xmax},${NV.bbox.ymin}`, bounded: '1' });
+// OpenStreetMap Nominatim, at most one request a second as its policy asks. Answers are kept between runs
+// (geocode-cache.json), so after the first night it is only asked about new waters.
+let GEO = {}, geoCalls = 0;
+async function geocode(q, { water = false } = {}) {
+  if (q in GEO) return GEO[q];
+  if (geoCalls >= 200) return null;
+  geoCalls++;
+  const params = new URLSearchParams({ q: `${q}, Nevada`, format: 'json', limit: '5', countrycodes: 'us', viewbox: `${NV.bbox.xmin},${NV.bbox.ymax},${NV.bbox.xmax},${NV.bbox.ymin}`, bounded: '1' });
   await new Promise(res => setTimeout(res, 1100));
-  const hits = await getJson(`https://nominatim.openstreetmap.org/search?${params}`, { headers: { ...UA, 'User-Agent': UA['User-Agent'] + ' nominatim' } });
-  const good = hits.filter(h => /water|natural|leisure|waterway|reservoir|park/i.test(`${h.class} ${h.type}`) && inOutline([+h.lon, +h.lat], NV.outline));
-  const h = good.find(x => !w.region || regionOf([+x.lat, +x.lon]) === w.region) ?? good[0];
-  return h ? { lat: round(+h.lat), lon: round(+h.lon), via: 'osm' } : null;
+  let hits = [];
+  try { hits = await getJson(`https://nominatim.openstreetmap.org/search?${params}`); } catch (e) { report.geocodeError = e.message; return null; }
+  const good = hits.filter(h => inOutline([+h.lon, +h.lat], NV.outline) && (!water || /water|natural|leisure|waterway|reservoir|park|landuse/i.test(`${h.class} ${h.type}`)));
+  GEO[q] = good.map(h => ({ lat: round(+h.lat), lon: round(+h.lon), type: `${h.class}/${h.type}` }));
+  return GEO[q];
 }
 
-function pickPoint(w, sources) {
-  const key = norm(w.name);
-  if (key.length < 3) return null;
+const DIRS = { N: 'North', S: 'South', E: 'East', W: 'West', NF: 'North Fork', SF: 'South Fork', EF: 'East Fork', WF: 'West Fork', MF: 'Middle Fork' };
+// "Walker River, West Fork" → base names to look up (["Walker River, West Fork", "West Fork Walker River", "West Walker River"])
+// plus a place qualifier from " – Douglas", "- Santa Rosa Range", "/ Willow Beach" or " at Kirch WMA".
+function parseName(name) {
+  let n = name.replace(/[’']/g, "'").replace(/\s+/g, ' ').trim();
+  let where = null;
+  const dash = n.match(/^(.+?)(?:\s+[–—-]\s*|\s*[–—]\s+|-\s+)(.+)$/);
+  if (dash) { n = dash[1]; where = dash[2]; }
+  const at = n.match(/^(.+?)\s+at\s+(.+)$/i);
+  if (at) { n = at[1]; where ??= at[2]; }
+  const names = new Set();
+  const add = s => s && names.add(s.replace(/\s+/g, ' ').trim());
+  // "Floyd Lamb Park/ Tule Springs Ponds", "Squaw Valley/ Creek Reservoir": try each half, and the first with the last word.
+  const alts = n.split(/\s*\/\s*/).filter(Boolean);
+  if (alts.length > 1) { n = alts[0]; add(`${alts[0]} ${alts.at(-1).split(' ').pop()}`); alts.slice(1).forEach(add); }
+  // "Humboldt River, Elko": a county after the comma is a place, not part of the name.
+  const tail = n.match(/^(.+),\s*([^,]+)$/);
+  if (tail && Object.values(REGION).flat().includes(tail[2])) { n = tail[1]; where ??= tail[2]; }
+  const noParen = n.replace(/\s*\(.*?\)\s*/g, ' ').trim();
+  add(n); add(noParen);
+  const inner = n.match(/\((.*?)\)/)?.[1];
+  if (inner && !/^\d/.test(inner)) add(n.replace(/\(.*?\)/, '').replace(/^\S+\s+/, `${inner} `)); // "Bowman (Clear) Creek" → "Clear Creek"
+  const parts = noParen.split(/\s*,\s*/);
+  if (parts.length > 1) {
+    const base = parts[0], quals = parts.slice(1).filter(q => !/^(upper|lower)$/i.test(q)).map(q => DIRS[q.toUpperCase()] ?? q);
+    add([...quals.reverse(), base].join(' '));
+    add([...quals.map(q => q.replace(/\s+Fork$/i, '')), base].join(' '));
+    if (quals.length !== parts.length - 1 && !quals.length) add(base);
+  }
+  add(noParen.replace(/\s*#\s*\d+$/, ''));
+  return { names: [...names], where };
+}
+
+async function pickPoint(w, sources) {
+  const { names, where } = parseName(w.name);
+  const keys = new Set(names.map(norm).filter(k => k.length >= 3));
+  if (!keys.size) return null;
   const flowing = isFlowing(w);
+  const county = where && COUNTIES.find(c => c.name.toLowerCase() === where.toLowerCase())?.name;
+  const near = where && !county ? (await geocode(where))?.[0] : null;
   for (const [via, list] of sources) {
-    const same = list.filter(c => norm(c.name) === key && (c.kind === 'stream') === flowing && inOutline([c.lon, c.lat], NV.outline));
+    let same = list.filter(c => keys.has(norm(c.name)) && (c.kind === 'stream') === flowing && inOutline([c.lon, c.lat], NV.outline));
     if (!same.length) continue;
-    // Prefer one in NDOW's region for the water, then the biggest.
-    const inRegion = same.filter(c => !w.region || w.region === 'Headquarters' || regionOf([c.lat, c.lon]) === w.region);
-    const pool = inRegion.length ? inRegion : same.length === 1 ? same : [];
-    const best = pool.sort((a, b) => (b.acres ?? b.km ?? 0) - (a.acres ?? a.km ?? 0))[0];
-    if (best) return { lat: best.lat, lon: best.lon, via, ...(best.acres && { acres: best.acres }), ...(best.county && { county: best.county }) };
+    if (county) same = same.filter(c => countyAt(c.lat, c.lon) === county);
+    else if (near) {
+      same = same.map(c => ({ ...c, d: km([c.lat, c.lon], [near.lat, near.lon]) })).filter(c => c.d <= 40).sort((a, b) => a.d - b.d);
+      // A named spot on a big lake ("Lake Tahoe – Sand Harbor"): use the spot itself.
+      if (same[0]?.kind === 'lake' && same[0].acres > 2000 && same[0].d <= 15) return { lat: near.lat, lon: near.lon, via: `${via}+osm` };
+    } else if (w.region && REGION[w.region]) {
+      const inRegion = same.filter(c => regionAt(c.lat, c.lon) === w.region);
+      // Several same-named waters and none in the right region: better no point than the wrong creek.
+      same = inRegion.length ? inRegion : new Set(same.map(c => c.line ?? `${c.lat},${c.lon}`)).size === 1 ? same : [];
+    }
+    if (!same.length) continue;
+    // A stream's middle label point; otherwise the biggest lake.
+    const best = flowing && !near ? same[Math.floor(same.length / 2)] : same.sort((a, b) => (a.d ?? 0) - (b.d ?? 0) || (b.acres ?? 0) - (a.acres ?? 0))[0];
+    return { lat: best.lat, lon: best.lon, via, ...(best.acres && { acres: best.acres }) };
+  }
+  // Nothing by name: ask OpenStreetMap for the water itself.
+  for (const q of names.slice(0, 2)) {
+    const hits = (await geocode(q, { water: true })) ?? [];
+    const hit = (county ? hits.filter(h => countyAt(h.lat, h.lon) === county) : near ? hits.filter(h => km([h.lat, h.lon], [near.lat, near.lon]) <= 40) : hits.filter(h => !w.region || !REGION[w.region] || regionAt(h.lat, h.lon) === w.region))[0];
+    if (hit) return { lat: hit.lat, lon: hit.lon, via: 'osm' };
   }
   return null;
 }
 
 async function buildWaters(raw) {
-  const old = new Map(((await readOld('waters.json'))?.waters ?? []).map(w => [w.id, w]));
   const nhd = await nhdWaters();
   let fishable = [];
   try { fishable = await fishableWaters(); } catch (e) { report.fishableError = e.message; }
+  try { await loadCounties(); } catch (e) { report.countiesError = e.message; }
+  GEO = (await readOld('geocode-cache.json')) ?? {};
   report.points = { nhd: nhd.length, fishable: fishable.length, via: {} };
   const unmatched = [];
-  let geocoded = 0;
   const waters = [];
   for (const w of raw) {
-    const prev = old.get(w.id);
-    let pt = pickPoint(w, [['nhd', nhd], ['ndow', fishable]]);
-    if (!pt && prev?.lat != null) pt = { lat: prev.lat, lon: prev.lon, via: prev.via, county: prev.county };
-    if (!pt && geocoded < 150) {
-      geocoded++;
-      try { pt = await geocode(w); } catch (e) { report.geocodeError = e.message; }
-    }
+    const pt = await pickPoint(w, [['nhd', nhd], ['ndow', fishable]]);
     if (!pt) unmatched.push(`${w.name} (${w.region}, ${w.ndowType})`);
     report.points.via[pt?.via ?? 'none'] = (report.points.via[pt?.via ?? 'none'] ?? 0) + 1;
     const plants = w.stocking.map(s => ymd(s.date_stocked)).filter(Boolean).sort();
     waters.push({
-      id: w.id, name: w.name, type: TYPE[w.ndowType] ?? null, region: w.region, counties: `${w.region ?? 'Nevada'} region`, county: pt?.county ?? null,
-      lat: pt?.lat ?? null, lon: pt?.lon ?? null, via: pt?.via ?? null, acres: pt?.acres ?? null, url: w.url,
+      id: w.id, name: w.name, type: TYPE[w.ndowType] ?? null, region: w.region, counties: `${w.region ?? 'Nevada'} region`,
+      county: pt ? countyAt(pt.lat, pt.lon) : null, lat: pt?.lat ?? null, lon: pt?.lon ?? null, via: pt?.via ?? null, acres: pt?.acres ?? null, url: w.url,
       report: w.report, reportDate: w.reportDate, info: w.info, history: w.history, guides: w.guides, fishNv: w.fishNv,
       lastYearStocked: plants.length ? +plants.at(-1).slice(0, 4) : null,
     });
   }
   report.points.unmatched = unmatched;
+  report.points.geocoderCalls = geoCalls;
+  await save('geocode-cache.json', GEO);
   return waters.sort((a, b) => a.name.localeCompare(b.name));
 }
 
@@ -248,6 +326,7 @@ async function usgsLevels() {
 
 // Reclamation's RISE API: Lake Mead (Hoover Dam) and Lake Mohave (Davis Dam) daily elevation and storage.
 const RISE = 'https://data.usbr.gov';
+const RISE_HEADERS = { ...UA, Accept: 'application/vnd.api+json' };
 const RISE_LAKES = [{ location: 3514, id: 'MEAD', name: 'Lake Mead' }, { location: 3513, id: 'MOHAVE', name: 'Lake Mohave' }];
 async function riseLevels() {
   const out = [];
@@ -256,16 +335,16 @@ async function riseLevels() {
   for (const lake of RISE_LAKES) {
     const log = report.rise[lake.name] = { items: [] };
     try {
-      const loc = (await getJson(`${RISE}/rise/api/location/${lake.location}`)).data;
+      const loc = (await getJson(`${RISE}/rise/api/location/${lake.location}`, { headers: RISE_HEADERS })).data;
       const [lon, lat] = loc.attributes.locationCoordinates.coordinates;
       const items = [];
       for (const rec of loc.relationships?.catalogRecords?.data ?? []) {
-        const r = await getJson(`${RISE}${rec.id}`);
+        const r = await getJson(`${RISE}${rec.id}`, { headers: RISE_HEADERS });
         for (const it of r.data?.relationships?.catalogItems?.data ?? []) items.push(it.id);
       }
       const picked = {};
       for (const id of items) {
-        const it = (await getJson(`${RISE}${id}`)).data?.attributes ?? {};
+        const it = (await getJson(`${RISE}${id}`, { headers: RISE_HEADERS })).data?.attributes ?? {};
         log.items.push(`${id} ${it.itemTitle}`);
         const t = it.itemTitle ?? '';
         if (!/daily/i.test(t) || /model|forecast|projected|24-month|mtom/i.test(t)) continue;
@@ -275,7 +354,7 @@ async function riseLevels() {
       log.picked = picked;
       const series = async itemId => {
         if (!itemId) return [];
-        const res = await getJson(`${RISE}/rise/api/result?itemId=${itemId}&dateTime%5Bafter%5D=${since}&order%5BdateTime%5D=ASC&itemsPerPage=100`);
+        const res = await getJson(`${RISE}/rise/api/result?itemId=${itemId}&dateTime%5Bafter%5D=${since}&order%5BdateTime%5D=ASC&itemsPerPage=100`, { headers: RISE_HEADERS });
         return (res.data ?? []).map(x => [x.attributes.dateTime.slice(0, 10), +x.attributes.result]).filter(([, v]) => Number.isFinite(v));
       };
       const elevation = await series(picked.elevation), storage = await series(picked.storage);
@@ -308,8 +387,8 @@ async function habAdvisories(waters) {
     if (!level) continue;
     const dm = body.match(/\b(\d{1,2})\/(\d{1,2})\/(\d{2,4})\b/);
     const date = dm ? `${dm[3].length === 2 ? '20' + dm[3] : dm[3]}-${dm[1].padStart(2, '0')}-${dm[2].padStart(2, '0')}` : null;
-    const key = norm(name.split(/[(,]/)[0]);
-    const spot = waters.find(w => w.lat != null && norm(w.name) === key) ?? lakes.filter(l => norm(l.name) === key).sort((a, b) => b.acres - a.acres)[0];
+    const key = norm(name.split(/\s+(?:including|incl\.?)\s+|[(,]/i)[0]);
+    const spot = waters.find(w => w.lat != null && norm(parseName(w.name).names.at(-1)) === key) ?? lakes.filter(l => norm(l.name) === key).sort((a, b) => b.acres - a.acres)[0];
     advisories.push({ name, level: HAB_LEVEL[level.toLowerCase()], advisory: `HAB ${level[0].toUpperCase()}${level.slice(1).toLowerCase()}`, date, detail: body.slice(0, 400), landmark: '', lat: spot?.lat ?? null, lon: spot?.lon ?? null });
   }
   report.hab = advisories.map(a => `${a.name}: ${a.advisory} ${a.date} ${a.lat != null ? 'located' : 'NO POINT'}`);
