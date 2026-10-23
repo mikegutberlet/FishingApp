@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-23T10:43:52.290Z",
+  "startedAt": "2026-10-23T10:48:56.598Z",
   "schedule": {
     "windows": [
       "2024-10-23..2024-11-22: 16",
@@ -84,6 +84,7 @@
     ]
   },
   "recreation": {
+    "weekOf": "2026-10-16",
     "northwest": {
       "date": null,
       "items": 6,
@@ -238,4 +239,4 @@
       "COTTONWOOD PIT → Cottonwood Pit (Central)",
       "WESTON HIGHWAY PD → Weston Highway Pond (Northeast)",
       "MCKENZIE R-1 (below Leaburg Dam) → McKenzie River 1 (Below Leaburg Dam) (Willamette)",
-      "MORROW CO OHV PARK PD #2 (Red Rock) → Morrow County OHV Par
+      "MORROW CO OHV PARK PD #2 (Red R

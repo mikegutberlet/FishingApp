@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-23T10:43:52.290Z",
+  "startedAt": "2026-10-23T10:48:56.598Z",
   "schedule": {
     "windows": [
       "2024-10-23..2024-11-22: 16",
@@ -84,6 +84,7 @@
     ]
   },
   "recreation": {
+    "weekOf": "2026-10-16",
     "northwest": {
       "date": null,
       "items": 6,
@@ -268,12 +269,12 @@
       "SUMMIT PRAIRIE PD → Summit Prairie Pond (Southeast)",
       "DREWS GAP PD → Drews Gap Pond (Southeast)"
     ],
-    "geocoderCalls": 74
+    "geocoderCalls": 0
   },
   "plants": {
     "total": 3433,
-    "new": 3433,
-    "kept": 559
+    "new": 0,
+    "kept": 3433
   },
   "usgs": {
     "sites": [
@@ -385,18 +386,18 @@
     ]
   },
   "hydromet": {
-    "WICO": "0 elev, 0 storage; 61 rows; <HTML> <HEAD><TITLE>Hydromet/AgriMet Data Access</title></head> <BODY BGCOLOR=#FFFFFF> <p><PRE> <B>USBR Pacific Northwest Region Hydromet/AgriMet Data Access</B><BR> Although the US Bureau of Reclamation makes efforts to maintain the accuracy of data found in the Hydromet system databases, the data ",
-    "CRAO": "0 elev, 0 storage; 61 rows; <HTML> <HEAD><TITLE>Hydromet/AgriMet Data Access</title></head> <BODY BGCOLOR=#FFFFFF> <p><PRE> <B>USBR Pacific Northwest Region Hydromet/AgriMet Data Access</B><BR> Although the US Bureau of Reclamation makes efforts to maintain the accuracy of data found in the Hydromet system databases, the data ",
-    "PRVO": "0 elev, 0 storage; 61 rows; <HTML> <HEAD><TITLE>Hydromet/AgriMet Data Access</title></head> <BODY BGCOLOR=#FFFFFF> <p><PRE> <B>USBR Pacific Northwest Region Hydromet/AgriMet Data Access</B><BR> Although the US Bureau of Reclamation makes efforts to maintain the accuracy of data found in the Hydromet system databases, the data ",
-    "OCHO": "0 elev, 0 storage; 61 rows; <HTML> <HEAD><TITLE>Hydromet/AgriMet Data Access</title></head> <BODY BGCOLOR=#FFFFFF> <p><PRE> <B>USBR Pacific Northwest Region Hydromet/AgriMet Data Access</B><BR> Although the US Bureau of Reclamation makes efforts to maintain the accuracy of data found in the Hydromet system databases, the data ",
-    "HAYO": "0 elev, 0 storage; 61 rows; <HTML> <HEAD><TITLE>Hydromet/AgriMet Data Access</title></head> <BODY BGCOLOR=#FFFFFF> <p><PRE> <B>USBR Pacific Northwest Region Hydromet/AgriMet Data Access</B><BR> Although the US Bureau of Reclamation makes efforts to maintain the accuracy of data found in the Hydromet system databases, the data ",
-    "OWYO": "0 elev, 0 storage; 61 rows; <HTML> <HEAD><TITLE>Hydromet/AgriMet Data Access</title></head> <BODY BGCOLOR=#FFFFFF> <p><PRE> <B>USBR Pacific Northwest Region Hydromet/AgriMet Data Access</B><BR> Although the US Bureau of Reclamation makes efforts to maintain the accuracy of data found in the Hydromet system databases, the data ",
-    "PHLO": "0 elev, 0 storage; 61 rows; <HTML> <HEAD><TITLE>Hydromet/AgriMet Data Access</title></head> <BODY BGCOLOR=#FFFFFF> <p><PRE> <B>USBR Pacific Northwest Region Hydromet/AgriMet Data Access</B><BR> Although the US Bureau of Reclamation makes efforts to maintain the accuracy of data found in the Hydromet system databases, the data ",
-    "THFO": "0 elev, 0 storage; 61 rows; <HTML> <HEAD><TITLE>Hydromet/AgriMet Data Access</title></head> <BODY BGCOLOR=#FFFFFF> <p><PRE> <B>USBR Pacific Northwest Region Hydromet/AgriMet Data Access</B><BR> Although the US Bureau of Reclamation makes efforts to maintain the accuracy of data found in the Hydromet system databases, the data ",
-    "UNYO": "0 elev, 0 storage; 61 rows; <HTML> <HEAD><TITLE>Hydromet/AgriMet Data Access</title></head> <BODY BGCOLOR=#FFFFFF> <p><PRE> <B>USBR Pacific Northwest Region Hydromet/AgriMet Data Access</B><BR> Although the US Bureau of Reclamation makes efforts to maintain the accuracy of data found in the Hydromet system databases, the data ",
-    "WARO": "0 elev, 0 storage; 61 rows; <HTML> <HEAD><TITLE>Hydromet/AgriMet Data Access</title></head> <BODY BGCOLOR=#FFFFFF> <p><PRE> <B>USBR Pacific Northwest Region Hydromet/AgriMet Data Access</B><BR> Although the US Bureau of Reclamation makes efforts to maintain the accuracy of data found in the Hydromet system databases, the data ",
-    "AGKO": "0 elev, 0 storage; 61 rows; <HTML> <HEAD><TITLE>Hydromet/AgriMet Data Access</title></head> <BODY BGCOLOR=#FFFFFF> <p><PRE> <B>USBR Pacific Northwest Region Hydromet/AgriMet Data Access</B><BR> Although the US Bureau of Reclamation makes efforts to maintain the accuracy of data found in the Hydromet system databases, the data ",
-    "BULO": "0 elev, 0 storage; 61 rows; <HTML> <HEAD><TITLE>Hydromet/AgriMet Data Access</title></head> <BODY BGCOLOR=#FFFFFF> <p><PRE> <B>USBR Pacific Northwest Region Hydromet/AgriMet Data Access</B><BR> Although the US Bureau of Reclamation makes efforts to maintain the accuracy of data found in the Hydromet system databases, the data "
+    "WICO": "0 elev, 0 storage; 61 rows; [[\"08/24/2026\",\"NO RECORD\",\"NO RECORD\"],[\"08/25/2026\",\"NO RECORD\",\"NO RECORD\"]]; DATE , WICO FB , WICO AF 08/24/2026,NO RECORD ,NO RECORD 08/25/2026,NO RECORD ,NO RECORD 08/26/2026,NO RECORD ,NO RECORD 08/27/2026,NO RECORD ,NO RECORD 08/28/2026,NO RECORD ,NO RECORD 08/29/2026,NO RECORD ,NO RECORD 08/30/2026,NO RECORD ,NO RECORD ",
+    "CRAO": "0 elev, 0 storage; 61 rows; [[\"08/24/2026\",\"NO RECORD\",\"NO RECORD\"],[\"08/25/2026\",\"NO RECORD\",\"NO RECORD\"]]; DATE , CRAO FB , CRAO AF 08/24/2026,NO RECORD ,NO RECORD 08/25/2026,NO RECORD ,NO RECORD 08/26/2026,NO RECORD ,NO RECORD 08/27/2026,NO RECORD ,NO RECORD 08/28/2026,NO RECORD ,NO RECORD 08/29/2026,NO RECORD ,NO RECORD 08/30/2026,NO RECORD ,NO RECORD ",
+    "PRVO": "0 elev, 0 storage; 61 rows; [[\"08/24/2026\",\"NO RECORD\",\"NO RECORD\"],[\"08/25/2026\",\"NO RECORD\",\"NO RECORD\"]]; DATE , PRVO FB , PRVO AF 08/24/2026,NO RECORD ,NO RECORD 08/25/2026,NO RECORD ,NO RECORD 08/26/2026,NO RECORD ,NO RECORD 08/27/2026,NO RECORD ,NO RECORD 08/28/2026,NO RECORD ,NO RECORD 08/29/2026,NO RECORD ,NO RECORD 08/30/2026,NO RECORD ,NO RECORD ",
+    "OCHO": "0 elev, 0 storage; 61 rows; [[\"08/24/2026\",\"NO RECORD\",\"NO RECORD\"],[\"08/25/2026\",\"NO RECORD\",\"NO RECORD\"]]; DATE , OCHO FB , OCHO AF 08/24/2026,NO RECORD ,NO RECORD 08/25/2026,NO RECORD ,NO RECORD 08/26/2026,NO RECORD ,NO RECORD 08/27/2026,NO RECORD ,NO RECORD 08/28/2026,NO RECORD ,NO RECORD 08/29/2026,NO RECORD ,NO RECORD 08/30/2026,NO RECORD ,NO RECORD ",
+    "HAYO": "0 elev, 0 storage; 61 rows; [[\"08/24/2026\",\"NO RECORD\",\"NO RECORD\"],[\"08/25/2026\",\"NO RECORD\",\"NO RECORD\"]]; DATE , HAYO FB , HAYO AF 08/24/2026,NO RECORD ,NO RECORD 08/25/2026,NO RECORD ,NO RECORD 08/26/2026,NO RECORD ,NO RECORD 08/27/2026,NO RECORD ,NO RECORD 08/28/2026,NO RECORD ,NO RECORD 08/29/2026,NO RECORD ,NO RECORD 08/30/2026,NO RECORD ,NO RECORD ",
+    "OWYO": "0 elev, 0 storage; 61 rows; [[\"08/24/2026\",\"NO RECORD\",\"NO RECORD\"],[\"08/25/2026\",\"NO RECORD\",\"NO RECORD\"]]; DATE , OWYO FB , OWYO AF 08/24/2026,NO RECORD ,NO RECORD 08/25/2026,NO RECORD ,NO RECORD 08/26/2026,NO RECORD ,NO RECORD 08/27/2026,NO RECORD ,NO RECORD 08/28/2026,NO RECORD ,NO RECORD 08/29/2026,NO RECORD ,NO RECORD 08/30/2026,NO RECORD ,NO RECORD ",
+    "PHLO": "0 elev, 0 storage; 61 rows; [[\"08/24/2026\",\"NO RECORD\",\"NO RECORD\"],[\"08/25/2026\",\"NO RECORD\",\"NO RECORD\"]]; DATE , PHLO FB , PHLO AF 08/24/2026,NO RECORD ,NO RECORD 08/25/2026,NO RECORD ,NO RECORD 08/26/2026,NO RECORD ,NO RECORD 08/27/2026,NO RECORD ,NO RECORD 08/28/2026,NO RECORD ,NO RECORD 08/29/2026,NO RECORD ,NO RECORD 08/30/2026,NO RECORD ,NO RECORD ",
+    "THFO": "0 elev, 0 storage; 61 rows; [[\"08/24/2026\",\"NO RECORD\",\"NO RECORD\"],[\"08/25/2026\",\"NO RECORD\",\"NO RECORD\"]]; DATE , THFO FB , THFO AF 08/24/2026,NO RECORD ,NO RECORD 08/25/2026,NO RECORD ,NO RECORD 08/26/2026,NO RECORD ,NO RECORD 08/27/2026,NO RECORD ,NO RECORD 08/28/2026,NO RECORD ,NO RECORD 08/29/2026,NO RECORD ,NO RECORD 08/30/2026,NO RECORD ,NO RECORD ",
+    "UNYO": "0 elev, 0 storage; 61 rows; [[\"08/24/2026\",\"NO RECORD\",\"NO RECORD\"],[\"08/25/2026\",\"NO RECORD\",\"NO RECORD\"]]; DATE , UNYO FB , UNYO AF 08/24/2026,NO RECORD ,NO RECORD 08/25/2026,NO RECORD ,NO RECORD 08/26/2026,NO RECORD ,NO RECORD 08/27/2026,NO RECORD ,NO RECORD 08/28/2026,NO RECORD ,NO RECORD 08/29/2026,NO RECORD ,NO RECORD 08/30/2026,NO RECORD ,NO RECORD ",
+    "WARO": "0 elev, 0 storage; 61 rows; [[\"08/24/2026\",\"NO RECORD\",\"NO RECORD\"],[\"08/25/2026\",\"NO RECORD\",\"NO RECORD\"]]; DATE , WARO FB , WARO AF 08/24/2026,NO RECORD ,NO RECORD 08/25/2026,NO RECORD ,NO RECORD 08/26/2026,NO RECORD ,NO RECORD 08/27/2026,NO RECORD ,NO RECORD 08/28/2026,NO RECORD ,NO RECORD 08/29/2026,NO RECORD ,NO RECORD 08/30/2026,NO RECORD ,NO RECORD ",
+    "AGKO": "0 elev, 0 storage; 61 rows; [[\"08/24/2026\",\"NO RECORD\",\"NO RECORD\"],[\"08/25/2026\",\"NO RECORD\",\"NO RECORD\"]]; DATE , AGKO FB , AGKO AF 08/24/2026,NO RECORD ,NO RECORD 08/25/2026,NO RECORD ,NO RECORD 08/26/2026,NO RECORD ,NO RECORD 08/27/2026,NO RECORD ,NO RECORD 08/28/2026,NO RECORD ,NO RECORD 08/29/2026,NO RECORD ,NO RECORD 08/30/2026,NO RECORD ,NO RECORD ",
+    "BULO": "0 elev, 0 storage; 61 rows; [[\"08/24/2026\",\"NO RECORD\",\"NO RECORD\"],[\"08/25/2026\",\"NO RECORD\",\"NO RECORD\"]]; DATE , BULO FB , BULO AF 08/24/2026,NO RECORD ,NO RECORD 08/25/2026,NO RECORD ,NO RECORD 08/26/2026,NO RECORD ,NO RECORD 08/27/2026,NO RECORD ,NO RECORD 08/28/2026,NO RECORD ,NO RECORD 08/29/2026,NO RECORD ,NO RECORD 08/30/2026,NO RECORD ,NO RECORD "
   },
   "reservoirs": [
     "USGS 10387150 Lake Abert Near Valley Falls, OR: 2026-10-22 4251.68 / -",
@@ -437,7 +438,7 @@
     "USACE COT Cottage Grove Dam: 2026-10-23 755.3 / -",
     "USACE DET Detroit Dam: 2026-10-23 1488.23 / -",
     "USACE DEX Dexter Dam: 2026-10-23 692.64 / -",
-    "USACE DOR Dorena Dam: 2026-10-23 786.81 / -",
+    "USACE DOR Dorena Dam: 2026-10-23 786.79 / -",
     "USACE EMI Emigrant Dam: 2026-10-23 2159.55 / -",
     "USACE FAL Fall Creek Dam: 2026-10-23 765.17 / -",
     "USACE FOS Foster Reservoir: 2026-10-23 613.39 / -",
@@ -457,23 +458,168 @@
     "USACE WIL Willow Creek Lake at Heppner: 2026-10-23 2047.38 / -"
   ],
   "hab": {
-    "length": 97135,
-    "tables": 0,
-    "hints": [
-      "lgae&#160;bloom (cyanoHAB) recreational use health advisories are listed in the table below and displayed on the <a href=\"https&#58;//experience.arcgis.com/experience/65640c2c9adf464794137739847a2b0a/page/Homepage\"><strong>Oregon Harmful Algae Bloom Advisories map</strong></a>. Both the table a",
-      "r></font> <p></p> <font size=\"3\"> <p> <strong></strong><a class=\"btn btn-primary\" href=\"https&#58;//experience.arcgis.com/experience/65640c2c9adf464794137739847a2b0a\" target=\"_blank\"><strong>Advisory Map (English)</strong></a><strong>&#160;</strong><a class=\"bt",
-      "39847a2b0a\" target=\"_blank\"><strong>Advisory Map (English)</strong></a><strong>&#160;</strong><a class=\"btn btn-primary\" href=\"https&#58;//experience.arcgis.com/experience/23a9ff99a482427b95727c0249785998\" target=\"_blank\"><strong>Mapa de Advertencia&#160;(Español)</strong></a><strong>&#160;</strong>",
-      "target=\"_blank\"><strong>Mapa de Advertencia&#160;(Español)</strong></a><strong>&#160;</strong><a class=\"btn btn-primary\" href=\"https&#58;//experience.arcgis.com/experience/6b65201dec0c4ada875b00d9a0dcc75f/\" target=\"_blank\"><strong>Advisory Map (Mobile)</strong></a><strong>&#160;</strong><a class=\"bt",
-      "d9a0dcc75f/\" target=\"_blank\"><strong>Advisory Map (Mobile)</strong></a><strong>&#160;</strong><a class=\"btn btn-primary\" href=\"https&#58;//experience.arcgis.com/experience/6d946f6670b54d1f84bf2b08fdcce2d3/\" target=\"_blank\"><strong>Mapa de Advertencia (Móvil)</strong></a><strong>&#160;&#160;</strong>",
-      "ae&#160;bloom&#160;or related illness&#58;&#160;</strong><br></p> <p> <a class=\"btn btn-primary\" href=\"https&#58;//survey123.arcgis.com/share/b1b485995dcf4d54934d2abdb4345390\" target=\"_blank\"><strong>CyanoHAB Reporting Form</strong></a><strong>&#160;</strong><a class=\"btn bt",
-      "rong><br></h4><p> <img alt=\"Advisory in effect symbol\" src=\"/oha/PH/HEALTHYENVIRONMENTS/RECREATION/HARMFULALGAEBLOOMS/PublishingImages/Advisory-Red.png\" style=\"margin&#58;5px;width&#58;24px;\" /><strong>= Advisory in effect&#160;&#160;</strong><img alt=\"Precaution in effect symbol\" src",
-      " in effect&#160;&#160;</strong><img alt=\"Precaution in effect symbol\" src=\"/oha/PH/HEALTHYENVIRONMENTS/RECREATION/HARMFULALGAEBLOOMS/PublishingImages/Precaution-Yellow.png\" style=\"margin&#58;5px;width&#58;24px;height&#58;24px;\" /><strong>= Precaution in effect&#160;</strong><img alt=\"Advisory or pre",
-      "160;</strong><img alt=\"Advisory or precaution has been lifted symbol\" src=\"/oha/PH/HEALTHYENVIRONMENTS/RECREATION/HARMFULALGAEBLOOMS/PublishingImages/Lifted-Blue.png\" style=\"margin&#58;5px;width&#58;24px;height&#58;24px;\" /><strong>= Advisory/precaution&#160;has been&#160;lifted</strong><br></p><ul>",
-      "/HEALTHYENVIRONMENTS/RECREATION/HARMFULALGAEBLOOMS&quot;,&quot;sharePointListUrl&quot;:&quot;/oha/PH/HEALTHYENVIRONMENTS/RECREATION/HARMFULALGAEBLOOMS/Lists/CurrentCyanobacteriaAdvisories&quot;,&quot;sharePointViewName&quot;:&quot;Page View&quot;,&quot;responsiveMode&quot;:&quot;collapse&quot;,&quot"
+    "items": 56,
+    "fields": [
+      "Title",
+      "Waterbody",
+      "Status",
+      "Date",
+      "Toxin_x002f_Measure",
+      "Details",
+      "County",
+      "Status_x0020_Symbol",
+      "Display_x002d_On_x002d_Page"
     ],
-    "rows": 0,
-    "sample": [],
-    "advisories": []
+    "sample": [
+      {
+        "FileSystemObjectType": 0,
+        "Id": 1,
+        "ServerRedirectedEmbedUri": null,
+        "ServerRedirectedEmbedUrl": "",
+        "ContentTypeId": "0x0100BACFE1EDF64EAE468775620260DBF8EC",
+        "Title": "Yamhill River",
+        "ComplianceAssetId": null,
+        "Waterbody": "<div class=\"ExternalClass3D1E0D49586D4C46A646BD36633560F2\">​<strong>Yamhill River (from Lafayette Locks Historical Park to confluence with Willamette​</strong></div>",
+        "Status": [
+          "Precaution has been lifted"
+        ],
+        "Date": "2026-09-02T07:00:00Z",
+        "Toxin_x002f_Measure": null,
+        "Details": "Visible bloom",
+        "County": "Yamhill",
+        "Status_x0020_Symbol": {
+          "Description": "Advisory/Precaution Lifted Symbol",
+          "Url": "https://www.oregon.gov/oha/PH/HEALTHYENVIRONMENTS/RECREATION/HARMFULALGAEBLOOMS/PublishingImages/Lifted-Blue.png"
+        },
+        "Display_x002d_On_x002d_Page": true,
+        "ID": 1,
+        "Modified": "2026-10-13T22:28:19Z",
+        "Created": "2026-09-08T22:13:55Z",
+        "AuthorId": 26,
+        "EditorId": 1229,
+        "OData__UIVersionString": "2.0",
+        "Attachments": false,
+        "GUID": "04507d1e-cb51-4327-be7f-4ebe8f6583e2"
+      },
+      {
+        "FileSystemObjectType": 0,
+        "Id": 2,
+        "ServerRedirectedEmbedUri": null,
+        "ServerRedirectedEmbedUrl": "",
+        "ContentTypeId": "0x0100BACFE1EDF64EAE468775620260DBF8EC",
+        "Title": "Daly Lake",
+        "ComplianceAssetId": null,
+        "Waterbody": "<div class=\"ExternalClass18C39C25EF4B4142B43E08826444E835\"><strong>Daly Lake​</strong></div>",
+        "Status": [
+          "Precaution has been lifted"
+        ],
+        "Date": "2026-10-02T07:00:00Z",
+        "Toxin_x002f_Measure": null,
+        "Details": "Visible bloom",
+        "County": "Linn",
+        "Status_x0020_Symbol": {
+          "Description": "Advisory/Precaution Lifted Symbol",
+          "Url": "https://www.oregon.gov/oha/PH/HEALTHYENVIRONMENTS/RECREATION/HARMFULALGAEBLOOMS/PublishingImages/Lifted-Blue.png"
+        },
+        "Display_x002d_On_x002d_Page": true,
+        "ID": 2,
+        "Modified": "2026-10-13T22:42:26Z",
+        "Created": "2026-09-08T22:35:18Z",
+        "AuthorId": 26,
+        "EditorId": 1229,
+        "OData__UIVersionString": "3.0",
+        "Attachments": false,
+        "GUID": "9e68886a-6291-4dbd-bde8-40540c9e9361"
+      },
+      {
+        "FileSystemObjectType": 0,
+        "Id": 3,
+        "ServerRedirectedEmbedUri": null,
+        "ServerRedirectedEmbedUrl": "",
+        "ContentTypeId": "0x0100BACFE1EDF64EAE468775620260DBF8EC",
+        "Title": "Diamond Lake",
+        "ComplianceAssetId": null,
+        "Waterbody": "<div class=\"ExternalClass18C39C25EF4B4142B43E08826444E835\"><strong></strong><strong>Diamond Lake&#160;</strong><br>​<br></div>",
+        "Status": [
+          "Precaution in effect"
+        ],
+        "Date": "2026-08-21T07:00:00Z",
+        "Toxin_x002f_Measure": null,
+        "Details": "Visible bloom",
+        "County": "Douglas",
+        "Status_x0020_Symbol": {
+          "Description": "Precaution in effect symbol",
+          "Url": "https://www.oregon.gov/oha/PH/HEALTHYENVIRONMENTS/RECREATION/HARMFULALGAEBLOOMS/PublishingImages/Precaution-Yellow.png"
+        },
+        "Display_x002d_On_x002d_Page": true,
+        "ID": 3,
+        "Modified": "2026-10-13T22:35:18Z",
+        "Created": "2026-09-08T22:35:19Z",
+        "AuthorId": 26,
+        "EditorId": 1229,
+        "OData__UIVersionString": "1.0",
+        "Attachments": false,
+        "GUID": "2774a7d0-129f-4aba-a72e-d4687350002f"
+      }
+    ],
+    "advisories": [
+      "Yamhill River (Yamhill): warning 2026-09-02 located",
+      "Daly Lake (Linn): warning 2026-10-02 NO POINT",
+      "Diamond Lake (Douglas): warning 2026-08-21 NO POINT",
+      "Lemolo Lake (Douglas): warning 2026-08-21 located",
+      "Agate Reservoir (Jackson): warning 2026-08-21 NO POINT",
+      "Oswego Lake (Clackamas): warning 2026-08-19 NO POINT",
+      "Unity Reservoir (Baker): warning 2026-08-19 NO POINT",
+      "Phillips Lake (Baker): warning 2026-08-19 located",
+      "Eckman Lake​ (Lincoln): warning 2026-08-28 located",
+      "Paulina Lake (Deschutes): warning 2026-09-25 located",
+      "Fern Ridge Reservoir (Lane): warning 2026-09-28 NO POINT",
+      "Devils Lake (Lincoln): warning 2026-08-06 located",
+      "Prineville Reservoir (Crook): warning 2026-07-27 NO POINT",
+      "Odell Lake (Klamath): warning 2026-09-22 NO POINT",
+      "Clackamas Cove (Clackamas): warning 2026-07-23 NO POINT",
+      "Willamette River - Portland (Multnomah): warning 2026-10-07 NO POINT",
+      "Brownlee Reservoir (Baker): warning 2026-07-20 NO POINT",
+      "Hells Canyon Reservoir (Baker): warning 2026-07-20 NO POINT",
+      "Dexter Reservoir (Lane): warning 2026-07-20 located",
+      "Wapato Marsh at Oaks Bottom (Multnomah): warning 2026-07-14 NO POINT",
+      "Brownlee Reservoir, Powder Arm (Baker): warning 2026-09-21 NO POINT",
+      "Siltcoos Lake (Lane): warning 2026-07-08 located",
+      "North Fork Santiam River (Marion): warning 2026-07-02 NO POINT",
+      "Pettit Reservoir​ (Marion): warning 2026-07-10 NO POINT",
+      "Suttle Lake​ (Jefferson): warning 2026-06-18 NO POINT",
+      "Timothy Lake (Clackamas): warning 2026-07-21 located",
+      "Detroit Reservoir​​ (Linn): warning 2026-06-12 located",
+      "Lake Billy Chinook (Jefferson): warning 2026-10-12 NO POINT",
+      "Thief Valley Reservoir (Union): warning 2026-09-11 located",
+      "Gerber Reservoir​ (Klamath): warning 2026-06-12 NO POINT",
+      "South Tenmile Lake (Coos): warning 2026-06-05 located",
+      "Cullaby Lake (Clatsop): warning 2026-10-21 located",
+      "Hyatt Lake (Jackson): warning 2026-06-03 located",
+      "Sturgeon Lake (Multnomah): warning 2026-05-29 NO POINT",
+      "Upper Klamath National Wildlife Refuge (Klamath): warning 2026-05-28 NO POINT",
+      "Lost Creek Lake (Jackson): warning 2026-05-29 located",
+      "Agency Lake (Klamath): warning 2026-09-10 NO POINT",
+      "Upper Klamath Lake (Klamath): warning 2026-05-21 NO POINT",
+      "Cold Springs Reservoir (Umatilla): warning 2026-05-20 NO POINT",
+      "Haystack Reservoir (Jefferson): warning 2026-10-02 NO POINT",
+      "Ochoco Reservoir (Crook): warning 2026-06-18 located",
+      "Willow Creek Reservoir (Morrow): warning 2026-05-15 located",
+      "McKay Reservoir (Umatilla): warning 2026-05-15 NO POINT",
+      "South Umpqua River and mainstream Umpqua River​ (Douglas): warning  NO POINT",
+      "Detroit Reservoir​​ (Marion): warning 2026-06-12 located",
+      "Hells Canyon Reservoir (Wallowa): warning 2026-07-20 NO POINT",
+      "Siltcoos Lake (Douglas): warning 2026-07-08 located",
+      "Sturgeon Lake (Columbia): warning 2026-05-29 NO POINT",
+      "Thief Valley Reservoir (Baker): warning 2026-09-11 located",
+      "Willamette River - Portland (Columbia): warning 2026-10-07 NO POINT",
+      "Lake Wallula / Columbia River (Umatilla): warning 2026-10-12 NO POINT",
+      "Owyhee Reservoir (Malheur): warning 2026-09-21 NO POINT",
+      "Blue Lake (Multnomah): warning 2026-09-17 located",
+      "Penland Lake (Morrow): warning 2026-10-06 located",
+      "Lake Selmac (Josephine): warning 2026-10-07 located",
+      "Howard Prairie Lake (Jackson): warning 2026-10-13 located"
+    ]
   },
-  "finishedAt": "2026-10-23T10:47:49.008Z"
+  "finishedAt": "2026-10-23T10:50:22.113Z"
 }
