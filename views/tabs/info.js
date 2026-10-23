@@ -1,6 +1,7 @@
 // Info tab: basic facts and links for the water.
 import { forLake, stockIdOf } from '../../states/index.js';
 import { esc } from '../../ui.js';
+import { renderStateInfo } from '../state-report.js';
 
 export function renderInfo(lake, body) {
   const S = forLake(lake), stockId = stockIdOf(lake);
@@ -12,5 +13,6 @@ export function renderInfo(lake, body) {
     ${field('Regulations', lake.regs)}${field('Access', lake.access)}${field('Coordinates', `${lake.lat.toFixed(5)}, ${lake.lon.toFixed(5)}`)}
   </table>${lake.infoUrl ? `<p><a href="${esc(lake.infoUrl)}" target="_blank" rel="noopener">State lake page ↗</a></p>` : ''}
   ${stockId ? `<p><a href="${esc(S.waterUrl(stockId))}" target="_blank" rel="noopener">${S.agency} page for this water ↗</a></p>` : ''}
-  <p class="muted small">${lake.unsaved ? 'Names, size and elevation from the USGS National Hydrography Dataset.' : 'Tap Edit to fill in details from your state lake page.'}</p></div>`;
+  <p class="muted small">${lake.unsaved ? 'Names, size and elevation from the USGS National Hydrography Dataset.' : 'Tap Edit to fill in details from your state lake page.'}</p></div><div id="state-info"></div>`;
+  renderStateInfo(lake, body.querySelector('#state-info'));
 }

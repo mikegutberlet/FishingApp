@@ -30,6 +30,7 @@ const SHELL = [
   'views/lakes.js',
   'views/log.js',
   'views/settings.js',
+  'views/state-report.js',
   'views/stats.js',
   'views/tabs/catches.js',
   'views/tabs/conditions.js',

@@ -286,6 +286,8 @@ const caBox = it => { const b = bboxOf(it); return b ? inState(b) : new RegExp(S
 const candidates = [...seen.values()].filter(it => INCLUDE.test(it.title) && TOPIC.test(it.title) && !EXCLUDE.test(it.title) && caBox(it));
 report.searched = seen.size;
 report.candidates = candidates.map(c => c.title);
+// Everything the searches found and why it was left out, to tune the filters for a new state.
+report.rejected = [...seen.values()].filter(it => !candidates.includes(it)).map(it => `${it.title} [${!INCLUDE.test(it.title) ? 'no lake word' : !TOPIC.test(it.title) ? 'no topic' : EXCLUDE.test(it.title) ? 'excluded' : 'outside'}]`).slice(0, 300);
 
 const index = [];
 const done = new Set();

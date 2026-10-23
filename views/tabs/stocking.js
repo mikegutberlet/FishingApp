@@ -4,6 +4,7 @@ import { forLake, stockIdOf } from '../../states/index.js';
 import { parseStockingCsv } from '../../data-sources.js';
 import { $, esc, fmtDate, status } from '../../ui.js';
 import { openLake } from '../lake.js';
+import { renderStateReport } from '../state-report.js';
 
 export async function renderStocking(lake, body) {
   if (lake.unsaved) {
@@ -81,5 +82,6 @@ async function renderStateStocking(lake, el) {
     ${past.length ? `<p class="small">Last plant: ${when(past[0])} (${what(past[0])})</p>` : '<p class="muted small">No plants in the schedule window yet.</p>'}
     ${perYear.length ? `<div class="bars">${perYear.map(([y, n]) => `<div class="barrow"><span class="lbl">${y}</span><div class="fill" style="width:${n / maxN * 70}%"></div><span>${n} plant${n > 1 ? 's' : ''}${fishPerYear[y] ? ` · ${fishPerYear[y].toLocaleString()} fish` : ''}</span></div>`).join('')}</div>` : ''}
     ${past.length ? `<details><summary class="small">All ${past.length} plants</summary><table>${past.map(p => `<tr><td>${fmtDate(p.week + 'T12:00')}</td><td>${what(p)}</td></tr>`).join('')}</table></details>` : ''}
-    <p class="muted small">${S.plantsNote} <a href="${esc(S.waterUrl(stockId))}" target="_blank" rel="noopener">${S.agency} page ↗</a></p></div>`;
+    <p class="muted small">${S.plantsNote} <a href="${esc(S.waterUrl(stockId))}" target="_blank" rel="noopener">${S.agency} page ↗</a></p></div><div id="state-report"></div>`;
+  renderStateReport(lake, el.querySelector('#state-report'));
 }
