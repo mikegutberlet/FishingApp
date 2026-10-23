@@ -9,6 +9,7 @@ export const tackleLabel = t => [t.name, t.color, t.size].filter(Boolean).join('
 
 export async function renderTackle(el, edit = null) {
   const [tackle, catches] = await Promise.all([db.all('tackle'), db.all('catches')]);
+  if (!el.isConnected) return; // the Journal was drawn again meanwhile
   const fish = t => catches.filter(c => c.tackleId === t.id || (!c.tackleId && c.lure && c.lure.toLowerCase() === tackleLabel(t).toLowerCase())).length;
   const rows = tackle.map(t => ({ t, n: fish(t) })).sort((a, b) => b.n - a.n || tackleLabel(a.t).localeCompare(tackleLabel(b.t)));
   const e = edit ?? {};
@@ -28,7 +29,7 @@ export async function renderTackle(el, edit = null) {
       ${t.notes ? `<div class="small muted">${esc(t.notes)}</div>` : ''}
       <a href="#" class="small" data-edit="${esc(t.id)}">edit</a> · <a href="#" class="small danger" data-del="${esc(t.id)}">delete</a></div></div>`).join('')
     : '<div class="card muted">Add the lures and baits you carry. When you log a catch, pick one and it counts toward that lure\'s fish.</div>'}`;
-  const form = $('#tackle-form');
+  const form = $('#tackle-form', el);
   form.onsubmit = async ev => {
     ev.preventDefault();
     const f = Object.fromEntries(new FormData(form));
@@ -38,7 +39,7 @@ export async function renderTackle(el, edit = null) {
     status(unreadable ? "Saved, but couldn't read that photo" : edit ? 'Saved' : 'Added to your tackle box');
     renderTackle(el);
   };
-  $('#tackle-cancel')?.addEventListener('click', () => renderTackle(el));
+  $('#tackle-cancel', el)?.addEventListener('click', () => renderTackle(el));
   el.querySelectorAll('[data-edit]').forEach(a => a.onclick = async ev => { ev.preventDefault(); await renderTackle(el, await db.get('tackle', a.dataset.edit)); el.closest('.view').scrollTop = 0; });
   el.querySelectorAll('[data-del]').forEach(a => a.onclick = async ev => {
     ev.preventDefault();
