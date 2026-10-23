@@ -45,7 +45,6 @@ const decode = s => String(s ?? '').replace(/&(#x?[0-9a-f]+|\w+);/gi, (m, e) => 
 const clean = s => decode(String(s ?? '').replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
 const round = n => +n.toFixed(5);
 const norm = s => decode(s).toLowerCase().replace(/\(.*?\)/g, '').replace(/\b(lake|lakes|reservoir|res|river|creek|pond|ponds|the|of|park)\b|[^a-z0-9]/g, '');
-const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const km = (a, b) => {
   const r = d => d * Math.PI / 180;
   const h = Math.sin(r(b[0] - a[0]) / 2) ** 2 + Math.cos(r(a[0])) * Math.cos(r(b[0])) * Math.sin(r(b[1] - a[1]) / 2) ** 2;
@@ -68,29 +67,34 @@ const tableRows = html => [...html.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)].ma
 const ABBR = { LK: 'Lake', LKS: 'Lakes', RES: 'Reservoir', PD: 'Pond', PDS: 'Ponds', CR: 'Creek', R: 'River', FK: 'Fork', MF: 'Middle Fork', NF: 'North Fork', SF: 'South Fork', EF: 'East Fork', WF: 'West Fork',
   N: 'North', S: 'South', E: 'East', W: 'West', SL: 'Slough', MT: 'Mount', MTN: 'Mountain', ST: 'St.', CK: 'Creek', SPGS: 'Springs', SPG: 'Spring', HWY: 'Highway', CO: 'County', PK: 'Park', UPR: 'Upper', LWR: 'Lower', JR: 'Jr.' };
 const SMALL = new Set(['of', 'the', 'and', 'at', 'in', 'on']);
+const WORD_ABBR = { ...ABBR, RVR: 'River', WLDLIFE: 'Wildlife', CST: 'Coast', L: 'Lower', U: 'Upper', OHV: 'OHV', MHCC: 'MHCC' };
+const word = (w, i) => {
+  const m = w.match(/^([^A-Za-z#\d]*)([A-Za-z'.]+|#?\d+\w*)([^A-Za-z]*)$/);
+  if (!m) return w;
+  const [, pre, core, post] = m, bare = core.replace(/[^A-Za-z]/g, '').toUpperCase();
+  if (WORD_ABBR[bare] && /^[A-Za-z]+\.?$/.test(core)) return pre + WORD_ABBR[bare] + post;
+  if (/^[IVX]+$/.test(core) || /^#?\d/.test(core)) return w;
+  const lower = core.toLowerCase();
+  const out = i > 0 && SMALL.has(lower) ? lower : lower.replace(/(^|[\-/'.])([a-z])/g, (x, q, c) => q + c.toUpperCase()).replace(/^Mc([a-z])/, (x, c) => 'Mc' + c.toUpperCase()).replace(/^O'([a-z])/, (x, c) => "O'" + c.toUpperCase());
+  return pre + out + post;
+};
+// "SALISH PD, W" → "West Salish Pond", "EMPIRE LK, LWR" → "Lower Empire Lake", "WILLAMETTE R, CST FK" → "Coast Fork Willamette River",
+// "NORTH POWDER PD-1" → "North Powder Pond 1".
 function waterName(raw) {
-  const words = decode(raw).replace(/\s+/g, ' ').trim().split(' ');
-  return words.map((w, i) => {
-    const bare = w.replace(/[^A-Za-z]/g, '').toUpperCase();
-    if (ABBR[bare] && /^[A-Za-z]+\.?$/.test(w) && !(i === 0 && /^[NSEW]$/.test(bare) && words.length === 1)) return ABBR[bare];
-    if (/^\(?[IVX]+\)?$/.test(w) || /^#?\d/.test(w)) return w;
-    const lower = w.toLowerCase();
-    if (i > 0 && SMALL.has(lower)) return lower;
-    return lower.replace(/(^|[(\-/'.])([a-z])/g, (m, p, c) => p + c.toUpperCase()).replace(/^Mc([a-z])/, (m, c) => 'Mc' + c.toUpperCase());
-  }).join(' ').replace(/\bFork ([A-Z][a-z]+ (?:River|Creek))/, 'Fork $1');
+  let [head, ...quals] = decode(raw).replace(/\s+/g, ' ').trim().split(/\s*,\s*/);
+  head = head.replace(/\b(PD|LK|RES|R)-(\d+)\b/gi, '$1 $2');
+  const words = s => s.split(' ').map(word).join(' ');
+  let name = words(head);
+  if (quals.length) name = `${quals.map(q => words(q)).reverse().join(' ')} ${name}`;
+  return name.replace(/\s+/g, ' ').trim();
 }
 
 const SIZES = [['legals', 'Legal trout', 'Legal-size rainbow trout, about 8 to 12 inches'], ['trophy', 'Trophy trout', 'Larger trout, 12 inches or more'],
   ['brood', 'Brood trout', 'Retired hatchery brood fish, often several pounds'], ['fingerling', 'Fingerling trout', 'Small trout to grow in the water']];
 
-// The schedule page's filter form: field names for the zone, waterbody and date range, so the job can ask for the
-// whole window ODFW keeps (2 years back, and the weeks already planned).
-function formFields(html) {
-  const form = html.match(/<form\b[^>]*views-exposed-form[\s\S]*?<\/form>/i)?.[0] ?? html.match(/<form\b[\s\S]*?<\/form>/gi)?.find(f => /date|zone|waterbody/i.test(f)) ?? '';
-  const fields = [...form.matchAll(/<(input|select)\b[^>]*\bname="([^"]+)"[^>]*>/gi)].map(m => ({ tag: m[1].toLowerCase(), name: decode(m[2]), type: m[0].match(/type="([^"]+)"/i)?.[1] ?? null, value: decode(m[0].match(/value="([^"]*)"/i)?.[1] ?? '') }));
-  const action = decode(form.match(/action="([^"]*)"/i)?.[1] ?? '');
-  return { action, fields };
-}
+// The schedule's filters, as ODFW's own stocking-map links write them.
+const FILTER = { zone: 'field_zone_value', water: 'field_waterbody_name_value_1', from: 'field_planned_stocking_date_value[date]', to: 'field_planned_stocking_date_end_value[date]' };
+export const scheduleLink = raw => `${ODFW}/fishing/species/trout/stocking-schedule?${new URLSearchParams({ [FILTER.zone]: 'All', [FILTER.water]: raw })}`;
 
 function scheduleRows(html) {
   const rows = [];
@@ -112,48 +116,35 @@ function scheduleRows(html) {
   return rows;
 }
 
+// ODFW keeps 2 years of stockings and the weeks already planned. The print view lists up to 500 rows, so the job
+// asks for a month at a time (half a month when a month is full).
 async function scheduleFetch() {
-  const url = `${ODFW}/fishing/species/trout/stocking-schedule`;
-  const first = await getText(url);
-  const form = formFields(first);
-  const log = report.schedule = { form, pages: [] };
+  const log = report.schedule = { windows: [] };
   const byKey = new Map();
-  const add = (rows, label) => { for (const r of rows) byKey.set(`${r.week}|${r.raw}`, r); log.pages.push(`${label}: ${rows.length} rows`); };
-  add(scheduleRows(first), 'default');
-  // Ask for the full window ODFW keeps, if the form has date fields.
-  const dateFields = form.fields.filter(f => /date|min|max|start|end/i.test(f.name) && f.tag === 'input');
-  const start = new Date(Date.now() - 2 * 365 * 864e5).toISOString().slice(0, 10), end = new Date(Date.now() + 365 * 864e5).toISOString().slice(0, 10);
-  const params = new URLSearchParams();
-  for (const f of form.fields) {
-    if (f.tag === 'select' && /zone/i.test(f.name)) params.set(f.name, 'All');
-    else if (dateFields.includes(f)) params.set(f.name, /max|end|to/i.test(f.name) ? end : start);
-    else if (f.type === 'hidden' && !/form_build_id|form_token/.test(f.name)) params.set(f.name, f.value);
+  const day = t => new Date(t).toISOString().slice(0, 10);
+  const ask = async (from, to) => {
+    const q = new URLSearchParams({ [FILTER.zone]: 'All', [FILTER.water]: '', [FILTER.from]: from, [FILTER.to]: to });
+    const rows = scheduleRows(await getText(`${ODFW}/fishing/species/trout/stocking-schedule-print?${q}`));
+    log.windows.push(`${from}..${to}: ${rows.length}`);
+    return rows;
+  };
+  const start = Date.now() - 2 * 365 * 864e5, end = Date.now() + 365 * 864e5;
+  for (let t = start; t < end; t += 31 * 864e5) {
+    const from = day(t), to = day(Math.min(end, t + 30 * 864e5));
+    try {
+      let rows = await ask(from, to);
+      if (rows.length >= 490) rows = [...await ask(from, day(t + 15 * 864e5)), ...await ask(day(t + 16 * 864e5), to)];
+      for (const r of rows) byKey.set(`${r.week}|${r.raw}`, r);
+    } catch (e) { log.windows.push(`${from}..${to}: ${e.message}`); }
+    await new Promise(res => setTimeout(res, 700));
   }
-  const base = form.action ? new URL(form.action, url).href.split('?')[0] : url;
-  const tries = dateFields.length ? [params] : [];
-  // Drupal date filters are often "<name>[min]" / "<name>[max]" or "start_date" / "end_date"; try the usual ones too.
-  for (const [a, b] of [['field_date_value[min]', 'field_date_value[max]'], ['start_date', 'end_date'], ['field_stocking_date_value[min]', 'field_stocking_date_value[max]'], ['date[min]', 'date[max]']]) {
-    tries.push(new URLSearchParams({ [a]: start, [b]: end }));
+  // The windows didn't work (ODFW changed its filters): take what the plain print view shows.
+  if (byKey.size < 100) {
+    try { for (const r of scheduleRows(await getText(`${ODFW}/fishing/species/trout/stocking-schedule-print`))) byKey.set(`${r.week}|${r.raw}`, r); } catch (e) { log.printError = e.message; }
   }
-  for (const p of tries) {
-    for (let page = 0; page < 80; page++) {
-      if (page) p.set('page', page); else p.delete('page');
-      const u = `${base}?${p}`;
-      let html;
-      try { html = await getText(u); } catch (e) { log.pages.push(`${u}: ${e.message}`); break; }
-      const rows = scheduleRows(html);
-      const before = byKey.size;
-      add(rows, `${p.toString().slice(0, 160)}`);
-      const hasNext = /[?&]page=\d+/.test(html.match(/<nav[^>]*pager[\s\S]*?<\/nav>/i)?.[0] ?? html.match(/class="[^"]*pager[\s\S]{0,3000}/i)?.[0] ?? '');
-      if (!rows.length || byKey.size === before || !hasNext) break;
-      await new Promise(res => setTimeout(res, 800));
-    }
-    if (byKey.size > 400) break; // the window came back; no need to try other field names
-  }
-  // The print view sometimes lists everything on one page.
-  try { add(scheduleRows(await getText(`${ODFW}/fishing/species/trout/stocking-schedule-print`)), 'print'); } catch (e) { log.pages.push(`print: ${e.message}`); }
   log.rows = byKey.size;
-  log.sample = [...byKey.values()].slice(0, 5);
+  log.weeks = [...new Set([...byKey.values()].map(r => r.week))].sort().filter((w, i, a) => i === 0 || i === a.length - 1);
+  log.sample = [...byKey.values()].slice(0, 3);
   return [...byKey.values()];
 }
 
@@ -176,7 +167,9 @@ async function stockingMaps() {
         const about = decode(desc.replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '')).split('\n').map(s => s.replace(/\s+/g, ' ').trim()).filter(Boolean).join('\n').slice(0, 2000);
         const lat = round(+coords[2]), lon = round(+coords[1]);
         if (!inOregon(lat, lon)) continue;
-        out.push({ name, lat, lon, about: about || null, region });
+        // Each write-up links to the schedule filtered to the water's name exactly as the schedule spells it.
+        const raws = [...decode(desc).matchAll(/field_waterbody_name_value_1=([^&"\s<]+)/g)].map(x => { try { return decodeURIComponent(x[1].replace(/\+/g, ' ')).trim().toUpperCase(); } catch { return null; } }).filter(Boolean);
+        out.push({ name, raws, lat, lon, about: about.replace(/\n?Trout Stocking Schedule\s*-*\s*https?:\S+/gi, '').trim() || null, region });
         n++;
       }
       report.mymaps[region] = n;
@@ -241,7 +234,9 @@ async function pickPoint(w, maps, nhd) {
   const okZone = c => !ZONES.length || sameZone(zoneAt(c.lat, c.lon), w.zone);
   const near = where ? (await geocode(where))?.[0] : null;
   // 1. ODFW's own map: same name (it spells waters out in full).
-  const mm = maps.filter(m => keys.has(norm(m.name)) || norm(m.name) === norm(w.raw));
+  const byRaw = maps.filter(m => m.raws.includes(w.raw.toUpperCase()));
+  if (byRaw.length) return { lat: byRaw[0].lat, lon: byRaw[0].lon, via: 'odfw', about: byRaw[0].about };
+  const mm = maps.filter(m => keys.has(norm(m.name)));
   const mHit = mm.find(okZone) ?? (mm.length === 1 ? mm[0] : null);
   if (mHit) return { lat: mHit.lat, lon: mHit.lon, via: 'odfw', about: mHit.about };
   // 2. USGS NHD names, in the right zone (Oregon has many Clear Lakes and Mud Lakes).
@@ -263,43 +258,47 @@ async function pickPoint(w, maps, nhd) {
 }
 
 // ---------- ODFW Recreation Report ----------
-// One page per zone, rewritten every week: a short entry per water, each starting with the water's name.
-const REPORT_ZONES = ['northwest', 'southwest', 'willamette', 'central', 'northeast', 'southeast', 'snake-river', 'columbia'];
-const WATERISH = /\b(lake|lakes|reservoir|res|pond|ponds|river|creek|fork|bay|slough|channel|canal|marina|beach|estuary|jetty|basin)\b/i;
+// One page per zone, rewritten every week: "best bets" bullets that name the waters fishing well.
+const REPORT_ZONES = { northwest: 'Northwest', southwest: 'Southwest', willamette: 'Willamette', central: 'Central', northeast: 'Northeast', southeast: 'Southeast', columbia: 'Columbia River', marine: 'Marine' };
+const BOILER = /regulation update page|table of contents|^recreation report$|best bets$|zone\s*[-–]$/i;
 async function recreationReport() {
-  const entries = [];
+  const out = [];
   report.recreation = {};
-  for (const z of REPORT_ZONES) {
+  for (const [z, zone] of Object.entries(REPORT_ZONES)) {
     const url = `${ODFW}/recreation-report/fishing-report/${z}-zone`;
     const log = report.recreation[z] = {};
     try {
-      let html = await getText(url);
-      const date = isoDate(clean(html.match(/<time[^>]*>([\s\S]*?)<\/time>/i)?.[1] ?? '')) ?? isoDate(html.match(/(?:Updated|Week of|published)[^<]{0,40}?([A-Z][a-z]+\.? \d{1,2},? \d{4})/)?.[1] ?? '') ?? null;
-      const main = html.match(/<main\b[\s\S]*?<\/main>/i)?.[0] ?? html;
-      const body = main.replace(/<(script|style|nav|header|footer|noscript)[\s\S]*?<\/\1>/gi, '');
-      const blocks = [...body.matchAll(/<(h[2-6]|p|li|div class="[^"]*field[^"]*")\b[^>]*>([\s\S]*?)<\/(?:h[2-6]|p|li|div)>/gi)].map(m => ({ tag: m[1].slice(0, 2).toLowerCase(), html: m[2], text: clean(m[2]) })).filter(b => b.text);
-      log.date = date; log.blocks = blocks.length;
-      log.outline = blocks.slice(0, 40).map(b => `${b.tag}: ${b.text.slice(0, 90)}`);
-      let cur = null;
-      for (const b of blocks) {
-        const lead = clean(b.html.match(/^\s*<(?:strong|b)>([\s\S]*?)<\/(?:strong|b)>/i)?.[1] ?? '');
-        if (/^h/.test(b.tag) && b.text.length < 90 && WATERISH.test(b.text)) { cur = { name: b.text.replace(/[:.]$/, ''), text: [] }; entries.push({ zone: z, date, url, entry: cur }); continue; }
-        if (lead && lead.length < 90 && WATERISH.test(lead)) {
-          cur = { name: lead.replace(/[:.\-–]\s*$/, '').trim(), text: [] };
-          entries.push({ zone: z, date, url, entry: cur });
-          const rest = b.text.slice(lead.length).replace(/^[\s:.\-–]+/, '');
-          if (rest) cur.text.push(rest);
-          continue;
-        }
-        if (/^h/.test(b.tag)) { cur = null; continue; }
-        if (cur && cur.text.join(' ').length < 2500) cur.text.push(b.text);
+      const html = await getText(url);
+      const main = (html.match(/<main\b[\s\S]*?<\/main>/i)?.[0] ?? html).replace(/<(script|style|nav|header|footer|noscript)[\s\S]*?<\/\1>/gi, '');
+      const date = isoDate(clean(main.match(/<time[^>]*>([\s\S]*?)<\/time>/i)?.[1] ?? '')) ?? isoDate(clean(main).match(/(?:January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{4}/)?.[0] ?? '');
+      const items = [];
+      let section = null;
+      for (const m of main.matchAll(/<(h[2-6]|p|li)\b[^>]*>([\s\S]*?)<\/\1>/gi)) {
+        const t = clean(m[2]);
+        if (!t || BOILER.test(t)) continue;
+        // Short all-caps lines are species headings in the Columbia report ("WALLEYE", "STURGEON").
+        if (/^h/i.test(m[1]) || (t.length < 40 && t === t.toUpperCase())) { section = t; continue; }
+        if (t.length < 30) continue;
+        items.push(section && section === section.toUpperCase() && !t.toUpperCase().includes(section) ? `${section[0]}${section.slice(1).toLowerCase()}. ${t}` : t);
       }
+      log.date = date; log.items = items.length; log.first = items.slice(0, 3);
+      out.push({ zone, date, url, items: [...new Set(items)].slice(0, 80) });
     } catch (e) { log.error = e.message; }
-    log.entries = entries.filter(e => e.zone === z).length;
   }
-  const out = entries.filter(e => e.entry.text.length).map(e => ({ name: e.entry.name, zone: e.zone, date: e.date, url: e.url, text: e.entry.text.join('\n').slice(0, 2500) }));
-  report.recreationSample = out.slice(0, 6);
   return out;
+}
+
+// Whether a report line talks about this water: its name without the "Lake"/"River" part, as a whole word, in a
+// line that names the same kind of water ("Siltcoos and Tahkenitch lakes" is about Siltcoos Lake).
+const KIND = [[/\b(lake|lakes|reservoir|reservoirs|res|pond|ponds|canal)\b/i], [/\b(river|rivers|creek|creeks)\b/i]];
+export function mentions(text, name) {
+  const bare = name.replace(/\s*\(.*?\)\s*/g, ' ').trim();
+  const base = bare.replace(/^Lake\s+/i, '').replace(/\s+(Lake|Lakes|Reservoir|Pond|Ponds|River|Creek|Canal)$/i, '').trim();
+  if (base.length < 4 || /^(north|south|east|west|upper|lower|middle|big|little|clear|mud|fish|blue|lost|long|round)$/i.test(base)) return false;
+  const kind = KIND.find(([re]) => re.test(bare))?.[0] ?? /\b(lake|lakes|reservoir|res|pond|ponds|river|rivers|creek|creeks)\b/i;
+  const b = base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  // The name, then the kind of water within a few words ("Siltcoos and Tahkenitch lakes"), or "Lake Billy Chinook".
+  return new RegExp(`\\b${b}\\b(?:[\\s,]+[\\w'’-]+){0,3}?[\\s,]+${kind.source.replace(/\\b/g, '')}\\b`, 'i').test(text) || (/^Lake /i.test(bare) && new RegExp(`\\blake\\s+${b}\\b`, 'i').test(text));
 }
 
 async function buildWaters(rows, reports) {
@@ -309,13 +308,14 @@ async function buildWaters(rows, reports) {
   const old = new Map(((await readOld('waters.json'))?.waters ?? []).map(w => [w.id, w]));
   const byWater = new Map();
   for (const r of rows) {
-    const id = slug(r.raw);
+    const id = r.raw;
     const w = byWater.get(id) ?? { id, raw: r.raw, name: waterName(r.raw), zone: r.zone, office: r.office, weeks: [] };
     w.weeks.push(r.week);
     w.zone ??= r.zone; w.office ??= r.office;
     byWater.set(id, w);
   }
-  for (const w of old.values()) if (!byWater.has(w.id)) byWater.set(w.id, { id: w.id, raw: w.raw ?? w.name, name: w.name, zone: w.zone, office: w.office, weeks: [] });
+  // Ids are ODFW's spelling of the name (what the schedule's filter takes). The first runs used slugs; drop those.
+  for (const w of old.values()) if (!byWater.has(w.id) && w.raw === w.id) byWater.set(w.id, { id: w.id, raw: w.raw ?? w.name, name: w.name, zone: w.zone, office: w.office, weeks: [] });
   report.points = { nhd: nhd.length, odfwMaps: maps.length, via: {}, unmatched: [] };
   const waters = [];
   for (const w of byWater.values()) {
@@ -324,14 +324,15 @@ async function buildWaters(rows, reports) {
     const pt = prev?.via === 'odfw' ? prev : await pickPoint(w, maps, nhd) ?? (prev?.lat != null ? prev : null);
     if (!pt) report.points.unmatched.push(`${w.raw} → ${w.name} (${w.zone})`);
     report.points.via[pt?.via ?? 'none'] = (report.points.via[pt?.via ?? 'none'] ?? 0) + 1;
-    const rep = reports.filter(x => sameZone(x.zone.replace(/-/g, ' '), w.zone) && lookupNames(w.name).names.some(n => norm(n) === norm(x.name)))[0];
-    const years = w.weeks.map(d => +d.slice(0, 4)).sort();
+    const rep = reports.map(x => ({ ...x, lines: (x.items ?? []).filter(t => mentions(t, w.name)) })).find(x => x.lines.length && (sameZone(x.zone, w.zone) || /Columbia/.test(x.zone)));
+    const today = new Date().toISOString().slice(0, 10);
+    const years = w.weeks.filter(d => d <= today).map(d => +d.slice(0, 4)).sort();
     waters.push({
       id: w.id, raw: w.raw, name: w.name, type: isFlowing(w.name) ? 'River' : /Pond/.test(w.name) ? 'Pond' : 'Lake', zone: w.zone, office: w.office,
       counties: [w.zone && `${w.zone} Zone`, w.office].filter(Boolean).join(' · '),
       lat: pt?.lat ?? null, lon: pt?.lon ?? null, via: pt?.via ?? null, acres: pt?.acres ?? prev?.acres ?? null,
       about: pt?.about ?? prev?.about ?? null,
-      report: rep?.text ?? null, reportDate: rep?.date ?? null, reportUrl: rep?.url ?? null,
+      report: rep ? rep.lines.join('\n') : null, reportDate: rep?.date ?? null, reportUrl: rep?.url ?? null, url: scheduleLink(w.raw),
       lastYearStocked: years.at(-1) ?? prev?.lastYearStocked ?? null,
     });
   }
@@ -344,10 +345,11 @@ async function buildPlants(rows) {
   const old = (await readOld('plants.json'))?.plants ?? [];
   const byKey = new Map();
   const key = p => `${p.stockId}|${p.week}|${p.species}`;
-  for (const p of old) byKey.set(key(p), p);
+  // The first runs keyed plants by a slug of the name; ids are now ODFW's own spelling.
+  for (const p of old) if (!/^[a-z0-9-]+$/.test(p.stockId)) byKey.set(key(p), p);
   let fresh = 0;
   for (const r of rows) {
-    const stockId = slug(r.raw);
+    const stockId = r.raw;
     // The schedule can change before the week comes; tonight's numbers replace last night's for that week.
     for (const [k] of SIZES) byKey.delete(key({ stockId, week: r.week, species: SIZES.find(s => s[0] === k)[1] }));
     for (const [k, species] of SIZES) {
@@ -386,6 +388,8 @@ async function usgsLevels() {
     r._rank = rank;
     // Gage height above a local datum: add the datum's elevation so it reads as lake elevation.
     const offset = /0006[25]/.test(param) && vals.at(-1)[1] < 1000 && r.datumFt ? r.datumFt : 0;
+    // A gage height with no datum to add isn't a lake elevation (Keno: 84 ft); leave it out.
+    if (/0006[25]/.test(param) && !offset && vals.at(-1)[1] < 300) continue;
     r.elevation = vals.map(([d, v]) => [d, +(v + offset).toFixed(2)]);
   }
   return [...out.values()].filter(r => r.elevation.length || r.storage.length).map(({ _rank, datumFt, ...r }) => r);
@@ -400,28 +404,35 @@ async function corpsLevels() {
   const ids = (cat.entries ?? []).map(e => e.name ?? e['time-series-id'] ?? e.tsid).filter(Boolean);
   log.catalog = ids.length;
   log.sampleIds = ids.slice(0, 30);
-  // One series per location: a daily average if there is one, else hourly.
+  // Candidate series per location, best first: revised and "Best" data, daily or hourly; never forecasts.
   const byLoc = new Map();
-  const score = id => (/Ave\.1Day/.test(id) ? 0 : /Inst\.1Hour/.test(id) ? 1 : /Inst\.15Minutes/.test(id) ? 2 : 5) + (/CBT-REV|Best|REV/.test(id) ? 0 : 0.5);
+  const score = id => (/Best/.test(id) ? 0 : /MIXED-REV|CBT-REV|USBR-COMPUTED-REV/.test(id) ? 1 : /REV/.test(id) ? 2 : 3) + (/Ave\.~?1Day/.test(id) ? 0 : /1Hour/.test(id) ? 0.2 : 0.4);
   for (const id of ids) {
+    if (/FCST|MODEL|SubSample/i.test(id)) continue;
     const loc = id.split('.')[0];
-    if (!byLoc.has(loc) || score(id) < score(byLoc.get(loc))) byLoc.set(loc, id);
+    byLoc.set(loc, [...(byLoc.get(loc) ?? []), id].sort((a, b) => score(a) - score(b)));
   }
   const out = [];
   const begin = new Date(Date.now() - 60 * 864e5).toISOString(), end = new Date().toISOString();
   log.locations = [];
-  for (const [loc, tsid] of byLoc) {
+  for (const [loc, tsids] of byLoc) {
     try {
       const l = await getJson(`${CDA}/locations/${encodeURIComponent(loc)}?office=NWDP`, { headers: CDA_HEADERS });
       const lat = l.latitude, lon = l.longitude;
-      if (!Number.isFinite(lat) || !inOregon(lat, lon)) { log.locations.push(`${loc}: outside (${lat}, ${lon})`); continue; }
-      const ts = await getJson(`${CDA}/timeseries?name=${encodeURIComponent(tsid)}&office=NWDP&begin=${begin}&end=${end}&page-size=20000`, { headers: CDA_HEADERS });
-      const days = new Map();
-      for (const [t, v] of ts.values ?? []) if (Number.isFinite(v)) days.set(new Date(t).toISOString().slice(0, 10), v);
-      const elevation = [...days].sort((a, b) => a[0].localeCompare(b[0])).map(([d, v]) => [d, +v.toFixed(2)]);
-      log.locations.push(`${loc} ${l['public-name'] ?? ''}: ${tsid} ${elevation.length} days ${ts.units ?? ''}`);
-      if (!elevation.length || !/ft/i.test(ts.units ?? 'ft')) continue;
-      out.push({ id: loc, name: l['public-name'] || l['long-name'] || loc, lat: round(lat), lon: round(lon), source: 'USACE', elevation, storage: [] });
+      if (!Number.isFinite(lat) || !inOregon(lat, lon)) continue;
+      const name = l['public-name'] || l['long-name'] || loc;
+      if (/canal|diversion|lock|power ?house|feed/i.test(name)) { log.locations.push(`${loc} ${name}: skipped`); continue; }
+      let elevation = [], used = null;
+      for (const tsid of tsids.slice(0, 4)) {
+        const ts = await getJson(`${CDA}/timeseries?name=${encodeURIComponent(tsid)}&office=NWDP&begin=${begin}&end=${end}&unit=EN&page-size=20000`, { headers: CDA_HEADERS });
+        const days = new Map();
+        for (const [t, v] of ts.values ?? []) if (Number.isFinite(v) && v > 0) days.set(new Date(t).toISOString().slice(0, 10), v);
+        elevation = [...days].sort((a, b) => a[0].localeCompare(b[0])).map(([d, v]) => [d, +v.toFixed(2)]);
+        used = `${tsid} ${elevation.length} days ${ts.units ?? ''}`;
+        if (elevation.length > 5) break;
+      }
+      log.locations.push(`${loc} ${name}: ${used}`);
+      if (elevation.length) out.push({ id: loc, name, lat: round(lat), lon: round(lon), source: 'USACE', elevation, storage: [] });
     } catch (e) { log.locations.push(`${loc}: ${e.message}`); }
   }
   return out;
@@ -446,7 +457,7 @@ async function hydrometLevels() {
       const day = d => /\//.test(d) ? isoDate(d) : d.slice(0, 10);
       const elevation = rows.filter(r => Number.isFinite(parseFloat(r[1]))).map(r => [day(r[0]), +parseFloat(r[1]).toFixed(2)]);
       const storage = rows.filter(r => Number.isFinite(parseFloat(r[2]))).map(r => [day(r[0]), Math.round(parseFloat(r[2]))]);
-      log[id] = `${elevation.length} elev, ${storage.length} storage${rows.length ? '' : `; ${csv.slice(0, 160).replace(/\s+/g, ' ')}`}`;
+      log[id] = `${elevation.length} elev, ${storage.length} storage; ${rows.length} rows; ${csv.slice(0, 300).replace(/\s+/g, ' ')}`;
       if (elevation.length || storage.length) out.push({ id, name, lat, lon, source: 'USBR', elevation, storage });
     } catch (err) { log[id] = err.message; }
   }
@@ -460,7 +471,9 @@ async function habAdvisories(waters) {
   const html = await getText(page);
   const lakes = (await readOld('lakes.json'))?.lakes ?? [];
   const rows = tableRows(html);
-  const log = report.hab = { rows: rows.length, sample: rows.slice(0, 8).map(r => r.map(c => `${c.text}${/<img/i.test(c.html) ? ` [img ${c.html.match(/(?:alt|src)="([^"]+)"/i)?.[1] ?? ''}]` : ''}`)) };
+  const log = report.hab = { length: html.length, tables: (html.match(/<table/gi) ?? []).length,
+    hints: [...html.matchAll(/(Advisory-Red|Precaution-Yellow|Lifted-Blue|\/_api\/|\/Lists\/|arcgis\.com[^"'\s]*|\.json)/gi)].slice(0, 30).map(m => html.slice(Math.max(0, m.index - 150), m.index + 150).replace(/\s+/g, ' ')),
+    rows: rows.length, sample: rows.slice(0, 8).map(r => r.map(c => `${c.text}${/<img/i.test(c.html) ? ` [img ${c.html.match(/(?:alt|src)="([^"]+)"/i)?.[1] ?? ''}]` : ''}`)) };
   let header = null;
   const advisories = [];
   for (const cells of rows) {
