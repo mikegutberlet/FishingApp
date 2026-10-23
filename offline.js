@@ -17,13 +17,13 @@ const AVG_KB = { Satellite: 20 }; // typical tile size, for the estimate before 
 const STATE_FILES = ['lakes', 'rivers', 'waters', 'plants', 'reservoirs', 'hydrolakes', 'history'].map(n => `data/ca/${n}.json`).concat('data/ca/bathymetry/index.json');
 
 // Keyed by the NHD id when the water has one, so saving a water you downloaded before saving keeps its pack.
-const packId = lake => PREFIX + (lake.nhdId ? `nhd-${lake.nhdId}` : lake.id);
+export const packId = lake => PREFIX + (lake.nhdId ? `nhd-${lake.nhdId}` : lake.id);
 
 // The area to save: the lake's size as a circle (lakes are rarely round, so generously) and its USGS survey, widened
-// to take in what you've logged on the water. A logged point counts when it is within ~3 km of that, or within ~5 km
-// of the middle of everything you've logged there (a stretch of river, or an arm past the size estimate). Others (a
-// catch logged from home, a stray GPS fix) are left out, so they neither shrink the zoom range nor send tile requests
-// around a private spot.
+// to take in what you've logged on the water. A logged point counts when it is within ~3 km of that, or within ~3 km
+// of another point that counts, so a stretch of river or an arm you logged along is taken in link by link. A point
+// away from the rest (a catch logged from home, a stray GPS fix) is left out, so it neither shrinks the zoom range
+// nor sends tile requests around a private spot.
 async function lakeBounds(lake) {
   const river = lake.kind === 'river' || !!lake.lengthKm;
   const km = river ? 3 : Math.max(0.8, Math.sqrt((lake.acres ?? 40) * 0.004047 / Math.PI) * 2.2);
@@ -36,12 +36,11 @@ async function lakeBounds(lake) {
     for (const set of await db.byLake('depthSets', lake.id)) for (let i = 0; i < set.points.length; i += 50) pts.push(set.points[i]);
     for (const store of ['catches', 'waypoints', 'notes']) for (const r of await db.byLake(store, lake.id)) if (r.lat != null) pts.push([r.lat, r.lon]);
   }
-  const ok = pts.map(([lat, lon]) => [+lat, +lon]).filter(([lat, lon]) => Number.isFinite(lat) && Number.isFinite(lon) && Math.abs(lat) <= 90 && Math.abs(lon) <= 180);
-  const median = i => ok.map(p => p[i]).sort((x, y) => x - y)[ok.length >> 1];
-  const mid = ok.length ? L.latLng(median(0), median(1)) : null;
-  // The middle only counts when it is on this water's side of the map, not where most of the log was typed in.
-  const fished = mid && mid.distanceTo(here) <= (river ? 25000 : km * 2000 + 5000) ? mid.toBounds(10000) : null;
-  for (const p of ok) if (near.contains(p) || fished?.contains(p)) b.extend(p);
+  const ok = pts.map(p => [+p?.[0], +p?.[1]]).filter(([lat, lon]) => Number.isFinite(lat) && Number.isFinite(lon) && Math.abs(lat) <= 90 && Math.abs(lon) <= 180);
+  const kept = ok.filter(p => near.contains(p));
+  const far = ok.filter(p => !near.contains(p) && here.distanceTo(p) <= (river ? 25000 : km * 2000 + 5000));
+  for (let i = 0; i < kept.length && far.length; i++) for (let j = far.length - 1; j >= 0; j--) if (L.latLng(kept[i]).distanceTo(far[j]) <= 3000) kept.push(...far.splice(j, 1));
+  for (const p of kept) b.extend(p);
   return b.pad(0.05);
 }
 
@@ -83,7 +82,7 @@ const writeMeta = (cache, pack) => cache.put(META, new Response(JSON.stringify(p
 // Fetches whatever the pack doesn't have yet. Only readable 2xx responses are kept (the tile servers send CORS
 // headers), each stored with its size so the pack's total can be summed without reading every body back.
 async function download(cache, urls, onProgress, signal, checkpoint) {
-  let done = 0;
+  let done = 0, bytes = 0;
   const queue = urls.slice();
   const worker = async () => {
     while (queue.length && !signal.aborted) {
@@ -96,10 +95,11 @@ async function download(cache, urls, onProgress, signal, checkpoint) {
           if (!r.ok) throw new Error(r.status);
           const blob = await r.blob();
           await cache.put(url, new Response(blob, { headers: { 'content-type': r.headers.get('content-type') || blob.type, 'content-length': String(blob.size) } }));
+          bytes += blob.size;
         }
       } catch { /* counted as missing below */ }
       onProgress(++done, urls.length);
-      if (done % 250 === 0) await checkpoint();
+      if (done % 250 === 0) await checkpoint(bytes);
     }
   };
   await Promise.all(Array.from({ length: 6 }, worker));
@@ -138,7 +138,7 @@ export async function offlineDialog(lake) {
   const dlg = document.createElement('dialog');
   dlg.className = 'sheet';
   dlg.innerHTML = `<form class="form" method="dialog"><h3>Save ${esc(lake.name)} for offline</h3>
-    ${existing ? `<p class="small">Saved ${fmtDate(existing.savedAt)} · ${(existing.bytes / 1e6).toFixed(0)} MB · zoom ${existing.zMin}–${existing.zMax}. Downloading again updates it${existing.complete ? '' : ' and fetches what the last download missed'}.</p>` : ''}
+    ${existing ? `<p class="small">Saved ${fmtDate(existing.savedAt)} · ${(existing.bytes / 1e6).toFixed(0)} MB · zoom ${existing.zMin}–${existing.zMax}. Downloading again updates it.</p>` : ''}
     <p class="muted small">Saves the satellite map, the USGS depth chart and this app's California data for the lake on this phone, so the map, depth and stocking work with no signal. Your catches and depth scans are always on the phone already.</p>
     <p class="muted small">The satellite map is saved. The street map can't be downloaded in advance (OpenStreetMap doesn't allow it), but street areas you've already looked at stay cached.</p>
     <label>Area <select name="area"><option value="lake">The whole lake</option><option value="view">What the map shows now</option></select></label>
@@ -150,16 +150,27 @@ export async function offlineDialog(lake) {
   // The map is hidden behind this page, so use the last view it showed (see initOffline), never its current size.
   const view = viewBounds && viewBounds.getNorth() > viewBounds.getSouth() && viewBounds.getEast() > viewBounds.getWest() ? viewBounds : null;
   if (!view) form.area.querySelector('[value=view]').disabled = true;
+  // The pack remembers each area it was asked for. An earlier area this one doesn't cover (in extent and zooms) stays
+  // on the list, and if an earlier download didn't finish, its missing tiles are fetched too and counted in the estimate.
+  const layers = ['Satellite'], box = b => L.latLngBounds([b[0], b[1]], [b[2], b[3]]);
+  const areaTiles = a => tileUrls(box(a.bounds), layers, a.zMin, a.zMax);
+  // A pack saved before areas were kept: its box, at the zooms plan() allows for that box.
+  const earlier = existing?.areas ?? (existing?.bounds ? [{ bounds: existing.bounds, zMin: existing.zMin, zMax: Math.min(existing.zMax, plan(box(existing.bounds), layers).zMax) }] : []);
+  const held = existing && !existing.complete ? new Set((await (await caches.open(id)).keys()).map(r => r.url)) : null;
   const choice = () => {
-    const layers = ['Satellite'];
-    const bounds = form.area.value === 'view' && view ? view : lakeBox;
-    return { layers, bounds, plan: plan(bounds, layers) };
+    const bounds = form.area.value === 'view' && view ? view : lakeBox, p = plan(bounds, layers);
+    const kept = earlier.filter(a => !(bounds.contains(box(a.bounds)) && p.zMin <= a.zMin && p.zMax >= a.zMax));
+    const own = new Set(tileUrls(bounds, layers, p.zMin, p.zMax));
+    const left = held ? [...new Set(kept.flatMap(areaTiles))].filter(u => !own.has(u) && !held.has(new URL(u, location.href).href)) : [];
+    return { bounds, p, kept, own, left, tooBig: p.tooBig || own.size + left.length > MAX_TILES };
   };
   const estimate = () => {
-    const { plan: p } = choice();
-    $('#off-go', dlg).disabled = p.tooBig;
+    const { p, left, tooBig } = choice();
+    const more = left.length ? ` Plus ${left.length.toLocaleString()} tiles the last download didn't finish, about ${Math.max(1, Math.round(left.length * AVG_KB.Satellite / 1024))} MB.` : '';
+    $('#off-go', dlg).disabled = tooBig;
     $('#off-est', dlg).innerHTML = p.tooBig ? 'That area is too big to save. Zoom the map in on the part you fish and choose <b>What the map shows now</b>.'
-      : `About ${p.tiles.toLocaleString()} map tiles, roughly ${Math.max(1, Math.round(p.mb))} MB, zoom ${p.zMin}–${p.zMax}.${p.capped ? ' Big area, so the closest zoom levels are left out.' : ''}`;
+      : tooBig ? `That's too much at once with the ${left.length.toLocaleString()} tiles the last download didn't finish. Delete this lake under Data → Offline maps and start again, or choose a smaller area.`
+      : `About ${p.tiles.toLocaleString()} map tiles, roughly ${Math.max(1, Math.round(p.mb))} MB, zoom ${p.zMin}–${p.zMax}.${p.capped ? ' Big area, so the closest zoom levels are left out.' : ''}${more}`;
   };
   form.onchange = estimate;
   estimate();
@@ -167,29 +178,26 @@ export async function offlineDialog(lake) {
   dlg.onclose = () => { abort.abort(); dlg.remove(); };
   $('#off-go', dlg).onclick = async e => {
     e.preventDefault();
-    const { layers, bounds, plan: p } = choice();
+    const { bounds, p, kept, own, left } = choice();
     const surveys = await CA.bathymetryFor(lake).catch(() => []);
     const bar = $('#off-progress', dlg);
     bar.classList.remove('hidden');
     form.querySelectorAll('input, select, #off-go').forEach(el => el.disabled = true);
     $('#off-cancel', dlg).textContent = 'Stop';
-    // The pack remembers each area it was asked for (an earlier run's that this one doesn't cover stays on the list),
-    // and every run fetches whatever any of them still lacks, so downloading again always finishes the pack.
     // The description is written before the first tile and every 250 tiles, so a download cut off by the phone
-    // (iOS stops background pages) still shows up in Data.
-    const box = b => L.latLngBounds([b[0], b[1]], [b[2], b[3]]);
+    // (iOS stops background pages) still shows up in Data. The final check covers every area the pack holds.
     const here = { bounds: [bounds.getSouth(), bounds.getWest(), bounds.getNorth(), bounds.getEast()], zMin: p.zMin, zMax: p.zMax };
-    const earlier = existing?.areas ?? (existing?.bounds ? [{ bounds: existing.bounds, zMin: existing.zMin, zMax: existing.zMax }] : []);
-    const areas = [...earlier.filter(a => !(bounds.contains(box(a.bounds)) && p.zMin <= a.zMin && p.zMax >= a.zMax)), here];
+    const areas = [...kept, here];
     const all = areas.reduce((u, a) => u.extend(box(a.bounds)), box(here.bounds));
-    const urls = [...STATE_FILES, ...surveys.map(s => CA.bathymetryUrl(s.id)), ...new Set(areas.flatMap(a => tileUrls(box(a.bounds), layers, a.zMin, a.zMax)))];
+    const data = [...STATE_FILES, ...surveys.map(s => CA.bathymetryUrl(s.id))];
+    const urls = [...data, ...new Set(areas.flatMap(areaTiles))];
     const pack = { id, nhdId: lake.nhdId ?? null, lakeId: lake.unsaved ? null : lake.id, name: lake.name, layers, areas,
       zMin: Math.min(...areas.map(a => a.zMin)), zMax: Math.max(...areas.map(a => a.zMax)),
       bounds: [all.getSouth(), all.getWest(), all.getNorth(), all.getEast()], bytes: existing?.bytes ?? 0, complete: false, savedAt: new Date().toISOString() };
     const cache = await caches.open(id);
-    const checkpoint = async () => { Object.assign(pack, await survey(cache, urls)); await writeMeta(cache, pack); };
+    const checkpoint = got => writeMeta(cache, Object.assign(pack, { bytes: (existing?.bytes ?? 0) + got, missing: null }));
     await writeMeta(cache, pack);
-    await download(cache, urls, (n, total) => { bar.value = n / total; $('#off-est', dlg).textContent = `Downloading ${n.toLocaleString()} of ${total.toLocaleString()}…`; }, abort.signal, checkpoint);
+    await download(cache, [...data, ...own, ...left], (n, total) => { bar.value = n / total; $('#off-est', dlg).textContent = `Downloading ${n.toLocaleString()} of ${total.toLocaleString()}…`; }, abort.signal, checkpoint);
     const { bytes, missing } = await survey(cache, urls);
     Object.assign(pack, { bytes, missing, complete: !missing, savedAt: new Date().toISOString() });
     await writeMeta(cache, pack);

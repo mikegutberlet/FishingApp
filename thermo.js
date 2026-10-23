@@ -22,19 +22,25 @@ export function thermocline(readings) {
 }
 
 // "10 66", "10, 66" or "10: 66" per line (or separated by ;) → { readings: [[depthFt, tempF]], bad: [lines it couldn't read] }.
-// A comma between digits can be a decimal comma when the line has another separator ("2,5 18,5" is 2.5 m at 18.5 °C).
-// Each line is read the first way that gives a depth and a water temperature that make sense (0–2,000 ft, 30–100 °F);
-// a line that makes sense neither way goes back to the user rather than into the profile.
+// A comma between digits is read as a decimal comma in metric or °C units when the line has another separator
+// ("2,5 18,5" is 2.5 m at 18.5 °C), and as a separator in ft and °F ("40,50 50,48" is two readings). If that reading
+// doesn't make sense (0–2,000 ft, 30–100 °F), the other one is tried; a line that makes sense neither way goes back
+// to the user rather than into the profile.
 export function parseProfile(text, { meters = false, celsius = false } = {}) {
   const lines = text.split(/[\n;]+/).map(l => l.trim()).filter(Boolean);
-  const read = l => {
-    const pair = l.split(/[\s,:=]+/).filter(Boolean).map(Number);
-    if (pair.length !== 2 || !pair.every(Number.isFinite)) return null;
-    const d = meters ? pair[0] * 3.28084 : pair[0], t = celsius ? pair[1] * 9 / 5 + 32 : pair[1];
+  const reading = (d, t) => {
+    d = meters ? d * 3.28084 : d; t = celsius ? t * 9 / 5 + 32 : t;
     return d >= 0 && d <= 2000 && t >= 30 && t <= 100 ? [+d.toFixed(1), +t.toFixed(1)] : null;
   };
-  const parsed = lines.map(l => (/[\s:=]/.test(l) && read(l.replace(/(\d),(\d)/g, '$1.$2'))) || read(l));
-  return { readings: parsed.filter(Boolean).sort((a, b) => a[0] - b[0]), bad: lines.filter((_, i) => !parsed[i]) };
+  const pairs = l => {
+    const n = l.split(/[\s,:=]+/).filter(Boolean).map(Number), out = [];
+    if (!n.length || n.length % 2 || !n.every(Number.isFinite)) return null;
+    for (let i = 0; i < n.length; i += 2) { const r = reading(n[i], n[i + 1]); if (!r) return null; out.push(r); }
+    return out;
+  };
+  const decimal = l => /[\s:=]/.test(l) && /\d,\d/.test(l) ? pairs(l.replace(/(\d),(\d)/g, '$1.$2')) : null;
+  const parsed = lines.map(l => meters || celsius ? decimal(l) ?? pairs(l) : pairs(l) ?? decimal(l));
+  return { readings: parsed.filter(Boolean).flat().sort((a, b) => a[0] - b[0]), bad: lines.filter((_, i) => !parsed[i]) };
 }
 
 // Rows of numbers only. Scans and profiles can arrive in a friend's shared lake file, so nothing else reaches the page.

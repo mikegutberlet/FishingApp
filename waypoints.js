@@ -40,7 +40,7 @@ async function nearestLake(lat, lon) {
 
 // Add or edit a waypoint. Opens a sheet; the location comes from GPS or a tap on the map.
 export async function editWaypoint(w = {}) {
-  pickPoint(null); // a long-press or 📌 while another waypoint's spot is being picked drops that one
+  dropPending?.(); // a long-press or 📌 while another waypoint's spot is being picked drops that one
   const lakes = (await db.all('lakes')).sort((a, b) => a.name.localeCompare(b.name));
   let loc = w.lat != null ? { lat: w.lat, lon: w.lon } : null;
   const draft = { kind: 'spot', ...w };
@@ -80,9 +80,10 @@ export async function editWaypoint(w = {}) {
     status(hint);
     const box = map.getContainer(), view = document.getElementById('view-map');
     const left = new MutationObserver(() => { if (!view.classList.contains('active')) pickPoint(null); });
-    const finish = () => { box.classList.remove('picking'); left.disconnect(); picking = false; if ($('#status').textContent === hint) status(''); };
+    const finish = () => { box.classList.remove('picking'); left.disconnect(); picking = false; dropPending = null; if ($('#status').textContent === hint) status(''); };
     box.classList.add('picking');
     left.observe(view, { attributes: true, attributeFilter: ['class'] });
+    dropPending = () => pickPoint(null);
     pickPoint(({ lat, lng }) => { finish(); dlg.showModal(); setLoc({ lat, lon: lng }); }, () => { finish(); dlg.remove(); });
   };
   $('#wpt-save', dlg).onclick = async e => {
@@ -98,6 +99,7 @@ export async function editWaypoint(w = {}) {
   dlg.showModal();
 }
 let onSaved = null; // lets the Depth tab redraw its list after an edit
+let dropPending = null; // set while a waypoint's 'Tap the map' is waiting; other picks (a note's spot, ＋ Lake here) are left alone
 
 // GPX for chartplotters, Navionics, Google Earth and the like. The user chooses where it goes.
 export function waypointsGpx(list, name) {

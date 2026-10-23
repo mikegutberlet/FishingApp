@@ -30,44 +30,58 @@ export async function mergedSoundings(lake, sets) {
   const today = res?.elevation?.at(-1);
   const dated = sets.filter(s => typeof s.levelFt === 'number').sort((a, b) => (b.scanDate ?? '').localeCompare(a.scanDate ?? ''));
   const ref = !dated.length ? null : today ? { levelFt: today[1], date: today[0], station: res.id } : { levelFt: dated[0].levelFt, date: dated[0].scanDate };
-  const points = [];
-  let shifted = 0, dropped = 0;
-  for (const s of sets) {
+  const raw = [], steps = [];
+  for (const [n, s] of sets.entries()) {
     const off = ref && typeof s.levelFt === 'number' ? ref.levelFt - s.levelFt : 0;
-    const mine = [];
-    for (const [lat, lon, d] of s.points) if (d > 0 && d + off > 0) mine.push([lat, lon, d + off]);
-    const kept = dropStrays(mine); // each scan on its own, so a short scan of another arm is never judged against a long one
-    dropped += mine.length - kept.length;
-    if (off && kept.length) shifted++;
-    for (const p of kept) points.push(p);
+    for (const [lat, lon, d] of s.points) if (d > 0 && d + off > 0) raw.push([lat, lon, d + off, n]);
+    steps.push(medianStep(s.points));
   }
-  return { points, ref, shifted, dropped, unleveled: ref ? sets.length - dated.length : 0 };
+  const points = dropStrays(raw, Math.max(1, 2 * Math.max(0, ...steps)));
+  const kept = new Set(points.map(p => p[3]));
+  const shifted = sets.filter((s, n) => kept.has(n) && ref && typeof s.levelFt === 'number' && ref.levelFt !== s.levelFt).length;
+  return { points, ref, shifted, dropped: raw.length - points.length, unleveled: ref ? sets.length - dated.length : 0 };
 }
 
-// Sonar tracks can start with a fix far from the water, or at 0,0. One such point would set the grid's extent and
-// smear the whole map. So a scan's points are grouped into clumps (points within about a km of each other chain
-// together), and small clumps apart from the scan's biggest one are dropped as bad fixes. If that would drop more
-// than a few percent of the scan, it is a sparse track rather than a few bad fixes, and everything is kept.
-function dropStrays(points) {
-  const ok = points.filter(([lat, lon]) => Math.abs(lat) <= 90 && Math.abs(lon) <= 180 && (Math.abs(lat) > 1e-6 || Math.abs(lon) > 1e-6));
+const kmBetween = (a, b) => Math.hypot(a[0] - b[0], (a[1] - b[1]) * Math.cos(a[0] * Math.PI / 180)) * 111.2;
+// Typical distance (km) between consecutive soundings of one scan, from up to ~2000 steps.
+function medianStep(track) {
+  const every = Math.max(1, Math.floor(track.length / 2000)), d = [];
+  for (let i = every; i < track.length; i += every) { const a = track[i - every], b = track[i]; if (Number.isFinite(a?.[0] + a?.[1] + b?.[0] + b?.[1])) d.push(kmBetween(a, b) / every); }
+  return d.length ? d.sort((x, y) => x - y)[d.length >> 1] : 0;
+}
+
+// Sonar tracks can start with a fix far from the water: 0,0, or the phone's last known spot repeated for every
+// sounding until the GPS locks. One such clump would set the grid's extent and smear the whole map. So the soundings
+// of all scans together are grouped into clumps (points closer than `link` km chain together; `link` grows with a
+// sparse track's spacing so its points still chain), and a clump apart from the biggest one is dropped when it is
+// tiny, or when it sits on a handful of spots the way a stuck fix does. A scan of another arm is spread out along its
+// track, so it is kept. If that would drop more than 2 soundings and a few percent of them, nothing is dropped.
+function dropStrays(points, link) {
+  const ok = points.filter(([lat, lon]) => Number.isFinite(lat) && Number.isFinite(lon) && Math.abs(lat) <= 90 && Math.abs(lon) <= 180 && (Math.abs(lat) > 1 || Math.abs(lon) > 1));
   if (ok.length < 2) return ok;
-  const k = Math.cos(ok[0][0] * Math.PI / 180);
-  const cellOf = ([lat, lon]) => [Math.floor(lat * 111.2), Math.floor(lon * 111.2 * k)]; // ~1 km cells
-  const cells = new Map(), parent = new Map();
+  const per = 111.2 / link, k = Math.cos(ok[0][0] * Math.PI / 180);
+  const keyOf = ([lat, lon]) => `${Math.floor(lat * per)},${Math.floor(lon * per * k)}`;
+  const parent = new Map();
+  for (const p of ok) parent.set(keyOf(p), keyOf(p));
   const find = c => { while (parent.get(c) !== c) { parent.set(c, parent.get(parent.get(c))); c = parent.get(c); } return c; };
-  for (const p of ok) { const [i, j] = cellOf(p), key = `${i},${j}`; if (!cells.has(key)) { cells.set(key, [i, j]); parent.set(key, key); } }
-  for (const [key, [i, j]] of cells) for (let di = -1; di <= 1; di++) for (let dj = -1; dj <= 1; dj++) {
-    const nb = `${i + di},${j + dj}`;
-    if (cells.has(nb)) { const a = find(key), b = find(nb); if (a !== b) parent.set(a, b); }
+  for (const key of parent.keys()) {
+    const [i, j] = key.split(',').map(Number);
+    for (let di = -1; di <= 1; di++) for (let dj = -1; dj <= 1; dj++) {
+      const nb = `${i + di},${j + dj}`;
+      if (parent.has(nb)) { const a = find(key), b = find(nb); if (a !== b) parent.set(a, b); }
+    }
   }
-  const clumpOf = p => find(cellOf(p).join(','));
-  const size = new Map();
-  for (const p of ok) { const c = clumpOf(p); size.set(c, (size.get(c) ?? 0) + 1); }
+  const clump = ok.map(p => find(keyOf(p))), size = new Map(), spots = new Map();
+  ok.forEach((p, i) => {
+    size.set(clump[i], (size.get(clump[i]) ?? 0) + 1);
+    const s = spots.get(clump[i]) ?? spots.set(clump[i], new Set()).get(clump[i]);
+    if (s.size <= 3) s.add(`${p[0].toFixed(5)},${p[1].toFixed(5)}`);
+  });
   if (size.size === 1) return ok;
-  const main = [...size].sort((a, b) => b[1] - a[1])[0][0], small = Math.max(5, ok.length * 0.002);
-  const stray = new Set([...size].filter(([c, n]) => c !== main && n < small).map(([c]) => c));
+  const main = [...size].sort((a, b) => b[1] - a[1])[0][0], tiny = Math.max(5, ok.length * 0.001);
+  const stray = new Set([...size].filter(([c, n]) => c !== main && (n < tiny || spots.get(c).size <= 3)).map(([c]) => c));
   const n = [...stray].reduce((sum, c) => sum + size.get(c), 0);
-  return n && n <= ok.length * 0.05 ? ok.filter(p => !stray.has(clumpOf(p))) : ok;
+  return n && n <= Math.max(2, ok.length * 0.05) ? ok.filter((_, i) => !stray.has(clump[i])) : ok;
 }
 
 // Soundings → regular grid. Each cell is the IDW average of the binned soundings within a few cells; cells with no

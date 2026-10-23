@@ -9,14 +9,15 @@ const toTime = v => {
   if (/^\d{9,13}(\.\d+)?$/.test(v)) return +v > 1e11 ? +v : +v * 1000; // epoch ms or seconds
   return Date.parse(v);
 };
-// "2:03:05 PM", "9:05" or "14:03:05.5" → "14:03:05.5"-style padded 24-hour time, or null for anything else.
+// "2:03:05 PM", "9:05", "14:03:05.5" or "14:03:05 UTC" → padded 24-hour ISO time ("14:03:05Z"), or null for anything else.
 const clock24 = c => {
-  const m = /^(\d{1,2}):(\d\d)(?::(\d\d)(\.\d+)?)?\s*(?:([ap])\.?m?\.?)?$/i.exec(String(c ?? '').trim());
+  const m = /^(\d{1,2}):(\d\d)(?::(\d\d)(\.\d+)?)?\s*(?:([ap])\.?m?\.?)?\s*(z|utc|gmt|[+-]\d\d:?\d\d)?$/i.exec(String(c ?? '').trim());
   if (!m) return null;
   let h = +m[1];
   const ap = m[5]?.toLowerCase();
   if (ap) { if (h < 1 || h > 12) return null; h = h % 12 + (ap === 'p' ? 12 : 0); }
-  return h > 23 ? null : `${String(h).padStart(2, '0')}:${m[2]}:${m[3] ?? '00'}${m[4] ?? ''}`;
+  const zone = !m[6] ? '' : /^[+-]/.test(m[6]) ? `${m[6].slice(0, 3)}:${m[6].slice(-2)}` : 'Z';
+  return h > 23 ? null : `${String(h).padStart(2, '0')}:${m[2]}:${m[3] ?? '00'}${m[4] ?? ''}${zone}`;
 };
 // Celsius unless the header says Fahrenheit; water in °F never reads below 32, water in °C rarely above 32.
 const isCelsius = (header, values) => /\(c\)|°c|celsius|_c$/.test(header) ? true : /\(f\)|°f|fahrenheit|_f$/.test(header) ? false
