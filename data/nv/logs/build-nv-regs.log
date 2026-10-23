@@ -1,20 +1,9 @@
+regs: Western page had no special regulations, kept last run's; Southern page had no special regulations, kept last run's; Eastern page had no special regulations, kept last run's
 {
  "statewide": {},
- "western": {
-  "waters": 32,
-  "advisories": 4,
-  "closed": 7
- },
- "southern": {
-  "waters": 18,
-  "advisories": 0,
-  "closed": 3
- },
- "eastern": {
-  "waters": 11,
-  "advisories": 1,
-  "closed": 4
- },
+ "western": {},
+ "southern": {},
+ "eastern": {},
  "stripers": {},
  "baitfish": {}
 }
