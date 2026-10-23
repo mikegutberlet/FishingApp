@@ -1,5 +1,5 @@
 {
- "startedAt": "2026-10-23T11:34:01.426Z",
+ "startedAt": "2026-10-23T17:19:24.481Z",
  "pages": {
   "license-tag-permit-fees": [
    "# License, Tag & Permit Fees (40p 71r)"
@@ -77,7 +77,7 @@
       "Alsea River",
       "Bay"
      ],
-     "county": null,
+     "counties": [],
      "zone": "Northwest",
      "rules": [
       "Open for hatchery steelhead Jan 1 - Apr 30 and Nov 1 - Dec 31.",
@@ -91,7 +91,7 @@
      "aliases": [
       "Alsea River"
      ],
-     "county": null,
+     "counties": [],
      "zone": "Northwest",
      "rules": [
       "§ Mouth to angling deadline marker above Alsea Hatchery fishway",
@@ -105,7 +105,7 @@
      "aliases": [
       "Alsea River"
      ],
-     "county": null,
+     "counties": [],
      "zone": "Northwest",
      "rules": [
       "§ Mouth to bridge at McBee Park",
@@ -151,7 +151,7 @@
      "aliases": [
       "Applegate Reservoir"
      ],
-     "county": null,
+     "counties": [],
      "zone": "Southwest",
      "rules": [
       "All landlocked salmon are considered trout."
@@ -162,7 +162,7 @@
      "aliases": [
       "Applegate River"
      ],
-     "county": null,
+     "counties": [],
      "zone": "Southwest",
      "rules": [
       "§ Mouth to Applegate Dam",
@@ -184,7 +184,7 @@
      "aliases": [
       "Ashland Creek"
      ],
-     "county": null,
+     "counties": [],
      "zone": "Southwest",
      "rules": [
       "§ East and West Forks and all tributaries above Reeder Dam",
@@ -231,7 +231,7 @@
      "aliases": [
       "Abiqua Creek"
      ],
-     "county": null,
+     "counties": [],
      "zone": "Willamette",
      "rules": [
       "§ Above Abiqua Falls",
@@ -244,7 +244,7 @@
      "aliases": [
       "Adair Pond"
      ],
-     "county": null,
+     "counties": [],
      "zone": "Willamette",
      "rules": [
       "1 bass per day.",
@@ -258,7 +258,7 @@
      "aliases": [
       "Airport Pond"
      ],
-     "county": null,
+     "counties": [],
      "zone": "Willamette",
      "rules": [
       "Closed ."
@@ -302,7 +302,7 @@
      "aliases": [
       "Bakeoven Creek"
      ],
-     "county": null,
+     "counties": [],
      "zone": "Central",
      "rules": [
       "Closed ."
@@ -313,7 +313,7 @@
      "aliases": [
       "Bend Pine Nursery Pond"
      ],
-     "county": null,
+     "counties": [],
      "zone": "Central",
      "rules": [
       "2 fish per day."
@@ -324,7 +324,7 @@
      "aliases": [
       "Browns Creek"
      ],
-     "county": null,
+     "counties": [],
      "zone": "Central",
      "rules": [
       "Closed ."
@@ -368,7 +368,7 @@
      "aliases": [
       "Aldrich Ponds"
      ],
-     "county": null,
+     "counties": [],
      "zone": "Northeast",
      "rules": [
       "2 trout per day, 8 inch minimum length."
@@ -379,7 +379,7 @@
      "aliases": [
       "Big Sheep Creek"
      ],
-     "county": null,
+     "counties": [],
      "zone": "Northeast",
      "rules": [
       "§ Mouth to Little Sheep Cr",
@@ -395,7 +395,7 @@
      "aliases": [
       "Butter Creek"
      ],
-     "county": null,
+     "counties": [],
      "zone": "Northeast",
      "rules": [
       "Open all year.",
@@ -440,7 +440,7 @@
      "aliases": [
       "Agency Lake"
      ],
-     "county": null,
+     "counties": [],
      "zone": "Southeast",
      "rules": [
       "Catch-and-release for rainbow trout.",
@@ -452,7 +452,7 @@
      "aliases": [
       "Ana Reservoir"
      ],
-     "county": null,
+     "counties": [],
      "zone": "Southeast",
      "rules": [
       "1 hybrid bass per day, 15 inch minimum length.",
@@ -464,7 +464,7 @@
      "aliases": [
       "Ana River"
      ],
-     "county": null,
+     "counties": [],
      "zone": "Southeast",
      "rules": [
       "5 rainbow trout per day, 8 inch minimum length.",
@@ -492,7 +492,7 @@
      "aliases": [
       "Brownlee Reservoir"
      ],
-     "county": null,
+     "counties": [],
      "zone": "Snake River",
      "rules": [
       "12 inch minimum length on bass.",
@@ -505,7 +505,7 @@
      "aliases": [
       "Hells Canyon Reservoir"
      ],
-     "county": null,
+     "counties": [],
      "zone": "Snake River",
      "rules": [
       "3 hatchery trout over 20 inches may be harvested per day.",
@@ -517,7 +517,7 @@
      "aliases": [
       "Oxbow Reservoir"
      ],
-     "county": null,
+     "counties": [],
      "zone": "Snake River",
      "rules": [
       "2 bass per day.",
@@ -552,7 +552,7 @@
      "aliases": [
       "Columbia River"
      ],
-     "county": null,
+     "counties": [],
      "zone": "Columbia River",
      "rules": [
       "Buoy 10 line up to a line projected from Rocky Point on the Washington bank through Red Buoy 44 to the navigation light at Tongue Point on the Oregon bank",
@@ -606,7 +606,9 @@
      "aliases": [
       "Benson Lake"
      ],
-     "county": "Multnomah",
+     "counties": [
+      "Multnomah"
+     ],
      "zone": "Columbia River",
      "rules": [
       "Open all year.",
@@ -619,7 +621,7 @@
       "Blind Slough",
       "Knappa Slough Select Area"
      ],
-     "county": null,
+     "counties": [],
      "zone": "Columbia River",
      "rules": [
       "§ Including Gnat Cr from RR bridge up to Aldrich Pt Rd Bridge (Clatsop Co.) ( see map )",
@@ -961,5 +963,5 @@
   "Northwest: 1 parts"
  ],
  "counties": 36,
- "finishedAt": "2026-10-23T11:34:04.866Z"
+ "finishedAt": "2026-10-23T17:19:29.551Z"
 }
