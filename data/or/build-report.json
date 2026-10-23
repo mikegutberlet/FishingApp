@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-23T11:29:32.311Z",
+  "startedAt": "2026-10-23T15:32:26.000Z",
   "steps": {
     "nhdLayers": [
       {
@@ -56,74 +56,62 @@
       }
     ],
     "lakes": {
-      "features": 3308,
-      "polygons": 2293,
+      "reused": "2026-10-23T11:36:59.459Z",
       "inState": 2219
     },
-    "elevationError": "fetch failed",
-    "elevations": {
-      "nhdKept": 427,
-      "fromDem": 1792,
-      "missing": 0
-    },
-    "depthProbe": "403 https://pasta.lternet.edu/package/eml/edi/1043?filter=newest",
-    "depth": {
-      "package": "edi.1043.1",
-      "pastaError": "403 https://pasta.lternet.edu/package/data/eml/edi/1043/1",
-      "portalUrls": [],
-      "portalResponse": " <!DOCTYPE html> <html lang=\"en\"> <head> <title>Data Portal - Login | Environmental Data Initiative (EDI) </title> <meta charset=\"UTF-8\"/> <meta content=\"width=device-width, initial-scale=1, maximum-scale=1\" name=\"viewport\"> <link rel=\"shortcut icon\" href=\"./images/favicon.ico\" type=\"image/x-icon\"/>",
-      "matchedWikidata": 14,
-      "unmatchedWikidata": [
-        "Hole-in-the-Ground 43.4029,-121.198 492ft nearest Morehouse Lake 15.7km",
-        "Washington Park 45.510661,-122.716869 260ft nearest City of Portland Reservoir Number 3 1.5km",
-        "Crater Lake 42.943611111,-122.106666666 1148ft nearest Crater Lake 0.1km"
-      ],
-      "lakesWithDepth": 14
-    },
-    "depthPackageError": "No depth table found via portal",
-    "depthError": "403 https://pasta.lternet.edu/package/search/eml?defType=edismax&q=title:%22LAGOS-US%20DEPTH%22&fl=packageid,title,pubdate&rows=20",
-    "wikidata": {
-      "rows": 17,
-      "sample": [
-        {
-          "lat": 43.718888888,
-          "lon": -122.040833333,
-          "maxFt": 427,
-          "meanFt": null,
-          "name": "Waldo Lake"
-        },
-        {
-          "lat": 43.4756,
-          "lon": -121.992,
-          "maxFt": 125,
-          "meanFt": null,
-          "name": "Crescent Lake"
-        },
-        {
-          "lat": 42.054722222,
-          "lon": -123.114444444,
-          "maxFt": 226,
-          "meanFt": null,
-          "name": "Applegate Lake"
-        },
-        {
-          "lat": 42.943611111,
-          "lon": -122.106666666,
-          "maxFt": 1949,
-          "meanFt": null,
-          "name": "Crater Lake"
-        },
-        {
-          "lat": 43.5728,
-          "lon": -121.998,
-          "maxFt": 282,
-          "meanFt": null,
-          "name": "Odell Lake"
-        }
-      ]
-    },
-    "splitTiles": 8,
-    "riversError": "502 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?where=GNIS_NAME+IS+NOT+NULL+AND+%28GNIS_NAME+LIKE+%27%25+River%25%27+OR+GNIS_NAME+LIKE+%27%25+Creek%25%27+OR+GNIS_NAME+LIKE+%27"
+    "splitTiles": 22,
+    "failedTiles": [
+      {
+        "layerId": 6,
+        "x": -124.3125,
+        "y": 42.77125,
+        "size": 0.03125,
+        "error": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?whe"
+      },
+      {
+        "layerId": 6,
+        "x": -124.28125,
+        "y": 42.77125,
+        "size": 0.03125,
+        "error": "502 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?whe"
+      },
+      {
+        "layerId": 6,
+        "x": -124.375,
+        "y": 42.865,
+        "size": 0.03125,
+        "error": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?whe"
+      },
+      {
+        "layerId": 6,
+        "x": -124.34375,
+        "y": 42.865,
+        "size": 0.03125,
+        "error": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?whe"
+      },
+      {
+        "layerId": 6,
+        "x": -124.25,
+        "y": 42.49,
+        "size": 0.03125,
+        "error": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?whe"
+      },
+      {
+        "layerId": 6,
+        "x": -124.25,
+        "y": 42.52125,
+        "size": 0.03125,
+        "error": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?whe"
+      },
+      {
+        "layerId": 6,
+        "x": -124.1875,
+        "y": 42.49,
+        "size": 0.03125,
+        "error": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?whe"
+      }
+    ],
+    "riversError": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?where=GNIS_NAME+IS+NOT+NULL+AND+%28GNIS_NAME+LIKE+%27%25+River%25%27+OR+GNIS_NAME+LIKE+%27%25+Creek%25%27+OR+GNIS_NAME+LIKE+%27"
   },
-  "finishedAt": "2026-10-23T13:14:30.831Z"
+  "finishedAt": "2026-10-23T17:31:17.936Z"
 }
