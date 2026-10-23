@@ -8,6 +8,9 @@ const SCHEMA = {
   notes: ['lakeId'],
   stocking: ['lakeId'],
   depthSets: ['lakeId'],
+  trips: ['lakeId'],
+  events: ['tripId'],
+  tackle: [],
 };
 export const STORES = Object.keys(SCHEMA);
 const DB_VERSION = STORES.reduce((n, name) => n + 1 + SCHEMA[name].length, 0) - 8;
@@ -67,7 +70,10 @@ export async function exportAll() {
   const out = { app: 'tackle-box', version: DB_VERSION, exportedAt: new Date().toISOString() };
   for (const name of STORES) {
     const rows = await db.all(name);
-    for (const row of rows) if (row.photo instanceof Blob) row.photo = await blobToDataUrl(row.photo);
+    for (const row of rows) {
+      if (row.photo instanceof Blob) row.photo = await blobToDataUrl(row.photo);
+      if (Array.isArray(row.photos)) row.photos = await Promise.all(row.photos.map(p => p instanceof Blob ? blobToDataUrl(p) : p));
+    }
     out[name] = rows;
   }
   return out;
@@ -128,6 +134,7 @@ export async function importAll(data, { replace = false } = {}) {
       // Merging keeps whichever copy was edited last, so an old backup can't undo newer work on this device.
       if (!replace && (await db.get(name, row.id))?.updatedAt > (row.updatedAt ?? '')) continue;
       if (typeof row.photo === 'string' && row.photo.startsWith('data:')) row.photo = await dataUrlToBlob(row.photo);
+      if (Array.isArray(row.photos)) row.photos = await Promise.all(row.photos.map(p => typeof p === 'string' && p.startsWith('data:') ? dataUrlToBlob(p) : p));
       await tx(name, 'readwrite', s => s.put(row));
     }
   }
