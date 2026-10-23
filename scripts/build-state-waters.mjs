@@ -77,11 +77,13 @@ async function layerIds() {
 }
 
 // Pages through an ArcGIS query, splitting the state into tiles so no single request is too heavy.
+// The NHD server times out (504) on busy tiles, so a tile that keeps failing is split into quarters.
 async function queryTiled(layerId, where, outFields, offset, tile = 1) {
   const features = [];
-  for (let x = CA_BBOX.xmin; x < CA_BBOX.xmax; x += tile) {
-    for (let y = CA_BBOX.ymin; y < CA_BBOX.ymax; y += tile) {
-      const envelope = JSON.stringify({ xmin: x, ymin: y, xmax: x + tile, ymax: y + tile, spatialReference: { wkid: 4326 } });
+  const queryTile = async (x, y, size) => {
+    const envelope = JSON.stringify({ xmin: x, ymin: y, xmax: x + size, ymax: y + size, spatialReference: { wkid: 4326 } });
+    const got = [];
+    try {
       for (let page = 0; ; page += 2000) {
         const params = new URLSearchParams({
           where, outFields, geometry: envelope, geometryType: 'esriGeometryEnvelope', inSR: '4326', spatialRel: 'esriSpatialRelIntersects',
@@ -89,10 +91,19 @@ async function queryTiled(layerId, where, outFields, offset, tile = 1) {
         });
         const json = await getJson(`${NHD}/${layerId}/query?${params}`);
         if (json.error) throw new Error(JSON.stringify(json.error));
-        features.push(...json.features);
+        got.push(...json.features);
         if (json.features.length < 2000) break;
       }
+    } catch (e) {
+      if (size <= 0.13) throw e;
+      report.steps.splitTiles = (report.steps.splitTiles ?? 0) + 1;
+      const h = size / 2;
+      for (const [dx, dy] of [[0, 0], [h, 0], [0, h], [h, h]]) got.push(...await queryTile(x + dx, y + dy, h));
     }
+    return got;
+  };
+  for (let x = CA_BBOX.xmin; x < CA_BBOX.xmax; x += tile) {
+    for (let y = CA_BBOX.ymin; y < CA_BBOX.ymax; y += tile) features.push(...await queryTile(x, y, tile));
   }
   return features;
 }

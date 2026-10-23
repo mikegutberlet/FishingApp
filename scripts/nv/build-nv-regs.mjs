@@ -6,7 +6,7 @@
 //
 // Run by .github/workflows/nevada-weekly.yml. Only public data.
 
-import { writeFile, mkdir, readFile } from 'node:fs/promises';
+import { writeFile, mkdir, rm } from 'node:fs/promises';
 
 const OUT = new URL('../../data/nv/', import.meta.url);
 const BASE = 'https://www.eregulations.com/nevada/fishing';
@@ -178,7 +178,7 @@ if (advisories.length) {
     statewide: 'Mercury builds up in older, bigger predatory fish (walleye, wipers, white bass, bass, pike). Keep smaller fish to eat, and eat fewer meals of the big ones, especially if you are pregnant or feeding kids.',
   }) + '\n');
 }
-await writeFile(new URL('regs-raw.json', OUT), JSON.stringify(parsed) + '\n');
+await rm(new URL('regs-raw.json', OUT), { force: true }); // debugging output of the first runs
 report.finishedAt = new Date().toISOString();
 await writeFile(new URL('regs-report.json', OUT), JSON.stringify(report, null, 1) + '\n');
 console.log(JSON.stringify(Object.fromEntries(Object.entries(report.pages).map(([k, v]) => [k, v.error ?? { waters: v.waters, advisories: v.advisories, closed: v.closed }])), null, 1));
