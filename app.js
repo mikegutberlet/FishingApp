@@ -36,14 +36,16 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.ser
 // Today is the home screen. The map starts hidden, so frame your lakes the first time it is shown (a hidden map has no size).
 showView('today');
 let framed = false, lakeBounds = null;
+const frame = () => {
+  if (framed || !lakeBounds || !$('#view-map').classList.contains('active')) return;
+  framed = true;
+  map.invalidateSize();
+  map.fitBounds(lakeBounds, { maxZoom: 13 });
+};
 refreshMap().then(async () => {
   const lakes = await db.all('lakes');
   if (lakes.length) lakeBounds = L.latLngBounds(lakes.map(l => [l.lat, l.lon])).pad(0.3);
+  frame();
 });
-onShow('map', () => {
-  if (framed) return;
-  framed = true;
-  map.invalidateSize();
-  if (lakeBounds) map.fitBounds(lakeBounds, { maxZoom: 13 });
-});
+onShow('map', frame);
 window.__app = { db, openLake, showView, openWater, CA }; window.__map = map; // handy for debugging from the console

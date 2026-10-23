@@ -7,7 +7,7 @@ import { refreshMap } from '../map.js';
 // A lake pack holds the lake, its depth maps and stocking notes. Catches and notes stay private unless included.
 export async function shareLake(lake) {
   const includeNotes = confirm(`Share ${lake.name} with its depth maps.\n\nAlso include your notes and pinned spots? (Catches are never included.)`);
-  const pack = { app: 'tackle-box', version: 1, sharedAt: new Date().toISOString(), lakes: [lake],
+  const pack = { app: 'tackle-box', version: 1, sharedAt: new Date().toISOString(), lakes: [{ ...lake, favorite: undefined }], // your star stays yours
     depthSets: await db.byLake('depthSets', lake.id), stocking: await db.byLake('stocking', lake.id),
     notes: includeNotes ? await db.byLake('notes', lake.id) : [], catches: [] };
   const file = new File([JSON.stringify(pack)], `${lake.name.replace(/[^\w-]+/g, '-')}.tacklebox.json`, { type: 'application/json' });

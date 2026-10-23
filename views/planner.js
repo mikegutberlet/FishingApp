@@ -3,7 +3,7 @@
 import { db } from '../db.js';
 import * as CA from '../states/ca.js';
 import { WEATHER_CODES } from '../data-sources.js';
-import { weatherFor } from '../forecast.js';
+import { weatherFor, localKey, addDays, levelChange } from '../forecast.js';
 import { solunar, dayRating, stars, windowSpan, windowLabel } from '../solunar.js';
 import { $, esc, fmtDate, showView, onShow } from '../ui.js';
 import { openLake } from './lake.js';
@@ -11,7 +11,7 @@ import { openLake } from './lake.js';
 const DAY = 864e5;
 let picked = 0; // days from today
 
-const dayKey = offset => { const d = new Date(Date.now() + offset * DAY); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
+const dayKey = offset => localKey(addDays(Date.now(), offset));
 const dayLabel = key => { const d = new Date(key + 'T12:00'); return `${d.toLocaleDateString(undefined, { weekday: 'short' })} ${d.getDate()}`; };
 const mean = a => a.reduce((s, x) => s + x, 0) / a.length;
 
@@ -35,8 +35,7 @@ export async function scoreDay(lake, w, date) {
   else if (hi <= 40) add(-1, `Cold, ${Math.round(hi)}°`);
   // Pressure trend into the day: average of the day vs the day before.
   const hours = k => w.hourly.time.map((t, j) => [t, w.hourly.pressure_msl[j]]).filter(([t]) => t.startsWith(k)).map(x => x[1]);
-  const prev = new Date(Date.parse(date + 'T12:00') - DAY); prev.setMinutes(prev.getMinutes() - prev.getTimezoneOffset());
-  const p0 = hours(prev.toISOString().slice(0, 10)), p1 = hours(date);
+  const p0 = hours(localKey(addDays(Date.parse(date + 'T12:00'), -1))), p1 = hours(date);
   if (p0.length && p1.length) {
     const dp = mean(p1) - mean(p0);
     if (dp <= -3) add(1.5, 'Falling pressure: front coming, fish often feed hard');
@@ -57,9 +56,8 @@ export async function scoreDay(lake, w, date) {
     }
   }
   const res = await CA.nearestReservoir(lake.lat, lake.lon, lake.cdecStation, { name: lake.name, acres: lake.acres });
-  const e = res?.elevation ?? [];
-  if (e.length > 7) {
-    const ch = e.at(-1)[1] - e.at(-8)[1];
+  const ch = levelChange(res?.elevation, 7, 4);
+  if (ch != null) {
     if (ch >= 1) add(0.5, `Lake rising ${ch.toFixed(1)} ft/week`);
     else if (ch <= -2) add(-0.5, `Lake dropping ${(-ch).toFixed(1)} ft/week`);
   }
@@ -90,8 +88,8 @@ export async function renderPlanner() {
   rows.sort((a, b) => (b.score ?? -1) - (a.score ?? -1));
   $('#plan-list').classList.remove('muted');
   $('#plan-list').innerHTML = rows.map((r, n) => r.error
-    ? `<div class="card plan-item" data-id="${r.lake.id}"><b>${esc(r.lake.name)}</b><div class="muted small">Forecast unavailable (offline?)</div></div>`
-    : `<div class="card plan-item" data-id="${r.lake.id}">
+    ? `<div class="card plan-item" data-id="${esc(r.lake.id)}"><b>${esc(r.lake.name)}</b><div class="muted small">Forecast unavailable (offline?)</div></div>`
+    : `<div class="card plan-item" data-id="${esc(r.lake.id)}">
       <div class="plan-head"><span class="rank">${n + 1}</span><div style="flex:1"><b>${esc(r.lake.name)}</b>${r.lake.favorite ? ' ★' : ''}<div class="muted small">${esc(r.summary)}</div></div>
         <div class="score"><b>${r.score.toFixed(1)}</b><div class="meter"><i style="width:${r.score * 10}%"></i></div></div></div>
       ${r.best ? `<div class="small">Best time: <b>${windowSpan(r.best)}</b>, ${windowLabel(r.best).toLowerCase()}</div>` : ''}
@@ -100,3 +98,4 @@ export async function renderPlanner() {
 }
 
 onShow('planner', renderPlanner);
+document.addEventListener('visibilitychange', () => { if (!document.hidden && $('#view-planner').classList.contains('active')) renderPlanner(); });
