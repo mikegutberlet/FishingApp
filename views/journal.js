@@ -20,9 +20,9 @@ export async function renderJournal(which = section) {
   el.innerHTML = `${trip ? '<button class="trip-cta live" id="j-trip">● Trip in progress: open trip mode</button>' : '<button class="trip-cta" id="j-trip">▶ Start a trip</button>'}
     <div class="tabs">${Object.entries(SECTIONS).map(([k, v]) => `<button data-sec="${k}" class="${k === section ? 'active' : ''}">${v}</button>`).join('')}</div>
     <div id="j-body"></div>`;
-  $('#j-trip').onclick = () => trip ? openTrip(trip.id) : startTripFlow();
+  $('#j-trip', el).onclick = () => trip ? openTrip(trip.id) : startTripFlow();
   el.querySelectorAll('[data-sec]').forEach(b => b.onclick = () => renderJournal(b.dataset.sec));
-  const body = $('#j-body');
+  const body = $('#j-body', el);
   if (section === 'timeline') return renderTimeline(body);
   if (section === 'bests') return renderBests(body);
   if (section === 'tackle') return renderTackle(body);
@@ -38,6 +38,7 @@ async function renderTimeline(body, limitDays = 30) {
   // An unfinished trip that isn't the one running (e.g. restored from a backup) is closed at its last activity.
   const active = await activeTrip();
   for (const t of trips) if (!t.end && t.start && t.id !== active?.id) Object.assign(t, await closeStale(t));
+  if (!body.isConnected) return; // the Journal was drawn again meanwhile (e.g. a second tap on its tab)
   const inTrip = new Set(trips.map(t => t.id));
   const items = [
     ...trips.map(t => ({ time: t.start, trip: t })),
@@ -63,8 +64,8 @@ async function renderTimeline(body, limitDays = 30) {
     + (days.length ? days.slice(0, limitDays).map(d => `<h2>${fmtDate(d + 'T12:00')}</h2>${items.filter(x => dayKey(x.time) === d).map(card).join('')}`).join('')
       : '<div class="card muted">Your trips, catches and notes show up here, newest first.</div>')
     + (days.length > limitDays ? '<button id="j-more" style="width:100%">Show older</button>' : '');
-  $('#j-new').onclick = newEntry;
-  $('#j-more')?.addEventListener('click', () => renderTimeline(body, limitDays + 30));
+  $('#j-new', body).onclick = newEntry;
+  $('#j-more', body)?.addEventListener('click', () => renderTimeline(body, limitDays + 30));
   body.querySelectorAll('[data-trip]').forEach(e => e.onclick = () => openTrip(e.dataset.trip));
   body.querySelectorAll('[data-catch]').forEach(e => e.onclick = () => editCatch(e.dataset.catch));
   body.querySelectorAll('[data-note]').forEach(e => e.onclick = () => openLake(e.dataset.note, 'notes'));
