@@ -78,7 +78,7 @@ function aliases(title) {
   const both = t.match(/^(.+?) and (.+?) (Lake|Reservoir|Pond|Creek|River)s$/i);
   if (both) { out.add(`${both[1]} ${both[3]}`); out.add(`${both[2]} ${both[3]}`); }
   for (let p of t.split(/,|;|\s+and\s+|\s+&\s+|\//)) {
-    p = p.replace(/\s*\(.*?\)\s*/g, ' ').replace(/\s+(downstream|upstream|above|below|from|within|except|including)\b.*$/i, '').replace(/^(the|all)\s+/i, '').trim();
+    p = p.replace(/^\s*(from|to|between|upstream|downstream)\b.*$/i, '').replace(/\s*\(.*?\)\s*/g, ' ').replace(/\s+(downstream|upstream|above|below|from|within|except|including|to)\b.*$/i, '').replace(/^(the|all)\s+/i, '').trim();
     if (p.length > 2 && WATERISH.test(p)) out.add(p);
   }
   // "Lake Billy Chinook" also goes by "Billy Chinook Lake" in some lists.
@@ -151,20 +151,25 @@ try {
   const url = 'https://www.oregon.gov/oha/ph/healthyenvironments/recreation/fishconsumption/pages/fishadvisories.aspx';
   const html = await fetchText(url);
   const rows = [...html.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)].map(m => [...m[1].matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)].map(c => clean(c[1])));
-  report.advisoryRows = rows.slice(0, 12);
+  report.advisoryRows = rows;
   const advisories = [];
   let zone = '', last = null;
   // Link labels that sit in the waterbody cell.
   const LINKS = /\s*(Press release|Fact ?sheet|Technical report:?|Frequently asked questions|Information OHA used to warrant a statewide advisory|Meal guidance|Map)\b/gi;
+  let contaminant0 = '';
   for (const r of rows) {
-    if (r.length < 4 || /^zone$/i.test(r[0]) || /contaminant/i.test(r.join(' ')) && /waterbody/i.test(r.join(' '))) continue;
-    // Rows that continue the zone above leave out the zone cell; rows that continue the water leave out both.
-    const [z, rawWater, contaminant, fish, vulnerable, everyone] = r.length >= 6 ? r : r.length === 5 ? [zone, ...r] : [zone, last?.area ?? '', ...r];
+    if (r.length < 3 || /^zone$/i.test(r[0]) || /contaminant/i.test(r.join(' ')) && /waterbody/i.test(r.join(' ')) || /MEALS PER MONTH/.test(r.join(' '))) continue;
+    // Cells span rows: a new zone has 6 cells (or 5 when the two meal columns merge, as for Columbia Slough), a new
+    // water in the same zone 5, another fish for the same water and contaminant 3.
+    const isZone = r[0] && r[0] === r[0].toUpperCase() && /[A-Z]/.test(r[0]) && r.length >= 5;
+    const cells = isZone ? (r.length === 5 ? [...r, r[4]] : r) : r.length >= 5 ? [zone, ...r] : r.length === 4 ? [zone, last?.area ?? '', ...r] : [zone, last?.area ?? '', contaminant0, ...r];
+    const [z, rawWater, contaminant, fish, vulnerable, everyone] = cells;
+    contaminant0 = contaminant;
     const water = rawWater.replace(LINKS, '').replace(/\s+,/g, ',').replace(/\s+/g, ' ').trim();
-    if (z) zone = z.replace(/\b([A-Z])([A-Z]+)\b/g, (m, a, b) => a + b.toLowerCase());
+    if (isZone) zone = z.replace(/\b([A-Z])([A-Z]+)\b/g, (m, a, b) => a + b.toLowerCase());
     if (!water || /coast/i.test(zone) && /clam/i.test(water)) continue;
     if (last && last.area === water) last.fish.push({ fish, contaminant, vulnerable, everyone });
-    else { last = { zone, area: water, names: aliases(water), fish: [{ fish, contaminant, vulnerable, everyone }] }; advisories.push(last); }
+    else { last = { zone, area: water, names: aliases(water.replace(/\s*Does not apply to:.*$/i, '')), fish: [{ fish, contaminant, vulnerable, everyone }] }; advisories.push(last); }
   }
   report.advisories = advisories.map(a => `${a.zone}: ${a.area} → ${a.names.join(' | ')} (${a.fish.length})`);
   if (advisories.length) {
