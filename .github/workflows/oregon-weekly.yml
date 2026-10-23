@@ -28,6 +28,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      # Quick, and the nightly job uses its zones and counties: first.
+      - name: Oregon regulations, fish advisories and angling zones
+        continue-on-error: true
+        run: |
+          mkdir -p data/or/logs
+          node scripts/or/build-or-regs.mjs 2>&1 | tee data/or/logs/build-or-regs.log
+          exit ${PIPESTATUS[0]}
       - name: Oregon waters
         continue-on-error: true
         run: |
@@ -38,11 +45,6 @@ jobs:
         continue-on-error: true
         run: |
           node scripts/build-state-history.mjs or 2>&1 | tee data/or/logs/build-state-history.log
-          exit ${PIPESTATUS[0]}
-      - name: Oregon regulations, fish advisories and angling zones
-        continue-on-error: true
-        run: |
-          node scripts/or/build-or-regs.mjs 2>&1 | tee data/or/logs/build-or-regs.log
           exit ${PIPESTATUS[0]}
       - name: Commit changes
         run: |
