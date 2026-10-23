@@ -15,8 +15,10 @@ let watchId = null, lastFix = null, dirty = 0, flushTimer = null, tick = null, w
 let miniMap = null;
 
 export async function activeTrip() {
-  if (trip) return trip;
   const id = localStorage.getItem(KEY);
+  // Another tab of the app ended this trip or started a new one: stop following the old one here.
+  if (trip && trip.id !== id) { stopTracking(); trip = null; updatePill(); }
+  if (trip) return trip;
   const t = id && await db.get('trips', id);
   return t && !t.end ? t : null;
 }
@@ -34,19 +36,26 @@ export async function startTripFlow() {
   const el = $('#trip');
   if (!lakes.length) { el.innerHTML = `<h2>Start a trip</h2><div class="card">Save the water you're fishing first: tap its name on the map, then <b>Save to my lakes</b>.</div>`; return; }
   el.innerHTML = `<h2>Start a trip</h2><form class="card form" id="trip-start">
-      <label>Where <select name="lakeId">${lakes.map(l => `<option value="${l.id}">${esc(l.name)}</option>`).join('')}</select></label>
+      <label>Where <select name="lakeId">${lakes.map(l => `<option value="${esc(l.id)}">${esc(l.name)}</option>`).join('')}</select></label>
       <label class="check"><input type="checkbox" name="screen" ${localStorage.getItem(SCREEN_KEY) !== '0' ? 'checked' : ''}> Keep the screen on during the trip</label>
       <button class="primary big">▶ Start trip</button>
       <p class="muted small">Your GPS track is recorded only while Tackle Box is open on screen. iPhones stop location updates as soon as the screen locks or you switch apps,
         so leave “Keep the screen on” ticked for a full track (it uses more battery). The track stays on this device.</p>
     </form>`;
-  // Pick the saved water closest to where you are.
+  // Pick the saved water closest to where you are, unless you've already picked one.
+  const form = $('#trip-start');
+  let picked = false;
+  form.lakeId.onchange = () => { picked = true; };
   navigator.geolocation?.getCurrentPosition(p => {
     const near = lakes.map(l => [l, haversineKm(p.coords.latitude, p.coords.longitude, l.lat, l.lon)]).sort((a, b) => a[1] - b[1])[0];
-    if (near && near[1] < 25) $('#trip-start').lakeId.value = near[0].id;
+    if (near && near[1] < 25 && !picked && form.isConnected) form.lakeId.value = near[0].id;
   }, () => {}, { timeout: 8000 });
-  $('#trip-start').onsubmit = async e => {
+  let starting = false;
+  form.onsubmit = async e => {
     e.preventDefault();
+    if (starting) return; // a double tap starts one trip
+    starting = true;
+    if (await activeTrip()) return openTrip((await activeTrip()).id);
     localStorage.setItem(SCREEN_KEY, e.target.screen.checked ? '1' : '0');
     trip = await db.put('trips', { lakeId: e.target.lakeId.value, start: new Date().toISOString(), end: null, track: [], companions: '', rating: null, journal: '', photos: [] });
     localStorage.setItem(KEY, trip.id);
@@ -108,10 +117,10 @@ async function flush() {
 }
 
 // Where you are now if the GPS fix is fresh, otherwise the water's own position.
-async function here() {
-  if (lastFix && Date.now() - lastFix.time < 120e3) return { lat: lastFix.lat, lon: lastFix.lon };
-  const lake = await db.get('lakes', trip.lakeId);
-  return { lat: lake.lat, lon: lake.lon };
+async function here(t) {
+  if (trip?.id === t.id && lastFix && Date.now() - lastFix.time < 120e3) return { lat: lastFix.lat, lon: lastFix.lon };
+  const lake = await db.get('lakes', t.lakeId);
+  return lake ? { lat: lake.lat, lon: lake.lon } : { lat: null, lon: null };
 }
 
 // ---------- The trip pill shown on every other view while a trip runs (styles.css hides it on the trip view) ----------
@@ -134,16 +143,27 @@ $('#trip-pill').onclick = () => trip && openTrip(trip.id);
 
 // ---------- Trip page ----------
 export async function openTrip(id) {
-  const t = trip?.id === id ? trip : await db.get('trips', id);
+  let t = trip?.id === id ? trip : await db.get('trips', id);
   if (!t) return;
+  const active = await activeTrip();
+  if (!t.end && active?.id === id && !trip) { trip = t; startTracking(); }
+  // An unfinished trip that isn't running here (e.g. restored from a backup) is closed at its last activity.
+  if (!t.end && active?.id !== id) t = await closeStale(t);
   showView('trip', { render: false });
   return t.end ? renderSummary(t) : renderLive(t);
 }
 
+export async function closeStale(t) {
+  if (t.id === localStorage.getItem(KEY)) return t; // the running trip (maybe in another tab) is never closed here
+  const times = [...(await tripCatches(t)).map(c => c.time), ...(await tripEvents(t)).map(e => e.time), ...t.track.map(p => new Date(p[2]).toISOString())];
+  const end = times.reduce((a, b) => b > a ? b : a, t.start);
+  return db.put('trips', { ...t, end });
+}
+
 async function recentSpecies(lake) {
   const catches = (await db.all('catches')).sort((a, b) => b.time.localeCompare(a.time));
-  const here = catches.filter(c => c.lakeId === lake.id).map(c => c.species);
-  const fromLake = String(lake.species ?? '').split(/[,;]/).map(s => s.trim());
+  const here = catches.filter(c => c.lakeId === lake?.id).map(c => c.species);
+  const fromLake = String(lake?.species ?? '').split(/[,;]/).map(s => s.trim());
   return [...new Set([...here, ...catches.map(c => c.species), ...fromLake, ...COMMON_SPECIES].filter(Boolean))].slice(0, 8);
 }
 
@@ -163,7 +183,7 @@ async function renderLive(t) {
     </div>
     <div id="quick-sheet"></div>
     <div class="card small">${log.length ? log.map(x => `<div class="row trip-log"><span class="muted">${new Date(x.time).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}</span><span style="flex:1">${x.html}</span>
-      ${x.catchId ? `<a href="#" data-edit="${x.catchId}">details</a>` : `<a href="#" class="danger" data-undo="${x.eventId}">undo</a>`}</div>`).join('') : '<span class="muted">Tap Catch, Bite or Lost as it happens. Each one is stamped with the time and your GPS spot.</span>'}</div>
+      ${x.catchId ? `<a href="#" data-edit="${esc(x.catchId)}">details</a>` : `<a href="#" class="danger" data-undo="${esc(x.eventId)}">undo</a>`}</div>`).join('') : '<span class="muted">Tap Catch, Bite or Lost as it happens. Each one is stamped with the time and your GPS spot.</span>'}</div>
     <button id="trip-end" class="danger" style="width:100%">■ End trip</button>
     <p class="muted small">Tracking runs only while this screen is open${wakeLock ? ' (screen is being kept on)' : ''}. On iPhone it stops when the screen locks.</p>`;
   $('#q-catch').onclick = () => speciesPicker(t, lake);
@@ -177,7 +197,7 @@ async function renderLive(t) {
 
 async function addEvent(t, kind) {
   navigator.vibrate?.(30);
-  await db.put('events', { tripId: t.id, lakeId: t.lakeId, kind, time: new Date().toISOString(), ...await here() });
+  await db.put('events', { tripId: t.id, lakeId: t.lakeId, kind, time: new Date().toISOString(), ...await here(t) });
   status(kind === 'bite' ? 'Bite logged' : 'Lost fish logged');
   renderLive(t);
 }
@@ -198,30 +218,31 @@ async function speciesPicker(t, lake) {
 async function quickCatch(t, species) {
   navigator.vibrate?.(30);
   const time = new Date().toISOString();
-  const pos = await here();
+  const pos = await here(t);
   const c = await db.put('catches', { lakeId: t.lakeId, tripId: t.id, species, time, length: null, weight: null, depth: null, waterTemp: null,
     lure: '', technique: '', notes: '', released: true, ...pos, photo: null, moon: moonPhase(new Date(time)).name });
   status(`${species} logged 🎣`);
   refreshMap();
   renderLive(t).then(() => sizeSheet(t, c));
-  // Weather snapshot in the background, so a slow signal never holds up the button.
-  snapshotConditions(pos.lat, pos.lon).then(async cond => { if (cond) { const saved = await db.get('catches', c.id); if (saved) await db.put('catches', { ...saved, conditions: cond }); } });
+  // Weather snapshot in the background, so a slow signal never holds up the button. It's fetched for the water, never your spot.
+  const lake = await db.get('lakes', t.lakeId);
+  if (lake) snapshotConditions(lake.lat, lake.lon).then(async cond => { if (cond) { const saved = await db.get('catches', c.id); if (saved) await db.put('catches', { ...saved, conditions: cond }); } });
 }
 
 function sizeSheet(t, c) {
   const sheet = $('#quick-sheet');
   sheet.innerHTML = `<form class="card form" id="size-form"><h3>${esc(c.species)}: anything to add?</h3>
-    <label>Length (${units().length}) <input name="length" type="number" step="0.25" inputmode="decimal" class="big-input"></label>
+    <label>Length (${units().length}) <input name="length" type="number" step="any" min="0" inputmode="decimal" class="big-input"></label>
     <div class="row"><label class="check"><input type="checkbox" name="released" checked> Released</label><label>Photo <input name="photo" type="file" accept="image/*" capture="environment"></label></div>
     <div class="row"><button class="primary">Save</button><button type="button" id="size-skip">Skip</button></div>
     <a href="#" id="size-full" class="small">Full form (lure, depth, notes…)</a></form>`;
   const form = $('#size-form');
   form.onsubmit = async e => {
     e.preventDefault();
-    const saved = await db.get('catches', c.id);
     const length = form.length.value === '' ? null : fromLen(+form.length.value);
-    await db.put('catches', { ...saved, length, released: form.released.checked, weightEst: estimateWeight(saved.species, length),
-      photo: form.photo.files[0] ? await shrinkPhoto(form.photo.files[0]) : saved.photo });
+    const photo = form.photo.files[0] ? await shrinkPhoto(form.photo.files[0]).catch(() => (status("Couldn't read that photo"), null)) : null;
+    const saved = await db.get('catches', c.id);
+    if (saved) await db.put('catches', { ...saved, length, released: form.released.checked, weightEst: estimateWeight(saved.species, length), photo: photo ?? saved.photo });
     renderLive(t);
   };
   $('#size-skip').onclick = () => { sheet.innerHTML = ''; };
@@ -230,13 +251,12 @@ function sizeSheet(t, c) {
 
 async function endTrip(t) {
   if (!confirm('End this trip?')) return;
-  await flush();
+  const running = trip?.id === t.id;
+  if (running) await flush();
   const saved = await db.get('trips', t.id);
-  const ended = await db.put('trips', { ...saved, track: t.track, end: new Date().toISOString() });
-  trip = null;
-  localStorage.removeItem(KEY);
-  stopTracking();
-  updatePill();
+  if (running) { trip = null; localStorage.removeItem(KEY); stopTracking(); updatePill(); }
+  if (!saved) return showView('journal'); // removed meanwhile, e.g. by restoring a backup
+  const ended = await db.put('trips', { ...saved, track: running ? t.track : saved.track, end: new Date().toISOString() });
   await linkCatches(ended);
   renderSummary(ended);
 }
@@ -244,7 +264,7 @@ async function endTrip(t) {
 // Catches logged with the full form on the same water during the trip belong to it too.
 export async function linkCatches(t) {
   for (const c of await db.byLake('catches', t.lakeId)) {
-    if (!c.tripId && c.time >= t.start && c.time <= t.end) await db.put('catches', { ...c, tripId: t.id });
+    if (!c.tripId && c.time >= t.start.slice(0, 16) && c.time <= t.end) await db.put('catches', { ...c, tripId: t.id });
   }
 }
 
@@ -271,7 +291,7 @@ async function renderSummary(t) {
     ${t.track.length || catches.length || events.length ? '<div id="trip-map" class="trip-map"></div>' : ''}
     <h2>Journal</h2>
     <form class="card form" id="journal-form">
-      <label>Rating <span class="stars">${[1, 2, 3, 4, 5].map(n => `<button type="button" data-star="${n}" class="${n <= (t.rating ?? 0) ? 'on' : ''}">★</button>`).join('')}</span></label>
+      <div class="label">Rating <span class="stars">${[1, 2, 3, 4, 5].map(n => `<button type="button" data-star="${n}" class="${n <= (t.rating ?? 0) ? 'on' : ''}">★</button>`).join('')}</span></div>
       <label>Who you fished with <input name="companions" value="${esc(t.companions)}" placeholder="Names"></label>
       <label>How it went <textarea name="journal" rows="5" placeholder="Water clarity, what worked, what didn't…">${esc(t.journal)}</textarea></label>
       <div class="photos">${(t.photos ?? []).map((p, i) => `<span class="ph"><img src="${URL.createObjectURL(p)}" alt=""><a href="#" data-rm="${i}">✕</a></span>`).join('')}</div>
@@ -286,21 +306,25 @@ async function renderSummary(t) {
   el.querySelectorAll('[data-rm]').forEach(a => a.onclick = async e => {
     e.preventDefault();
     const saved = await db.get('trips', t.id);
+    const f = $('#journal-form');
     saved.photos.splice(+a.dataset.rm, 1);
-    renderSummary(await db.put('trips', saved));
+    // The page redraws, so keep what's in the form too: text, rating and photos picked but not yet saved.
+    const picked = (await Promise.allSettled([...f.photos.files].map(p => shrinkPhoto(p)))).filter(r => r.status === 'fulfilled' && r.value).map(r => r.value);
+    renderSummary(await db.put('trips', { ...saved, rating, companions: f.companions.value.trim(), journal: f.journal.value.trim(), photos: [...saved.photos, ...picked] }));
   });
   $('#journal-form').onsubmit = async e => {
     e.preventDefault();
     const f = e.target;
     const saved = await db.get('trips', t.id);
-    const added = await Promise.all([...f.photos.files].map(p => shrinkPhoto(p)));
+    const shrunk = await Promise.allSettled([...f.photos.files].map(p => shrinkPhoto(p)));
+    const added = shrunk.filter(r => r.status === 'fulfilled' && r.value).map(r => r.value);
     renderSummary(await db.put('trips', { ...saved, rating, companions: f.companions.value.trim(), journal: f.journal.value.trim(), photos: [...(saved.photos ?? []), ...added] }));
-    status('Journal saved');
+    status(added.length < shrunk.length ? `Journal saved; couldn't read ${shrunk.length - added.length} photo(s)` : 'Journal saved');
   };
   $('#trip-del').onclick = async () => {
     if (!confirm('Delete this trip and its track? Catches stay in your log.')) return;
-    for (const c of catches) await db.put('catches', { ...c, tripId: null });
-    for (const ev of events) await db.del('events', ev.id);
+    for (const c of await tripCatches(t)) await db.put('catches', { ...c, tripId: null });
+    for (const ev of await tripEvents(t)) await db.del('events', ev.id);
     await db.del('trips', t.id);
     showView('journal');
   };
@@ -334,7 +358,7 @@ export async function newEntry() {
   const now = localNow();
   $('#trip').innerHTML = `<button id="trip-back">‹ Journal</button><h2>New journal entry</h2>
     ${lakes.length ? `<form class="card form" id="entry-form">
-      <label>Where <select name="lakeId">${lakes.map(l => `<option value="${l.id}">${esc(l.name)}</option>`).join('')}</select></label>
+      <label>Where <select name="lakeId">${lakes.map(l => `<option value="${esc(l.id)}">${esc(l.name)}</option>`).join('')}</select></label>
       <div class="row"><label>Started <input name="start" type="datetime-local" required value="${now.slice(0, 11)}06:00"></label>
         <label>Ended <input name="end" type="datetime-local" required value="${now}"></label></div>
       <p class="muted small">Catches you logged on that water between these times are added to the entry.</p>

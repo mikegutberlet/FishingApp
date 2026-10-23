@@ -96,3 +96,4 @@ body:has(#view-trip.active) #trip-pill { display: none; }
 .draft img { width: 96px; height: 96px; }
 details summary { cursor: pointer; }
 details table { margin-top: 8px; }
+.form .label { margin-bottom: 10px; font-size: 13px; color: var(--muted); }

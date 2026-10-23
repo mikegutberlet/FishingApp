@@ -26,15 +26,16 @@ export async function renderTackle(el, edit = null) {
       <b>${esc(tackleLabel(t))}</b> <span class="muted small">${esc(t.type)}${t.qty ? ` · ${esc(t.qty)} on hand` : ''}</span>
       <div class="small">${n ? `🐟 ${n} fish` : '<span class="muted">No fish yet</span>'}</div>
       ${t.notes ? `<div class="small muted">${esc(t.notes)}</div>` : ''}
-      <a href="#" class="small" data-edit="${t.id}">edit</a> · <a href="#" class="small danger" data-del="${t.id}">delete</a></div></div>`).join('')
+      <a href="#" class="small" data-edit="${esc(t.id)}">edit</a> · <a href="#" class="small danger" data-del="${esc(t.id)}">delete</a></div></div>`).join('')
     : '<div class="card muted">Add the lures and baits you carry. When you log a catch, pick one and it counts toward that lure\'s fish.</div>'}`;
   const form = $('#tackle-form');
   form.onsubmit = async ev => {
     ev.preventDefault();
     const f = Object.fromEntries(new FormData(form));
-    await db.put('tackle', { ...edit, name: f.name.trim(), type: f.type, color: f.color.trim(), size: f.size.trim(), qty: f.qty === '' ? null : +f.qty, notes: f.notes.trim(),
-      photo: form.photo.files[0] ? await shrinkPhoto(form.photo.files[0], 800) : edit?.photo ?? null });
-    status(edit ? 'Saved' : 'Added to your tackle box');
+    let photo = edit?.photo ?? null, unreadable = false;
+    if (form.photo.files[0]) photo = await shrinkPhoto(form.photo.files[0], 800).catch(() => { unreadable = true; return photo; });
+    await db.put('tackle', { ...edit, name: f.name.trim(), type: f.type, color: f.color.trim(), size: f.size.trim(), qty: f.qty === '' ? null : +f.qty, notes: f.notes.trim(), photo });
+    status(unreadable ? "Saved, but couldn't read that photo" : edit ? 'Saved' : 'Added to your tackle box');
     renderTackle(el);
   };
   $('#tackle-cancel')?.addEventListener('click', () => renderTackle(el));

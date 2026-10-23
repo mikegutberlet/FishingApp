@@ -20,7 +20,7 @@ export function bestsBySpecies(catches) {
   return [...by.values()].sort((a, b) => b.count - a.count || a.species.localeCompare(b.species));
 }
 
-const link = (c, text) => `<a href="#" data-catch="${c.id}">${text}</a>`;
+const link = (c, text) => `<a href="#" data-catch="${esc(c.id)}">${text}</a>`;
 
 function table(rows, lakeName, { first = true } = {}) {
   return `<table><tr><th>Species</th><th>Fish</th><th>Longest</th><th>Heaviest</th>${first ? '<th>First caught</th>' : ''}</tr>
