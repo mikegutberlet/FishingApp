@@ -1,15 +1,31 @@
 {
-  "startedAt": "2026-10-23T07:10:08.020Z",
-  "items": [],
+  "startedAt": "2026-10-23T07:13:13.570Z",
+  "items": [
+    {
+      "id": "631405d3d34e36012efa3434",
+      "title": "Digital elevation model of Walker Lake, West-Central Nevada",
+      "parent": null,
+      "files": [
+        "sir2007-5012_bathymetry.xml",
+        "sir2007-5012_bathymetry2.zip",
+        "sir2007-5012_bathymetry.zip"
+      ],
+      "downloaded": [
+        "sir2007-5012_bathymetry2.zip (346 MB)"
+      ],
+      "skip": "no contours or readable raster"
+    }
+  ],
   "searched": 94,
-  "candidates": [],
+  "candidates": [
+    "Digital elevation model of Walker Lake, West-Central Nevada"
+  ],
   "rejected": [
     "Topo-bathymetric digital elevation models of the upper Merced and Tuolumne Rivers in California derived from hyperspectral image data and near-infrared LiDAR acquired in 2014 [no lake word]",
-    "Topobathymetric Elevation Models and Elevation-Area-Volume Relationships for Selected Lakes in Closed Basins of the Great Basin States [no lake word]",
+    "Topobathymetric Elevation Models and Elevation-Area-Volume Relationships for Selected Lakes in Closed Basins of the Great Basin States [outside]",
     "Spatial Metadata [no lake word]",
     "Topobathymetric Elevation Models [no lake word]",
     "Elevation-Area-Volume Relationships [no lake word]",
-    "Digital elevation model of Walker Lake, West-Central Nevada [no topic]",
     "Initial Head Contours for the Rio Grande transboundary integrated hydrologic model and water-availability analysis, New Mexico and Texas, United States, and Northern Chihuahua, Mexico [no lake word]",
     "USGS Topo Map Vector Data (Vector) 8566 Chin Creek Reservoir NV (published 20250804) Shapefile [no topic]",
     "USGS Topo Map Vector Data (Vector) 12842 Dry Creek Reservoir NV (published 20250804) FileGDB [no topic]",
@@ -103,5 +119,5 @@
   "hydrolakes": {
     "rows": 258
   },
-  "finishedAt": "2026-10-23T07:11:00.343Z"
+  "finishedAt": "2026-10-23T07:22:57.863Z"
 }
