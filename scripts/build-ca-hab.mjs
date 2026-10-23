@@ -3,8 +3,9 @@
 //
 //   data/ca/hab.json  { advisories: [{ id, name, county, level, advisory, date, detail, pts: [[lat, lon]] }] }
 //
-// One entry per open case: the latest report decides the level. Cases with no activity for a year are dropped.
-// If data.ca.gov is down, the old file is kept.
+// One entry per open case. A case can have many sampling sites around a water: each site's newest assessed report counts,
+// and the most severe site decides the level. Cases with no activity for a year are dropped.
+// If data.ca.gov is down, or the result looks broken (too few advisories, nothing reported for weeks), the old file is kept.
 
 import { writeFile, mkdir } from 'node:fs/promises';
 
@@ -26,8 +27,9 @@ export function levelOf(advisory, detail) {
 }
 
 const today = new Date().toISOString().slice(0, 10);
-// Some rows carry typos like 2555-07-09; ignore dates in the future.
-const valid = d => d && d.slice(0, 10) <= today ? d.slice(0, 10) : null;
+const daysAgo = n => new Date(Date.now() - n * 864e5).toISOString().slice(0, 10);
+// ISO dates only. Some rows carry typos like 2555-07-09; ignore dates in the future.
+const valid = d => /^\d{4}-\d{2}-\d{2}/.test(d ?? '') && d.slice(0, 10) <= today ? d.slice(0, 10) : null;
 
 async function sql(q) {
   for (let attempt = 1; ; attempt++) {
@@ -44,25 +46,44 @@ const cols = ['Bloom_Report_ID', 'Case_ID', 'Water_Body_Name', 'Official_Water_B
 const rows = await sql(`SELECT ${cols.map(c => `"${c}"`).join(',')} FROM "${RESOURCE}" WHERE "Case_Status" IS NULL OR "Case_Status" <> 'Closed'`);
 if (rows.length < 50) throw new Error(`Only ${rows.length} open bloom reports; the dataset may have changed`);
 
-const yearAgo = new Date(Date.now() - 365 * 864e5).toISOString().slice(0, 10);
+const yearAgo = daysAgo(365);
 const cases = new Map();
 for (const r of rows) {
   const date = valid(r.Advisory_Date) ?? valid(r.AdvisoryStartDate) ?? valid(r.Observation_Date);
   if (!date || date < yearAgo) continue;
-  const key = r.Case_ID ?? `r${r.Bloom_Report_ID}`;
+  const key = Number(r.Case_ID) > 0 ? String(r.Case_ID) : `r${r.Bloom_Report_ID}`; // Case_ID 0 means no case: keep each report on its own
   const c = cases.get(key) ?? { reports: [] };
   c.reports.push({ ...r, date });
   cases.set(key, c);
 }
 
+const order = ['danger', 'warning', 'caution', 'awareness', 'reported'];
+const siteOf = r => (r.Landmark ?? '').trim().toLowerCase()
+  || (r.Bloom_Latitude && r.Bloom_Longitude ? `${(+r.Bloom_Latitude).toFixed(3)},${(+r.Bloom_Longitude).toFixed(3)}` : 'case');
+// One site's current level from its reports, newest first. The newest assessed report decides, so a newer "not yet assessed"
+// report doesn't downgrade a Danger; a new unassessed report after a clean test shows as reported. { r, level } or null.
+function siteLevel(reports) {
+  let unassessed = null;
+  for (const r of reports) {
+    const level = levelOf(r.Advisory_Recommended, `${r.AdvisoryDetail ?? ''} ${r.Advisory_Detail_Description ?? ''}`);
+    if (level === 'reported') { unassessed ??= r; continue; }
+    if (level && !(valid(r.AdvisoryEndDate) && r.AdvisoryEndDate.slice(0, 10) < today)) return { r, level };
+    break; // tested below the triggers, or the advisory has ended
+  }
+  return unassessed && { r: unassessed, level: 'reported' };
+}
 const advisories = [];
 for (const [id, c] of cases) {
-  c.reports.sort((a, b) => b.date.localeCompare(a.date) || b.Bloom_Report_ID - a.Bloom_Report_ID);
-  const r = c.reports[0];
-  if (r.AdvisoryEndDate && valid(r.AdvisoryEndDate) && r.AdvisoryEndDate.slice(0, 10) < today) continue;
-  const level = levelOf(r.Advisory_Recommended, `${r.AdvisoryDetail ?? ''} ${r.Advisory_Detail_Description ?? ''}`);
-  if (!level) continue;
-  const pts = [...new Map(c.reports.filter(x => x.Bloom_Latitude && x.Bloom_Longitude)
+  // A clean test at one cove doesn't clear a Danger at another: the most severe site decides.
+  const sites = new Map();
+  for (const r of c.reports) (sites.get(siteOf(r)) ?? sites.set(siteOf(r), []).get(siteOf(r))).push(r);
+  const current = [...sites.values()]
+    .map(rs => siteLevel(rs.sort((a, b) => b.date.localeCompare(a.date) || b.Bloom_Report_ID - a.Bloom_Report_ID)))
+    .filter(Boolean)
+    .sort((a, b) => order.indexOf(a.level) - order.indexOf(b.level) || b.r.date.localeCompare(a.r.date));
+  if (!current.length) continue;
+  const { r, level } = current[0];
+  const pts = [...new Map([r, ...c.reports].filter(x => x.Bloom_Latitude && x.Bloom_Longitude) // the deciding site first
     .map(x => [+(+x.Bloom_Latitude).toFixed(4), +(+x.Bloom_Longitude).toFixed(4)]).map(p => [p.join(), p])).values()].slice(0, 12);
   if (!pts.length) continue;
   advisories.push({
@@ -71,8 +92,11 @@ for (const [id, c] of cases) {
     observed: valid(r.Observation_Date), detail: r.AdvisoryDetail ?? '', description: (r.Advisory_Detail_Description ?? '').slice(0, 400), status: r.Case_Status ?? '', pts,
   });
 }
-const order = ['danger', 'warning', 'caution', 'awareness', 'reported'];
 advisories.sort((a, b) => order.indexOf(a.level) - order.indexOf(b.level) || b.date.localeCompare(a.date));
+// Sanity checks before replacing the file: a parse that silently drops everything, or a dataset that stopped updating.
+const latest = rows.map(r => valid(r.Observation_Date) ?? valid(r.Advisory_Date)).filter(Boolean).sort().at(-1);
+if (cases.size < 50 || advisories.length < 20) throw new Error(`Only ${cases.size} active cases and ${advisories.length} advisories (usually 300+ and 150+); keeping the old file`);
+if (!latest || latest < daysAgo(30)) throw new Error(`Newest bloom report is from ${latest ?? 'never'}; the dataset may have been frozen or replaced. Keeping the old file`);
 await mkdir(OUT, { recursive: true });
 await writeFile(new URL('hab.json', OUT), JSON.stringify({ updatedAt: new Date().toISOString(), source: 'California Water Boards FHAB bloom reports (data.ca.gov)', portal: PORTAL, advisories }) + '\n');
 const counts = Object.fromEntries(order.map(l => [l, advisories.filter(a => a.level === l).length]));
