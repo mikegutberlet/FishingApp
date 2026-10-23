@@ -5,6 +5,7 @@ import { $, esc, showView } from '../ui.js';
 import { map, refreshMap } from '../map.js';
 import { renderLakeList, editLake } from './lakes.js';
 import { shareLake } from './settings.js';
+import { offlineButton } from '../offline.js';
 import { renderConditions } from './tabs/conditions.js';
 import { renderDepth } from './tabs/depth.js';
 import { renderStocking } from './tabs/stocking.js';
@@ -69,6 +70,7 @@ export async function openLake(id, tab = 'conditions') {
   $('#center').onclick = () => { showView('map'); map.setView([lake.lat, lake.lon], 14); };
   $('#share').onclick = () => shareLake(lake);
   $('#fav').onclick = () => toggleFavorite(lake, $('#fav'));
+  $('#share').after(' ', offlineButton(lake));
   d.querySelectorAll('.tabs button').forEach(b => b.onclick = () => openLake(id, b.dataset.tab));
   const body = $('#tab-body');
   renderSafetyBanner(lake, d);
@@ -86,6 +88,7 @@ function openUnsaved(lake, tab) {
     <div id="tab-body"></div>`;
   $('#back', d).onclick = () => showView('map');
   $('#save').onclick = () => saveWater(lake, tab);
+  $('#save').after(' ', offlineButton(lake));
   d.querySelectorAll('.tabs button').forEach(b => b.onclick = () => openUnsaved(lake, b.dataset.tab));
   renderSafetyBanner(lake, d);
   LAKE_TABS[tab].render(lake, $('#tab-body'));

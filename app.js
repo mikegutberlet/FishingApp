@@ -18,6 +18,13 @@ import './wind-layer.js';
 import { addSafetyLayers } from './safety-map.js';
 import './views/today.js';
 import './views/planner.js';
+import { initOffline } from './offline.js';
+import { initWaypoints } from './waypoints.js';
+import { initHeatmap } from './heatmap.js';
+
+initOffline();
+initWaypoints();
+initHeatmap();
 
 document.querySelectorAll('nav button').forEach(b => b.onclick = () => showView(b.dataset.view));
 
