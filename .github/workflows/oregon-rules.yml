@@ -1,0 +1,42 @@
+name: Build Oregon rules and advisories
+
+on:
+  schedule:
+    - cron: '41 12 * * 1' # weekly, Monday morning
+  workflow_dispatch:
+  push:
+    paths:
+      - scripts/or/build-or-regs.mjs
+      - .github/workflows/oregon-rules.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Oregon regulations, fish advisories, angling zones and counties
+        continue-on-error: true
+        run: |
+          mkdir -p data/or/logs
+          node scripts/or/build-or-regs.mjs 2>&1 | tee data/or/logs/build-or-regs.log
+          exit ${PIPESTATUS[0]}
+      - name: Commit changes
+        run: |
+          git add data/or/
+          if git diff --cached --quiet; then echo "No data changes"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update Oregon rules and advisories"
+          for i in 1 2 3; do if git pull --rebase origin "${GITHUB_REF_NAME}" && git push; then exit 0; fi; sleep 10; done
+          echo "push failed"; exit 1

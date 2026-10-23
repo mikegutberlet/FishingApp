@@ -9,7 +9,6 @@ on:
       - scripts/states.mjs
       - scripts/build-state-waters.mjs
       - scripts/build-state-history.mjs
-      - scripts/or/build-or-regs.mjs
       - .github/workflows/oregon-weekly.yml
 
 permissions:
@@ -28,13 +27,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      # Quick, and the nightly job uses its zones and counties: first.
-      - name: Oregon regulations, fish advisories and angling zones
-        continue-on-error: true
-        run: |
-          mkdir -p data/or/logs
-          node scripts/or/build-or-regs.mjs 2>&1 | tee data/or/logs/build-or-regs.log
-          exit ${PIPESTATUS[0]}
       - name: Oregon waters
         continue-on-error: true
         run: |
