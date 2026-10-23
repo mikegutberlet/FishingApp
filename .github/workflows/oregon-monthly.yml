@@ -1,0 +1,44 @@
+name: Build Oregon depth contours
+
+on:
+  schedule:
+    - cron: '13 12 5 * *' # monthly
+  workflow_dispatch:
+  push:
+    paths:
+      - scripts/build-state-bathymetry.mjs
+      - .github/workflows/oregon-monthly.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: oregon-depth-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install GDAL
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq gdal-bin unzip
+      - name: Oregon
+        continue-on-error: true
+        run: |
+          mkdir -p data/or/logs
+          node scripts/build-state-bathymetry.mjs or 2>&1 | tee data/or/logs/build-state-bathymetry.log
+          exit ${PIPESTATUS[0]}
+      - name: Commit changes
+        run: |
+          git add data/or/
+          if git diff --cached --quiet; then echo "No data changes"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update Oregon depth contours"
+          for i in 1 2 3; do if git pull --rebase origin "${GITHUB_REF_NAME}" && git push; then exit 0; fi; sleep 10; done
+          echo "push failed"; exit 1
