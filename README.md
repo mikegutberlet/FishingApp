@@ -78,10 +78,18 @@ Data is refreshed daily by `.github/workflows/update-data.yml` running `scripts/
 * Before that, the record is species introductions: the state Fish Commission (founded 1870), the U.S. Fish Commission and private parties moved shad, carp, bass, catfish, brown and brook trout into California waters from 1871 on. Those events, where they were recorded, show on the History tab.
 * Native fish planted inside their native range, such as most rainbow trout plants in Sierra streams, were rarely logged by water before the 1930s and are not in any public database. Miners and settlers did carry trout into fishless high-country lakes from the 1870s; the golden trout transplant of 1876 is the best documented.
 
+## Maps, depth and offline
+
+* **Save a lake for offline**: open a water → *⬇ Offline*. It downloads the satellite map for the lake's area (zoom 10–17, capped at about 6,000 tiles with a size estimate first), its USGS depth chart and the California data the lake page uses. Saved lakes are listed under Data → *Offline maps*, where you can delete them. The street map isn't downloaded in advance because OpenStreetMap's tile policy doesn't allow offline prefetching; street areas you've already viewed stay cached.
+* **Contour map from your Deeper scans**: Depth tab → *Contour map*. Every scan of the lake is merged on the phone into one grid (inverse-distance weighting over nearby soundings; areas you haven't scanned stay blank), traced into labeled contour lines with optional shading. On import the app asks for the scan date (read from the file when it has timestamps) and fills in that day's lake level from CDEC when the gauge has it, so scans taken at different water levels line up; the map is drawn at today's level.
+* **Water temperature**: Depth tab → *Water temperature*. Surface temperature by date from Deeper scans that carry a temperature column (a Deeper floats, so it measures the surface) and from catches, a map of each scan's surface temperature, and temperature-by-depth profiles you enter from a drop thermometer, with the thermocline marked.
+* **Catch heatmap**: map layers → *Catch heatmap*, filtered by species and season.
+* **Waypoints**: long-press the map, or tap *📌 Mark* and use GPS or a tap, to mark a spot, structure, brush pile, drop-off, hazard or ramp with a name and note. They show as a *Waypoints* map layer, are listed on the lake's Depth tab, export as GPX, and go with a shared lake only if you include your notes and spots.
+
 ## Sharing with friends
 
 * Everyone installs the same link. Each person's catches, notes and spots stay on their own phone. There are no shared accounts.
-* **Share a lake**: open a lake → *Share*. It sends a small file through Messages, AirDrop, email and so on, containing the lake, your Deeper depth maps and (if you choose) your notes and pinned spots. Catches are never included. Your friend opens the app → Data → *Import backup or shared lake*.
+* **Share a lake**: open a lake → *Share*. It sends a small file through Messages, AirDrop, email and so on, containing the lake, your Deeper depth maps and (if you choose) your notes, pinned spots and waypoints. Catches are never included. Your friend opens the app → Data → *Import backup or shared lake*.
 
 ## Installing on iPhone and Android
 

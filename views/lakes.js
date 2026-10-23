@@ -5,6 +5,8 @@ import { $, esc, fmtDate, showView, onShow } from '../ui.js';
 import { refreshMap, statewide as loadedStatewide } from '../map.js';
 import { openLake, openWater } from './lake.js';
 import { activeTrip } from './trips.js';
+import { refreshWaypoints } from '../waypoints.js';
+import { deletePack, packId } from '../offline.js';
 
 export async function renderLakeList() {
   $('#lake-detail').classList.add('hidden');
@@ -123,9 +125,11 @@ export function editLake(lake) {
   const del = $('#del-lake');
   if (del) del.onclick = async () => {
     if ((await activeTrip())?.lakeId === lake.id) return alert('End your trip on this water first.');
-    if (!confirm(`Delete ${lake.name} and all its catches, notes, trips, stocking and depth data?`)) return;
-    for (const s of ['catches', 'notes', 'stocking', 'depthSets', 'trips']) for (const r of await db.byLake(s, lake.id)) await db.del(s, r.id);
+    if (!confirm(`Delete ${lake.name} and all its catches, notes, trips, stocking, depth data, waypoints, temperature profiles and offline map?`)) return;
+    for (const s of ['catches', 'notes', 'stocking', 'depthSets', 'trips', 'waypoints', 'tempProfiles']) for (const r of await db.byLake(s, lake.id)) await db.del(s, r.id);
     for (const ev of await db.all('events')) if (ev.lakeId === lake.id) await db.del('events', ev.id);
+    refreshWaypoints();
+    if ('caches' in window) await deletePack(packId(lake));
     await db.del('lakes', lake.id);
     await refreshMap();
     renderLakeList();

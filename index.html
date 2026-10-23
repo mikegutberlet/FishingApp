@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="forecast.css">
+  <link rel="stylesheet" href="maps.css">
 </head>
 <body>
   <header>
@@ -30,6 +31,7 @@
       <div id="map"></div>
       <div class="map-actions">
         <button id="btn-locate">📍 Me</button>
+        <button id="btn-waypoint">📌 Mark</button>
         <button id="btn-add-lake">＋ Lake here</button>
       </div>
       <div id="depth-legend" class="legend hidden"></div>
@@ -103,12 +105,14 @@
         <label>Weight <select name="weight"><option value="lb">pounds</option><option value="kg">kg</option></select></label>
         <label>Depth <select name="depth"><option value="ft">feet</option><option value="m">meters</option></select></label>
       </form>
+      <h2>Offline maps</h2>
+      <div class="card" id="offline-areas"></div>
       <h2>What leaves your device</h2>
       <div class="card small">
         <ul>
           <li><b>Open-Meteo</b> (weather/wind): the lake's coordinates. Today, Plan a trip and the <i>Wind on my lakes</i> map layer send each of your starred or saved waters' coordinates, one request per water.</li>
           <li><b>USGS Water Services</b> (flow, level, water temp): a box around the lake.</li>
-          <li><b>Map tiles</b> (OpenStreetMap / Esri): the map area you view.</li>
+          <li><b>Map tiles</b> (OpenStreetMap / Esri): the map area you view, or the lake's area when you save it for offline.</li>
           <li><b>Windy / MyRadar</b>: only when you open those panels or links.</li>
           <li><b>National Weather Service</b> (weather alerts): the lake's coordinates, and on Today each starred water's.</li>
           <li><b>USGS statistics</b> (flow vs normal): the gauge's id.</li>
