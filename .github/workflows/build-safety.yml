@@ -22,7 +22,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 75 # each data step has its own limit below, so a slow source can't stop the commit step
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -30,12 +30,14 @@ jobs:
           node-version: 22
       - name: Fishing regulations
         continue-on-error: true
+        timeout-minutes: 25
         run: |
           mkdir -p data/ca/logs
           node scripts/build-ca-regs.mjs 2>&1 | tee data/ca/logs/build-ca-regs.log
           exit ${PIPESTATUS[0]}
       - name: Fish consumption advisories
         continue-on-error: true
+        timeout-minutes: 10
         run: |
           mkdir -p data/ca/logs
           node scripts/build-ca-oehha.mjs 2>&1 | tee data/ca/logs/build-ca-oehha.log
@@ -43,6 +45,7 @@ jobs:
       - name: Access and facilities
         if: github.event.schedule != '23 10 * * 2'
         continue-on-error: true
+        timeout-minutes: 35 # Overpass retries across mirrors can otherwise run past an hour
         run: |
           mkdir -p data/ca/logs
           node scripts/build-ca-access.mjs 2>&1 | tee data/ca/logs/build-ca-access.log
