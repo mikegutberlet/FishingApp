@@ -7,7 +7,7 @@
 //
 // Run by .github/workflows/oregon-weekly.yml. Only public data.
 
-import { writeFile, mkdir } from 'node:fs/promises';
+import { writeFile, mkdir, readFile } from 'node:fs/promises';
 
 const OUT = new URL('../../data/or/', import.meta.url);
 const BASE = 'https://www.eregulations.com/oregon/fishing';
@@ -138,6 +138,17 @@ for (const [zone, path] of Object.entries(ZONES)) {
     report.pages[path] = { general: z.general.length, waters: z.waters.length, outline: secs.map(s => `${'#'.repeat(s.level)} ${s.title} (${s.text.length}p ${s.rows.length}r)`).slice(0, 25), sample: z.waters.slice(0, 3) };
   } catch (e) { report.pages[path] = { error: e.message }; }
 }
+// A zone page that failed or came back without exceptions keeps last week's rules, so its waters aren't told
+// that only the general limits apply.
+let old = null;
+try { old = JSON.parse(await readFile(new URL('regs.json', OUT), 'utf8')); } catch {}
+for (const zone of Object.keys(ZONES)) {
+  if (zones[zone]?.general.length && waters.some(w => w.zone === zone)) continue;
+  report.kept = [...(report.kept ?? []), zone];
+  if (old?.zones?.[zone]) { zones[zone] = old.zones[zone]; waters.push(...old.waters.filter(w => w.zone === zone)); }
+}
+if (!statewide.length && old?.statewide) statewide = old.statewide;
+if (report.kept?.length) { report.regsError = `kept last week's rules for ${report.kept.join(', ')}`; process.exitCode = 1; }
 if (waters.length) {
   await writeFile(new URL('regs.json', OUT), JSON.stringify({
     updatedAt: new Date().toISOString(), source: 'Oregon Sport Fishing Regulations (ODFW), published on eRegulations', booklet: BASE,

@@ -38,6 +38,11 @@ export async function zoneAt(lat, lon) {
   const z = await d.load('zones');
   return z?.zones.find(k => lon >= k.bbox[0] && lon <= k.bbox[2] && lat >= k.bbox[1] && lat <= k.bbox[3] && k.polys.some(([outer]) => inRing([lon, lat], outer)))?.name ?? null;
 }
+// County a point is in (US Census outlines); some exceptions are for one county's creek of a common name.
+export async function countyAt(lat, lon) {
+  const c = await d.load('counties');
+  return c?.counties.find(k => lon >= k.bbox[0] && lon <= k.bbox[2] && lat >= k.bbox[1] && lat <= k.bbox[3] && k.polys.some(([outer]) => inRing([lon, lat], outer)))?.name ?? null;
+}
 const sameZone = (a, b) => !!a && !!b && a.toLowerCase().replace(/[\s-]*(zone|river)$/g, '').replace(/-/g, ' ') === b.toLowerCase().replace(/[\s-]*(zone|river)$/g, '').replace(/-/g, ' ');
 async function zoneOf(lake) {
   const stocked = lake.odfwWaterId ? (await d.load('waters'))?.waters.find(w => w.id === lake.odfwWaterId) : null;
@@ -101,8 +106,9 @@ export async function regsFor(lake) {
   if (!r) return null;
   const zone = await zoneOf(lake);
   const zoneKey = Object.keys(r.zones).find(z => sameZone(z, zone ?? '')) ?? null;
-  const county = String(lake.county ?? '').replace(/ County$/, '');
-  const special = r.waters.filter(w => (!w.county || !county || county.includes(w.county)) && (!zoneKey || w.zone === zoneKey || /Columbia|Snake/.test(w.zone))
+  const county = lake.lat != null ? await countyAt(lake.lat, lake.lon) : null;
+  // Outside every zone (not in Oregon) only the Columbia and Snake rules, which name their river, can apply.
+  const special = r.waters.filter(w => (!w.county || (county && county === w.county)) && (zoneKey ? w.zone === zoneKey || /Columbia|Snake/.test(w.zone) : /Columbia|Snake/.test(w.zone))
     && [w.name, ...w.aliases].some(n => sameWater(lake.name, n)));
   return { zone: zoneKey ?? zone, special, zoneRules: zoneKey ? r.zones[zoneKey] : null, statewide: r.statewide, booklet: r.booklet, updates: r.updates, source: r.source, updatedAt: r.updatedAt };
 }

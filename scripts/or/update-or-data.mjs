@@ -487,6 +487,8 @@ async function habAdvisories(waters) {
   const listUrl = `${OHA_SITE}/_api/web/GetList('${encodeURIComponent('/oha/PH/HEALTHYENVIRONMENTS/RECREATION/HARMFULALGAEBLOOMS/Lists/CurrentCyanobacteriaAdvisories')}')/items?$top=500`;
   const json = await getJson(listUrl, { headers: { ...BROWSER, Accept: 'application/json;odata=nometadata' } });
   const items = json.value ?? json.d?.results ?? [];
+  // An empty list would read as "no advisories anywhere": treat it as a failure and keep last night's file.
+  if (!items.length) throw new Error('OHA advisory list came back empty');
   const lakes = (await readOld('lakes.json'))?.lakes ?? [];
   const log = report.hab = { items: items.length, fields: Object.keys(items[0] ?? {}).filter(k => !/^(odata|__|FileSystem|ServerRedirected|ContentType|Compliance|OData_|Attachments|GUID|AuthorId|EditorId|Created|Modified|ID$|Id$)/.test(k)), sample: items.slice(0, 3) };
   // Field names in this list aren't documented; pick them by name.
@@ -526,6 +528,8 @@ await mkdir(OUT, { recursive: true });
 let rows = [], reports = [], waters = null;
 try { rows = await scheduleFetch(); } catch (e) { report.scheduleError = e.message; console.error('schedule:', e.message); }
 try { reports = await recreationReport(); } catch (e) { report.recreationError = e.message; console.error('recreation:', e.message); }
+// A zone page that failed tonight keeps last week's lines rather than dropping out.
+if (reports.length) for (const old of (await readOld('reports.json'))?.reports ?? []) if (old.items && !reports.some(r => r.zone === old.zone)) reports.push(old);
 if (reports.length) await save('reports.json', { updatedAt: new Date().toISOString(), source: 'ODFW Recreation Report (myodfw.com/recreation-report)', reports });
 if (rows.length) {
   try {
@@ -542,6 +546,8 @@ const reservoirs = [];
 for (const [name, fn] of [['usgs', usgsLevels], ['corps', corpsLevels], ['hydromet', hydrometLevels]]) {
   try { reservoirs.push(...await fn()); } catch (e) { report[`${name}Error`] = e.message; console.error(`${name}:`, e.message); }
 }
+// A source that failed tonight keeps its stations from the last good run; their last reading shows their age.
+if (reservoirs.length) for (const old of (await readOld('reservoirs.json'))?.reservoirs ?? []) if (!reservoirs.some(r => r.source === old.source && r.id === old.id)) reservoirs.push(old);
 if (reservoirs.length) {
   await save('reservoirs.json', { updatedAt: new Date().toISOString(), source: 'USGS Water Services, US Army Corps of Engineers (CWMS) and Reclamation Hydromet', units: { elevation: 'ft', storage: 'acre-ft' }, reservoirs });
 }
