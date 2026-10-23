@@ -55,6 +55,7 @@ async function refresh() {
   if (!map.hasLayer(heat)) return;
   const catches = (await db.all('catches')).filter(c => c.lat != null && c.time);
   const species = [...new Set(catches.map(c => c.species).filter(Boolean))].sort();
+  if (filter.species && !species.includes(filter.species)) filter.species = ''; // its last catch was deleted
   const shown = catches.filter(c => (!filter.species || c.species === filter.species) && (filter.season === 'all' || seasonOf(c.time) === filter.season));
   heat.setPoints(shown.map(c => [c.lat, c.lon]));
   const el = control?.getContainer();

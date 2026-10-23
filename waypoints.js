@@ -50,10 +50,10 @@ export async function editWaypoint(w = {}) {
     <div class="kinds">${Object.entries(KINDS).map(([k, [icon, label]]) => `<label><input type="radio" name="kind" value="${k}" ${draft.kind === k ? 'checked' : ''}><span>${icon}<br>${label}</span></label>`).join('')}</div>
     <label>Name <input name="name" value="${esc(draft.name ?? '')}" placeholder="Rock pile off the point"></label>
     <label>Note <textarea name="note" rows="2" placeholder="Holds bass at 14 ft in summer">${esc(draft.note ?? '')}</textarea></label>
-    <label>Water <select name="lakeId"><option value="">None</option>${lakes.map(l => `<option value="${l.id}" ${draft.lakeId === l.id ? 'selected' : ''}>${esc(l.name)}</option>`).join('')}</select></label>
+    <label>Water <select name="lakeId"><option value="">None</option>${lakes.map(l => `<option value="${esc(l.id)}" ${draft.lakeId === l.id ? 'selected' : ''}>${esc(l.name)}</option>`).join('')}</select></label>
     <div class="row"><button type="button" id="wpt-gps">📍 My location</button><button type="button" id="wpt-tap">Tap the map</button></div>
     <p id="wpt-loc" class="muted small"></p>
-    <div class="row"><button value="cancel">Cancel</button><button class="primary" id="wpt-save" value="save">Save</button></div></form>`;
+    <div class="row"><button type="button" id="wpt-cancel">Cancel</button><button class="primary" id="wpt-save" value="save">Save</button></div></form>`;
   document.body.append(dlg);
   const form = dlg.querySelector('form');
   const showLoc = () => { $('#wpt-loc', dlg).textContent = loc ? `${loc.lat.toFixed(5)}, ${loc.lon.toFixed(5)}` : 'Set the location with GPS or a tap on the map.'; $('#wpt-save', dlg).disabled = !loc; };
@@ -65,14 +65,22 @@ export async function editWaypoint(w = {}) {
   showLoc();
   let picking = false;
   dlg.onclose = () => { if (!picking) dlg.remove(); };
+  $('#wpt-cancel', dlg).onclick = () => dlg.close(); // not a submit button, so Enter in Name saves instead of cancelling
   $('#wpt-gps', dlg).onclick = () => { $('#wpt-loc', dlg).textContent = 'Finding you…'; locate().then(setLoc).catch(e => { $('#wpt-loc', dlg).textContent = e.message; }); };
   $('#wpt-tap', dlg).onclick = () => {
-    // Hide the sheet while the user picks, then bring it back with the spot filled in.
+    // Hide the sheet while the user picks, then bring it back with the spot filled in. While picking, labels and
+    // markers let taps through to the map (maps.css), and leaving the map from the bottom bar drops the pick.
     picking = true; dlg.close();
     showView('map', { render: false });
+    map.invalidateSize(); // render:false skips map.js's resize, and the hidden map may have measured 0×0
     if (loc) map.panTo([loc.lat, loc.lon]);
     status('Tap the spot for the waypoint');
-    pickPoint(({ lat, lng }) => { picking = false; status(''); dlg.showModal(); setLoc({ lat, lon: lng }); });
+    const box = map.getContainer(), nav = document.querySelector('nav');
+    const finish = () => { box.classList.remove('picking'); nav.removeEventListener('click', abandon, true); picking = false; status(''); };
+    const abandon = () => { pickPoint(null); finish(); dlg.remove(); };
+    box.classList.add('picking');
+    nav.addEventListener('click', abandon, true);
+    pickPoint(({ lat, lng }) => { finish(); dlg.showModal(); setLoc({ lat, lon: lng }); });
   };
   $('#wpt-save', dlg).onclick = async e => {
     e.preventDefault();
@@ -93,7 +101,7 @@ export function waypointsGpx(list, name) {
   const x = s => esc(s ?? '');
   return `<?xml version="1.0" encoding="UTF-8"?>
 <gpx version="1.1" creator="Tackle Box" xmlns="http://www.topografix.com/GPX/1/1"><metadata><name>${x(name)}</name></metadata>
-${list.map(w => `<wpt lat="${w.lat}" lon="${w.lon}"><name>${x(w.name || kind(w)[1])}</name>${w.note ? `<desc>${x(w.note)}</desc>` : ''}<type>${x(kind(w)[1])}</type><time>${w.createdAt}</time></wpt>`).join('\n')}
+${list.map(w => `<wpt lat="${+w.lat}" lon="${+w.lon}">${w.createdAt ? `<time>${x(w.createdAt)}</time>` : ''}<name>${x(w.name || kind(w)[1])}</name>${w.note ? `<desc>${x(w.note)}</desc>` : ''}<type>${x(kind(w)[1])}</type></wpt>`).join('\n')}
 </gpx>`;
 }
 
@@ -103,7 +111,7 @@ export async function renderWaypointCard(lake, el, redraw) {
   onSaved = () => el.offsetParent && redraw(); // only while this tab is on screen
   el.innerHTML = `<div class="card"><h3>Waypoints</h3>
     ${list.map(w => `<div class="lake-item" style="margin:6px 0"><span>${kind(w)[0]} <b>${esc(w.name || kind(w)[1])}</b>${w.note ? `<span class="muted small"> · ${esc(w.note)}</span>` : ''}</span>
-      <span class="acts"><button data-wgo="${w.id}">Map</button><button data-wedit="${w.id}">Edit</button></span></div>`).join('') || '<p class="muted small">Mark structure, brush piles, drop-offs, hazards and ramps. Long-press the map, or use 📌 on the map.</p>'}
+      <span class="acts"><button data-wgo="${esc(w.id)}">Map</button><button data-wedit="${esc(w.id)}">Edit</button></span></div>`).join('') || '<p class="muted small">Mark structure, brush piles, drop-offs, hazards and ramps. Long-press the map, or use 📌 on the map.</p>'}
     <div class="row" style="margin-top:8px"><button id="wpt-add">＋ Add waypoint</button>${list.length ? '<button id="wpt-gpx">⬇ GPX</button>' : ''}</div></div>`;
   $('#wpt-add', el).onclick = () => editWaypoint({ lakeId: lake.id });
   el.querySelectorAll('[data-wedit]').forEach(b => b.onclick = () => editWaypoint(list.find(w => w.id === b.dataset.wedit)));
@@ -127,7 +135,9 @@ export function initWaypoints() {
   layersControl.addOverlay(waypointLayer, 'Waypoints');
   refreshWaypoints();
   onShow('map', refreshWaypoints); // picks up waypoints from an imported backup or shared lake
-  // Long-press (or right-click) on the map drops a waypoint there.
+  // Long-press (or right-click) on the map drops a waypoint there. An app added to the iPhone home screen drops
+  // "Safari" from its user agent, so Leaflet leaves its long-press emulation off there: turn it on.
+  if (L.Browser.touchNative && L.Browser.mobile && 'standalone' in navigator && !map.tapHold?.enabled()) map.tapHold?.enable();
   map.on('contextmenu', e => editWaypoint({ lat: e.latlng.lat, lon: e.latlng.lng }));
   $('#btn-waypoint').onclick = () => editWaypoint();
 }

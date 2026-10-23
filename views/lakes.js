@@ -4,6 +4,7 @@ import * as CA from '../states/ca.js';
 import { $, esc, fmtDate, showView, onShow } from '../ui.js';
 import { refreshMap, statewide as loadedStatewide } from '../map.js';
 import { openLake, openWater } from './lake.js';
+import { refreshWaypoints } from '../waypoints.js';
 
 export async function renderLakeList() {
   $('#lake-detail').classList.add('hidden');
@@ -120,8 +121,9 @@ export function editLake(lake) {
   };
   const del = $('#del-lake');
   if (del) del.onclick = async () => {
-    if (!confirm(`Delete ${lake.name} and all its catches, notes, stocking and depth data?`)) return;
-    for (const s of ['catches', 'notes', 'stocking', 'depthSets']) for (const r of await db.byLake(s, lake.id)) await db.del(s, r.id);
+    if (!confirm(`Delete ${lake.name} and all its catches, notes, stocking, depth data, waypoints and temperature profiles?`)) return;
+    for (const s of ['catches', 'notes', 'stocking', 'depthSets', 'waypoints', 'tempProfiles']) for (const r of await db.byLake(s, lake.id)) await db.del(s, r.id);
+    refreshWaypoints();
     await db.del('lakes', lake.id);
     await refreshMap();
     renderLakeList();

@@ -54,8 +54,8 @@ export async function renderDepth(lake, body) {
       <label class="file-btn">Choose file… <input type="file" name="file" accept=".csv,.txt,.gpx,.kml" hidden></label></form>
     <div id="scan-review"></div>
     ${await depthFacts(lake)}</div>
-    ${sets.map(s => `<div class="card lake-item"><div><b>${esc(s.name)}</b><div class="muted small">${s.points.length.toLocaleString()} points · max ${maxOf(s.points).toFixed(1)} ft · ${s.scanDate ? day(s.scanDate) : 'no scan date'}${s.levelFt != null ? ` · level ${s.levelFt.toLocaleString()} ft` : ''}${s.temps?.length ? ' · 🌡' : ''}</div></div>
-      <div class="acts"><button data-show="${s.id}">Show</button><button data-edit="${s.id}">Edit</button><button class="danger" data-del="${s.id}">✕</button></div></div>`).join('')}
+    ${sets.map(s => `<div class="card lake-item"><div><b>${esc(s.name)}</b><div class="muted small">${s.points.length.toLocaleString()} points · max ${maxOf(s.points).toFixed(1)} ft · ${s.scanDate ? day(s.scanDate) : `imported ${fmtDate(s.createdAt)}`}${typeof s.levelFt === 'number' ? ` · level ${s.levelFt.toLocaleString()} ft` : ''}${s.temps?.length ? ' · 🌡' : ''}</div></div>
+      <div class="acts"><button data-show="${esc(s.id)}">Show</button><button data-edit="${esc(s.id)}">Edit</button><button class="danger" data-del="${esc(s.id)}">✕</button></div></div>`).join('')}
     <div id="temps"></div><div id="waypoints"></div>`;
   body.querySelector('input[type=file]').onchange = async e => {
     const file = e.target.files[0];
@@ -101,31 +101,47 @@ function scanForm(lake, el, draft, save, cancel) {
   el.innerHTML = `<form class="form inset" id="scan-form"><h4 class="sub">${draft.isNew ? 'Check the scan, then save' : 'Edit scan'}</h4>
     ${draft.summary ? `<p class="small">${esc(draft.summary)}</p>` : ''}
     <label>Name <input name="name" value="${esc(draft.name ?? '')}" required></label>
-    <div class="row"><label>Scan date <input type="date" name="scanDate" value="${draft.scanDate ?? ''}"></label>
-      <label>Lake level that day (ft) <input type="number" step="0.01" name="levelFt" inputmode="decimal" value="${draft.levelFt ?? ''}" placeholder="optional"></label></div>
+    <div class="row"><label>Scan date <input type="date" name="scanDate" value="${esc(draft.scanDate ?? '')}"></label>
+      <label>Lake level that day (ft) <input type="number" step="0.01" name="levelFt" inputmode="decimal" value="${typeof draft.levelFt === 'number' ? draft.levelFt : ''}" placeholder="optional"></label></div>
     <p class="muted small" id="level-hint"></p>
     <div class="row"><button type="button" id="scan-cancel">Cancel</button><button class="primary">Save</button></div></form>`;
   const form = $('#scan-form', el), hintEl = $('#level-hint', el);
-  let auto = draft.levelSource?.startsWith('CDEC') ? draft.levelFt : null, station = null;
+  // The level last filled in from the gauge, the date it was for, and the gauge. Seeded from the saved scan, so an
+  // edit keeps a CDEC level the app no longer has a reading for (it only keeps about 30 days).
+  const fromGauge = /^CDEC ./.test(draft.levelSource ?? '') && typeof draft.levelFt === 'number';
+  let auto = fromGauge ? draft.levelFt : null, autoDate = fromGauge ? draft.scanDate : null, station = fromGauge ? draft.levelSource.slice(5) : null;
+  const cdecLink = id => `<a href="https://cdec.water.ca.gov/dynamicapp/staMeta?station_id=${esc(id)}" target="_blank" rel="noopener">CDEC ↗</a>`;
   const hint = async () => {
     const date = form.scanDate.value;
-    if (!date) { hintEl.textContent = 'Add the date you scanned so scans from different water levels line up.'; return; }
+    // A gauge reading belongs to its date: clear it only when the date has changed and the value wasn't retyped.
+    const stale = () => { if (auto != null && date !== autoDate && +form.levelFt.value === auto) { form.levelFt.value = ''; auto = autoDate = null; } };
+    if (!date) { stale(); hintEl.textContent = 'Add the date you scanned so scans from different water levels line up.'; return; }
     const lv = await levelOn(lake, date);
-    station = lv.station;
+    if (form.scanDate.value !== date) return; // the date changed again while this was looking it up
+    if (lv.station) station = lv.station;
     if (lv.levelFt != null) {
-      if (form.levelFt.value === '' || +form.levelFt.value === auto) { form.levelFt.value = lv.levelFt; auto = lv.levelFt; }
+      if (form.levelFt.value === '' || +form.levelFt.value === auto) { form.levelFt.value = lv.levelFt; auto = lv.levelFt; autoDate = date; }
       hintEl.textContent = `CDEC ${lv.station} read ${lv.levelFt.toLocaleString()} ft on ${day(lv.date)}.`;
     } else if (lv.station) {
-      if (auto != null && +form.levelFt.value === auto) { form.levelFt.value = ''; auto = null; } // that reading was for another date
-      hintEl.innerHTML = `The ${esc(lv.station)} gauge readings in the app start ${day(lv.first)}. For an older scan, look the level up on <a href="https://cdec.water.ca.gov/dynamicapp/staMeta?station_id=${esc(lv.station)}" target="_blank" rel="noopener">CDEC ↗</a> and type it in, or leave it blank.`;
-    } else hintEl.textContent = 'No lake level gauge for this water. Leave the level blank unless you know it; scans are then combined as recorded.';
+      stale();
+      hintEl.innerHTML = lv.first
+        ? `The ${esc(lv.station)} gauge readings in the app start ${day(lv.first)}. For an older scan, look the level up on ${cdecLink(lv.station)} and type it in, or leave it blank.`
+        : `The ${esc(lv.station)} gauge doesn't report the lake level in the app. Look it up on ${cdecLink(lv.station)} and type it in, or leave it blank.`;
+    } else {
+      stale();
+      hintEl.textContent = 'No lake level gauge for this water. Leave the level blank unless you know it; scans are then combined as recorded.';
+    }
   };
   form.scanDate.onchange = hint;
   hint();
   $('#scan-cancel', el).onclick = cancel;
-  form.onsubmit = e => {
+  const saveBtn = $('button.primary', el);
+  form.onsubmit = async e => {
     e.preventDefault();
+    if (saveBtn.disabled) return; // a second tap while a big scan is still saving
+    saveBtn.disabled = true;
     const level = form.levelFt.value === '' ? null : +form.levelFt.value;
-    save({ name: form.name.value.trim(), scanDate: form.scanDate.value || null, levelFt: level, levelSource: level == null ? null : level === auto && station ? `CDEC ${station}` : 'entered' });
+    try { await save({ name: form.name.value.trim(), scanDate: form.scanDate.value || null, levelFt: level, levelSource: level == null ? null : level === auto && station ? `CDEC ${station}` : 'entered' }); }
+    catch (err) { saveBtn.disabled = false; alert(err.message); }
   };
 }

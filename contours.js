@@ -15,27 +15,43 @@ const reservoirFor = lake => CA.nearestReservoir(lake.lat, lake.lon, lake.cdecSt
 // Lake surface elevation (ft) on a date from the nearest CDEC gauge: the reading that day, or within 2 days.
 export async function levelOn(lake, date) {
   const res = await reservoirFor(lake).catch(() => null);
-  if (!res?.elevation?.length || !date) return { station: res?.id ?? null };
+  // first is null for gauges that report storage but no lake level (about 20 of them, e.g. Shaver Lake).
+  if (!res?.elevation?.length || !date) return { station: res?.id ?? null, levelFt: null, first: res?.elevation?.[0]?.[0] ?? null };
   const t = Date.parse(date);
   let best = null;
   for (const [d, v] of res.elevation) { const off = Math.abs(Date.parse(d) - t); if (off <= 2 * 864e5 && (!best || off < best.off)) best = { off, v, d }; }
   return { station: res.id, levelFt: best?.v ?? null, date: best?.d ?? null, first: res.elevation[0][0] };
 }
 
-// Soundings from every scan, shifted to one water level.
+// Soundings from every scan, shifted to one water level. Only scans with a level can be shifted, so with none the
+// map is drawn as scanned rather than claiming today's level.
 export async function mergedSoundings(lake, sets) {
   const res = await reservoirFor(lake).catch(() => null);
   const today = res?.elevation?.at(-1);
-  const dated = sets.filter(s => s.levelFt != null).sort((a, b) => (b.scanDate ?? '').localeCompare(a.scanDate ?? ''));
-  const ref = today ? { levelFt: today[1], date: today[0], station: res.id } : dated[0] ? { levelFt: dated[0].levelFt, date: dated[0].scanDate } : null;
-  const points = [];
+  const dated = sets.filter(s => typeof s.levelFt === 'number').sort((a, b) => (b.scanDate ?? '').localeCompare(a.scanDate ?? ''));
+  const ref = !dated.length ? null : today ? { levelFt: today[1], date: today[0], station: res.id } : { levelFt: dated[0].levelFt, date: dated[0].scanDate };
+  const raw = [];
   let shifted = 0;
   for (const s of sets) {
-    const off = ref && s.levelFt != null ? ref.levelFt - s.levelFt : 0;
+    const off = ref && typeof s.levelFt === 'number' ? ref.levelFt - s.levelFt : 0;
     if (off) shifted++;
-    for (const [lat, lon, d] of s.points) if (d > 0 && d + off > 0) points.push([lat, lon, d + off]);
+    for (const [lat, lon, d] of s.points) if (d > 0 && d + off > 0) raw.push([lat, lon, d + off]);
   }
-  return { points, ref, shifted, unleveled: ref ? sets.filter(s => s.levelFt == null).length : 0 };
+  const points = dropStrays(raw);
+  return { points, ref, shifted, dropped: raw.length - points.length, unleveled: ref ? sets.length - dated.length : 0 };
+}
+
+// Sonar tracks can start with a fix far from the water, or at 0,0. One such point would set the grid's extent and
+// smear the whole map, so drop points far from the rest: more than twice the distance that 99% of them fall within.
+function dropStrays(points) {
+  const ok = points.filter(([lat, lon]) => Math.abs(lat) <= 90 && Math.abs(lon) <= 180 && (Math.abs(lat) > 1e-6 || Math.abs(lon) > 1e-6));
+  if (ok.length < 20) return ok;
+  const mid = i => ok.map(p => p[i]).sort((a, b) => a - b)[ok.length >> 1];
+  const mLat = mid(0), mLon = mid(1), k = Math.cos(mLat * Math.PI / 180);
+  const dist = ok.map(([lat, lon]) => Math.hypot(lat - mLat, (lon - mLon) * k) * 111.2); // km
+  const d99 = dist.slice().sort((a, b) => a - b)[Math.floor(dist.length * 0.99)];
+  const limit = Math.max(1, 2 * d99);
+  return ok.filter((_, i) => dist[i] <= limit);
 }
 
 // Soundings → regular grid. Each cell is the IDW average of the binned soundings within a few cells; cells with no
@@ -156,7 +172,7 @@ export async function showContours(lake) {
   if (!sets.length) return status('Import a scan first');
   status('Building contours…');
   await new Promise(r => setTimeout(r, 30));
-  const { points, ref, shifted, unleveled } = await mergedSoundings(lake, sets);
+  const { points, ref, shifted, unleveled, dropped } = await mergedSoundings(lake, sets);
   if (points.length < 20) return status('Not enough soundings for contours');
   const g = buildGrid(points);
   const step = contourStep(g.max);
@@ -180,9 +196,9 @@ export async function showContours(lake) {
   for (const { at, level } of labels) L.marker(at, { icon: L.divIcon({ className: 'clabel', html: `<span>${level}</span>`, iconSize: null }), interactive: false, keyboard: false }).addTo(depthLayer);
   const legend = $('#depth-legend');
   const grad = [0, .25, .5, .75, 1].map(t => depthColor(t * g.max, g.max)).join(',');
-  const datum = ref?.station ? `Depths at today's level, ${Math.round(ref.levelFt).toLocaleString()} ft (CDEC ${esc(ref.station)})` : ref ? `Depths at the level of ${fmtDate(`${ref.date}T12:00`)}` : 'Depths as scanned (no lake level for these scans)';
+  const datum = ref?.station ? `Depths at today's level, ${Math.round(ref.levelFt).toLocaleString()} ft (CDEC ${esc(ref.station)})` : ref ? (ref.date ? `Depths at the level of ${fmtDate(`${ref.date}T12:00`)}` : `Depths at a lake level of ${Math.round(ref.levelFt).toLocaleString()} ft`) : 'Depths as scanned (no lake level for these scans)';
   legend.innerHTML = `<b>${esc(lake.name)}: your scans</b><div class="bar" style="background:linear-gradient(90deg,${grad})"></div>0 ft <span style="float:right">${Math.round(g.max)} ft</span>
-    <div class="muted" style="font-size:11px">Every ${step} ft · ${sets.length} scan${sets.length > 1 ? 's' : ''}, ${points.length.toLocaleString()} soundings<br>${datum}${shifted ? `, ${shifted} shifted` : ''}${unleveled ? ` · ${unleveled} without a level` : ''}</div>
+    <div class="muted" style="font-size:11px">Every ${step} ft · ${sets.length} scan${sets.length > 1 ? 's' : ''}, ${points.length.toLocaleString()} soundings<br>${datum}${shifted ? `, ${shifted} shifted` : ''}${unleveled ? ` · ${unleveled} without a level` : ''}${dropped ? `<br>${dropped.toLocaleString()} stray GPS points ignored` : ''}</div>
     <label style="font-size:12px"><input type="checkbox" id="depth-fill" ${fillOn ? 'checked' : ''}> Shading</label> · <a href="#" id="hide-depth">Hide</a>`;
   legend.classList.remove('hidden');
   $('#depth-fill').onchange = e => { fillOn = e.target.checked; fillOn ? fill.addTo(depthLayer) : depthLayer.removeLayer(fill); };

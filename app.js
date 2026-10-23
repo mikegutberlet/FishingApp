@@ -12,10 +12,11 @@ import './views/stats.js';
 import './views/settings.js';
 import './radar.js';
 import './wind-layer.js';
-import './offline.js';
+import { initOffline } from './offline.js';
 import { initWaypoints } from './waypoints.js';
 import { initHeatmap } from './heatmap.js';
 
+initOffline();
 initWaypoints();
 initHeatmap();
 

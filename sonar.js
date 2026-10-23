@@ -2,6 +2,7 @@
 // and water temperature. A Deeper floats, so its temperature is the surface temperature where it was.
 import { parseCsv } from './data-sources.js';
 
+const num = v => v == null || String(v).trim() === '' ? NaN : +v; // a blank cell is no reading, not 0
 const toF = (v, celsius) => celsius ? v * 9 / 5 + 32 : v;
 const toTime = v => {
   if (v == null || v === '') return NaN;
@@ -21,7 +22,7 @@ export function sonarExtras(text, isXml) {
     for (const pt of doc.querySelectorAll('trkpt, wpt, rtept')) {
       const all = [...pt.getElementsByTagName('*')];
       const temp = all.find(e => /^wtemp$|water.?temp/i.test(e.localName)) ?? all.find(e => /temp/i.test(e.localName) && !/^atemp$/i.test(e.localName));
-      rows.push([+pt.getAttribute('lat'), +pt.getAttribute('lon'), temp ? +temp.textContent : NaN, toTime(pt.querySelector('time')?.textContent)]);
+      rows.push([num(pt.getAttribute('lat')), num(pt.getAttribute('lon')), temp ? num(temp.textContent) : NaN, toTime(pt.querySelector('time')?.textContent)]);
     }
     celsius = isCelsius('', rows.map(r => r[2]).filter(Number.isFinite));
   } else {
@@ -31,11 +32,13 @@ export function sonarExtras(text, isXml) {
     const iTemp = header.findIndex(h => /temp/.test(h) && !/air/.test(h));
     const iTime = header.findIndex(h => /timestamp|datetime|^time|^date|utc/.test(h));
     const iClock = header.findIndex((h, i) => i !== iTime && /^time/.test(h)); // separate date and time columns
-    for (const r of lines) rows.push([+r[iLat], +r[iLon], iTemp >= 0 ? +r[iTemp] : NaN, iTime >= 0 ? toTime(iClock >= 0 ? `${r[iTime]} ${r[iClock]}` : r[iTime]) : NaN]);
+    // Date and time in separate columns: join ISO dates with T, which every browser parses (iOS Safari rejects a space).
+    const when = r => iClock < 0 ? r[iTime] : `${r[iTime]}${/^\d{4}-\d\d-\d\d$/.test(r[iTime]) ? 'T' : ' '}${r[iClock]}`;
+    for (const r of lines) rows.push([num(r[iLat]), num(r[iLon]), iTemp >= 0 ? num(r[iTemp]) : NaN, iTime >= 0 ? toTime(when(r)) : NaN]);
     if (iTemp >= 0) celsius = isCelsius(header[iTemp], rows.map(r => r[2]).filter(Number.isFinite));
   }
   const times = rows.map(r => r[3]).filter(Number.isFinite);
-  let temps = rows.filter(r => Number.isFinite(r[0]) && Number.isFinite(r[2]) && r[2] > -5 && r[2] < 110).map(([lat, lon, t, ms]) => [lat, lon, +toF(t, celsius).toFixed(1), ms]);
+  let temps = rows.filter(r => Number.isFinite(r[0]) && Number.isFinite(r[1]) && Number.isFinite(r[2]) && r[2] > -5 && r[2] < 110).map(([lat, lon, t, ms]) => [lat, lon, +toF(t, celsius).toFixed(1), ms]);
   // Keep at most ~3000 readings: plenty for the log and the map, and backups stay small.
   if (temps.length > 3000) { const step = temps.length / 3000; temps = Array.from({ length: 3000 }, (_, i) => temps[Math.floor(i * step)]); }
   return { times, temps };
