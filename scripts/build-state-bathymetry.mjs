@@ -63,7 +63,7 @@ async function walk(dir) {
   return out;
 }
 
-const isRasterName = f => !/ortho|_hll|dsm|browse|thumb/i.test(basename(f)) && (/\.(tif|tiff|asc|xyz|img|adf)$/i.test(f) || (/\.txt$/i.test(f) && /dem|grid|xyz|bathy|elev/i.test(basename(f))));
+const isRasterName = f => !/ortho|_hll|dsm|browse|thumb/i.test(basename(f)) && (/\.(tif|tiff|asc|xyz|img|adf|bil|flt)$/i.test(f) || (/\.txt$/i.test(f) && /dem|grid|xyz|bathy|elev/i.test(basename(f))));
 const isGoodFile = f => (/\.zip$/i.test(f.name) && !/dwg|cad|jpg|photo|image/i.test(f.name)) || isRasterName(f.name);
 
 // The statewide lake list (weekly build) gives each lake's surface elevation, used to sanity-check survey units.
