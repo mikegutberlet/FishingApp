@@ -1,479 +1,244 @@
 
-=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-7.50 (132764 bytes, text/html; charset=utf-8)
+=== 200 https://data.ca.gov/api/3/action/datastore_search?resource_id=c6a36b91-ad38-4611-8750-87ee99e497dd&limit=3&sort=_id%20desc (10335 bytes, application/json;charset=utf-8)
+total 3728 fields _id:int, Bloom_Report_ID:numeric, Case_Assignment:text, Case_ID:numeric, Number_of_Blooms_Linked_to_Case:numeric, Report_Type:text, Bloom_Date_Created:timestamp, Water_Body_Name:text, Official_Water_Body_Name:text, Landmark:text, County:text, Regional_Water_Board:text, Bloom_Latitude:numeric, Bloom Longitude:numeric, Bloom_Longitude:numeric, Bloom_Datum:text, Observation_Date:date, Has_Pictures:text, Reported_Advisory_Types:text, Weather_Condition:text, Surface_Water_Condition:text, Bloom_Size:text, Bloom_Location:text, Bloom_Texture:text, Reported_Management_Organizations:text, DDW_District_Office:text, Drinking_Water_Source:text, Water_Body_Manager:text, Rec_Land_Manager:text, Water_Body_Use:text, Water_Body_Type:text, Number_of_Advisories_Linked_to_Bloom:numeric, Advisory_ID:numeric, Response_Update_By:text, Advisory_Recommended:text, Advisory_Date:date, AdvisoryStartDate:date, AdvisoryEndDate:date, AdvisoryDetail:text, Advisory_Detail_Description:text, Advisory_Date_of_Recommendation:date, Spatial_Extent_of_Advisory:numeric, Extent_Unit_of_Measure:text, Last_Field_Result_Sample_Date:date, Lab_Data_Linked_to_Bloom:text, Field_Visual_Records_Linked_to_Bloom:text, Field_Measurement_Data_Linked_to_Bloom:text, Case_Start_Date:date, Case_Year:numeric, Case_Water_Body_Name:text, Case_Class:text, Case_Status:text, Case_Lead:text, Case_End_Date:date, Case_DateTimeStamp:timestamp, HAB_Bloom_Reports_FLATFILE_ID:numeric
+{"_id":3728,"Bloom_Report_ID":5383,"Case_Assignment":"Existing Case","Case_ID":1478,"Number_of_Blooms_Linked_to_Case":5,"Report_Type":"Public Reporting","Bloom_Date_Created":"2026-10-19T14:45:04.000","Water_Body_Name":"trout creek","Official_Water_Body_Name":null,"Landmark":"Lake Tahoe Community College","County":"El Dorado","Regional_Water_Board":"Unknown Region","Bloom_Latitude":38.92368,"Bloom Longitude":-119.9738,"Bloom_Longitude":-119.9738,"Bloom_Datum":null,"Observation_Date":"2026-10-19","Has_Pictures":"No","Reported_Advisory_Types":"None","Weather_Condition":"Clear","Surface_Water_Condition":"Calm","Bloom_Size":"smaller than a sedan","Bloom_Location":"<10 feet from shore","Bloom_Texture":"Spilled paint","Reported_Management_Organizations":null,"DDW_District_Office":null,"Drinking_Water_Source":"Unknown","Water_Body_Manager":null,"Rec_Land_Manager":null,"Water_Body_Use":null,"Water_Body_Type":null,"Number_of_Advisories_Linked_to_Bloom":null,"Advisory_ID":null,"Response_Update_By":null,"Advisory_Recommended":null,"Advisory_Date":null,"AdvisoryStartDate":null,"AdvisoryEndDate":null,"AdvisoryDetail":null,"Advisory_Detail_Description":null,"Advisory_Date_of_Recommendation":null,"Spatial_Extent_of_Advisory":null,"Extent_Unit_of_Measure":null,"Last_Field_Result_Sample_Date":null,"Lab_Data_Linked_to_Bloom":"NO","Field_Visual_Records_Linked_to_Bloom":"NO","Field_Measurement_Data_Linked_to_Bloom":"NO","Case_Start_Date":"2024-05-16","Case_Year":2024,"Case_Water_Body_Name":"Trout Creek","Case_Class":"Event Response","Case_Status":"Re-opened","Case_Lead":"SRice","Case_End_Date":null,"Case_DateTimeStamp":"2026-07-23T16:19:14.000","HAB_Bloom_Reports_FLATFILE_ID":3728}
+{"_id":3727,"Bloom_Report_ID":5381,"Case_Assignment":"Existing Case","Case_ID":1302,"Number_of_Blooms_Linked_to_Case":6,"Report_Type":"Public Reporting","Bloom_Date_Created":"2026-10-18T18:25:10.000","Water_Body_Name":"Eagle Lake","Official_Water_Body_Name":null,"Landmark":"Christie day use","County":"Lassen","Regional_Water_Board":"Region 6 - Lahontan","Bloom_Latitude":40.56343,"Bloom Longitude":-120.83251,"Bloom_Longitude":-120.83251,"Bloom_Datum":null,"Observation_Date":"2026-10-18","Has_Pictures":"Yes","Reported_Advisory_Types":"None","Weather_Condition":"Clear","Surface_Water_Condition":"Ripples","Bloom_Size":"larger than a football field","Bloom_Location":"shoreline to >50 feet from shore","Bloom_Texture":"Green discoloration; Spilled paint","Reported_Management_Organizations":null,"DDW_District_Office":null,"Drinking_Water_Source":"Unknown","Water_Body_Manager":null,"Rec_Land_Manager":null,"Water_Body_Use":null,"Water_Body_Type":null,"Number_of_Advisories_Linked_to_Bloom":null,"Advisory_ID":null,"Response_Update_By":null,"Advisory_Recommended":null,"Advisory_Date":null,"AdvisoryStartDate":null,"AdvisoryEndDate":null,"AdvisoryDetail":null,"Advisory_Detail_Description":null,"Advisory_Date_of_Recommendation":null,"Spatial_Extent_of_Advisory":null,"Extent_Unit_of_Measure":null,"Last_Field_Result_Sample_Date":null,"Lab_Data_Linked_to_Bloom":"NO","Field_Visual_Records_Linked_to_Bloom":"NO","Field_Measurement_Data_Linked_to_Bloom":"NO","Case_Start_Date":"2023-05-25","Case_Year":2023,"Case_Water_Body_Name":"Eagle Lake","Case_Class":"Event Response","Case_Status":"Open","Case_Lead":"SRice","Case_End_Date":null,"Case_DateTimeStamp":"2024-08-13T14:03:30.000","HAB_Bloom_Reports_FLATFILE_ID":3727}
+{"_id":3726,"Bloom_Report_ID":5380,"Case_Assignment":"New Case","Case_ID":1862,"Number_of_Blooms_Linked_to_Case":1,"Report_Type":"Public Reporting","Bloom_Date_Created":"2026-10-17T07:32:04.000","Water_Body_Name":"Pond on Marin Pl.","Official_Water_Body_Name":null,"Landmark":"Polaris St./Marin Pl.","County":"Nevada","Regional_Water_Board":"Region 5 - Central Valley","Bloom_Latitude":39.19184,"Bloom Longitude":-121.09243,"Bloom_Longitude":-121.09243,"Bloom_Datum":null,"Observation_Date":"2026-10-14","Has_Pictures":"Yes","Reported_Advisory_Types":"None","Weather_Condition":"Clear","Surface_Water_Condition":"Calm","Bloom_Size":"between a tennis court and a sedan","Bloom_Location":"shoreline to >50 feet from shore","Bloom_Texture":"Spilled paint","Reported_Management_Organizations":null,"DDW_District_Office":null,"Drinking_Water_Source":"Unknown","Water_Body_Manager":null,"Rec_Land_Manager":null,"Water_Body_Use":null,"Water_Body_Type":null,"Number_of_Advisories_Linked_to_Bloom":null,"Advisory_ID":null,"Response_Update_By":null,"Advisory_Recommended":null,"Advisory_Date":null,"AdvisoryStartDate":null,"AdvisoryEndDate":null,"AdvisoryDetail":null,"Advisory_Detail_Description":null,"Advisory_Date_of_Recommendation":null,"Spatial_Extent_of_Advisory":null,"Extent_Unit_of_Measure":null,"Last_Field_Result_Sample_Date":null,"Lab_Data_Linked_to_Bloom":"NO","Field_Visual_Records_Linked_to_Bloom":"NO","Field_Measurement_Data_Linked_to_Bloom":"NO","Case_Start_Date":"2026-10-22","Case_Year":2026,"Case_Water_Body_Name":"Pond on Marin Pl.","Case_Class":"Event Response","Case_Status":"Open","Case_Lead":"DShultz","Case_End_Date":null,"Case_DateTimeStamp":"2026-10-22T08:51:49.000","HAB_Bloom_Reports_FLATFILE_ID":3726}
 
-<td>(1) Alambique Creek (San Mateo Co.).</td>
-<td>Sat. preceding Memorial Day through Sep. 30. Only
-								artificial lures with barbless hooks may be used.</td>
-<td>0 trout</td>
-</tr>
-<tr>
-<td>(2) Alameda Creek and tributaries (Alameda and Santa
-								Clara Cos.).</td>
-<td>
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td>(A) Alameda Creek mainstem and all tributaries
-								downstream of San Antonio, Calaveras, and Del Valle Reservoirs except for
-								Arroyo Del Valle between Bernal Ave. and the Thiessen St. intersection with
-								Vineyard Ave.</td>
-<td>Closed to all fishing all year.</td>
-<td>
-</td>
-</tr>
-<tr>
-<td>1. Arroyo Del Valle between Bernal Ave. and the
-								Thiessen St. intersection with Vineyard Ave.</td>
-<td>All year. Only artificial lures with barbless hooks
-								may be used.</td>
-<td>0 trout</td>
-</tr>
-<tr>
-<td>(B) Alameda Creek tributaries upstream of San
-								Antonio, Calaveras, and Del Valle Reservoirs.</td>
-<td>Sat. preceding Memorial Day through Sep. 30. Only
-								artificial lures with barbless hooks may be used.</td>
-<td>0 trout</td>
-</tr>
-<tr>
-<td>(c) San Antonio and Calaveras Reservoirs.</td>
-<td>All year. Only artificial lures with barbless hooks
-								may be used.</td>
-<td>0 trout</td>
-</tr>
-<tr>
-<td>(3) Almanor Lake tributaries (Lassen, Plumas and
-								Shasta Cos.) upstream to the first lake.</td>
-<td>Sat. preceding Memorial Day through Sept. 30.</td>
-<td>5 trout</td>
-</tr>
-<tr>
-<td>(4) American River, North Fork, Middle Fork, South
-								Fork and their tributaries above Folsom Lake (Placer, El Dorado, Amador, and
-								Alpine Cos.), except Caples Creek) (See subsection (b)(24)).</td>
-<td>Sat. preceding Memorial Day through Sep. 30.</td>
-<td>5 trout</td>
-</tr>
-<tr>
-<td>
-</td>
-<td>Oct. 1 through the Fri. preceding Memorial Day. Only
-								artificial lures with barbless hook may be used.</td>
-<td>0 trout</td>
-</tr>
-<tr>
-<td>(5) Antelope Lake tributaries (Plumas Co.).</td>
-<td>Sat. preceding Memorial Day through Sep. 30.</td>
-<td>5 trout</td>
-</tr>
-<tr>
-<td>(6) Arroyo Seco River (Monterey) Co.). Also see
-								Section <span class="codecitation"><a href="/regulations/california/14-CCR-8.00">8.00</a>(c)</span> Low-Flow
-								Restrictions. The main stem Arroyo Seco and tributaries above the waterfall
-								located approximately 3.5 miles upstream from the U.S. Forest Service Ranger
-								Station.</td>
-<td>Sat. preceding Memorial day through Sep. 30.</td>
-<td>5 trout</td>
-</tr>
-<tr>
-<td>(7) [Repealed]</td>
-<td>
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td>(8) Bear Creek (San Bernardino Co.) from Big Bear Dam
-								to confluence of Santa Ana River.</td>
-<td>All year. Only artificial lures may be used.</td>
-<td>2 trout</td>
-</tr>
-<tr>
-<td>(9) Bear River and tributaries (Placer Co.)</td>
-<td>
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td>From Highway 20 south (downstream) 2.5 miles to the
-								abandoned concrete dam (the Boardman Diversion Dam).</td>
-<td>Sat. preceding Memorial Day through the last day in
-								Feb.</td>
-<td>5 trout</td>
-</tr>
-<tr>
-<td>(10) Berryessa Lake tributaries (Lake and Napa
-								Cos.).</td>
-<td>Last Sat. in Apr. through Sep. 30.</td>
-<td>2 trout. 4 trout in in possession.</td>
-</tr>
-<tr>
-<td>(11) Big Sur River (Monterey Co.). Big Sur river and
-								tributaries above the upstream end of the gorge pool at the boundary of
-								Pfeiffer Big Sur State Park within the Ventana Wilderness Area.</td>
-<td>Sat. preceding Memorial day through Sep. 30. Only
-								artificial lures with barbless hooks may be used.</td>
-<td>0 trout</td>
-</tr>
-<tr>
-<td>(12) Big Tree Creek (Calaveras Co.) within Calaveras
-								Big Trees State Park (upstream of the Highway 4 culvert crossing).</td>
-<td>Closed to all fishing all year.</td>
-<td>
-</td>
-</tr>
-<tr>
-<td>(13) Big Trees Creek (Tuolumne Co.) upstream from the
-								confluence of Beaver Creek.</td>
-<td>Closed to all fishing all year.</td>
-<td>
-</td>
-</tr>
-<tr>
-<td>(14) Boggy Creek (Fresno Co.) and tributaries
-								(tributary to Thomas Edison Lake).</td>
-<td>Sat. preceding Memorial Day through Sep. 30.</td>
-<td>5 trout</td>
-</tr>
-<tr>
-<td>(15) Boulder Creek (San Diego Co.) upstream of El
-								Capitan Reservoir, and all of its tributar
+=== 200 https://data.ca.gov/api/3/action/datastore_search?resource_id=7805faef-ed21-43e9-a13e-4920a9440bb8&limit=3&sort=_id%20desc (1238 bytes, application/json;charset=utf-8)
+total 160 fields _id:int, Advisory:text, County:text, Link:text, Latitude:numeric, Longitude:numeric
+{"_id":160,"Advisory":"Yuba River, North Yuba River, and Middle Yuba River","County":"Nevada, Sierra, Yuba","Link":"https://oehha.ca.gov/fish/advisories/yuba-river-north-yuba-river-and-middle-yuba-river","Latitude":39.36851,"Longitude":-121.1367}
+{"_id":159,"Advisory":"Xany? Xamshré","County":"Imperial","Link":"https://oehha.ca.gov/fish/advisories/xanyo-xamshre","Latitude":32.9,"Longitude":-114.4748}
+{"_id":158,"Advisory":"Wiest Lake","County":"Imperial","Link":"https://oehha.ca.gov/fish/advisories/wiest-lake","Latitude":33.04201,"Longitude":-115.49}
 
-=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-5.00 (42908 bytes, text/html; charset=utf-8)
-g:type" content="website" />
-	<meta property="og:url" content="https://www.law.cornell.edu/regulations/california/14-CCR-5.00" />
-	<meta property="og:title" content="Cal. Code Regs. Tit. 14, § 5.00 - Black Bass" />
-	<meta property="og:image" content="https://www.law.cornell.edu/images/liibracketlogo.gif" />
-	
-	<meta name="twitter:card" content="Cal. Code Regs. Tit. 14, § 5.00 - Black Bass" />
-	<meta name="twitter:site" content="@LIICornell" />
-	<meta name="twitter:url" content="https://www.law.cornell.edu/regulations/california/14-CCR-5.00" />
-	<meta name="twitter:title" content="Cal. Code Regs. Tit. 14, § 5.00 - Black Bass" />
-	<meta name="twitter:image" content="https://www.law.cornell.edu/images/liibracketlogo.gif" />
-	<meta name="dcterms.title" content="Cal. Code Regs. Tit. 14, § 5.00 - Black Bass" />
+=== 200 https://data.ca.gov/api/3/action/datastore_search?resource_id=55b9a341-04e1-4f4a-9839-6eb36e6cc8ed&limit=3&sort=_id%20desc (1718 bytes, application/json;charset=utf-8)
+total 1048575 fields _id:int, Advisory:text, County:text, Species:text, Contaminant:text, SEN_serving:numeric, GEN_serving:numeric, Year:numeric, unsafe_:text, unsafe__2:text, unsafe__3:text, unsafe__4:text
+{"_id":1048575,"Advisory":null,"County":null,"Species":null,"Contaminant":null,"SEN_serving":null,"GEN_serving":null,"Year":null,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
+{"_id":1048574,"Advisory":null,"County":null,"Species":null,"Contaminant":null,"SEN_serving":null,"GEN_serving":null,"Year":null,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
+{"_id":1048573,"Advisory":null,"County":null,"Species":null,"Contaminant":null,"SEN_serving":null,"GEN_serving":null,"Year":null,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
 
+=== 200 https://data.ca.gov/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%22c6a36b91-ad38-4611-8750-87ee99e497dd%22%20LIMIT%201 (5239 bytes, application/json;charset=utf-8)
+{"help": "https://publish.data.ca.gov/api/3/action/help_show?name=datastore_search_sql", "success": true, "result": {"sql": "SELECT * FROM \"c6a36b91-ad38-4611-8750-87ee99e497dd\" LIMIT 1", "records": [{"_id": 1, "_full_text": "'-01':58,59 '-04':5,26,43,46,49,52 '-12':70,73 '-121.7879':23,24 '-24':27 '-30':6,44,47,50,53 '-31':71,74 '00':8,9,76,77 '1':3,38,78 '1414':1 '2016':4,25,42,45,48,51,57,60,69,72 '39.753166':22 '5':19 '65':39 '69':2 'butt':17 'california':10,14,61 'central':20 'close':66 'communiti':31,33 'danger':29,41 'dog':35 'dyke':68 'event':64 'hoa':32,34 'lake':12,16,63 'marisa.vandyke@waterboards.ca.gov':40 'mvan':67 'park':11,15,62 'region':18 'reservoir':37 'respons':65 't00':7,75 'upper':13 'valley':21 'walk':36", "Bloom_Report_ID": 1414, "Case_Assignment": null, "Case_ID": 69, "Number_of_Blooms_Linked_to_Case": 1, "Report_Type": null, "Bloom_Date_Created": "2016-04-30T00:00:00", "Water_Body_Name": "California Park Lake", "Official_Water_Body_Name": null, "Landmark": "Upper California Park Lake", "County": "Butte", "Regional_Water_Board": "Region 5 - Central Valley", "Bloom_Latitude": 39.753166, "Bloom Longitude": -121.7879, "Bloom_Longitude": -121.7879, "Bloom_Datum": null, "Observation_Date": "2016-04-24", "Has_Pictures": "No", "Reported_Advisory_Types": "Danger", "Weather_Condition": null, "Surface_Water_Condition": null, "Bloom_Size": null, "Bloom_Location": null, "Bloom_Texture": null, "Reported_Management_Organizations": null, "DDW_District_Office": nul
 
-	<title>Cal. Code Regs. Tit. 14, § 5.00 - Black Bass | State Regulations | US Law | LII / Legal Information Institute</title>
-	
+=== 200 https://gispublic.waterboards.ca.gov/arcgis/rest/services/WQMC/WQMC_Fish_Advisories/MapServer/0?f=json (4975 bytes, application/json; charset=UTF-8)
+WQMC.oehha_fish_advisories_poly esriGeometryPolygon OBJECTID, NAME, MERCURY, PCBS, DIELDRIN, DDT, CHLORDANE, DIOXIN, ADVISORY_URL, SELENIUM, SHAPE, SHAPE.AREA, SHAPE.LEN, ID_NUM
 
-	<!-- schema.org metadata -->
-	<script type="application/ld+json">
-		{"@context": "http://schema.org", "@graph": [{"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "item": {"@id": "https://www.law.cornell.edu", "name": "LII"}}, {"@type": "ListItem", "position": 2, "item": {"@id": "https://www.law.cornell.edu/regulations", "name": "State Regulations"}}, {"@type": "ListItem", "position": 3, "item": {"@id": "https://www.law.cornell.edu/regulations/california", "name": "California Code of Regulations"}}, {"@type": "ListItem", "position": 5, "item": {"@id": "https://www.law.cornell.edu/regulations/california/title-14", "name": "Title 14 - Natural Resources"}}, {"@type": "ListItem", "position": 6, "item": {"@id": "https://www.law.cornell.edu/regulations/california/title-14/division-1", "name": "Division 1 - Fish and Game Commission-Department of Fish and Game"}}, {"@type": "ListItem", "position": 7, "item": {"@id": "https://www.law.cornell.edu/regulations/california/title-14/division-1/subdivision-1", "name": "Subdivision 1 - Fish, Amphibians and Reptiles"}}, {"@type": "ListItem", "position": 8, "item": {"@id": "https://www.law.cornell.edu/regulations/california/title-14/division-1/subdivision-1/chapter-2", "name": "Chapter 2 - Statewide Regulations for Fishing and Frogging in Inland Waters"}}, {"@type": "ListItem", "position": 9, "item": {"@id": "https://www.law.cornell.edu/regulations/california/title-14/division-1/subdivision-1/chapter-2/article-4", "name": "Article 4 - Species Regulations"}}, {"@type": "ListItem", "position": 10, "item": {"@id": "https://www.law.cornell.edu/regulations/california/14-CCR-5.00", "name": "Cal. Code Regs. Tit. 14, \u00a7 5.00 - Black Bass"}}]}, {"@type": "WebSite", "url": "https://www.law.cornell.edu/regulations/california/14-CCR-5.00", "name": "Cal. Code Regs. Tit. 14, \u00a7 5.00 - Black Bass", "author": {"@type": "Organization", "name": "California", "url": "https://www.ca.gov/"}, "description": "Cal. Code Regs. Tit. 14, \u00a7 5.00 - Black Bass", "publisher": {"@type": "Organization", "name": "LII / Legal Information Institute", "url": "https://www.law.cornell.edu"}}]}
-	</script>
-	<!-- /schema.org -->
+=== 200 https://gispublic.waterboards.ca.gov/arcgis/rest/services/WQMC/WQMC_Fish_Advisories/MapServer/0/query?where=1%3D1&outFields=*&returnGeometry=true&outSR=4326&resultRecordCount=2&f=json (11392 bytes, application/json; charset=UTF-8)
+{"displayFieldName":"NAME","fieldAliases":{"OBJECTID":"OBJECTID","NAME":"NAME","MERCURY":"MERCURY","PCBS":"PCBS","DIELDRIN":"DIELDRIN","DDT":"DDT","CHLORDANE":"CHLORDANE","DIOXIN":"DIOXIN","ADVISORY_URL":"ADVISORY_URL","SELENIUM":"SELENIUM","SHAPE.AREA":"SHAPE.AREA","SHAPE.LEN":"SHAPE.LEN","ID_NUM":"ID_NUM"},"geometryType":"esriGeometryPolygon","spatialReference":{"wkid":4326,"latestWkid":4326},"fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID"},{"name":"NAME","type":"esriFieldTypeString","alias":"NAME","length":30},{"name":"MERCURY","type":"esriFieldTypeSmallInteger","alias":"MERCURY"},{"name":"PCBS","type":"esriFieldTypeSmallInteger","alias":"PCBS"},{"name":"DIELDRIN","type":"esriFieldTypeSmallInteger","alias":"DIELDRIN"},{"name":"DDT","type":"esriFieldTypeSmallInteger","alias":"DDT"},{"name":"CHLORDANE","type":"esriFieldTypeSmallInteger","alias":"CHLORDANE"},{"name":"DIOXIN","type":"esriFieldTypeSmallInteger","alias":"DIOXIN"},{"name":"ADVISORY_URL","type":"esriFieldTypeString","alias":"ADVISORY_URL","length":150},{"name":"SELENIUM","type":"esriFieldTypeSmallInteger","alias":"SELENIUM"},{"name":"SHAPE.AREA","type":"esriFieldTypeDouble","alias":"SHAPE.AREA"},{"name":"SHAPE.LEN","type":"esriFieldTypeDouble","alias":"SHAPE.LEN"},{"name":"ID_NUM","type":"esriFieldTypeSmallInteger","alias":"ID_NUM"}],"features":[{"attributes":{"OBJECTID":1,"NAME":"Lake Herman","MERCURY":1,"PCBS":null,"DIELDRIN":null,"DDT":null,"CHLORDANE":null,"DIOXIN":null,"ADVISORY_URL":"http://www.oehha.ca.gov/fish/so_cal/lakeherman.html","SELENIUM":null,"SHAPE.AREA":437381.19632709498,"SHAPE.LEN":4066.2029117214702,"ID_NUM":30},"geometry":{"rings":[[[-122.15568615822812,38.096635936355398],[-122.1545274679345,38.096176994758324],[-122.15304965823745,38.096567247042934],[-122.15276046448476,38.096862562667255],[-122.15275997045613,38.097092495861517],[-122.15290497083657,38.097183561055843],[-122.15496103167362,38.097459685187985],[-122.15496147079105,38.097734745044818],[-122.15310696433359,38.097964685817601],[-122.15252765029766,38.097757626932662],[-122.15229602821088,38.097571246990789],[-122.15223802845286,38.097277939044758],[-122.15197827902374,38.096888562310752],[-122.15160115546097,38.096633497006771],[-122.15050128205007,38.095350247989018],[-122.15050127710428,38.09510230835248],[-122.15084952742389,38.094505561385823],[-122.15096552648906,38.093474501779816],[-122.15142953179496,38.092675744552999],[-122.15316827628442,38.091805060195931],[-122.1548775
 
-	<!-- API url -->
-	<script>
-		SEARCH_URL = 'https://api.law.cornell.edu/lii/search';
-	</script>
+=== 200 https://gispublic.waterboards.ca.gov/arcgis/rest/services/WQMC/WQMC_Fish_Advisories/MapServer/0/query?where=1%3D1&returnCountOnly=true&f=json (12 bytes, application/json; charset=UTF-8)
+{"count":57}
 
-	<script src="/js/jquery-3.6.1.min.js"></script>
-	<script src="/js/js.cookie.min.js"></script>
-	<script src="/js/bootstrap.min.js"></script>
-	<link rel="stylesheet" href="/fonts/open-sans.css">
+=== 200 https://gispublic.waterboards.ca.gov/arcgis/rest/services/WQMC/WQMC_Fish_Advisories/MapServer/1?f=json (4827 bytes, application/json; charset=UTF-8)
+WQMC.oehha_fish_advisories_line esriGeometryPolyline OBJECTID, NAME, ADVISORY_URL, MERCURY, PCBS, DIELDRIN, DDT, CHLORDANE, DIOXIN, SELENIUM, SHAPE, SHAPE.LEN, ID_NUM
 
-	
-	<link rel="stylesheet" type="text/css" href="/staticsite_styles/lii_stylenator_v48.min.css" />
-	 
+=== 200 https://gispublic.waterboards.ca.gov/arcgis/rest/services/WQMC/WQMC_Fish_Advisories/MapServer/1/query?where=1%3D1&outFields=*&returnGeometry=true&outSR=4326&resultRecordCount=2&f=json (11452 bytes, application/json; charset=UTF-8)
+{"displayFieldName":"NAME","fieldAliases":{"OBJECTID":"OBJECTID","NAME":"NAME","ADVISORY_URL":"ADVISORY_URL","MERCURY":"MERCURY","PCBS":"PCBS","DIELDRIN":"DIELDRIN","DDT":"DDT","CHLORDANE":"CHLORDANE","DIOXIN":"DIOXIN","SELENIUM":"SELENIUM","SHAPE.LEN":"SHAPE.LEN","ID_NUM":"ID_NUM"},"geometryType":"esriGeometryPolyline","spatialReference":{"wkid":4326,"latestWkid":4326},"fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID"},{"name":"NAME","type":"esriFieldTypeString","alias":"NAME","length":30},{"name":"ADVISORY_URL","type":"esriFieldTypeString","alias":"ADVISORY_URL","length":255},{"name":"MERCURY","type":"esriFieldTypeSmallInteger","alias":"MERCURY"},{"name":"PCBS","type":"esriFieldTypeSmallInteger","alias":"PCBS"},{"name":"DIELDRIN","type":"esriFieldTypeSmallInteger","alias":"DIELDRIN"},{"name":"DDT","type":"esriFieldTypeSmallInteger","alias":"DDT"},{"name":"CHLORDANE","type":"esriFieldTypeSmallInteger","alias":"CHLORDANE"},{"name":"DIOXIN","type":"esriFieldTypeSmallInteger","alias":"DIOXIN"},{"name":"SELENIUM","type":"esriFieldTypeSmallInteger","alias":"SELENIUM"},{"name":"SHAPE.LEN","type":"esriFieldTypeDouble","alias":"SHAPE.LEN"},{"name":"ID_NUM","type":"esriFieldTypeSmallInteger","alias":"ID_NUM"}],"features":[{"attributes":{"OBJECTID":1,"NAME":"Alamitos Creek","ADVISORY_URL":"http://www.oehha.ca.gov/fish/so_cal/guadalupe.html","MERCURY":1,"PCBS":null,"DIELDRIN":null,"DDT":null,"CHLORDANE":null,"DIOXIN":null,"SELENIUM":null,"SHAPE.LEN":11486.567053758699,"ID_NUM":59},"geometry":{"paths":[[[-121.82749456879306,37.164019961561245],[-121.82726577821281,37.164157407002669],[-121.82715132770912,37.164821028781567],[-121.82752325755872,37.165987469418603],[-121.82772352070485,37.166147190855213],[-121.82783813697363,37.167293056215307],[-121.82780981640212,37.168987335563514],[-121.82743807536744,37.169490670984352],[-121.82549280538483,37.17095638282548],[-121.82526425424307,37.171848715311462],[-121.8249494768468,37.172490065191944],[-121.82394856045241,37.173748790126922],[-121.82260405867866,37.174916209260722],[-121.82163133405571,37.175625365610948],[-121.82085918626193,37.176564105411835],[-121.82031550869499,37.177342871358483],[-121.81982892728922,37.17766476349265],[-121.81814085772059,37.178190993327057],[-121.81656743996142,37.179128460552711],[-121.81510849075315,37.179587079927302],[-121.81476520113209,37.179838277040673],[-121.8146791249584,37.180479634147019],[-121.81530873586308,37.181234064351329],[-121.8152227496252
 
-	
+=== 200 https://gispublic.waterboards.ca.gov/arcgis/rest/services/WQMC/WQMC_Fish_Advisories/MapServer/1/query?where=1%3D1&returnCountOnly=true&f=json (12 bytes, application/json; charset=UTF-8)
+{"count":14}
 
-	<!-- include adcode -->
-	<script type='text/javascript'>
-		!function (a) { var b = /iPhone/i, c = /iPod/i, d = /iPad/i, e = /(?=.*\bAndroid\b)(?=.*\bMobile\b)/i, f = /Android/i, g = /(?=.*\bAndroid\b)(?=.*\bSD4930UR\b)/i, h = /(?=.*\bAndroid\b)(?=.*\b(?:KFOT|KFTT|KFJWI|KFJWA|KFSOWI|KFTHWI|KFTHWA|KFAPWI|KFAPWA|KFARWI|KFASWI|KFSAWI|KFSAWA)\b)/i, i = /IEMobile/i, j = /(?=.*\bWindows\b)(?=.*\bARM\b)/i, k = /BlackBerry/i, l = /BB10/i, m = /Opera Mini/i, n = /(CriOS|Chrome)(?=.*\bMobile\b)/i, o = /(?=.*\bFirefox\b)(?=.*\bMobile\b)/i, p = new RegExp('(?:Nexus 7|BNTV250|Kindle Fire|Silk|GT-P1000)', 'i'), q = function (a, b) { return a.test(b) }, r
+=== 200 https://gispublic.waterboards.ca.gov/arcgis/rest/services/WQMC/WQMC_Fish_Advisories/MapServer/2?f=json (5136 bytes, application/json; charset=UTF-8)
+WQMC.oehha_fish_advisories_pt esriGeometryPoint OBJECTID, POINT_X, POINT_Y, MIN_X, MIN_Y, MAX_X, MAX_Y, SHAPE, NAME, ADVISORY_URL, MERCURY, PCBS, DIELDRIN, DDT, CHLORDANE, DIOXIN, SELENIUM, ID_NUM
+
+=== 200 https://gispublic.waterboards.ca.gov/arcgis/rest/services/WQMC/WQMC_Fish_Advisories/MapServer/2/query?where=1%3D1&outFields=*&returnGeometry=true&outSR=4326&resultRecordCount=2&f=json (2517 bytes, application/json; charset=UTF-8)
+{"displayFieldName":"NAME","fieldAliases":{"OBJECTID":"OBJECTID","POINT_X":"POINT_X","POINT_Y":"POINT_Y","MIN_X":"MIN_X","MIN_Y":"MIN_Y","MAX_X":"MAX_X","MAX_Y":"MAX_Y","NAME":"NAME","ADVISORY_URL":"ADVISORY_URL","MERCURY":"MERCURY","PCBS":"PCBS","DIELDRIN":"DIELDRIN","DDT":"DDT","CHLORDANE":"CHLORDANE","DIOXIN":"DIOXIN","SELENIUM":"SELENIUM","ID_NUM":"ID_NUM"},"geometryType":"esriGeometryPoint","spatialReference":{"wkid":4326,"latestWkid":4326},"fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID"},{"name":"POINT_X","type":"esriFieldTypeDouble","alias":"POINT_X"},{"name":"POINT_Y","type":"esriFieldTypeDouble","alias":"POINT_Y"},{"name":"MIN_X","type":"esriFieldTypeDouble","alias":"MIN_X"},{"name":"MIN_Y","type":"esriFieldTypeDouble","alias":"MIN_Y"},{"name":"MAX_X","type":"esriFieldTypeDouble","alias":"MAX_X"},{"name":"MAX_Y","type":"esriFieldTypeDouble","alias":"MAX_Y"},{"name":"NAME","type":"esriFieldTypeString","alias":"NAME","length":30},{"name":"ADVISORY_URL","type":"esriFieldTypeString","alias":"ADVISORY_URL","length":255},{"name":"MERCURY","type":"esriFieldTypeSmallInteger","alias":"MERCURY"},{"name":"PCBS","type":"esriFieldTypeSmallInteger","alias":"PCBS"},{"name":"DIELDRIN","type":"esriFieldTypeSmallInteger","alias":"DIELDRIN"},{"name":"DDT","type":"esriFieldTypeSmallInteger","alias":"DDT"},{"name":"CHLORDANE","type":"esriFieldTypeSmallInteger","alias":"CHLORDANE"},{"name":"DIOXIN","type":"esriFieldTypeSmallInteger","alias":"DIOXIN"},{"name":"SELENIUM","type":"esriFieldTypeSmallInteger","alias":"SELENIUM"},{"name":"ID_NUM","type":"esriFieldTypeSmallInteger","alias":"ID_NUM"}],"features":[{"attributes":{"OBJECTID":1,"POINT_X":-120.29539501,"POINT_Y":37.51935778,"MIN_X":-120.31096207,"MIN_Y":37.51594411,"MAX_X":-120.2784363,"MAX_Y":37.56925065,"NAME":"Lake McSwain","ADVISORY_URL":"http://www.oehha.ca.gov/fish/nor_cal/McSwain2012.html","MERCURY":1,"PCBS":null,"DIELDRIN":null,"DDT":null,"CHLORDANE":null,"DIOXIN":null,"SELENIUM":null,"ID_NUM":53},"geometry":{"x":-120.29540787180918,"y":37.519362856222017}},{"attributes":{"OBJECTID":2,"POINT_X":-121.46113544,"POINT_Y":39.56542808,"MIN_X":-121.57023389,"MIN_Y":39.51166768,"MAX_X":-121.2805071,"MAX_Y":39.72260906,"NAME":"Lake Oroville","ADVISORY_URL":"http://www.oehha.ca.gov/fish/nor_cal/orovilleAdv.html","MERCURY":1,"PCBS":1,"DIELDRIN":null,"DDT":null,"CHLORDANE":null,"DIOXIN":null,"SELENIUM":null,"ID_NUM":54},"geometry":{"x":-121.46114873255246,"y":39.565433239102653}}],"exceededTra
+
+=== 200 https://gispublic.waterboards.ca.gov/arcgis/rest/services/WQMC/WQMC_Fish_Advisories/MapServer/2/query?where=1%3D1&returnCountOnly=true&f=json (12 bytes, application/json; charset=UTF-8)
+{"count":66}
 
 === 200 https://www.law.cornell.edu/regulations/california/14-CCR-7.00 (56498 bytes, text/html; charset=utf-8)
-g:type" content="website" />
-	<meta property="og:url" content="https://www.law.cornell.edu/regulations/california/14-CCR-7.00" />
-	<meta property="og:title" content="Cal. Code Regs. Tit. 14, § 7.00 - District General Regulations" />
-	<meta property="og:image" content="https://www.law.cornell.edu/images/liibracketlogo.gif" />
-	
-	<meta name="twitter:card" content="Cal. Code Regs. Tit. 14, § 7.00 - District General Regulations" />
-	<meta name="twitter:site" content="@LIICornell" />
-	<meta name="twitter:url" content="https://www.law.cornell.edu/regulations/california/14-CCR-7.00" />
-	<meta name="twitter:title" content="Cal. Code Regs. Tit. 14, § 7.00 - District General Regulations" />
-	<meta name="twitter:image" content="https://www.law.cornell.edu/images/liibracketlogo.gif" />
-	<meta name="dcterms.title" content="Cal. Code Regs. Tit. 14, § 7.00 - District General Regulations" />
+ Cal. Code Regs. Tit. 14, § 7.00 - District General Regulations State Regulations Compare Unless otherwise provided, waters shown as open to hatchery trout and hatchery steelhead fishing in subsections (a) through (g) below are open to fishing for other species. Gear restrictions listed in this section apply to the take of all species of fish unless otherwise noted. Every body of water listed in subsections (a) through (g) is closed to all fishing, except during the open season as shown. Unless otherwise provided, waters closed to hatchery trout and hatchery steelhead fishing are closed to fishing for all other species, except that these closures do not apply to fishing for amphibians (see Section 5.05 ), freshwater clams (see Section 5.20 ), crayfish (see Section 5.35 ), and lamprey (see Section 5.40 ), using legal fishing methods other than hook-and-line fishing, and saltwater clams, crabs, ghost shrimp, and blue mud shrimp (see Ocean Regulations Booklet Sections 29.20 to 29.87 ). Crabs may only be taken using hoop nets or by hand, and Dungeness crab may only be taken within the North Coast District and Sonoma and Mendocino Counties. Daily bag and possession limits, unless otherwise provided, mean the total number of hatchery trout and hatchery steelhead. Unless otherwise provided, no more than one daily bag limit may be possessed. Coho (silver) Salmon may not be taken in any of the waters of the State. Incidentally hooked Coho (silver) Salmon must be immediately released unharmed to the waters where they are hooked. In waters where the bag limit for hatchery trout and hatchery steelhead is zero, fish for which the bag limit is zero must be released unharmed and should not be removed from the water. These waters may also be subject to restrictions on fishing methods and gear (Sections 2.00 through 2.45 ), fishing hours (Section 3.00 ), and the use of bait (Sections 4.00 through 4.30 ). (a) North Coast District District/Water Open Season and Special Restrictions Daily Bag and Possession Limit (1) Anadromous waters of the Klamath and Trinity River systems, and those entering the ocean south of Humboldt Bay, which are not listed in the Special Regulations. Closed to all fishing all year. (2) All anadromous waters tributary to Humboldt Bay, and north of Humboldt Bay, except those of the Klamath and Trinity River systems and those listed by name in the Special Regulations. Fourth Sat. in May through Oct. 31. Only artificial lures with barbless hooks may be used. 2 hatchery trout or hatchery steelhead*. 4 hatchery trout or hatchery steelhead* in possession. Closed to the take of salmon. (b) Sierra District District/Water Open Season and Special Restrictions Daily Bag and Possession Limit (1) All rivers and associated tributaries above Lake Shasta. Closed to the take of salmon. (2) Anadromous waters of Tehama and Shasta Cos. not listed in Section 7.40 , Special Regulations). (See subsection (b)(80) of Section 7.40 regarding the Sacramento River.) Last Sat. in Apr. through Nov. 15. Only artificial lures with barbless hooks may be used. 2 hatchery trout or hatchery steelhead*. 4 hatchery trout or hatchery steelhead* in possession. Closed to the take of salmon. (c) North Central District District/Water Open Season and Special Restrictions Daily Bag and Possession Limit (1) All streams except those listed by name in Section 7.40 , Special Regulations. Closed to all fishing all year. (2) The tidewaters of all streams except those listed by name in Section 7.40 , Special Regulations. Note: Some waters within this district are tide waters under regulations for the ocean and San Francisco Bay District (see sections 1.53 and 27.00 ). Closed to all fishing all year. (d) Valley District District/Water Open Season and Special Restrictions Daily Bag and Possession Limit (1) All anadromous waters except those listed by name in Section 7.40 , Special Regulations (See definition of anadromous waters, Section 1.04 ). All year. 2 hatchery trout or hatchery steelhead*. 4 hatchery trout or hatchery steelhead* in possession. Closed to the take of salmon. (e) South Central District District/Water Open Season and Special Restrictions Daily Bag and Possession Limit (1) That portion of any stream west of any Highway 1 bridge except those listed by name in Section 7.40 , Special Regulations. Dec. 1 through Mar. 7, but only on Sat., Sun., Wed., legal holidays and opening and closing days. Only barbless hooks may be used. 2 hatchery trout or hatchery steelhead*. 4 hatchery trout or hatchery steelhead* in possession. Closed to the take of salmon. (2) All anadromous streams and portions of streams except those listed in subsection (e)(1) above or by name in Section 7.40 , Special Regulations. Closed to all fishing all year. (f) Southern District District/Water Open Season and Special Restrictions Daily Bag and Possession Limit (1) All anadromous waters except those listed by name in Section 7.40 , Special Regulations (See definition of anadromous waters, Section 1.04 ). Closed to all fishing all year. * Hatchery trout or steelhead have a healed adipose fin clip (adipose fin is absent). Unless otherwise provided, all other trout and steelhead must be immediately released. Wild trout or steelhead are those not showing a healed adipose fin clip (adipose fin present). Notes Cal. Code Regs. Tit. 14 , § 7.00 1. Repealer and new section filed 3-1-90; operative 3-1-90 (Register 90, No. 10). For prior history, see Register 89, No. 46. 2. New subsections (a)(4) and (b)(7) filed 3-12-92; operative 3-12-92 (Register 92, No. 20). 3. New subsections (a)(5) and (c)(4) and amendment of subsections (a)(1)-(3), (b)(2)-(4) and (c)(1)-(3) filed 3-7-94; operative 3-7-94 pursuant to Fish and Game Code section 202 and 215 (Register 94, No. 10). 4. Amendment of first paragraph, subsections (b)(7) and (f) and new subsections (f)(1)-(5) filed 2-9-96; operative 2-9-96 pursuant to Fish and Game Code sections 202 and 205 (Register 96, No. 6). 5. Editorial correction of subsection (b)(3) (Register 97, No. 26). 6. Amendment of subsections (a)(5), (b)(7), (c)(4) and (e)(2), new subsection (f)(2), subsection renumbering, amendment of newly designated subsection (f)(3), and amendment of NOTE filed 2-5-98; operative 3-1-98 pursuant to Fish and Game Code sections 202 and 215 (Register 98, No. 6). 7. Amendment of subsections (a)(1) and (a)(3), repealer of subsection (a)(5), amendment of subsections (c)(2)-(3), repealer of subsection (c)(4) and amendment of NOTE filed 2-11-98 as an emergency; operative 2-11-98 (Register 98, No. 7). A Certificate of Compliance must be transmitted to OAL by 6-11-98 or emergency language will be repealed by operation of law on the following day. 8. Editorial correction restoring inadvertently deleted subsections (b)-(b)(7)(B) and correcting subsection (c)(3) and HISTORY 7 (Register 98, No. 11). 9. Amendment of subsections (a)(1) and (a)(3), repealer of subsection (a)(5), amendment of subsections (c)(2)-(3), r
+section links: 5.05 5.20 5.35 5.40 29.20 29.87 2.00 2.45 3.00 4.00 4.30 7.40 1.53 27.00 1.04
 
-
-	<title>Cal. Code Regs. Tit. 14, § 7.00 - District General Regulations | State Regulations | US Law | LII / Legal Information Institute</title>
-	
-
-	<!-- schema.org metadata -->
-	<script type="application/ld+json">
-		{"@context": "http://schema.org", "@graph": [{"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "item": {"@id": "https://www.law.cornell.edu", "name": "LII"}}, {"@type": "ListItem", "position": 2, "item": {"@id": "https://www.law.cornell.edu/regulations", "name": "State Regulations"}}, {"@type": "ListItem", "position": 3, "item": {"@id": "https://www.law.cornell.edu/regulations/california", "name": "California Code of Regulations"}}, {"@type": "ListItem", "position": 5, "item": {"@id": "https://www.law.cornell.edu/regulations/california/title-14", "name": "Title 14 - Natural Resources"}}, {"@type": "ListItem", "position": 6, "item": {"@id": "https://www.law.cornell.edu/regulations/california/title-14/division-1", "name": "Division 1 - Fish and Game Commission-Department of Fish and Game"}}, {"@type": "ListItem", "position": 7, "item": {"@id": "https://www.law.cornell.edu/regulations/california/title-14/division-1/subdivision-1", "name": "Subdivision 1 - Fish, Amphibians and Reptiles"}}, {"@type": "ListItem", "position": 8, "item": {"@id": "https://www.law.cornell.edu/regulations/california/title-14/division-1/subdivision-1/chapter-3", "name": "Chapter 3 - Trout, Salmon and Special Regulations"}}, {"@type": "ListItem", "position": 9, "item": {"@id": "https://www.law.cornell.edu/regulations/california/title-14/division-1/subdivision-1/chapter-3/article-2", "name": "Article 2 - District General Regulations"}}, {"@type": "ListItem", "position": 10, "item": {"@id": "https://www.law.cornell.edu/regulations/california/14-CCR-7.00", "name": "Cal. Code Regs. Tit. 14, \u00a7 7.00 - District General Regulations"}}]}, {"@type": "WebSite", "url": "https://www.law.cornell.edu/regulations/california/14-CCR-7.00", "name": "Cal. Code Regs. Tit. 14, \u00a7 7.00 - District General Regulations", "author": {"@type": "Organization", "name": "California", "url": "https://www.ca.gov/"}, "description": "Cal. Code Regs. Tit. 14, \u00a7 7.00 - District General Regulations", "publisher": {"@type": "Organization", "name": "LII / Legal Information Institute", "url": "https://www.law.cornell.edu"}}]}
-	</script>
-	<!-- /schema.org -->
-
-	<!-- API url -->
-	<script>
-		SEARCH_URL = 'https://api.law.cornell.edu/lii/search';
-	</script>
-
-	<script src="/js/jquery-3.6.1.min.js"></script>
-	<script src="/js/js.cookie.min.js"></script>
-	<script src="/js/bootstrap.min.js"></script>
-	<link rel="stylesheet" href="/fonts/open-sans.css">
-
-	
-	<link rel="stylesheet" type="text/css" href="/staticsite_styles/lii_stylenator_v48.min.css" />
-	 
-
-	
-
-	<!-- include adcode -->
-	<script type='text/javascript'>
-		!function (a) { var b = /iPhone/i, c = /iPod/i, d = /iPad/i, e = /(?=.*\bAndroid\b)(?=.*\bMobile\b)/i, f = /Android/i, g = /(?=.*\bAndroid\b)(?=.*\bSD4930UR\b)/i, h = /(?=.*\bAndroid\b)(?=.*\b(?:KFOT|KFTT|KFJWI|KFJWA|KFSOWI|KFTHWI|KFTHWA|KFAPWI|KFAPWA|KFARWI|KFASWI|KFSAWI|KFSAWA)\b)/i, i = /IEMobile/i, j = /(?=.*\bWindows\b)(?=.*\bARM\b)/i, k = /BlackBerry/i, l = /BB10/i, m = /Opera Mini/i, n = /(CriOS|Chrome)(?=.*\bMobile\b)/i, o = /(?=.*\bFirefox\b)(?=.*\
+=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-5.00 (42908 bytes, text/html; charset=utf-8)
+ Cal. Code Regs. Tit. 14, § 5.00 - Black Bass State Regulations Compare It is unlawful to take or possess black bass except as provided in this section: (Note: Some waters are closed to all fishing under Sections 7.40 and 7.50 .) (a) General Statewide Restrictions: (1) Lakes/Reservoirs and the Sacramento-San Joaquin Delta: The following waters, except for those listed in subsection (b), are open to fishing all year, with a 12-inch total length minimum size limit and a five-fish daily bag limit: All lakes and reservoirs in the State, and the Sacramento-San Joaquin River Delta (see Section 1.71 for definition of the Delta). (2) Rivers/Streams and Private Ponds: Rivers, streams, canals, and lakes or ponds entirely on private lands that are not listed in subsection (b) are open all year with no size limit and a five-fish daily bag limit. (b) Special Regulations: Counties and individual waters listed below are those having regulations different from the General Statewide Restrictions in subsection (a). DISTRICTS AND COUNTIES WITH SPECIAL REGULATIONS Area or Body of Water Open Season Size (total length) Bag Limit (1) Colorado River District: All waters (Bag and size limits conform with Arizona regulations.). All year. 13-inch minimum. 6 (2) Inyo Co.: All streams east of Highway 395 from the southern Inyo Co. line north to the junction of Highway 6 and east of Highway 6 to the Mono Co. line, except those streams listed by name in Section 7.50 (b) , Special Fishing Regulations. All year. 12-inch minimum. 5 The remaining streams of Inyo Co., except those waters listed in Section 7.50 (b) , Special Fishing Regulations. Last Sat. in Apr. through Nov. 15. Closed to bass fishing from Nov. 16 through the Fri. preceding the last Sat. in Apr. 12-inch minimum. 5 All Lakes, Big Pine Canal, Fish Spring Canal, and Millpond in Inyo Co. All year. 12-inch minimum. 5 (3) Mono Co.: All streams except for Fish Slough (see subsection (b)(10)) and those waters listed by name in Section 7.50 (b) , Special Fishing Regulations. Last Sat. in Apr. through Nov. 15. Closed to bass fishing from Nov. 16 through the Fri. preceding the last Sat. in Apr. No size limit. 5 (4) Plumas Co.: All waters. All year. No size limit. 5 INDIVIDUAL BODIES OF WATER WITH SPECIAL REGULATIONS Area or Body of Water Open Season Size (total length) Bag Limit (5) Barrett Lake (San Diego Co.) (Also see Section 2.08 .) All year. Catch and Release only. 0 (6) Casitas Lake (Ventura Co.) All year. 12-inch minimum No more than one over 22 inches. 5 (7) Castaic Lake (Los Angeles Co.). All year. 12-inch minimum. 5 (8) Cuyamaca Lake (San Diego Co.). All year. No size limit for Largemouth Bass. Catch and Release only for Smallmouth Bass. 5 (9) Fish Slough (Mono Co.), except the fenced portions of Fish Slough within the BLM Spring, which are closed to all fishing all year. See Section 7.50 (b)(49) , Special Fishing Regulations. All year. No size limit. 5 (10) Hodges Lake (San Diego Co.). All year. 15-inch minimum. 5 (11) Lett's Lake (Colusa Co.). All year. No size limit. 5 (12) Plaskett Meadows lakes, upper and lower (Glenn Co.). All year. No size limit. 5 (13) Shaver Lake (Fresno Co.). All year. No size limit. 5 (14) Upper Otay Lake (San Diego Co.). (Also see Section 2.08 .) All year. Catch and Release only. 0 Notes Cal. Code Regs. Tit. 14 , § 5.00 Note: Authority cited: Sections 200 , 205, 265 , 270 and 275, Fish and Game Code. Reference: Sections 200 and 205, Fish and Game Code. Note: Authority cited: Sections 200 , 205 , 265 , 270 and 275 , Fish and Game Code. Reference: Sections 200 and 205 , Fish and Game Code. 1. Amendment filed 2-21-84; designated effective 3-1-84 (Register 84, No. 8). 2. Amendment of subsection (c) filed 2-28-85 as an emergency; designated effective 3-1-85. Certificate of Compliance included (Register 85, No. 11). 3. Amendment filed 1-22-86; designated effective 3-1-86 (Register 86, No. 6). 4. New subsections (b)(4) and (c)(3) filed 4-16-86 as an emergency; effective upon filing (Register 86, No. 16). A Certificate of Compliance must be transmitted to OAL within 120 days or emergency language will be repealed on 8-14-86. 5. Certificate of Compliance transmitted to OAL 8-13-86 and filed 8-14-86 (Register 86, No. 33). 6. Amendment of subsection (c) filed 2-11-87; designated effective 3-1-87 (Register 87, No. 9). 7. Amendment filed 1-26-88; operative 3-1-88 (Register 88, No. 6). 8. New subsection (b)(5) filed 9-11-89 as an emergency; operative 9-11-89 (Register 89, No. 37). A Certificate of Compliance must be transmitted to OAL within 120 days or emergency language will be repealed on 1-9-90. 9. Subsection (b)(5) repealed by operation of law on 1-1-90. Amendment filed 3-1-90; operative 3-1-90 (Register 90, No. 10). 10. Amendment of subsections (a), (o), (q) and (r) filed 1-17-91; operative 1-17-91 pursuant to Government Code section 11346.2(d) (Register 91, No. 8). 11. Amendment filed 3-12-92; operative 3-12-92 (Register 92, No. 20). 12. Amendment filed 3-7-94; operative 3-7-94 pursuant to Fish and Game Code sections 202 and 215(Register 94, No. 10). 13. Editorial correction of subsections (c)(9)-(10) (Register 95, No. 13). 14. Amendment of subsection (c)(3), new subsection (c)(4), subsection renumbering, and amendment of subsection (c)(7) filed 3-28-95; operative 3-28-95 pursuant to Government Code section 11343.4(d) (Register 95, No. 13). 15. Amendment of subsections (a), (b)(2) and (c)(1), new subsection (c)(3) and subsection renumbering, new subsections (c)(9) and (c)10) and subsection renumbering, and new subsection (c)(17) filed 2-9-96; operative 2-9-96 pursuant to Fish and Game Code sections 202 and 205(Register 96, No. 6). 16. Amendment of section and Note filed 2-5-98; operative 3-1-98 pursuant to Fish and Game Code sections 202 and 215(Register 98, No. 6). 17. Amendment of subsection (d)(20) filed 12-22-98; operative 12-22-98 pursuant to Fish and Game Code sections 202 and 215(Register 98, No. 52). 18. Amendment filed 2-18-2000; operative 3-1-2000 pursuant to Fish and Game Code sections 202 and 215(Register 2000, No. 7). 19. Amendment of subsection (b)(1), repealer of subsections (b)(9) and (b)(28), subsection renumbering and amendment of newly designated subsection (b)(33) filed 1-10-2002; operative 1-1-2002 pursuant to Fish and Game Code sections 202 and 215(Register 2002, No. 2). 20. Amendment of subsection (a)(1), new subsection (b)(12), subsection renumbering, repealer of former subsection (b)(25) and amendment of subsection (b)(33) filed 2-24-2004; operative 3-1-2004 pursuant to Government Code section 11343.4 (Register 2004, No. 9). 21. Amendment of subsection (a)(1) filed 4-7-2005; operative 5-7-2005 (Register 2005, No. 14). 22. Amendment of subsections (b)(2)-(5) and (b)(7), new subsection (b)(9), repealer of subsection (b)(16) and subsection renumbering filed 2-28-2007; operative 2-28-2007 pursuant to Government Code section 11343.4 (Register 2007, No. 9). 23. Amendment of subsections (b), (b)(4)
+section links: 7.40 7.50 1.71 2.08 200 265
 
 === 200 https://www.law.cornell.edu/regulations/california/14-CCR-1.05 (31458 bytes, text/html; charset=utf-8)
-(not found)
+ Cal. Code Regs. Tit. 14, § 1.05 - Angling State Regulations Compare Angling means take of fish by hook and line with the line held in the hand, or with the line attached to a pole or rod held in the hand or closely attended in such manner that the fish voluntarily takes the bait or artificial lure inside its mouth. Notes Cal. Code Regs. Tit. 14 , § 1.05 1. Repealer of Chapter 1 ( §§ 1.05 through 1.95 , not consecutive) and new Chapter 1 ( §§ 1.05 through 1.86 , not consecutive) filed 1-16-74; designated effective 3-1-74 (Register 74, No. 3). For history of former sections, see Register 59, No. 5; 61, Nos. 2, 26; 64, Nos. 8, 25; 66, No. 45; 67, No. 7; 69, No. 51; 70, No. 52; 72, No. 52. 2. Amendment of NOTE filed 12-31-80; effective thirtieth day thereafter (Register 81, No. 1). 3. Repealer of Chapter 1 (Sections 1.05-1.99, not consecutive) and new Chapter 1 (Sections 1.05-1.86, not consecutive) filed 2-17-82; designated effective 3-1-82 (Register 82, No. 8). For prior history, see Registers 80, No. 2 and 74, No. 51. 4. Amendment filed 1-22-86; designated effective 3-1-86 (Register 86, No. 6.) 5. Amendment of section and NOTE filed 2-29-2016; operative 3-2-2016 pursuant to Government Code section 11343.4(b)(4) (A) (Register 2016, No. 10). 6. Amendment of section and NOTE filed 2-27-2018; operative 3-1-2018 pursuant to Government Code section 11343.4(b)(4) (A) (Register 2018, No. 9). Note: Authority cited: Sections 200 , 205 , 219 and 265 , Fish and Game Code. Reference: Sections 15 , 200 , 205 , 265 and 270 , Fish and Game Code. 1. Repealer of Chapter 1 (ss 1.05 through 1.95, not consecutive) and new Chapter 1 (ss 1.05 through 1.86, not consecutive) filed 1-16-74; designated effective 3-1-74 (Register 74, No. 3). For history of former sections, see Register 59, No. 5; 61, Nos. 2, 26; 64, Nos. 8, 25; 66, No. 45; 67, No. 7; 69, No. 51; 70, No. 52; 72, No. 52. 2. Amendment of NOTE filed 12-31-80; effective thirtieth day thereafter (Register 81, No. 1). 3. Repealer of Chapter 1 (Sections 1.05-1.99, not consecutive) and new Chapter 1 (Sections 1.05-1.86, not consecutive) filed 2-17-82; designated effective 3-1-82 (Register 82, No. 8). For prior history, see Registers 80, No. 2 and 74, No. 51. 4. Amendment filed 1-22-86; designated effective 3-1-86 (Register 86, No. 6.) 5. Amendment of section and Note filed 2-29-2016; operative 3/2/2016 pursuant to Government Code section 11343.4(b)(4) (A) ( Register 2016, No. 10 ). 6. Amendment of section and Note filed 2-27-2018; operative 3/1/2018 pursuant to Government Code section 11343.4(b)(4) (A) ( Register 2018, No. 9 ). State regulations are updated quarterly; we currently have two versions available. Below is a comparison between our most recent version and the prior quarterly release. More comparison features will be added as we have more versions to compare. No prior version found. State Regulations Toolbox Accessibility About LII Contact us Advertise here Help Terms of use Privacy 
+section links: 1.95 1.86
 
-=== 200 https://www.eregulations.com/california/fishing/freshwater (30974 bytes, text/html)
-https://www.eregulations.com/california/fishing/freshwater
+=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-7.50 (132764 bytes, text/html; charset=utf-8)
+ Cal. Code Regs. Tit. 14, § 7.50 - Alphabetical List of Trout Waters with Special Fishing Regulations State Regulations Compare (a) General Provisions: (1) Every body of water listed in subsection (b) is closed to all fishing except during the open season as shown. Unless otherwise provided, waters shown as open to trout fishing in subsection (b), are open to fishing for other species. Gear restrictions listed in this section apply to the take of all species of fish unless otherwise noted. (2) Unless otherwise provided, waters closed to trout fishing are closed to fishing for all other species, except that these closures do not apply to fishing for amphibians (see Section 5.05 ), freshwater clams (see Section 5.20 ), crayfish (see Section 5.35 ), and lamprey (see Section 5.40 ), using legal fishing methods other than hook-and-line fishing, and saltwater clams, crabs, ghost shrimp, and blue mud shrimp (see Ocean Regulations Booklet sections 29.20 to 29.87 ). Crabs may only be taken using hoop nets or by hand, and Dungeness crab may only be taken within the North Coast District and Sonoma and Mendocino counties. (3) Daily bag and possession limits, unless otherwise noted, mean the total number of trout. (4) Unless otherwise provided, it is unlawful to possess more than one daily bag limit. (5) These waters may also be subject to restrictions on fishing methods and gear (Sections 2.00 through 2.40 ), fishing hours (Section 3.00 ), and the use of bait (Sections 4.00 through 4.30 ). (b) Body of Water Open Season and Special Restrictions Daily Bag and Possession Limit (1) Alambique Creek (San Mateo Co.). Sat. preceding Memorial Day through Sep. 30. Only artificial lures with barbless hooks may be used. 0 trout (2) Alameda Creek and tributaries (Alameda and Santa Clara Cos.). (A) Alameda Creek mainstem and all tributaries downstream of San Antonio, Calaveras, and Del Valle Reservoirs except for Arroyo Del Valle between Bernal Ave. and the Thiessen St. intersection with Vineyard Ave. Closed to all fishing all year. 1. Arroyo Del Valle between Bernal Ave. and the Thiessen St. intersection with Vineyard Ave. All year. Only artificial lures with barbless hooks may be used. 0 trout (B) Alameda Creek tributaries upstream of San Antonio, Calaveras, and Del Valle Reservoirs. Sat. preceding Memorial Day through Sep. 30. Only artificial lures with barbless hooks may be used. 0 trout (c) San Antonio and Calaveras Reservoirs. All year. Only artificial lures with barbless hoo
+section links: 5.05 5.20 5.35 5.40 29.20 29.87 2.00 2.40 3.00 4.00 4.30 8.00 5.00 200 265
+rows 295 tables 1
+ns Cal. Code Regs. Tit. 14, § 7.50 - Alphabetical List of Trout Waters with Special Fishing Regulations Cal. Code Regs. Tit. 14, § 7.50 - Alphabetical List of Trout Waters with Special Fishing Regulations State Regulations Compare (a) General Provisions: (1) Every body of water listed in subsection (b) is closed to all fishing except during the open season as shown. Unless otherwise provided, waters shown as open to trout fishing in subsection (b), are open to fishing for other species. Gear restrictions listed in this section apply to the take of all species of fish unless otherwise noted. (2) Unless otherwise provided, waters closed to trout fishing are closed to fishing for all other species, except that these closures do not apply to fishing for amphibians (see Section 5.05 ), freshwater clams (see Section 5.20 ), crayfish (see Section 5.35 ), and lamprey (see Section 5.40 ), using legal fishing methods other than hook-and-line fishing, and saltwater clams, crabs, ghost shrimp, and blue mud shrimp (see Ocean Regulations Booklet sections 29.20 to 29.87 ). Crabs may only be taken using hoop nets or by hand, and Dungeness crab may only be taken within the North Coast District and Sonoma and Mendocino counties. (3) Daily bag and possession limits, unless otherwise noted, mean the total number of trout. (4) Unless otherwise provided, it is unlawful to possess more than one daily bag limit. (5) These waters may also be subject to restrictions on fishing methods and gear (Sectio
+171 numbered entries
+1 Alambique Creek (San Mateo Co.).
+2 Alameda Creek and tributaries (Alameda and Santa Clara Cos.).
+3 Almanor Lake tributaries (Lassen, Plumas and Shasta Cos.) upstream to the first lake.
+4 American River, North Fork, Middle Fork, South Fork and their tributaries above Folsom Lake (Placer, El Dorado, 
+5 Antelope Lake tributaries (Plumas Co.).
+6 Arroyo Seco River (Monterey) Co.). Also see Section 
+7 [Repealed]
+8 Bear Creek (San Bernardino Co.) from Big Bear Dam to confluence of Santa Ana River.
+9 Bear River and tributaries (Placer Co.)
+10 Berryessa Lake tributaries (Lake and Napa Cos.).
+11 Big Sur River (Monterey Co.). Big Sur river and tributaries above the upstream end of the gorge pool at the boun
+12 Big Tree Creek (Calaveras Co.) within Calaveras Big Trees State Park (upstream of the Highway 4 culvert crossing
+13 Big Trees Creek (Tuolumne Co.) upstream from the confluence of Beaver Creek.
+14 Boggy Creek (Fresno Co.) and tributaries (tributary to Thomas Edison Lake).
+15 Boulder Creek (San Diego Co.) upstream of El Capitan Reservoir, and all of its tributaries.
+16 Bridgeport Reservoir and tributaries (Mono Co.) except Swauger Creek from Bridgeport Reservoir upstream to Highw
+17 Bucks Lake tributaries (Plumas Co.).
+18 Burney Creek (Shasta Co.) from Burney Creek Falls downstream to Lake Britton.
+19 Butano Creek (San Mateo Co.). Above Butano Falls.
+20 Butt Creek and Butt Valley Reservoir Powerhouse Outfall (Plumas Co.).
+21 Butt Valley Reservoir (Plumas Co.).
+22 By-Day Creek and tributaries (Mono Co.).
+23 Cache Creek and tributaries (Lake Co.).
+24 Caples Creek from the confluence with the Silver Fork American River upstream to Caples Lake Dam (El Dorado and 
+25 Carson River, East Fork and tributaries (Alpine Co.).
+26 Cedar Creek and tributaries upstream from Moon Lake access road (Lassen Co.).
+27 Clear Lake tributaries (Lake Co.).
+28 Cold Creek (Fresno Co.) and tributaries (tributary to Thomas Edison Lake).
+29 Convict Creek (Mono Co.).
+30 Convict Lake (Mono Co.).
+31 Corral Valley Creek and tributaries (Alpine Co.).
+32 Cottonwood Creek and all tributaries upstream from the confluence of the main stem Cottonwood Creek and Little C
+33 Cottonwood Creek drainage lakes (Inyo Co.).
+34 Cottonwood Creek, North Fork and tributaries (White Mountains, Mono Co.).
+35 Cow Creek and tributaries upstream from Forest Service Road 9S10 (Fresno Co.).
+36 Coyote Valley Creek and tributaries (Alpine Co.).
+37 Crooked Creek (Mono Co.).
+38 Crowley Lake (Mono Co.). (See individual listings for regulations on tributary waters which include: Convict, Cr
+39 Davis Creek (Goose Lake tributary) and tributaries. (Modoc Co.).
+40 Davis Lake tributaries (Plumas Co.).
+41 Deadman Creek (Mono Co.).
+42 Deep Creek (San Bernardino Co.) from below Green Valley Lake Dam to the confluence of Willow Creek.
+43 Dismal Creek (Modoc Co.).
+44 Eagle Lake and tributaries (Lassen Co.).
+45 Eel River (Humboldt, Lake, Mendocino and Trinity Cos.).
+46 El Estero Lake (Monterey Co.) portions of the lake south of the Pearl Street bridge known as Camino Aquajito Arm
+47 Fall River Complex (Shasta and Siskiyou Cos.).
+48 Feather River North Fork from Belden Bridge downstream to Cresta Powerhouse (excluding reservoirs) (Butte and Pl
+49 Fish Slough (Mono Co.).
+50 George Lake (Lake George, Mono Co.).
+51 Golden Trout Wilderness Area (Tulare Co.), excluding the main stem Kern River (see subsection (b)(69)), and the 
+52 Goose Lake and tributaries (Modoc Co.), excluding Davis Creek (see subsection (b)(39)) and Pine Creek (see subse
+53 Grant Lake (Mono Co.).
+54 Gull Lake (Mono Co.).
+55 Hat Creek (Shasta Co.) from Lake Britton upstream to Baum Lake, exclusive of the concrete Hat No. 2 intake canal
+56 Heenan Lake and tributaries (Alpine Co.).
+57 Hennessey Lake tributaries (Napa Co.).
+58 Hilton Creek (Mono Co.).
+59 Hobart Creek (Tuolumne Co.), tributary to Spicer Meadows Reservoir.
+60 Horseshoe Lake (Mono Co.).
+61 Hot Creek (Mono Co.). Hot Creek from the State hatchery property line to the confluence with the Owens River.
+62 Illinois River and tributaries (Del Norte Co.).
+63 Independence Lake and tributaries (Nevada and Sierra Cos.).
+64 Indian Tom Lake (Siskiyou Co.).
+65 Isabella Lake (Lake Isabella, Kern Co.).
+66 Junction Lake and tributaries (Mono Co.) including the lake's outlet stream to Highway 108.
+67 June Lake (Mono Co.).
+68 Kent Lake tributaries (Marin Co.).
+69 Kern River (Kern and Tulare Cos.).
+70 Kings River (Fresno Co.).
+71 Kirman (Carmen) Lake and all its tributaries (Mono Co.).
+72 Kitchen Creek (San Diego Co.) upstream of Lake Morena, and all its tributaries.
+73 Non-anadromous tributaries of the Klamath River above Lakeview Road bridge.
+74 Klopp Lake (Humboldt Co.).
+75 Lagunitas Lake (Marin Co.).
+76 Lane Lake (Mono Co.).
+77 Laurel Lakes and tributaries (Mono Co.).
+78 Lee Vining Creek from the Lee Vining conduit downstream to Mono Lake (Mono Co.).
+79 Little Butano Creek above the diversion dam at Butano State Park (San Mateo Co.).
+80 Little Truckee River (Sierra and Nevada Cos.) from Stampede Reservoir Dam downstream to Boca Reservoir.
+81 Los Gatos Creek (Santa Clara Co.) upstream of Vasona Lake dam including Lexington Reservoir and all tributaries.
+82 Lundy Lake (Mono. Co.).
+83 Lytle Creek and tributaries upstream of Interstate 15 bridge (San Bernardino Co.).
+84 Macklin Creek (Nevada Co.), arising near Milton-Bowman Tunnel alignment, flowing northwesterly and having its ju
+85 Mamie Lake (Lake Mamie, Mono Co.).
+86 Mammoth Pool (Fresno and Madera Cos.).
+87 Martis Creek from the Martis Lake dam downstream to the confluence with the Truckee River (Nevada Co.).
+88 Martis Lake tributaries (Nevada and Placer Cos.).
+89 Mary Lake (Lake Mary, Mono Co.).
+90 McCloud River and tributaries (Shasta and Siskiyou Cos.).
+91 McGee Creek (Mono Co.).
+92 McLeod Lake (Mono Co.).
+93 Meiss Lake (Alpine Co.).
+94 Milk Ranch Creek and tributaries (Alpine Co.) above the confluence with the North Fork Mokelumne River.
+95 Mill Creek (Mono Co. tributary to West Walker River) and tributaries upstream from confluence with Lost Cannon C
+96 Miller Canyon Creek from Silverwood Lake upstream (San Bernardino Co.).
+97 Milton Lake and Middle Fork Yuba River between Milton Lake and Jackson Meadows Dam (Nevada and Sierra Cos.).
+98 Mitchell Creek and tributaries (Contra Costa Co.).
+99 Mono Creek (Fresno Co.) and tributaries from Edison Lake upstream to the confluence with the North Fork Mono Cre
+100 Murray Canyon Creek and tributaries (Alpine Co.) upstream from the falls located about 1/4 mile above the conflu
+101 Nelson Corral Reservoir and tributary (Lassen Co.).
+102 Newlands Lake tributaries (Lassen Co.).
+103 Nicasio Lake tributaries (Marin Co.).
+104 Owens River (Inyo and Mono Cos.), except (A), (B), (C), and (D) below.
+105 Parker Creek (Mono Co.) from Parker Lake to the confluence with Rush Creek.
+106 Parker Lake (Mono Co.)
+107 Pine Creek (Goose Lake Tributary) and tributaries (Modoc Co.).
+108 Pine Valley Creek (San Diego Co.) upstream of Barrett Lake and all its tributaries.
+109 Piru Creek (Los Angeles and Ventura Cos.).
+110 Pit River (Shasta and Modoc Cos.).
+111 Pole Creek and tributaries (Placer Co.).
+112 Portuguese Creek, West Fork (Madera Co.) from headwaters downstream to confluence with the East Fork Portuguese 
+113 Prosser Creek from the Prosser Reservoir dam downstream to the confluence with the Truckee River (Nevada Co.).
+114 Purisima Creek (San Mateo Co.).
+115 Putah Creek (Solano and Yolo Cos.) from Solano Lake to Monticello Dam.
+116 Redwood Creek and tributaries (Alameda Co.).
+117 Redwood Creek (Humboldt Co.) and tributaries above the mouth of Bond Creek.
+118 Robinson Creek (Mono Co.).
+119 Rock Creek Diversion Channel (Mono Co.) from its source below Tom's Place to its confluence with Crooked Creek.
+120 Rock Creek Lake (Inyo Co.).
+121 Rock Creek in the Hat Creek Drainage (Shasta Co.) from Rock Creek spring (origin) downstream to Baum Lake.
+122 Rock Creek (Shasta Co.) from its confluence with Pit River to Rock Creek Falls (about one mile upstream).
+123 Roosevelt Lake (Mono Co.).
+124 Rush Creek (Mono Co.).
+125 Sabrina Lake (Lake Sabrina, Inyo Co.).
+126 Sacramento River and tributaries above Keswick Dam (Shasta and Siskiyou Cos.).
+127 Sagehen Creek (Nevada Co.).
+128 Salmon Creek and tributaries above Highway 1 (Monterey Co.).
+129 San Gabriel River, West Fork and tributaries (Los Angeles Co.).
+130 San Luis Rey River West Fork (San Diego Co.).
+131 Santa Ana River and tributaries upstream above Seven Oaks Dam (San Bernardino Co.). This does not include Bear C
+132 Santa Ynez River and tributaries upstream of Gibraltar Dam (Santa Barbara Co.).
+133 Sausal Creek and tributaries (Alameda Co.).
+134 Sespe Creek and tributaries above Alder Creek confluence (Ventura Co.).
+135 Silver Creek (Mono Co.), tributary to West Walker River, and tributaries upstream from Silver Falls.
+136 Silver Creek and all other tributaries to Sworinger Lake (Modoc and Lassen Cos.).
+137 Silver King Creek and tributaries (Alpine Co.) upstream of the confluence with Snodgrass Creek.
+138 Silver Lake (Mono. Co.).
+139 Slinkard Creek and tributaries (Mono Co.) upstream from a department of Fish and Wildlife rock gabbion barrier 
+140 Solano Lake (Solano Co.).
+141 Sonoma Creek and tributaries (Sonoma Co.) above the Sonoma Creek seasonal waterfall in Sugarloaf Ridge State Par
+142 Sonoma Lake (Sonoma Co.).
+143 Sonoma Lake tributaries (Sonoma Co.).
+144 Soulajule Reservoir tributaries (Marin Co.).
+145 South Lake (Inyo Co.).
+146 Squaw Valley Creek and tributaries (Shasta Co.).
+147 Stanislaus River, Middle Fork (Tuolumne Co.).
+148 Stevens Creek and all tributaries upstream of Stevens Creek Reservoir (Santa Clara Co.).
+149 Stony Creek, and tributaries (including the North, South, and Middle forks) from the headwaters downstream to th
+150 Susan River (Lassen Co.)
+151 Sweetwater River and tributaries upstream of Sweetwater Reservoir (San Diego Co.).
+152 Tahoe Lake and tributaries (Placer and El Dorado Cos.).
+153 Trinity River, above Trinity Lake (Trinity Co.) from the confluence with Tangle Blue Creek (Hwy. 3), downstream 
+154 Truckee River (Nevada, Placer, and Sierra Cos.).
+155 Tule River and tributaries (Tulare Co.).
+156 Tuolumne River (Stanislaus and Tuolumne Cos.) from O'Shaughnessy Dam (Hetch Hetchy Reservoir downstream to Clave
+157 Twelvemile Creek (Modoc Co.).
+158 Twin Lakes (Mammoth, Mono Co.).
+159 Twin Lakes, Upper and Lower (Bridgeport, Mono Co.).
+160 Upper Otay Lake (San Diego Co.).
+161 Upper Truckee River and tributaries upstream from confluence with Showers Creek (Alpine and El Dorado Cos.).
+162 Virginia Lakes, Upper and Lower (Mono Co.).
+163 Walker Creek (Mono Co.) from the private property line (fence) to the confluence Rush Creek.
+164 Walker River, East Fork (Mono Co.) from Bridgeport Dam to Nevada State Line.
+165 Whiskey Creek (Mono Co.) downstream from Crowley Lake Drive (old Highway 395).
+166 Willow Creek (Alpine Co.) upstream from the confluence with the West Fork Carson River to the main tributary of 
+167 Wolf Creek and tributaries (tributary to West Walker River) (Mono Co.).
+168 Wolf Creek Lake (at the headwaters of Wolf Creek, tributary to the West Walker River) (Mono Co.).
+169 Yellow Creek (Plumas Co.) from Big Springs downstream to the marker at the lower end of Humbug Meadow.
+170 Yuba River, Middle Fork (Nevada and Sierra Cos.) from Jackson Meadows Dam downstream to Milton Lake.
+171 Yuba River, North Fork (Sierra and Yuba Cos.) from the western boundary of Sierra City to the confluence with La
 
-=== 200 https://wildlife.ca.gov/Regulations (32895 bytes, text/html; charset=utf-8)
-#ocean-regs | Ocean Sport Fishing
-#fresh-regs | Freshwater Sport Fishing
-https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=88634&inline | Dove Identification Guide (PDF)
-/Notices/Regulations | Proposed Regulation Changes
-https://fgc.ca.gov/Regulations/Current | Additional regulatory information on the Fish and Game Commission website
-https://govt.westlaw.com/calregs/Browse/Home/California/CaliforniaCodeofRegulations?guid=I9B44DC50D47F11DEBC02831C6D6C108E | California Code of Regulations (CCR), Title 14 (Natural Resources)
-
-=== 200 https://wildlife.ca.gov/Fishing/Inland (34527 bytes, text/html; charset=utf-8)
+=== 200 https://www.law.cornell.edu/regulations/california/title-14/division-1/subdivision-1/chapter-4 (27390 bytes, text/html; charset=utf-8)
 
 
-=== 200 https://data.ca.gov/api/3/action/package_search?q=harmful%20algal%20blooms&rows=8 (129496 bytes, application/json;charset=utf-8)
-PKG surface-water-freshwater-harmful-algal-blooms | Surface Water - Freshwater Harmful Algal Blooms | california-state-water-resources-control-board
-   RES 9a54fa52-e16f-4943-b27d-2b4eca7c1bd6 | FHAB Data Disclaimer and Additional Information | PDF | ds=false | https://publish.data.ca.gov/dataset/ab672540-aecd-42f1-9b05-9aad326f97ec/resource/9a54fa52-e16f-4943-b27d-2b4eca7c1bd6/download/habs-disclaimer-for-data-dictionary.pdf | 2026-10-01T00:16:39.035574
-   RES 516bd039-e09c-4e2f-aa65-eda947af729b | FHAB Data Dictionary | PDF | ds=false | https://publish.data.ca.gov/dataset/ab672540-aecd-42f1-9b05-9aad326f97ec/resource/516bd039-e09c-4e2f-aa65-eda947af729b/download/habs-master-data-dictionary.pdf | 2026-10-01T00:16:41.385126
-   RES c6a36b91-ad38-4611-8750-87ee99e497dd | FHAB Bloom Reports | CSV | ds=true | https://publish.data.ca.gov/dataset/ab672540-aecd-42f1-9b05-9aad326f97ec/resource/c6a36b91-ad38-4611-8750-87ee99e497dd/download/bloom-report_2026-10-22.csv | 2026-10-23T00:13:00.697017
-   RES 67648948-034f-4882-bbc0-c07c7d38daf9 | FHAB Cases | CSV | ds=true | https://publish.data.ca.gov/dataset/ab672540-aecd-42f1-9b05-9aad326f97ec/resource/67648948-034f-4882-bbc0-c07c7d38daf9/download/hab-cases_2026-10-22.csv | 2026-10-23T00:13:50.466765
-   RES 4283c060-c22f-48f5-a75c-8bccf0c54a99 | FHAB Responses | CSV | ds=true | https://publish.data.ca.gov/dataset/ab672540-aecd-42f1-9b05-9aad326f97ec/resource/4283c060-c22f-48f5-a75c-8bccf0c54a99/download/hab-responses_2026-10-22.csv | 2026-10-23T00:14:18.435422
-   RES 9d4e1df4-0cd6-4165-9e63-effcafd9dccc | FHAB Results | CSV | ds=true | https://publish.data.ca.gov/dataset/ab672540-aecd-42f1-9b05-9aad326f97ec/resource/9d4e1df4-0cd6-4165-9e63-effcafd9dccc/download/hab-results_2026-10-22.csv | 2026-10-23T00:14:41.172603
-PKG harmful-algal-bloom-monitoring-in-the-southern-sacramento-san-joaquin-delta | Harmful Algal Bloom Monitoring in the Southern Sacramento-San Joaquin Delta | california-department-of-water-resources
-   RES d537c4ca-aa7f-41db-9e2d-c0033f0a1b8c | South Delta Water Quality Stations | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/2141/1/dd89513f18da6841ff6e7a13c0facf42?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES b7843a58-62f8-425f-9d50-e6e12922692c | Microcystis Visual Index | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/2141/1/eb47d7a992f3a8107871d77e45cb8dc6?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES d2ff78b1-52c2-4ef4-953c-df6606d438f8 | Potentially Toxic Cyanobacteria Cell Counts | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/2141/1/fe85fd4e0c3751c7a9bbe04a98c762b4?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 33d8d0ee-1f10-47cc-a98d-4d4cc189c7e4 | Cyanotoxins-NCRO | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/2141/1/e894944828063a0b33cb783f328752d0?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 2a55c084-1d3a-49ac-8d66-a151ca286d28 | Phytoplankton Enumeration Data | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/2141/1/a7e11e4d1108ef06671f45b7299e421a?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 7deaf113-d5af-49cd-a8c3-dcf5b88819e7 | Cyanotoxins-O&M | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/2141/1/2c9b4f1dd0786cd2828f99b13c7ff43e?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 62732d3d-5843-4943-940a-7bfb1f969abf | Taste and Odor | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/2141/1/88bd48d8f1716b0c2ae281707e4c5f6e?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES fd76cab1-424d-427e-8f78-62ef243f286c | Provenance Metadata | HTML | ds=false | https://portal.edirepository.org/nis/provenanceGenerator?packageid=edi.2141.1&key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 1f585f4e-f2ef-4f51-ad64-0b08c2880a72 | Full Metadata | HTML | ds=false | https://portal.edirepository.org/nis/metadataviewer?packageid=edi.2141.1&key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 1d2c4d25-857d-448c-8668-8665835f8972 | Dataset Quality Report | HTML | ds=false | https://portal.edirepository.org/nis/reportviewer?packageid=edi.2141.1&key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-PKG harmful-algal-bloom-and-aquatic-weeds-data-from-the-sacramento-san-joaquin-delta-collected-to-e | Harmful algal bloom and aquatic weeds data from the Sacramento-San Joaquin Delta, collected to evaluate the impact of the 2021 Temporary Urgency Change Order and Emergency Drought Barrier | california-department-of-water-resources
-   RES 71eb3b30-2946-45cb-b387-47e627c23bf8 | Daily Air Temperature | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1337/2/f8863c200074ecbd507df6bf51807333?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES e733c98f-92bb-4cad-9c1c-ebe3c98c9444 | Discrete Nutrients and Chlorophyll | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1337/2/a39bebb12c8bdfbd67be99c05675ce72?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES b05159dd-335d-435f-be3f-a184aa8601b6 | Continuous Water Quality | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1337/2/640462a710748f133ba680ee760fbc6a?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 8c44ed25-856e-4b81-918d-812f38c5e443 | Daily water tempertaure | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1337/2/d0efea3283984c56603f52810aebbcb1?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES e71fd37e-a92f-4f52-bbcb-69c5b16aead6 | Cyanobacteria Satellite data | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1337/2/b01bc008ac1a0fe6be945939f297a5c2?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 245dc555-6e8f-46ce-8ea9-b922a8e403f5 | HAB Incident Reports | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1337/2/f7b1d1fcc5638c9cf6fd39719a85f3c7?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 37ce4df6-619b-41ce-8abc-180db7144068 | Cyanotoxins | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1337/2/c91ba16fa61f8e62cd7ca62a5a6cf269?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 69b93410-5f67-4064-89a7-c92e97dd5e71 | Microcystis visual index and water quality | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1337/2/10c5229a3942e631d747c9486d809aea?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES f0eba026-1295-4f61-b11a-93c51d597120 | Potentially Toxic Cyanobacteria cell counts | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1337/2/391568ac3ba723a96d9442ebfdb6379d?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES f8da13da-49e8-4c4e-9413-25c0fefbee04 | Dayflow2014_2021 | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1337/2/2368c56990d185597323dba8d859897b?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES aa994eba-9489-4a64-b03e-f843f440cdfb | Fluoroprobe mapping data | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1337/2/7615758efc9ae650389f25a314d7cee1?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 9c4cccb9-2233-4b24-8ce3-fd08ce9bb618 | Vegetation regional area estimates | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1337/2/0d49aa2012e93b42ee8d9ccdd3fc7950?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 2e49f21e-ddec-4f3e-93aa-cf5292924533 | Franks Tract Fluridone_2006-2021 | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1337/2/2e5cdb780f00d927e90a28f5c2ef8180?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES d180c569-44cb-469f-8cda-cc5028e68da5 | discrete_wq&outflow_data_summary | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1337/2/da6f3b260261e36c098a95618918674b?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 43596a9d-c680-40c0-ae67-1929df6e26a1 | CSTARS_2021_FT&BB_Formatted_EDI | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1337/2/dfab3c259c1bd7b6325604d9a0a475a3?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 3bafa76e-131a-4d33-8f30-4d681165edfc | FranksTractManagement_2014-2021_formatted_edi | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1337/2/29aa82b792a1972386673df985b4dd25?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 09b88569-881b-4d2f-a4e3-4db147dc1252 | Water Year Assignments | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1337/2/d0b670b8cad6e27ff149815d2f46e0f0?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES c63557ed-fa64-4547-8420-f222f9daa71f | Supplemental figures for HABsWeeds | PDF | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1337/2/b2332bd61edf1bf08bc1135987022238?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 9d9f1ce4-9fa9-4ed3-831b-8cfd34bb054b | HAB-Weed_Report_2022_10_14 | PDF | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1337/2/b75e1454978c3d04498a8335990223c9?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES a8fd8b7e-d324-4256-9325-78768d772177 | HABRegions | ZIP | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1337/2/cc82abf9c9fa192e06492a9d9bd69da7?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 67efa0ab-9e9c-49c1-bee5-218b7000256d | Provenance Metadata | HTML | ds=false | https://portal.edirepository.org/nis/provenanceGenerator?packageid=edi.1337.2&key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES a0fbc22d-7b77-489e-b1ae-e3f2644a1330 | Full Metadata | HTML | ds=false | https://portal.edirepository.org/nis/metadataviewer?packageid=edi.1337.2&key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES aae01334-faa1-49a9-a7b9-c2a6b1c11680 | Dataset Quality Report | HTML | ds=false | https://portal.edirepository.org/nis/reportviewer?packageid=edi.1337.2&key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-PKG 2021-2022-west-false-river-emergency-drought-barrier-water-quality-flow-and-fish-monitoring | 2021-2022 West False River Emergency Drought Barrier water quality, flow, and fish monitoring | california-department-of-water-resources
-   RES af611c20-c0ec-4cb9-8896-434234e13a79 | Full Data Package and metadata |  | ds=false | https://portal.edirepository.org/nis/mapbrowse?packageid=edi.1162.1 | null
-PKG surface-water-2018-california-water-quality-status-report | Surface Water - 2018 California Water Quality Status Report | california-state-water-resources-control-board
-   RES 5dbeecac-770e-42e5-90ef-3851cc686177 | Fig. 1. Mortality and Pyrethroid Toxic Units (2008-2016) | CSV | ds=true | https://publish.data.ca.gov/dataset/65cc53bf-42e9-47c0-a815-5eb681e57a76/resource/5dbeecac-770e-42e5-90ef-3851cc686177/download/fig.-1.-mortality-and-pyrethroid-toxic-units-2008-2016.csv | 2026-10-01T00:11:11.216085
-   RES 4fe2e6c0-5094-4427-a81f-8323b02bf590 | Fig. 2. Median Sum Pyrethroids (2008-2016) | CSV | ds=true | https://publish.data.ca.gov/dataset/65cc53bf-42e9-47c0-a815-5eb681e57a76/resource/4fe2e6c0-5094-4427-a81f-8323b02bf590/download/fig.-2.-median-sum-pyrethroids-2008-2016.csv | 2026-10-01T00:11:13.692398
-   RES e7af124c-9517-44cf-8140-dfc3fbfbf303 | Fig. 3. Median Sum Metals (2008-2016) | CSV | ds=true | https://publish.data.ca.gov/dataset/65cc53bf-42e9-47c0-a815-5eb681e57a76/resource/e7af124c-9517-44cf-8140-dfc3fbfbf303/download/fig.-3.-median-sum-metals-2008-2016.csv | 2026-10-01T00:11:15.856175
-   RES ea53fcb7-ae0d-401a-a22c-cfeb252d9082 | Fig. 4. Irrigated Lands Toxicity | CSV | ds=true | https://publish.data.ca.gov/dataset/65cc53bf-42e9-47c0-a815-5eb681e57a76/resource/ea53fcb7-ae0d-401a-a22c-cfeb252d9082/download/fig.-4.-irrigated-lands-toxicity.csv | 2026-10-01T00:11:18.559277
-   RES 94d22154-5cb1-4662-ac20-5bc84738de1d | Fig. 5. Santa Rosa Post-Fire Water Quality Monitoring | ZIP | ds=true | https://publish.data.ca.gov/dataset/65cc53bf-42e9-47c0-a815-5eb681e57a76/resource/94d22154-5cb1-4662-ac20-5bc84738de1d/download/fig.-5.-santa-rosa-post-fire-water-quality-monitoring.zip | 2026-10-01T00:11:23.104203
-   RES cd2048d4-9ef9-4c0b-8edb-2892c5df5aef | Fig. 6. 2017-2018 Post-Fire Water Quality Monitoring | CSV | ds=true | https://publish.data.ca.gov/dataset/65cc53bf-42e9-47c0-a815-5eb681e57a76/resource/cd2048d4-9ef9-4c0b-8edb-2892c5df5aef/download/fig.-6.-2017-2018-post-fire-water-quality-monitoring.csv | 2026-10-01T00:11:25.596261
-   RES d65046a1-cdc4-4fa7-a6c7-28dd0374d3cf | Fig. 7. Bioassessment Regional Snapshots | CSV | ds=true | https://publish.data.ca.gov/dataset/65cc53bf-42e9-47c0-a815-5eb681e57a76/resource/d65046a1-cdc4-4fa7-a6c7-28dd0374d3cf/download/fig.-7.-bioassessment-regional-snapshots.csv | 2026-10-01T00:11:28.297160
-   RES 87822399-9053-4796-8315-a48fc8385a2f | Fig. 9. Aquatic Life Index Site Condition Score | CSV | ds=true | https://publish.data.ca.gov/dataset/65cc53bf-42e9-47c0-a815-5eb681e57a76/resource/87822399-9053-4796-8315-a48fc8385a2f/download/fig.-9.-aquatic-life-index-site-condition-score.csv | 2026-10-01T00:11:30.729989
-   RES 9754c0dd-5aa6-469a-b60b-8bb6aea5b1fb | Fig. 10. CCAMP Aquatic Life Index (Pesticides - H2O) | CSV | ds=true | https://publish.data.ca.gov/dataset/65cc53bf-42e9-47c0-a815-5eb681e57a76/resource/9754c0dd-5aa6-469a-b60b-8bb6aea5b1fb/download/fig.-10.-ccamp-aquatic-life-index-pesticides-h2o.csv | 2026-10-01T00:11:32.981286
-   RES cdd26f32-fb42-4b38-ae6e-a230c7741cdd | Fig. 11. CCAMP Nitrate | CSV | ds=true | https://publish.data.ca.gov/dataset/65cc53bf-42e9-47c0-a815-5eb681e57a76/resource/cdd26f32-fb42-4b38-ae6e-a230c7741cdd/download/fig.-11.-ccamp-nitrate.csv | 2026-10-01T00:11:35.204541
-   RES 5a48465a-a126-452e-b7c1-29da67893cf6 | Fig. 12. Status of Nutrients in California Waterways | CSV | ds=true | https://publish.data.ca.gov/dataset/65cc53bf-42e9-47c0-a815-5eb681e57a76/resource/5a48465a-a126-452e-b7c1-29da67893cf6/download/fig.-12.-status-of-nutrients-in-california-waterways.csv | 2026-10-01T00:11:41.702198
-   RES 501cc742-206b-4deb-adb9-84ca4f04ff35 | Fig. 14. Most Recent Mercury Concentration in Largemouth Bass (2007-2014) | CSV | ds=true | https://publish.data.ca.gov/dataset/65cc53bf-42e9-47c0-a815-5eb681e57a76/resource/501cc742-206b-4deb-adb9-84ca4f04ff35/download/fig.-14.-most-recent-mercury-concentration-in-largemouth-bass-2007-2014.csv | 2026-10-01T00:11:44.161334
-PKG 2021-2022-west-false-river-emergency-drought-barrier-water-quality-flow-and-fish-monitoring1 | 2021-2022 West False River Emergency Drought Barrier water quality, flow, and fish monitoring | california-department-of-water-resources
-   RES 0ba31ffc-1c5e-4db6-beea-e2d20521ab6f | DJFMP beach seines | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1162/2/d1c59e6c9af348bea7e26e0e6a979756?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 550cc134-6ee9-49f4-8b2d-9dbdb3a2dea4 | Barrierstations | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1162/2/147bd1551f87b82e4946852a5c313da5?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 054262b8-708a-4227-b948-c10ef977ef8d | BarrierTNS | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1162/2/1953a2a8b09d172049cd165b74aa175d?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 99c6defe-4976-48b2-b975-2e644c50bee2 | Hydrodynamics_Data_2015_2020_2021 | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1162/2/b421e36c2db9e0edfc01924e89b3468b?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES cf26ba1f-a1c8-43d9-87f4-49ddaa2042da | schism_ec_difference | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1162/2/6a4e1d48b92f3b86bcf9c728fa203b08?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 9039c896-180d-4a20-8e4f-f3a98adcc266 | schism_station_output | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1162/2/a0285ec86aca8d80d461f7afc041d5d5?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES ad44f6a0-fd7d-410a-825f-ed31d4ac661c | ContinuousWQ | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1162/2/9f489e06694d516bd3240fa90c39cb94?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 5cf5da7c-5bfb-4379-ae66-65fd5ae7ec78 | Zooplankton | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1162/2/71ef93faee3f7c011b5e991af80ff603?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES dfc9c357-91fb-4e02-8278-bc60272ad482 | CVP and SWP fish salvage | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1162/2/1e20e2ac8e093329e137b76f90c027af?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES e209da43-ae7e-4433-bbee-32e1e64fe453 | Discrete Water Quality | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1162/2/96b6d65a656a87b69236569998937d74?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 558e74b6-a47c-4534-83f0-b237fbedb39d | Predation Data 2022 | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1162/2/763093b29bafe3c3b15cebee24a92b2d?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES cc3fc92c-09e0-4d94-a840-19bbd4f21152 | EDB_Turbidity_2022 | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1162/2/ba667bda7bdc0c65be8bea519ec16994?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES c11928b1-534a-43e9-92de-c627077e4e9e | EDB_Effectiveness_Report | PDF | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1162/2/29bd5d82749712461056a1038f0448b3?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 255c3b78-7303-4881-aa85-71646152e244 | Provenance Metadata | HTML | ds=false | https://portal.edirepository.org/nis/provenanceGenerator?packageid=edi.1162.2&key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES b407c825-a3c7-4938-92e7-211613d401da | Full Metadata | HTML | ds=false | https://portal.edirepository.org/nis/metadataviewer?packageid=edi.1162.2&key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 439224bc-eb7c-459d-8802-f27f457e7e96 | Dataset Quality Report | HTML | ds=false | https://portal.edirepository.org/nis/reportviewer?packageid=edi.1162.2&key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-PKG surface-water-2017-california-water-quality-status-report | Surface Water - 2017 California Water Quality Status Report | california-state-water-resources-control-board
-   RES 3c17868b-df1a-4993-b6b2-5b53d554416d | Contaminants and Toxicity in Stream Sediments | ZIP | ds=true | https://publish.data.ca.gov/dataset/0e6a0982-e0ad-4c69-a03a-d8443915b4c3/resource/3c17868b-df1a-4993-b6b2-5b53d554416d/download/contaminants-and-toxicity-in-stream-sediments.zip | 2026-10-02T15:44:13.120388
-   RES 40285c86-a42f-42e7-b10e-e97aaef608d5 | Impact of Land Use on the Health of California’s Streams | ZIP | ds=false |  | null
-   RES 40dc72e8-7be2-473e-8194-b836e4a60d18 | Constituents of Emerging Concern (CECs) in Surface Water | ZIP | ds=true | https://publish.data.ca.gov/dataset/0e6a0982-e0ad-4c69-a03a-d8443915b4c3/resource/40dc72e8-7be2-473e-8194-b836e4a60d18/download/constituents-of-emerging-concern-cecs-in-surface-water.zip | 2026-10-02T15:44:15.641012
-   RES 40a4b528-87da-49ab-86da-ca6cd44c91ba | Freshwater Harmful Algal Bloom Monitoring | ZIP | ds=true | https://publish.data.ca.gov/dataset/0e6a0982-e0ad-4c69-a03a-d8443915b4c3/resource/40a4b528-87da-49ab-86da-ca6cd44c91ba/download/freshwater-harmful-algal-bloom-monitoring.zip | 2026-10-02T15:44:17.958847
-PKG 2019-california-water-quality-status-report | 2019 California Water Quality Status Report | california-state-water-resources-control-board
-   RES 2c74bdd6-8378-4f04-9ea8-b9e10a30283d | Fig. 1. California's Groundwater | ZIP | ds=true | https://publish.data.ca.gov/dataset/a7601751-8e18-4d1b-a7f1-e395ca9d3517/resource/2c74bdd6-8378-4f04-9ea8-b9e10a30283d/download/fig.-1.-californias-groundwater.zip | 2026-10-01T00:07:03.565219
-   RES e454e20a-16d1-4028-9e4d-4cdc94e508f6 | Fig. 2. 1,2,3,-Trichloropropane | XLSX | ds=true | https://publish.data.ca.gov/dataset/a7601751-8e18-4d1b-a7f1-e395ca9d3517/resource/e454e20a-16d1-4028-9e4d-4cdc94e508f6/download/fig.-2.-123-trichloropropane.xlsx | 2026-10-01T00:07:06.135966
-   RES 96bc7125-4208-494c-9c7c-4f1fbc93ca3d | Fig. 3. Toxicity and Urban Land Use | CSV | ds=true | https://publish.data.ca.gov/dataset/a7601751-8e18-4d1b-a7f1-e395ca9d3517/resource/96bc7125-4208-494c-9c7c-4f1fbc93ca3d/download/fig.-3.-toxicity-and-urban-land-use.csv | 2026-10-01T00:07:08.700171
-   RES 4f9dcf98-5fb4-477b-8780-4411c083fee8 | Fig. 4-5. Sum Pyrethroid Toxic Units | CSV | ds=true | https://publish.data.ca.gov/dataset/a7601751-8e18-4d1b-a7f1-e395ca9d3517/resource/4f9dcf98-5fb4-477b-8780-4411c083fee8/download/fig.-4-5.-sum-pyrethroid-toxic-units.csv | 2026-10-01T00:07:11.174281
-   RES 22559d42-3498-48ef-8153-d928d9e616a4 | Fig. 7. Elk River Sediment Loads | ZIP | ds=true | https://publish.data.ca.gov/dataset/a7601751-8e18-4d1b-a7f1-e395ca9d3517/resource/22559d42-3498-48ef-8153-d928d9e616a4/download/fig.-7.-elk-river-sediment-loads.zip | 2026-10-01T00:07:13.654686
-   RES b3a82eb3-4933-41f9-8280-c284e7891de4 | Fig. 10. FHABs Illnesses by County (2018) | TXT | ds=false | https://publish.data.ca.gov/dataset/a7601751-8e18-4d1b-a7f1-e395ca9d3517/resource/b3a82eb3-4933-41f9-8280-c284e7891de4/download/fig.-10.-fhabs-illnesses-by-county-2018.txt | 2026-10-01T00:07:15.809338
-   RES 749a8114-a981-4406-8c51-938ad64c16f2 | Fig. 11. Sampling stations for long-term bass lake monitoring. | ZIP | ds=true | https://publish.data.ca.gov/dataset/a7601751-8e18-4d1b-a7f1-e395ca9d3517/resource/749a8114-a981-4406-8c51-938ad64c16f2/download/fig.-11.-sampling-stations-for-long-term-bass-lake-monitoring..zip | 2026-10-01T00:07:18.275828
-   RES 3b0cea45-09e0-4517-9d50-684ae2dc1606 | Fig. 18. Mayfly Occurrence Data | CSV | ds=true | https://publish.data.ca.gov/dataset/a7601751-8e18-4d1b-a7f1-e395ca9d3517/resource/3b0cea45-09e0-4517-9d50-684ae2dc1606/download/fig.-18.-mayfly-occurrence-data.csv | 2026-10-01T00:07:20.761016
-   RES 62a9a483-d90e-4aec-8592-5195adc865db | Fig. 20. Stream Quality Index Map | CSV | ds=true | https://publish.data.ca.gov/dataset/a7601751-8e18-4d1b-a7f1-e395ca9d3517/resource/62a9a483-d90e-4aec-8592-5195adc865db/download/fig.-20.-stream-quality-index-map.csv | 2026-10-01T00:07:23.337040
-
-=== 200 https://data.ca.gov/api/3/action/package_search?q=fish%20advisory&rows=8 (32191 bytes, application/json;charset=utf-8)
-PKG fish-consumption-advisory-serving-recommendations | Fish Consumption Advisory Serving Recommendations | california-office-of-environmental-health-hazard-assessment
-   RES b988f29d-2cef-4d47-a75d-a411e8069a60 | Fish Consumption Advisory Serving Recommnedations Data Dictionary | PDF | ds=false | https://publish.data.ca.gov/dataset/e1aae2d1-06d3-4899-9e5a-ac05deaf6af7/resource/b988f29d-2cef-4d47-a75d-a411e8069a60/download/fish-consumption-advisory-serving-recommnedations-data-dictionary.pdf | 2026-10-01T17:51:17.432468
-   RES 55b9a341-04e1-4f4a-9839-6eb36e6cc8ed | Fish Consumption Advisory Serving Recommendations | CSV | ds=true | https://publish.data.ca.gov/dataset/e1aae2d1-06d3-4899-9e5a-ac05deaf6af7/resource/55b9a341-04e1-4f4a-9839-6eb36e6cc8ed/download/fish-consumption-advisory-serving-recommendations.csv | 2026-10-06T20:37:12.010643
-   RES 684b0387-1477-496e-966c-be10d9f96e0e | Fish Consumption Advisories Data Dictionary | PDF | ds=false | https://publish.data.ca.gov/dataset/e1aae2d1-06d3-4899-9e5a-ac05deaf6af7/resource/684b0387-1477-496e-966c-be10d9f96e0e/download/data-dictionary-fish-consumption-advisories.pdf | 2026-10-01T17:51:24.964831
-   RES 7805faef-ed21-43e9-a13e-4920a9440bb8 | Fish Consumption Advisories | CSV | ds=true | https://publish.data.ca.gov/dataset/e1aae2d1-06d3-4899-9e5a-ac05deaf6af7/resource/7805faef-ed21-43e9-a13e-4920a9440bb8/download/fish-consumption-advisories.csv | 2026-10-06T20:34:57.038606
-PKG deprecated-state-water-project-genetic-determination-of-population-of-origin-2011-2024 | DEPRECATED: State Water Project, Genetic Determination of Population of Origin 2011-2024 | california-department-of-water-resources
-   RES 5bceaad5-7fe8-4f6e-a29b-576d393185ae | SWP_genetic_assignments-2011-2024 | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1839/2/d4c22387bc55f4a45cdd7b9eafa7b0b1?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 3da6dfe7-1106-470b-b53c-0ab43b0836c4 | Provenance Metadata | HTML | ds=false | https://portal.edirepository.org/nis/provenanceGenerator?packageid=edi.1839.2&key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 84088e28-806e-4cf4-a5dd-166424d42952 | Full Metadata | HTML | ds=false | https://portal.edirepository.org/nis/metadataviewer?packageid=edi.1839.2&key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 147f2808-7ee4-4ab6-ace9-a44769240d11 | Dataset Quality Report | HTML | ds=false | https://portal.edirepository.org/nis/reportviewer?packageid=edi.1839.2&key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-PKG deprecated-state-water-project-genetic-determination-of-population-of-origin-2011-2021 | DEPRECATED: State Water Project, Genetic Determination of Population of Origin 2011-2021 | california-department-of-water-resources
-   RES d0a5d461-b976-45b8-8c50-0638f4f577a5 | SWP-sizebydate-2010-21 | CSV (EXTERNAL DOWNLOAD) | ds=false | https://pasta.lternet.edu/package/data/eml/edi/1056/2/ebcf5ce43e12876706d8ece935874f0d?key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 5d9bee62-0067-42d5-a3e6-2f9eb8f73527 | Provenance Metadata | HTML | ds=false | https://portal.edirepository.org/nis/provenanceGenerator?packageid=edi.1056.2&key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES b45edce5-f23b-4df9-8e15-524c50669d08 | Full Metadata | HTML | ds=false | https://portal.edirepository.org/nis/metadataviewer?packageid=edi.1056.2&key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-   RES 283438dd-576b-457a-b8ed-97ff91a10e4e | Dataset Quality Report | HTML | ds=false | https://portal.edirepository.org/nis/reportviewer?packageid=edi.1056.2&key=vqSpNwnbe91Bi8trB5RY25CoPD4 | null
-
-=== 200 https://data.ca.gov/api/3/action/package_search?q=fish%20consumption&rows=8 (7765 bytes, application/json;charset=utf-8)
-PKG fish-consumption-advisory-serving-recommendations | Fish Consumption Advisory Serving Recommendations | california-office-of-environmental-health-hazard-assessment
-   RES b988f29d-2cef-4d47-a75d-a411e8069a60 | Fish Consumption Advisory Serving Recommnedations Data Dictionary | PDF | ds=false | https://publish.data.ca.gov/dataset/e1aae2d1-06d3-4899-9e5a-ac05deaf6af7/resource/b988f29d-2cef-4d47-a75d-a411e8069a60/download/fish-consumption-advisory-serving-recommnedations-data-dictionary.pdf | 2026-10-01T17:51:17.432468
-   RES 55b9a341-04e1-4f4a-9839-6eb36e6cc8ed | Fish Consumption Advisory Serving Recommendations | CSV | ds=true | https://publish.data.ca.gov/dataset/e1aae2d1-06d3-4899-9e5a-ac05deaf6af7/resource/55b9a341-04e1-4f4a-9839-6eb36e6cc8ed/download/fish-consumption-advisory-serving-recommendations.csv | 2026-10-06T20:37:12.010643
-   RES 684b0387-1477-496e-966c-be10d9f96e0e | Fish Consumption Advisories Data Dictionary | PDF | ds=false | https://publish.data.ca.gov/dataset/e1aae2d1-06d3-4899-9e5a-ac05deaf6af7/resource/684b0387-1477-496e-966c-be10d9f96e0e/download/data-dictionary-fish-consumption-advisories.pdf | 2026-10-01T17:51:24.964831
-   RES 7805faef-ed21-43e9-a13e-4920a9440bb8 | Fish Consumption Advisories | CSV | ds=true | https://publish.data.ca.gov/dataset/e1aae2d1-06d3-4899-9e5a-ac05deaf6af7/resource/7805faef-ed21-43e9-a13e-4920a9440bb8/download/fish-consumption-advisories.csv | 2026-10-06T20:34:57.038606
-
-=== 200 https://www.arcgis.com/sharing/rest/search?f=json&num=10&q=OEHHA%20fish%20advisories (15699 bytes, application/json;charset=utf-8)
-AGO Feature Service | Fish Advisories (WQMC-OEHHA) | DTSC_Admin | https://gispublic.waterboards.ca.gov/arcgis/rest/services/WQMC/WQMC_Fish_Advisories/MapServer/0 | faac5bcd11a5406caf76fb803c728cbc
-AGO Feature Service | Fish Advisories Points (WQMC-OEHHA) | DTSC_Admin | https://gispublic.waterboards.ca.gov/arcgis/rest/services/WQMC/WQMC_Fish_Advisories/MapServer/2 | 9a69ba99c2de4802a26cc4ff19df1f3e
-AGO Feature Service | Fish Advisories (WQMC-OEHHA) | alexandra.thomsen@sfestuary.org_MTC | https://gispublic.waterboards.ca.gov/arcgis/rest/services/WQMC/WQMC_Fish_Advisories/MapServer/0 | 3048ea95b17344ee88b51a5bcc8d1743
-AGO StoryMap | Monitoring Information You Can Use | SWRCB_GIS | https://storymaps.arcgis.com/stories/7084657eda8c4c6f98558aab8a43ab97 | 7084657eda8c4c6f98558aab8a43ab97
-AGO Feature Service | OEHHA_Fish_Advisory_Areas | rwqcb9 | https://services.arcgis.com/Wvy1i2QPQwOxNumH/arcgis/rest/services/OEHHA_Fish_Advisory_Areas/FeatureServer | 8e4914a54e72441b93e41ef6cd957663
-AGO StoryMap | Domoic Acid Monitoring in Razor Clams 2015-2021 | Sam.Rankin@cdph.ca.gov_CDPHDATA | https://storymaps.arcgis.com/stories/0180e416a7484ba1850a36ca37f09bb2 | 0180e416a7484ba1850a36ca37f09bb2
-AGO Feature Service | CABY_final_layers | SNAlliance | https://services6.arcgis.com/MtSzpOZ2FMytnchL/arcgis/rest/services/CABY_final_layers/FeatureServer | f1558eed04ea491fa1eb34e6fa8d2da6
-
-=== 200 https://www.arcgis.com/sharing/rest/search?f=json&num=10&q=freshwater%20harmful%20algal%20bloom%20California (39048 bytes, application/json;charset=utf-8)
-AGO Dashboard | Delta Plan Performance Measure: 6.10 Harmful Algal Blooms | Scott@dsc |  | aeb2d5ee60e74b1d8b6e5e7b57f2952f
-AGO Feature Service | Reported San Francisco Bay-Delta Region Freshwater HABs 2016_2021 | jlneumann | https://services5.arcgis.com/wXYNaciObHUosEnt/arcgis/rest/services/Reported_San_Francisco_Estuary_Freshwater_HABs_2016_2021_WFL1/FeatureServer | 032a720ee0cf4dd49360bf8fca2c693c
-AGO Web Map | HABs Satellite Data 2025 | Scott@dsc |  | 39316ec0c9c24538b90a30a3859ebe1b
-AGO Web Mapping Application | Water Quality Report Card - North Coastal Basin Rivers Cyanobacteria | swrcb_hq | https://waterboards.maps.arcgis.com/apps/MapJournal/index.html?appid=da780d470a2b409694ad90f33ce6a916 | da780d470a2b409694ad90f33ce6a916
-AGO Feature Service | Freshwater HABs Bay_Delta Region_WFL1 | jlneumann | https://services5.arcgis.com/wXYNaciObHUosEnt/arcgis/rest/services/Freshwater_HABs_Bay_Delta_Region_WFL1/FeatureServer | 5fb56c192d174d9b939642d235e43946
-AGO StoryMap | Clear Lake Rehabilitation | hmiradi@ucdavis.edu_ucdavis | https://storymaps.arcgis.com/stories/17c28e2bf6724ea581235d749d742e90 | 17c28e2bf6724ea581235d749d742e90
-AGO Feature Collection | 20190818 FHAB_BloomReport_1 csvkj | keithnsage |  | 2e09b65117114d09a67eadb70d939c76
-AGO Web Map | FHAB Monitoring - Monthly 90th Percentile Cyanobacteria Concentrations | OIMA_GIScollab |  | 58ef4dd22c5c4abd9f5ee8fc3172d0ca
-AGO StoryMap | Algae Blooms in Alameda County  | inayak_23 | https://storymaps.arcgis.com/stories/7a7c88c5f6f04f96ab64904a621d36ae | 7a7c88c5f6f04f96ab64904a621d36ae
-AGO Feature Service | NOAA Fisheries West Coast Offshore Scientific Surveys | melissa.widas_noaa | https://services2.arcgis.com/C8EMgrsFcRFL6LrL/arcgis/rest/services/US_West_Coast_CONUS_NMFS_At_Sea_Scientific_Surveys/FeatureServer | 7620dc85cc7b4586a4debf823c4e2568
-
-=== 200 https://www.arcgis.com/sharing/rest/search?f=json&num=10&q=HAB%20incident%20reports%20California%20water%20boards (58 bytes, application/json;charset=utf-8)
-
-=== 200 https://oehha.ca.gov/fish/advisories (245159 bytes, text/html; charset=UTF-8)
-160 advisory links /fish/advisories/advisory-fish-migrate
-/fish/advisories/alamitos-creek
-/fish/advisories/alamo-river
-/fish/advisories/all-american-canal
-/fish/advisories/almaden-lake
-/fish/advisories/almaden-reservoir
-/fish/advisories/alondra-park-lake
-/fish/advisories/american-river-lower
-/fish/advisories/anderson-lake
-/fish/advisories/antelope-lake
-/fish/advisories/bass-lake
-/fish/advisories/bear-creek
-/fish/advisories/bear-river
-/fish/advisories/big-bear-lake
-/fish/advisories/bishop-creek
-/fish/advisories/black-butte-lake
-/fish/advisories/bon-tempe-reservoir
-/fish/advisories/bridgeport-reservoir
-/fish/advisories/cache-creek
-/fish/advisories/cachuma-lake
-/fish/advisories/calero-creek
-/fish/advisories/calero-reservoir
-/fish/advisories/camanche-reservoir
-/fish/advisories/camp-far-west-reservoir
-/fish/advisories/carrville-pond
-/fish/advisories/castaic-lagoon
-/fish/advisories/castaic-lake
-/fish/advisories/clear-lake
-/fish/advisories/collins-lake
-/fish/advisories/cosumnes-river-lower
-/fish/advisories/coyote-lake
-/fish/advisories/crowley-lake
-/fish/advisories/deer-creek
-/fish/advisories/delta-central-and-south-0
-/fish/advisories/diamond-valley-lake
-/fish/advisories/don-pedro-lake
-/fish/advisories/donner-lake
-/fish/advisories/east-park-reservoir
-/fish/advisories/el-capitan-reservoir
-/fish/advisories/elkhorn-slough
- Fish Advisories - OEHHA Skip to main content Skip to Main Content CA.gov CA.gov Official website of the State of California Reset High contrast Increase font size Font increase Decrease font size Font decrease Dyslexic font State of California OEHHA Search Menu Custom Google Search Submit Close Environmental Topics All Environmental Topics Air Climate Change Fish Pesticides Water CalEnviroScreen CalHeatScore About About OEHHA What We Do Meet the Executive Office Organizational Chart Overview of Programs Environmental Topics OEHHA Laws and Regulations Careers at OEHHA Join Our Listservs Contact Us Proposition 65 Proposition 65 Overview About Proposition 65 The Proposition 65 List Meetings, Hearings and Workshops Notices Law and Regulations Warnings News and Events Latest News Events Public Comments Library Library Overview Chemical Databases Documents Maps Prop 65 Chemical List Videos Home Fish Fish Advisories Fish Advisories Good Catch California is the OEHHA fish advisory program. We provide advice so that you can make healthy choices about eating the fish you catch. Fish Advisories are guidelines that recommend how often you can safely eat fish caught from water bodies in California. The Office of Environmental Health Hazard Assessment (OEHHA) offers over 150 site-specific advisories for lakes, rivers, bays, reservoirs, and the coast. For water bodies without site-specific advice, or for species not included in a site-specific advisory, look for the appropriate statewide advisory. OEHHA provides two sets of guidelines for eating fish, one for each of the following populations: Women 18-49 years and children 1-17 years Women 50 years and older and men 18 years and older General Information Fish Advisory Fact Sheet (PDF) English | Spanish | Simplified Chinese | Traditional Chinese | Vietnamese How to Follow Advisories Women &amp; Children General Tips Statewide Advisories California Lakes and Reservoirs without site-specific advice California Coastal Locations without site-specific advice California Rivers, Streams, and Creeks without site-specific advice Advisory for Fish that Migrate How to follow OEHHA’s Fish Consumption Advisories OEHHA’s Fish Consumption Advisories and Safe Eating Guidelines Waterbody - Any - Alamitos Creek Alamo River All-American Canal Almaden Lake Almaden Reservoir Alondra Park Lake American River, Lower Anderson Lake Antelope Lake Bass Lake Bear Creek Bear River Big Bear Lake Bishop Creek Black Butte Lake Bon Tempe Reservoir Bridgeport
-
-=== 200 https://oehha.ca.gov/fish/advisories?page=1 (241335 bytes, text/html; charset=UTF-8)
-160 links on page 1
-
-=== 200 https://oehha.ca.gov/fish/advisories/almaden-reservoir (40877 bytes, text/html; charset=UTF-8)
-r - Guadalupe Reservoir Fish Advisory in Spanish (Español) December 1, 2020 Fact Sheet - Guadalupe Reservoir Fish Advisory December 1, 2020 Report - Guadalupe Reservoir Fish Advisory December 1, 2020 Women 18-49 Years and Children 1-17 Years DO NOT EAT All fish Women 50 Years and Older and Men 18 Years and Older DO NOT EAT All fish Resources related to Biotoxins and Harmful Algal Blooms Harmful algal blooms are increasing in California and may occur throughout the year in some water bodies. OEHHA recommends that you check the California harmful algal bloom (HAB) portal to see if a bloom has been reported at this water body and learn healthy water habits to protect yourself, your family, and your pets during your visit. Fish Advisory Map View maps of current statewide and site-specific advisories Fish, Incident Response, Seafood Safety, and Harmful Algal Bloom Section Sacramento Office 1001 I Street Sacramento, CA 95814 Phone: (916) 324-7572 Fish@oehha.ca.gov Sign up for our email updates Cal EPA Air Resources Board Cal Recycle Department of Pesticide Regulation Department of Toxic Substances Control State Water Resources Control Board Alerts Amber Alert Cal Alerts My Hazards About Governor Lt. Governor California Data Campaigns Register to Vote Save Our Water Flex Alert CA.gov Conditions of use Privacy Policy Accessibility Help Sitemap Facebook Instagram LinkIn Twitter/X YouTube Copyright &copy; State of California Back to top 
- public from pesticides" class=second-level-link data-drupal-link-system-path="node/8">Pesticides</a>
-</li>
-<li class=unit1>
-<a href="/water" title="Risk assessment and hazard evaluation activities relating to chemical contaminants in drinking water" class=second-level-link data-drupal-link-system-path="node/10">Water</a>
-</li>
-<li class=unit1>
-<a href="/calenviroscreen" title="Explore CalEnviroScreen, a mapping tool showing communities affected by pollution" class=second-level-link data-drupal-link-system-path="node/3">CalEnviroScreen</a>
-</li>
-<li class=unit1>
-<a href="https://calheatscore.calepa.ca.gov/" title="CalEcotox is a repository that provides data for California ecotoxicological risk assessments." class=second-level-link>CalHeatScore</a>
-</li>
-</ul>
-</div>
-</li>
-<li class="nav-i
-
-=== 200 https://oehha.ca.gov/fish/advisories/lake-berryessa (252071 bytes, text/html; charset=UTF-8)
- Press Release Waterbody Lake Berryessa County Napa Downloads Poster - English September 25, 2024 Poster - Spanish (Español) September 25, 2024 Fact Sheet September 25, 2024 Report September 25, 2024 Women 18-49 Years and Children 1-17 Years 2 servings a week Threadfin Shad OR 1 serving a week Inland Silverside High in Omega 3s Rainbow Trout DO NOT EAT High in Omega 3s Black Bass Species Catfish Species High in Omega 3s Chinook (King) Salmon Women 50 Years and Older and Men 18 Years and Older 7 servings a week Threadfin Shad OR 3 servings a week High in Omega 3s Rainbow Trout OR 2 servings a week Inland Silverside OR 1 serving a week High in Omega 3s Black Bass Species Catfish Species High in Omega 3s Chinook (King) Salmon What is a serving? Image The recommended serving of fish is about the size and thickness of your hand. Give children smaller servings. For small fish species, several individual fish may make up a single serving. Preparing and Cooking Fish For fish, eat only the skinless fillet. For shellfish, eat only the meat. Some chemicals are higher in the skin, fat, and guts. Remove and throw away the skin before cooking. Cook thoroughly and allow the juices to drain away. = Fish that are high in omega-3s and you can eat them at least once a week. Eating fish with omega-3s can lower heart disease in adults and help babies’ brains to develop. Resources related to Biotoxins and Harmful Algal Blooms Harmful algal blooms are increasing in California and may occur throughout the year in some water bodies. OEHHA recommends that you check the California harmful algal bloom (HAB) portal to see if a bloom has been reported at this water body and learn healthy water habits to protect yourself, your family, and your pets during your visit. Fish Advisory Map View maps of current statewide and site-specific advisories Fish, Incident Response, Seafood Safety, and Harmful Algal Bloom Section Sacramento Office 1001 I Street Sacramento, CA 95814 Phone: (916) 324-7572 Fish@oehha.ca.gov Sign up for our email updates Cal EPA Air Resources Board Cal Recycle Department of Pesticide Regulation Department of Toxic Substances Control State Water Resources Control Board Alerts Amber Alert Cal Alerts My Hazards About Governor Lt. Governor California Data Campaigns Register to Vote Save Our Water Flex Alert CA.gov Conditions of use Privacy Policy Accessibility Help Sitemap Facebook Instagram LinkIn Twitter/X YouTube Copyright &copy; State of California Back to top 
-(not found)
-
-=== 200 https://overpass-api.de/api/interpreter (486 bytes, application/json)
-{
-  "version": 0.6,
-  "generator": "Overpass API 0.7.62.11 87bfad18",
-  "osm3s": {
-    "timestamp_osm_base": "2026-10-23T06:04:35Z",
-    "timestamp_areas_base": "2026-10-23T02:05:05Z",
-    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
-  },
-  "elements": [
-
-{
-  "type": "count",
-  "id": 0,
-  "tags": {
-    "nodes": "508",
-    "ways": "420",
-    "relations": "0",
-    "areas": "0",
-    "total": "928"
-  }
-}
-
-  ]
-}
+=== FAIL https://overpass-api.de/api/interpreter: fetch failed
 
