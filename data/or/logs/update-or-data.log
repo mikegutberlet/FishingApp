@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-23T11:33:57.632Z",
+  "startedAt": "2026-10-23T17:19:24.807Z",
   "schedule": {
     "windows": [
       "2024-10-23..2024-11-22: 16",
@@ -157,10 +157,10 @@
     }
   },
   "mymaps": {
-    "Northwest": 392,
+    "Northwest": 394,
     "Southwest": 67,
     "High Desert": 196,
-    "Northeast": 95
+    "Northeast": 96
   },
   "mymapsSample": [
     {
@@ -171,6 +171,16 @@
       "lat": 44.05661,
       "lon": -123.08177,
       "about": "Alton Baker Pond and Canoe Canal are located within Alton Baker Park, one of the most popular and multi-functional parks in Eugene.\nThe park is located on the north bank of the Willamette River just east of the Ferry Street Bridge and Coburg Road. It is accessible by foot or bike from either side of the river via the River Bank Trails. By car you can enter via the Club Road underpass off Coburg Road or from Autzen Stadium off MLK/Centennial.\nLocated with in the park are two ponds and a canal, which can be accessed by rented canoes during the summer months.",
+      "region": "Northwest"
+    },
+    {
+      "name": "Benson Lake",
+      "raws": [
+        "BENSON LAKE"
+      ],
+      "lat": 45.57666,
+      "lon": -122.12607,
+      "about": "This is a 40-acre lake located in Benson State Park in the Columbia River Gorge. From Portland, head east on I-84, park is located on the south side of the freeway approx. 1/2 mile west of Multnomah Falls.\nFish species: rainbow trout, white crappie, largemouth bass, brown bullhead\nBenson State Recreation Area (http://www.oregonstateparks.org/park_147.php)",
       "region": "Northwest"
     },
     {
@@ -192,25 +202,16 @@
       "lon": -124.04049,
       "about": "This is a 20-acre reservoir on Big Creek Road northeast of Newport, offering year-round fishing.\nFish species: rainbow trout, bass, brown bullhead",
       "region": "Northwest"
-    },
-    {
-      "name": "Big Creek Reservoir #2",
-      "raws": [
-        "BIG CR RES-2"
-      ],
-      "lat": 44.65818,
-      "lon": -124.02904,
-      "about": "The larger of the two reservoirs on Big Creek Road northeast of Newport, offering year-round fishing.\nFish species: rainbow trout, bass, brown bullhead",
-      "region": "Northwest"
     }
   ],
   "points": {
-    "nhd": 0,
-    "odfwMaps": 750,
+    "nhd": 2219,
+    "odfwMaps": 753,
     "via": {
       "none": 55,
-      "odfw": 194,
-      "osm": 18
+      "odfw": 187,
+      "nhd": 18,
+      "osm": 7
     },
     "unmatched": [
       "ROW R NATURE PK-Fmr Cott. Grv. Pd → Row River Nature PK-Fmr Cott. Grv. Pond (Willamette)",
@@ -218,25 +219,23 @@
       "SALISH PD, W → West Salish Pond (Willamette)",
       "JOHNSONS MILL PD → Johnsons Mill Pond (Southwest)",
       "EXPO PD 1 (ROGUE) → Expo Pond 1 (Rogue) (Southwest)",
-      "BIKINI PD → Bikini Pond (Central)",
-      "MCNARY CHANNEL PDS → McNary Channel Ponds (Northeast)",
       "LADD (PEACH) PD → Ladd (Peach) Pond (Northeast)",
       "NORTH POWDER PD-1 → North Powder Pond 1 (Southeast)",
-      "RUNNING Y PD → Running Y Pond (Southeast)",
+      "TATONE PD → Tatone Pond (Northeast)",
+      "HAT ROCK PD → Hat Rock Pond (Northeast)",
+      "MCNARY CHANNEL PDS → McNary Channel Ponds (Northeast)",
+      "BIKINI PD → Bikini Pond (Central)",
       "PINE NURSERY PD → Pine Nursery Pond (Central)",
+      "RUNNING Y PD → Running Y Pond (Southeast)",
       "TROJAN RECREATION LK → Trojan Recreation Lake (Willamette)",
       "LAIRD LK → Laird Lake (Southwest)",
       "BURNS GRAVEL PD → Burns Gravel Pond (Southeast)",
-      "SMOCK PRAIRIE RES → Smock Prairie Reservoir (Central)",
-      "HARTMAN PD (WAHKEENA LK) → Hartman Pond (Wahkeena Lake) (Willamette)",
-      "MIDDLE FK PD (HOOD R) → Middle Fork Pond (Hood River) (Central)",
-      "KINGSLEY RES, UPR → Upper Kingsley Reservoir (Central)",
-      "HAINES PD-1 → Haines Pond 1 (Southeast)",
-      "Weaver Road Pd → Weaver Road Pond (Southwest)",
-      "BURMA PD, L → Lower Burma Pond (Southwest)",
       "HOLLIDAY PARK PD → Holliday Park Pond (Northeast)",
+      "LONG CREEK PD → Long Creek Pond (Northeast)",
+      "Weaver Road Pd → Weaver Road Pond (Southwest)",
+      "BURMA PD, L → Little Burma Pond (Southwest)",
       "SEVENTH ST PD → Seventh St. Pond (Northeast)",
-      "COTTONWOOD PIT → Cottonwood Pit (Central)",
-      "WESTON HIGHWAY PD → Weston Highway Pond (Northeast)",
-      "MCKENZIE R-1 (below Leaburg Dam) → McKenzie River 1 (Below Leaburg Dam) (Willamette)",
-      "MORROW CO OHV PARK PD #2 (Red R
+      "RED TOP LK → Red Top Lake (Southwest)",
+      "SMOCK PRAIRIE RES → Smock Prairie Reservoir (Central)",
+      "KINGSLEY RES, UPR → Upper Kingsley Reservoir (Central)",
+      "HAINES PD-1 → Haines Pond 1 
