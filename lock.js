@@ -86,10 +86,18 @@ export function lock() {
   if (!c?.hash || locked) return;
   locked = true;
   document.documentElement.classList.add('locked');
+  // Other dialogs (waypoint editor, offline download) are parked while locked: closed with data-parked set, so their
+  // onclose can tell this apart from a real close and keep their state, then reopened on unlock. Left open under the
+  // lock they could land above it, or be closed by repeated Back presses.
+  const parked = [], park = d => { d.dataset.parked = ''; d.close(); parked.push(d); };
+  document.querySelectorAll('dialog[open]:not(#lock)').forEach(park);
+  let watch;
   const unlock = api => {
     locked = false; localStorage.removeItem(FAIL_KEY);
     document.documentElement.classList.remove('locked');
+    watch?.disconnect();
     api.close();
+    parked.forEach(d => { delete d.dataset.parked; if (d.isConnected && !d.open) d.showModal(); });
   };
   const tryBio = api => verifyBio(c.cred).then(ok => ok ? unlock(api) : api.sub('Not recognised. Enter your passcode.')).catch(() => api.sub('Enter your passcode.'));
   const pad = keypad({
@@ -112,6 +120,8 @@ export function lock() {
       req.onsuccess = req.onerror = req.onblocked = () => location.reload();
     },
   });
+  watch = new MutationObserver(ms => ms.forEach(({ target: d }) => { if (d !== pad.el && d.tagName === 'DIALOG' && d.open) park(d); }));
+  watch.observe(document.body, { subtree: true, attributeFilter: ['open'] });
   if (c.cred) tryBio(pad); // iPhones may want a tap first; the 👤 key is there for that
 }
 
