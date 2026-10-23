@@ -222,8 +222,8 @@ export async function regsFor(lake) {
   const special = r.waters.filter(w => {
     if (w.scope === 'district') return false;
     if (w.counties.length && county && !w.counties.includes(county)) return false;
-    if (w.scope === 'county') return !!county;
     if (w.water && w.water !== kind && !(w.tributariesOnly && kind === 'lake')) return false;
+    if (w.scope === 'county') return !!county && w.counties.length > 0;
     return key.length > 2 && [w.name, ...w.aliases].some(n => regKey(n, w.water ?? kind) === key);
   }).map(w => ({ ...w, parts: w.parts.map(p => ({ ...p, open: seasonOpen(p.season) })) }));
   const statewide = r.statewide.filter(s => s.applies === 'all' || s.applies === kind);

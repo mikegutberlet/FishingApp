@@ -89,21 +89,21 @@ export function specialTable(sec, rows, cols) {
   return out;
 }
 
-// 5.15 catfish: county headings, then one water per row with its bag limit. "All waters" rows apply county-wide.
+// 5.15 catfish: county (or district) headings, then one water per row with its bag limit. "All waters" rows apply area-wide.
 export function catfishTable(rows) {
   const out = [];
-  let county = null;
+  let county = null, district = false;
   for (const cells of rows) {
     const [num = '', what = '', bag = ''] = cells;
     if (/body or bodies/i.test(what) || !what) continue;
     const heading = what.match(/^([A-Z][\w .]+?) County:\s*(.*)$/);
-    if (num && heading) county = heading[1];
-    else if (num) county = null;
-    const name = heading ? heading[2] : what;
+    if (num) { county = heading?.[1] ?? null; district = !heading && /district/i.test(what); }
     if (!bag) continue;
-    const countyWide = !name || /^all waters/i.test(name);
-    out.push({ sec: '5.15', ref: `(b)${num}`, name: countyWide ? '' : name.replace(/\.$/, ''), aliases: [], counties: county ? [county] : [], water: /lake|reservoir|pond/i.test(name) ? 'lake' : null,
-      tributariesOnly: false, scope: countyWide ? 'county' : 'water', text: `${county ? `${county} County: ` : ''}${name}`, parts: [{ where: '', species: 'Catfish', bag: `${bag} catfish` }] });
+    const name = (heading ? heading[2] : what).replace(/\.$/, '');
+    const areaWide = !name || /^all waters|^also see/i.test(name);
+    out.push({ sec: '5.15', ref: `(b)${num}`, name: areaWide ? '' : name, aliases: [], counties: county ? [county] : [], water: /lake|reservoir|pond/i.test(name) ? 'lake' : null,
+      tributariesOnly: false, scope: district ? 'district' : areaWide ? 'county' : 'water', text: `${county ? `${county} County: ` : ''}${heading ? heading[2] || 'All waters' : what}`,
+      parts: [{ where: '', species: 'Catfish', bag: `${bag} catfish` }] });
   }
   return out;
 }
@@ -124,7 +124,8 @@ async function build() {
     ...specialTable('7.40', rowsOf(pages['7.40']), ['season', 'bag']),
     ...specialTable('5.00', rowsOf(pages['5.00']), ['season', 'size', 'bag']).map(w => {
       const area = w.text.match(/^([\w .]+?) (Co\.|District):/);
-      return { ...w, species: 'Black bass', ...(area && { scope: area[2] === 'Co.' ? 'county' : 'district', name: '', counties: area[2] === 'Co.' ? [area[1]] : [] }) };
+      const water = /all streams/i.test(w.text) && !/lakes/i.test(w.text) ? 'stream' : /all lakes/i.test(w.text) && !/streams/i.test(w.text) ? 'lake' : null;
+      return { ...w, species: 'Black bass', ...(area && { scope: area[2] === 'Co.' ? 'county' : 'district', name: '', counties: area[2] === 'Co.' ? [area[1]] : [], water }) };
     }),
     ...catfishTable(rowsOf(pages['5.15'])),
   ].map(w => ({ scope: 'water', ...w }));
