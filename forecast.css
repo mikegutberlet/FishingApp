@@ -21,3 +21,23 @@ table.days tr:not(.bite-row) td { border-bottom: 0; padding-bottom: 0; }
 .chip { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; background: var(--bg); }
 .chip.good { background: #d8f3e3; color: #0d5a2c; } .chip.ok { background: #e6f0f5; color: #18465a; }
 .chip.warn { background: #fff0cc; color: #5c4300; } .chip.bad { background: #fde2df; color: #7a160f; }
+/* Today and Plan a trip */
+.today-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.today-head button { white-space: nowrap; }
+.today-lake { cursor: pointer; }
+.today-title { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.today-title b { flex: 1; }
+.today-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.today-grid .stat b { font-size: 17px; }
+.new-plant { box-shadow: inset 3px 0 0 #2fbf71; }
+.fav-row { display: flex; align-items: center; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid var(--line); }
+.fav-row button, #fav { font-size: 18px; line-height: 1; padding: 6px 10px; color: #e0a100; }
+.plan-item { cursor: pointer; }
+.plan-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.plan-head .rank { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+.plan-head .score { text-align: right; min-width: 64px; }
+.plan-head .score b { font-size: 20px; }
+.meter { height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden; margin-top: 2px; }
+.meter i { display: block; height: 100%; background: var(--accent); }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.chips .chip { font-weight: 500; }
