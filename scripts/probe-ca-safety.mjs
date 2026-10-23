@@ -1,55 +1,53 @@
-// Temporary: logs what the safety-data sources look like from a GitHub runner. Removed before merge.
+// Temporary: logs what the safety-data sources look like from a GitHub runner. Removed before merge. Round 2.
 const UA = { 'User-Agent': 'TackleBox-fishing-app (personal, github.com/mikegutberlet/FishingApp)' };
 const strip = s => s.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi, '').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ');
 async function get(url, init) {
   try {
-    const r = await fetch(url, { ...init, headers: { ...UA, ...init?.headers }, signal: AbortSignal.timeout(90000) });
+    const r = await fetch(url, { ...init, headers: { ...UA, ...init?.headers }, signal: AbortSignal.timeout(200000) });
     const body = await r.text();
     console.log(`\n=== ${r.status} ${url} (${body.length} bytes, ${r.headers.get('content-type')})`);
     return body;
   } catch (e) { console.log(`\n=== FAIL ${url}: ${e.message}`); return ''; }
 }
-const around = (s, re, n = 1500) => { const i = s.search(re); return i < 0 ? '(not found)' : s.slice(Math.max(0, i - 200), i + n); };
 
-// Regulations
-for (const sec of ['7.50', '5.00', '7.00', '1.05']) {
+for (const id of ['c6a36b91-ad38-4611-8750-87ee99e497dd', '7805faef-ed21-43e9-a13e-4920a9440bb8', '55b9a341-04e1-4f4a-9839-6eb36e6cc8ed']) {
+  const j = await get(`https://data.ca.gov/api/3/action/datastore_search?resource_id=${id}&limit=3&sort=_id%20desc`);
+  try { const r = JSON.parse(j).result; console.log('total', r.total, 'fields', r.fields.map(f => `${f.id}:${f.type}`).join(', ')); for (const x of r.records) console.log(JSON.stringify(x)); } catch { console.log(j.slice(0, 500)); }
+}
+// Distinct values for advisory level fields in bloom reports (field names guessed from round 1 output below)
+const sql = encodeURIComponent('SELECT * FROM "c6a36b91-ad38-4611-8750-87ee99e497dd" LIMIT 1');
+console.log((await get(`https://data.ca.gov/api/3/action/datastore_search_sql?sql=${sql}`)).slice(0, 1500));
+
+for (const layer of [0, 1, 2]) {
+  const base = `https://gispublic.waterboards.ca.gov/arcgis/rest/services/WQMC/WQMC_Fish_Advisories/MapServer/${layer}`;
+  const meta = await get(`${base}?f=json`);
+  try { const m = JSON.parse(meta); console.log(m.name, m.geometryType, (m.fields ?? []).map(f => f.name).join(', ')); } catch { console.log(meta.slice(0, 300)); }
+  console.log((await get(`${base}/query?where=1%3D1&outFields=*&returnGeometry=true&outSR=4326&resultRecordCount=2&f=json`)).slice(0, 2500));
+  console.log((await get(`${base}/query?where=1%3D1&returnCountOnly=true&f=json`)).slice(0, 200));
+}
+
+// LII statewide sections
+for (const sec of ['7.00', '5.00', '1.05', '7.50']) {
   const h = await get(`https://www.law.cornell.edu/regulations/california/14-CCR-${sec}`);
-  console.log(around(h, sec === '7.50' ? /Alameda|Abbott|Almanor/ : /Black Bass|District|bass/i, 4000));
+  const i = h.indexOf('<h1');
+  console.log(strip(h.slice(i)).slice(0, sec === '7.50' ? 2500 : 7000));
+  console.log('section links:', [...new Set([...h.matchAll(/href="\/regulations\/california\/14-CCR-([\d.]+)"/g)].map(m => m[1]))].join(' '));
+  if (sec === '7.50') {
+    console.log('rows', (h.match(/<tr/g) ?? []).length, 'tables', (h.match(/<table/g) ?? []).length);
+    const t = strip(h); const k = t.indexOf('(b)'); console.log(t.slice(k - 300, k + 1200));
+    const lakes = [...h.matchAll(/<td>\s*\((\d+(?:\.\d+)?)\)\s*([^<]{0,120})/g)].map(m => `${m[1]} ${m[2].replace(/\s+/g, ' ')}`);
+    console.log(lakes.length, 'numbered entries'); console.log(lakes.join('\n'));
+  }
 }
-let h = await get('https://www.eregulations.com/california/fishing/freshwater');
-console.log([...new Set([...h.matchAll(/href="([^"]*freshwater[^"]*)"/gi)].map(m => m[1]))].slice(0, 80).join('\n'));
-h = await get('https://wildlife.ca.gov/Regulations');
-console.log([...h.matchAll(/<a[^>]+href="([^"]+)"[^>]*>([^<]{3,120})<\/a>/gi)].filter(m => /fresh|inland|sport|regulat|pdf|FileHandler/i.test(m[0])).map(m => `${m[1]} | ${m[2].trim()}`).slice(0, 60).join('\n'));
-h = await get('https://wildlife.ca.gov/Fishing/Inland');
-console.log([...h.matchAll(/<a[^>]+href="([^"]+)"[^>]*>([^<]{3,120})<\/a>/gi)].filter(m => /regulat|special|FileHandler/i.test(m[0])).map(m => `${m[1]} | ${m[2].trim()}`).slice(0, 40).join('\n'));
+let h = await get('https://www.law.cornell.edu/regulations/california/title-14/division-1/subdivision-1/chapter-4');
+console.log([...new Set([...h.matchAll(/href="\/regulations\/california\/14-CCR-([\d.]+)"[^>]*>([^<]+)/g)].map(m => `${m[1]} ${m[2]}`))].join('\n'));
 
-// CKAN: HABs and fish advisories
-for (const q of ['harmful algal blooms', 'fish advisory', 'fish consumption']) {
-  const j = await get(`https://data.ca.gov/api/3/action/package_search?q=${encodeURIComponent(q)}&rows=8`);
-  try {
-    for (const p of JSON.parse(j).result.results) {
-      console.log(`PKG ${p.name} | ${p.title} | ${p.organization?.name}`);
-      for (const r of p.resources) console.log(`   RES ${r.id} | ${r.name} | ${r.format} | ds=${r.datastore_active} | ${r.url} | ${r.last_modified}`);
-    }
-  } catch (e) { console.log('parse fail', j.slice(0, 300)); }
-}
-// ArcGIS Online item search
-for (const q of ['OEHHA fish advisories', 'freshwater harmful algal bloom California', 'HAB incident reports California water boards']) {
-  const j = await get(`https://www.arcgis.com/sharing/rest/search?f=json&num=10&q=${encodeURIComponent(q)}`);
-  try { for (const r of JSON.parse(j).results) console.log(`AGO ${r.type} | ${r.title} | ${r.owner} | ${r.url ?? ''} | ${r.id}`); } catch { console.log(j.slice(0, 300)); }
-}
-// OEHHA advisory pages
-h = await get('https://oehha.ca.gov/fish/advisories');
-const advLinks = [...new Set([...h.matchAll(/href="(\/fish\/advisories\/[^"#?]+)"/g)].map(m => m[1]))];
-console.log(`${advLinks.length} advisory links`, advLinks.slice(0, 40).join('\n'));
-console.log(around(strip(h), /advisor/i, 2500));
-h = await get('https://oehha.ca.gov/fish/advisories?page=1');
-console.log([...new Set([...h.matchAll(/href="(\/fish\/advisories\/[^"#?]+)"/g)].map(m => m[1]))].length, 'links on page 1');
-if (advLinks[5]) { h = await get(`https://oehha.ca.gov${advLinks[5]}`); console.log(around(strip(h), /servings|Women|Children/i, 4000)); console.log(around(h, /lat|geofield|leaflet|coordinates/i, 600)); }
-h = await get('https://oehha.ca.gov/fish/advisories/lake-berryessa');
-console.log(around(strip(h), /servings|Women|Children/i, 4000));
-console.log(around(h, /<table/i, 3000));
-
-// Overpass
-const ov = await get('https://overpass-api.de/api/interpreter', { method: 'POST', body: new URLSearchParams({ data: '[out:json][timeout:120];area["ISO3166-2"="US-CA"]->.ca;(nwr["leisure"="slipway"](area.ca););out count;' }) });
-console.log(ov.slice(0, 600));
+// Overpass: the real access query, counts only
+const q = `[out:json][timeout:300];area["ISO3166-2"="US-CA"]->.ca;
+(nwr["leisure"="slipway"](area.ca);)->.ramps;
+(nwr["leisure"="fishing"](area.ca);nwr["man_made"="pier"]["fishing"~"yes|designated"](area.ca);)->.fish;
+(nwr["tourism"="camp_site"](area.ca);)->.camp;
+(nwr["leisure"="marina"](area.ca);nwr["amenity"="boat_rental"](area.ca);nwr["shop"="fishing"](area.ca);)->.other;
+(nwr["amenity"="parking"](around.ramps:250);nwr["amenity"="parking"](around.fish:150);)->.park;
+.ramps out count;.fish out count;.camp out count;.other out count;.park out count;`;
+console.log((await get('https://overpass-api.de/api/interpreter', { method: 'POST', body: new URLSearchParams({ data: q }) })).slice(0, 3000));
