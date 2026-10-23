@@ -30,10 +30,10 @@ map.on('overlayadd', async e => {
 });
 export const canvas = L.canvas({ padding: 0.3 });
 
-let picking = null; // callback when the user is choosing a point on the map
-export const pickPoint = cb => { picking = cb; };
+let picking = null, cancelPick = null; // callback when the user is choosing a point on the map, and what to run if that pick is dropped
+export const pickPoint = (cb, onCancel = null) => { const c = cancelPick; picking = cb; cancelPick = onCancel; c?.(); };
 map.on('click', e => {
-  if (picking) { const cb = picking; picking = null; cb(e.latlng); return; }
+  if (picking) { const cb = picking; picking = null; cancelPick = null; cb(e.latlng); return; }
   const w = nearestLabeledWater(e.latlng);
   if (w) openWater(w);
 });

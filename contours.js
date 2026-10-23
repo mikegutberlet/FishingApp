@@ -30,28 +30,44 @@ export async function mergedSoundings(lake, sets) {
   const today = res?.elevation?.at(-1);
   const dated = sets.filter(s => typeof s.levelFt === 'number').sort((a, b) => (b.scanDate ?? '').localeCompare(a.scanDate ?? ''));
   const ref = !dated.length ? null : today ? { levelFt: today[1], date: today[0], station: res.id } : { levelFt: dated[0].levelFt, date: dated[0].scanDate };
-  const raw = [];
-  let shifted = 0;
+  const points = [];
+  let shifted = 0, dropped = 0;
   for (const s of sets) {
     const off = ref && typeof s.levelFt === 'number' ? ref.levelFt - s.levelFt : 0;
-    if (off) shifted++;
-    for (const [lat, lon, d] of s.points) if (d > 0 && d + off > 0) raw.push([lat, lon, d + off]);
+    const mine = [];
+    for (const [lat, lon, d] of s.points) if (d > 0 && d + off > 0) mine.push([lat, lon, d + off]);
+    const kept = dropStrays(mine); // each scan on its own, so a short scan of another arm is never judged against a long one
+    dropped += mine.length - kept.length;
+    if (off && kept.length) shifted++;
+    for (const p of kept) points.push(p);
   }
-  const points = dropStrays(raw);
-  return { points, ref, shifted, dropped: raw.length - points.length, unleveled: ref ? sets.length - dated.length : 0 };
+  return { points, ref, shifted, dropped, unleveled: ref ? sets.length - dated.length : 0 };
 }
 
 // Sonar tracks can start with a fix far from the water, or at 0,0. One such point would set the grid's extent and
-// smear the whole map, so drop points far from the rest: more than twice the distance that 99% of them fall within.
+// smear the whole map. So a scan's points are grouped into clumps (points within about a km of each other chain
+// together), and small clumps apart from the scan's biggest one are dropped as bad fixes. If that would drop more
+// than a few percent of the scan, it is a sparse track rather than a few bad fixes, and everything is kept.
 function dropStrays(points) {
   const ok = points.filter(([lat, lon]) => Math.abs(lat) <= 90 && Math.abs(lon) <= 180 && (Math.abs(lat) > 1e-6 || Math.abs(lon) > 1e-6));
-  if (ok.length < 20) return ok;
-  const mid = i => ok.map(p => p[i]).sort((a, b) => a - b)[ok.length >> 1];
-  const mLat = mid(0), mLon = mid(1), k = Math.cos(mLat * Math.PI / 180);
-  const dist = ok.map(([lat, lon]) => Math.hypot(lat - mLat, (lon - mLon) * k) * 111.2); // km
-  const d99 = dist.slice().sort((a, b) => a - b)[Math.floor(dist.length * 0.99)];
-  const limit = Math.max(1, 2 * d99);
-  return ok.filter((_, i) => dist[i] <= limit);
+  if (ok.length < 2) return ok;
+  const k = Math.cos(ok[0][0] * Math.PI / 180);
+  const cellOf = ([lat, lon]) => [Math.floor(lat * 111.2), Math.floor(lon * 111.2 * k)]; // ~1 km cells
+  const cells = new Map(), parent = new Map();
+  const find = c => { while (parent.get(c) !== c) { parent.set(c, parent.get(parent.get(c))); c = parent.get(c); } return c; };
+  for (const p of ok) { const [i, j] = cellOf(p), key = `${i},${j}`; if (!cells.has(key)) { cells.set(key, [i, j]); parent.set(key, key); } }
+  for (const [key, [i, j]] of cells) for (let di = -1; di <= 1; di++) for (let dj = -1; dj <= 1; dj++) {
+    const nb = `${i + di},${j + dj}`;
+    if (cells.has(nb)) { const a = find(key), b = find(nb); if (a !== b) parent.set(a, b); }
+  }
+  const clumpOf = p => find(cellOf(p).join(','));
+  const size = new Map();
+  for (const p of ok) { const c = clumpOf(p); size.set(c, (size.get(c) ?? 0) + 1); }
+  if (size.size === 1) return ok;
+  const main = [...size].sort((a, b) => b[1] - a[1])[0][0], small = Math.max(5, ok.length * 0.002);
+  const stray = new Set([...size].filter(([c, n]) => c !== main && n < small).map(([c]) => c));
+  const n = [...stray].reduce((sum, c) => sum + size.get(c), 0);
+  return n && n <= ok.length * 0.05 ? ok.filter(p => !stray.has(clumpOf(p))) : ok;
 }
 
 // Soundings → regular grid. Each cell is the IDW average of the binned soundings within a few cells; cells with no

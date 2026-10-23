@@ -40,6 +40,7 @@ async function nearestLake(lat, lon) {
 
 // Add or edit a waypoint. Opens a sheet; the location comes from GPS or a tap on the map.
 export async function editWaypoint(w = {}) {
+  pickPoint(null); // a long-press or 📌 while another waypoint's spot is being picked drops that one
   const lakes = (await db.all('lakes')).sort((a, b) => a.name.localeCompare(b.name));
   let loc = w.lat != null ? { lat: w.lat, lon: w.lon } : null;
   const draft = { kind: 'spot', ...w };
@@ -69,18 +70,20 @@ export async function editWaypoint(w = {}) {
   $('#wpt-gps', dlg).onclick = () => { $('#wpt-loc', dlg).textContent = 'Finding you…'; locate().then(setLoc).catch(e => { $('#wpt-loc', dlg).textContent = e.message; }); };
   $('#wpt-tap', dlg).onclick = () => {
     // Hide the sheet while the user picks, then bring it back with the spot filled in. While picking, labels and
-    // markers let taps through to the map (maps.css), and leaving the map from the bottom bar drops the pick.
+    // markers let taps through to the map (maps.css). Leaving the map by any route, or starting another pick
+    // (＋ Lake here, a note's spot), drops this one and its draft.
     picking = true; dlg.close();
     showView('map', { render: false });
     map.invalidateSize(); // render:false skips map.js's resize, and the hidden map may have measured 0×0
     if (loc) map.panTo([loc.lat, loc.lon]);
-    status('Tap the spot for the waypoint');
-    const box = map.getContainer(), nav = document.querySelector('nav');
-    const finish = () => { box.classList.remove('picking'); nav.removeEventListener('click', abandon, true); picking = false; status(''); };
-    const abandon = () => { pickPoint(null); finish(); dlg.remove(); };
+    const hint = 'Tap the spot for the waypoint';
+    status(hint);
+    const box = map.getContainer(), view = document.getElementById('view-map');
+    const left = new MutationObserver(() => { if (!view.classList.contains('active')) pickPoint(null); });
+    const finish = () => { box.classList.remove('picking'); left.disconnect(); picking = false; if ($('#status').textContent === hint) status(''); };
     box.classList.add('picking');
-    nav.addEventListener('click', abandon, true);
-    pickPoint(({ lat, lng }) => { finish(); dlg.showModal(); setLoc({ lat, lon: lng }); });
+    left.observe(view, { attributes: true, attributeFilter: ['class'] });
+    pickPoint(({ lat, lng }) => { finish(); dlg.showModal(); setLoc({ lat, lon: lng }); }, () => { finish(); dlg.remove(); });
   };
   $('#wpt-save', dlg).onclick = async e => {
     e.preventDefault();

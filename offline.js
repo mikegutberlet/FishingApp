@@ -20,19 +20,28 @@ const STATE_FILES = ['lakes', 'rivers', 'waters', 'plants', 'reservoirs', 'hydro
 const packId = lake => PREFIX + (lake.nhdId ? `nhd-${lake.nhdId}` : lake.id);
 
 // The area to save: the lake's size as a circle (lakes are rarely round, so generously) and its USGS survey, widened
-// to take in what you've logged on the water. Points more than ~3 km outside that (a catch logged from home, a stray
-// GPS fix) are left out, so they neither shrink the zoom range nor send tile requests around a private spot.
+// to take in what you've logged on the water. A logged point counts when it is within ~3 km of that, or within ~5 km
+// of the middle of everything you've logged there (a stretch of river, or an arm past the size estimate). Others (a
+// catch logged from home, a stray GPS fix) are left out, so they neither shrink the zoom range nor send tile requests
+// around a private spot.
 async function lakeBounds(lake) {
-  const km = lake.kind === 'river' || lake.lengthKm ? 3 : Math.max(0.8, Math.sqrt((lake.acres ?? 40) * 0.004047 / Math.PI) * 2.2);
-  const core = L.latLng(lake.lat, lake.lon).toBounds(km * 2000);
+  const river = lake.kind === 'river' || !!lake.lengthKm;
+  const km = river ? 3 : Math.max(0.8, Math.sqrt((lake.acres ?? 40) * 0.004047 / Math.PI) * 2.2);
+  const here = L.latLng(lake.lat, lake.lon), core = here.toBounds(km * 2000);
   for (const s of await CA.bathymetryFor(lake).catch(() => [])) core.extend([[s.bbox[1], s.bbox[0]], [s.bbox[3], s.bbox[2]]]);
   const near = L.latLngBounds(L.latLng(core.getSouth(), core.getWest()).toBounds(6000).getSouthWest(), L.latLng(core.getNorth(), core.getEast()).toBounds(6000).getNorthEast());
   const b = L.latLngBounds(core.getSouthWest(), core.getNorthEast());
-  const add = (lat, lon) => { if (Number.isFinite(lat) && Number.isFinite(lon) && near.contains([lat, lon])) b.extend([lat, lon]); };
+  const pts = [];
   if (!lake.unsaved) {
-    for (const set of await db.byLake('depthSets', lake.id)) for (let i = 0; i < set.points.length; i += 50) add(set.points[i][0], set.points[i][1]);
-    for (const store of ['catches', 'waypoints', 'notes']) for (const r of await db.byLake(store, lake.id)) if (r.lat != null) add(r.lat, r.lon);
+    for (const set of await db.byLake('depthSets', lake.id)) for (let i = 0; i < set.points.length; i += 50) pts.push(set.points[i]);
+    for (const store of ['catches', 'waypoints', 'notes']) for (const r of await db.byLake(store, lake.id)) if (r.lat != null) pts.push([r.lat, r.lon]);
   }
+  const ok = pts.map(([lat, lon]) => [+lat, +lon]).filter(([lat, lon]) => Number.isFinite(lat) && Number.isFinite(lon) && Math.abs(lat) <= 90 && Math.abs(lon) <= 180);
+  const median = i => ok.map(p => p[i]).sort((x, y) => x - y)[ok.length >> 1];
+  const mid = ok.length ? L.latLng(median(0), median(1)) : null;
+  // The middle only counts when it is on this water's side of the map, not where most of the log was typed in.
+  const fished = mid && mid.distanceTo(here) <= (river ? 25000 : km * 2000 + 5000) ? mid.toBounds(10000) : null;
+  for (const p of ok) if (near.contains(p) || fished?.contains(p)) b.extend(p);
   return b.pad(0.05);
 }
 
@@ -96,7 +105,7 @@ async function download(cache, urls, onProgress, signal, checkpoint) {
   await Promise.all(Array.from({ length: 6 }, worker));
 }
 
-// What the pack's cache really holds: total size, and which of this run's URLs are still missing.
+// What the pack's cache really holds: total size, and how many of the pack's URLs are still missing.
 async function survey(cache, urls) {
   const have = new Set((await cache.keys()).map(r => r.url));
   const sizes = await cache.matchAll();
@@ -129,7 +138,7 @@ export async function offlineDialog(lake) {
   const dlg = document.createElement('dialog');
   dlg.className = 'sheet';
   dlg.innerHTML = `<form class="form" method="dialog"><h3>Save ${esc(lake.name)} for offline</h3>
-    ${existing ? `<p class="small">Saved ${fmtDate(existing.savedAt)} · ${(existing.bytes / 1e6).toFixed(0)} MB · zoom ${existing.zMin}–${existing.zMax}. Downloading again updates it.</p>` : ''}
+    ${existing ? `<p class="small">Saved ${fmtDate(existing.savedAt)} · ${(existing.bytes / 1e6).toFixed(0)} MB · zoom ${existing.zMin}–${existing.zMax}. Downloading again updates it${existing.complete ? '' : ' and fetches what the last download missed'}.</p>` : ''}
     <p class="muted small">Saves the satellite map, the USGS depth chart and this app's California data for the lake on this phone, so the map, depth and stocking work with no signal. Your catches and depth scans are always on the phone already.</p>
     <p class="muted small">The satellite map is saved. The street map can't be downloaded in advance (OpenStreetMap doesn't allow it), but street areas you've already looked at stay cached.</p>
     <label>Area <select name="area"><option value="lake">The whole lake</option><option value="view">What the map shows now</option></select></label>
@@ -160,25 +169,29 @@ export async function offlineDialog(lake) {
     e.preventDefault();
     const { layers, bounds, plan: p } = choice();
     const surveys = await CA.bathymetryFor(lake).catch(() => []);
-    const urls = [...STATE_FILES, ...surveys.map(s => CA.bathymetryUrl(s.id)), ...tileUrls(bounds, layers, p.zMin, p.zMax)];
     const bar = $('#off-progress', dlg);
     bar.classList.remove('hidden');
     form.querySelectorAll('input, select, #off-go').forEach(el => el.disabled = true);
     $('#off-cancel', dlg).textContent = 'Stop';
-    // The description covers everything the cache holds, earlier downloads included, and is written before the first
-    // tile and every 250 tiles, so a download cut off by the phone (iOS stops background pages) still shows up in Data.
-    const old = existing?.bounds ? L.latLngBounds([existing.bounds[0], existing.bounds[1]], [existing.bounds[2], existing.bounds[3]]) : null;
-    const area = old ? L.latLngBounds(old.getSouthWest(), old.getNorthEast()).extend(bounds) : bounds;
-    const pack = { id, nhdId: lake.nhdId ?? null, lakeId: lake.unsaved ? null : lake.id, name: lake.name, layers,
-      zMin: Math.min(p.zMin, existing?.zMin ?? 99), zMax: Math.max(p.zMax, existing?.zMax ?? 0),
-      bounds: [area.getSouth(), area.getWest(), area.getNorth(), area.getEast()], bytes: existing?.bytes ?? 0, complete: false, savedAt: new Date().toISOString() };
+    // The pack remembers each area it was asked for (an earlier run's that this one doesn't cover stays on the list),
+    // and every run fetches whatever any of them still lacks, so downloading again always finishes the pack.
+    // The description is written before the first tile and every 250 tiles, so a download cut off by the phone
+    // (iOS stops background pages) still shows up in Data.
+    const box = b => L.latLngBounds([b[0], b[1]], [b[2], b[3]]);
+    const here = { bounds: [bounds.getSouth(), bounds.getWest(), bounds.getNorth(), bounds.getEast()], zMin: p.zMin, zMax: p.zMax };
+    const earlier = existing?.areas ?? (existing?.bounds ? [{ bounds: existing.bounds, zMin: existing.zMin, zMax: existing.zMax }] : []);
+    const areas = [...earlier.filter(a => !(bounds.contains(box(a.bounds)) && p.zMin <= a.zMin && p.zMax >= a.zMax)), here];
+    const all = areas.reduce((u, a) => u.extend(box(a.bounds)), box(here.bounds));
+    const urls = [...STATE_FILES, ...surveys.map(s => CA.bathymetryUrl(s.id)), ...new Set(areas.flatMap(a => tileUrls(box(a.bounds), layers, a.zMin, a.zMax)))];
+    const pack = { id, nhdId: lake.nhdId ?? null, lakeId: lake.unsaved ? null : lake.id, name: lake.name, layers, areas,
+      zMin: Math.min(...areas.map(a => a.zMin)), zMax: Math.max(...areas.map(a => a.zMax)),
+      bounds: [all.getSouth(), all.getWest(), all.getNorth(), all.getEast()], bytes: existing?.bytes ?? 0, complete: false, savedAt: new Date().toISOString() };
     const cache = await caches.open(id);
     const checkpoint = async () => { Object.assign(pack, await survey(cache, urls)); await writeMeta(cache, pack); };
     await writeMeta(cache, pack);
     await download(cache, urls, (n, total) => { bar.value = n / total; $('#off-est', dlg).textContent = `Downloading ${n.toLocaleString()} of ${total.toLocaleString()}…`; }, abort.signal, checkpoint);
     const { bytes, missing } = await survey(cache, urls);
-    // Complete when nothing from this run is missing and any earlier area was either complete or covered again now.
-    Object.assign(pack, { bytes, missing, complete: !missing && (!old || bounds.contains(old) || existing.complete === true), savedAt: new Date().toISOString() });
+    Object.assign(pack, { bytes, missing, complete: !missing, savedAt: new Date().toISOString() });
     await writeMeta(cache, pack);
     status(abort.signal.aborted ? 'Offline download stopped; what finished is saved' : `${lake.name} saved for offline${missing ? ` (${missing} tiles failed; download again to retry)` : ''}`);
     if (dlg.open) dlg.close();

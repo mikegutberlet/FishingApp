@@ -22,14 +22,19 @@ export function thermocline(readings) {
 }
 
 // "10 66", "10, 66" or "10: 66" per line (or separated by ;) → { readings: [[depthFt, tempF]], bad: [lines it couldn't read] }.
-// A comma between digits is a decimal comma when the line has another separator ("2,5 18,5" is 2.5 m at 18.5 °C).
+// A comma between digits can be a decimal comma when the line has another separator ("2,5 18,5" is 2.5 m at 18.5 °C).
+// Each line is read the first way that gives a depth and a water temperature that make sense (0–2,000 ft, 30–100 °F);
+// a line that makes sense neither way goes back to the user rather than into the profile.
 export function parseProfile(text, { meters = false, celsius = false } = {}) {
   const lines = text.split(/[\n;]+/).map(l => l.trim()).filter(Boolean);
-  const pairs = lines.map(l => (/[\s:=]/.test(l) ? l.replace(/(\d),(\d)/g, '$1.$2') : l).split(/[\s,:=]+/).filter(Boolean).map(Number));
-  const bad = lines.filter((_, i) => pairs[i].length !== 2 || !pairs[i].every(Number.isFinite));
-  const readings = pairs.filter(p => p.length === 2 && p.every(Number.isFinite))
-    .map(([d, t]) => [+(meters ? d * 3.28084 : d).toFixed(1), +(celsius ? t * 9 / 5 + 32 : t).toFixed(1)]).sort((a, b) => a[0] - b[0]);
-  return { readings, bad };
+  const read = l => {
+    const pair = l.split(/[\s,:=]+/).filter(Boolean).map(Number);
+    if (pair.length !== 2 || !pair.every(Number.isFinite)) return null;
+    const d = meters ? pair[0] * 3.28084 : pair[0], t = celsius ? pair[1] * 9 / 5 + 32 : pair[1];
+    return d >= 0 && d <= 2000 && t >= 30 && t <= 100 ? [+d.toFixed(1), +t.toFixed(1)] : null;
+  };
+  const parsed = lines.map(l => (/[\s:=]/.test(l) && read(l.replace(/(\d),(\d)/g, '$1.$2'))) || read(l));
+  return { readings: parsed.filter(Boolean).sort((a, b) => a[0] - b[0]), bad: lines.filter((_, i) => !parsed[i]) };
 }
 
 // Rows of numbers only. Scans and profiles can arrive in a friend's shared lake file, so nothing else reaches the page.
@@ -118,7 +123,7 @@ export async function renderTempCard(lake, el, redraw) {
     e.preventDefault();
     const f = Object.fromEntries(new FormData(e.target));
     const { readings, bad } = parseProfile(f.readings, { meters: f.units.startsWith('m'), celsius: f.units.endsWith('c') });
-    if (bad.length) return alert(`Couldn't read ${bad.length === 1 ? 'this line' : 'these lines'}: ${bad.join(' / ')}\nEach line needs a depth and a temperature, like "10 66".`);
+    if (bad.length) return alert(`Couldn't read ${bad.length === 1 ? 'this line' : 'these lines'}: ${bad.join(' / ')}\nEach line needs a depth and a water temperature in the units you picked, like "10 66".`);
     if (readings.length < 2) return alert('Enter at least two depth and temperature pairs, like "10 66".');
     await db.put('tempProfiles', { lakeId: lake.id, date: f.date, readings, note: f.note.trim(), createdAt: new Date().toISOString() });
     status('Profile saved');

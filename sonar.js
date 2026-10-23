@@ -9,6 +9,15 @@ const toTime = v => {
   if (/^\d{9,13}(\.\d+)?$/.test(v)) return +v > 1e11 ? +v : +v * 1000; // epoch ms or seconds
   return Date.parse(v);
 };
+// "2:03:05 PM", "9:05" or "14:03:05.5" → "14:03:05.5"-style padded 24-hour time, or null for anything else.
+const clock24 = c => {
+  const m = /^(\d{1,2}):(\d\d)(?::(\d\d)(\.\d+)?)?\s*(?:([ap])\.?m?\.?)?$/i.exec(String(c ?? '').trim());
+  if (!m) return null;
+  let h = +m[1];
+  const ap = m[5]?.toLowerCase();
+  if (ap) { if (h < 1 || h > 12) return null; h = h % 12 + (ap === 'p' ? 12 : 0); }
+  return h > 23 ? null : `${String(h).padStart(2, '0')}:${m[2]}:${m[3] ?? '00'}${m[4] ?? ''}`;
+};
 // Celsius unless the header says Fahrenheit; water in °F never reads below 32, water in °C rarely above 32.
 const isCelsius = (header, values) => /\(c\)|°c|celsius|_c$/.test(header) ? true : /\(f\)|°f|fahrenheit|_f$/.test(header) ? false
   : values.sort((a, b) => a - b)[values.length >> 1] <= 32;
@@ -32,8 +41,13 @@ export function sonarExtras(text, isXml) {
     const iTemp = header.findIndex(h => /temp/.test(h) && !/air/.test(h));
     const iTime = header.findIndex(h => /timestamp|datetime|^time|^date|utc/.test(h));
     const iClock = header.findIndex((h, i) => i !== iTime && /^time/.test(h)); // separate date and time columns
-    // Date and time in separate columns: join ISO dates with T, which every browser parses (iOS Safari rejects a space).
-    const when = r => iClock < 0 ? r[iTime] : `${r[iTime]}${/^\d{4}-\d\d-\d\d$/.test(r[iTime]) ? 'T' : ' '}${r[iClock]}`;
+    // Date and time in separate columns. An ISO date is joined to a padded 24-hour time with T, the one form every
+    // browser parses (iOS Safari rejects a space, Chrome rejects T before "2:03 PM"); anything else is joined with a space.
+    const when = r => {
+      if (iClock < 0) return r[iTime];
+      const t = /^\d{4}-\d\d-\d\d$/.test(r[iTime]) && clock24(r[iClock]);
+      return t ? `${r[iTime]}T${t}` : `${r[iTime]} ${r[iClock]}`;
+    };
     for (const r of lines) rows.push([num(r[iLat]), num(r[iLon]), iTemp >= 0 ? num(r[iTemp]) : NaN, iTime >= 0 ? toTime(when(r)) : NaN]);
     if (iTemp >= 0) celsius = isCelsius(header[iTemp], rows.map(r => r[2]).filter(Number.isFinite));
   }
