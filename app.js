@@ -8,6 +8,9 @@ import { $, showView, COMMON_SPECIES } from './ui.js';
 import { openLake, openWater } from './views/lake.js';
 import { addStateWater } from './views/lakes.js';
 import './views/log.js';
+import './views/journal.js';
+import { resumeTrip } from './views/trips.js';
+import './units.js';
 import './views/stats.js';
 import './views/settings.js';
 import './radar.js';
@@ -26,6 +29,7 @@ document.addEventListener('click', e => {
 // ---------- Startup ----------
 $('#species-list').innerHTML = COMMON_SPECIES.map(s => `<option value="${s}">`).join('');
 navigator.storage?.persist?.(); // ask the browser not to evict our data
+resumeTrip();
 if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js');
 refreshMap().then(async () => {
   const lakes = await db.all('lakes');

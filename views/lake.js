@@ -17,12 +17,17 @@ import { renderInfo } from './tabs/info.js';
 export async function openWater(w, tab = 'conditions') {
   const saved = (await db.all('lakes')).find(l => l.nhdId === String(w.id));
   if (saved) return openLake(saved.id, tab);
+  openLake(await waterRecord(w), tab);
+}
+
+// A lake record for a statewide water, not yet saved.
+export async function waterRecord(w) {
   const stocked = await CA.matchStockedWater(w);
-  openLake({
+  return {
     unsaved: true, nhdId: String(w.id), kind: w.kind, name: w.name, type: w.type, state: 'CA', lat: w.lat, lon: w.lon,
     acres: w.acres ?? null, elevationFt: w.elevationFt ?? null, maxDepth: w.maxDepthFt ?? null, meanDepth: w.meanDepthFt ?? null, depthSource: w.depthSource ?? null,
     lengthKm: w.km ?? null, cdfwStockId: stocked?.id ?? null, stockingUrl: stocked ? CA.waterUrl(stocked.id) : null,
-  }, tab);
+  };
 }
 
 export async function saveWater(lake, tab) {

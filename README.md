@@ -30,6 +30,15 @@ It is a PWA: open it once in Safari/Chrome, choose **Add to Home Screen**, and i
 * **Wind on the water:** which bank the wind is blowing into, with the next big shift; map layer *Wind on my lakes* puts a wind arrow on each saved water.
 * **Flow vs normal:** for USGS stream gauges, today's flow as a percent of the median for this date over the gauge's record, with a fishable / high / blown-out read on rivers.
 
+## Logging and journal
+
+* **Trip mode** (Journal → Start a trip, or the Log view): records your GPS track while the app is open, with big one-tap **Catch / Bite / Lost** buttons and a species picker built from your recent catches. Each tap is stamped with the time and your spot; add a length and photo right away or later. iPhones stop location updates when the screen locks, so trip mode keeps the screen on by default. The end-of-trip page shows time on the water, fish per hour, bites and lost fish, distance, and the track with every catch on a map.
+* **Journal**: a rating, who you fished with, a write-up and photos for each trip, or for a past day without trip mode. The timeline lists trips, catches and notes newest first.
+* **Personal bests and life list**: every species you've caught, when and where first, longest and heaviest, overall and per water. A blank weight is estimated from length with standard-weight formulas for the species (shown with ≈).
+* **Tackle box**: your lures and baits with photos; pick one on the catch form and see how many fish each has caught.
+* **From photos**: pick old fish photos and Tackle Box reads the date and GPS on the device, matches the water (yours or any California water), and makes draft catches to confirm.
+* **Units**: inches or cm, pounds or kg, feet or meters (Data view). Records are stored in inches, pounds and feet.
+
 ## California
 
 * **Find stocked waters**: Lakes → *Find California stocked waters* lists every CDFW-stocked lake and river, filtered to recent and upcoming plants, with one-tap *Add*. The map also has a *CA stocked waters* layer (green = planted in the last 30 days).
