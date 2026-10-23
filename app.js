@@ -12,6 +12,7 @@ import './views/stats.js';
 import './views/settings.js';
 import './radar.js';
 import './wind-layer.js';
+import { addSafetyLayers } from './safety-map.js';
 
 document.querySelectorAll('nav button').forEach(b => b.onclick = () => showView(b.dataset.view));
 
@@ -25,6 +26,7 @@ document.addEventListener('click', e => {
 
 // ---------- Startup ----------
 $('#species-list').innerHTML = COMMON_SPECIES.map(s => `<option value="${s}">`).join('');
+addSafetyLayers();
 navigator.storage?.persist?.(); // ask the browser not to evict our data
 if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js');
 refreshMap().then(async () => {

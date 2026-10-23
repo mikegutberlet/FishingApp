@@ -12,6 +12,8 @@ export const code = 'CA';
 export const name = 'California';
 export const waterUrl = stockId => `https://apps.wildlife.ca.gov/fishing/?stockid=${stockId}`;
 export const scheduleUrl = 'https://nrm.dfg.ca.gov/FishPlants/';
+// Nightly calendar feed of a stocked water's plants (scripts/build-ca-ics.mjs), as an absolute URL calendar apps can fetch.
+export const plantCalendarUrl = stockId => new URL(`data/ca/ics/${+stockId}.ics`, location.href).href;
 
 // Every CDFW stocked water with a map point, newest plant first, plus its planting history.
 export async function waters() {
@@ -132,3 +134,164 @@ export async function bathymetryFor(lake) {
 }
 
 export const bathymetryUrl = id => `data/ca/bathymetry/${id}.geojson`;
+
+// ---------- Water safety: algae advisories (nightly), fish advisories, regulations, access (weekly/monthly) ----------
+const isRiver = lake => lake.kind === 'river' || /river|creek|stream|slough|canal/i.test(lake.type ?? '');
+// How far from the water's point something can be and still belong to it.
+const reachKm = lake => isRiver(lake) ? 3 : Math.max(1.5, Math.sqrt((lake.acres ?? 50) / 247) * 1.5 + 0.5);
+const nameMatch = (a, b) => { const x = norm(a), y = norm(b); return x.length > 2 && y.length > 2 && (x === y || x.startsWith(y) || y.startsWith(x)); };
+
+export async function habAdvisories() {
+  return load('hab');
+}
+
+// Current toxic algae advisories on this water: a report on or near it, or one naming it nearby.
+export async function habFor(lake) {
+  const h = await load('hab');
+  const r = reachKm(lake);
+  return (h?.advisories ?? []).map(a => ({ ...a, distKm: Math.min(...a.pts.map(([lat, lon]) => haversineKm(lake.lat, lake.lon, lat, lon))) }))
+    .filter(a => a.distKm <= r + 0.5 || ((nameMatch(a.name, lake.name) || nameMatch(a.alt, lake.name)) && a.distKm <= 40));
+}
+
+// OEHHA advice on eating fish from this water, or the statewide advice for its kind of water.
+export async function fishAdviceFor(lake) {
+  const o = await load('oehha');
+  if (!o) return null;
+  // Nearby only counts for the same kind of water, so a lake page doesn't list every creek around it.
+  const streamName = n => /river|creek|stream|slough|canal/i.test(n) ? 'stream' : /lake|reservoir|pond|lagoon/i.test(n) ? 'lake' : null;
+  const kind = isRiver(lake) ? 'stream' : 'lake';
+  const site = o.advisories.map(a => ({ ...a, distKm: haversineKm(lake.lat, lake.lon, a.lat, a.lon) }))
+    .filter(a => (a.distKm <= reachKm(lake) + 1 && (streamName(a.name) ?? kind) === kind) || (a.name.split(/,| and /).some(n => nameMatch(n, lake.name)) && a.distKm <= 60))
+    .sort((a, b) => a.distKm - b.distKm);
+  const pick = re => o.statewide.find(s => re.test(s.name));
+  const statewide = isRiver(lake) ? pick(/rivers|streams/i) : pick(/lakes|reservoirs/i);
+  return { site, statewide, migrate: pick(/migrate/i), url: o.url, updatedAt: o.updatedAt };
+}
+
+// Boat ramps, piers, parking, campgrounds, marinas, rentals and tackle shops near the water (OpenStreetMap).
+export async function accessFor(lake) {
+  const a = await load('access');
+  if (!a) return null;
+  const r = reachKm(lake);
+  const limit = { ramp: r + 1, pier: r + 1, parking: r + 0.5, marina: r + 1, rental: r + 1, camp: r + 4, tackle: r + 15 };
+  const near = [];
+  for (const [lat, lon, kind, name, note] of a.places) {
+    if (Math.abs(lat - lake.lat) > 0.3 || Math.abs(lon - lake.lon) > 0.4) continue;
+    const distKm = haversineKm(lake.lat, lake.lon, lat, lon);
+    if (distKm <= (limit[kind] ?? r)) near.push({ lat, lon, kind, name, note, distKm });
+  }
+  return { places: near.sort((x, y) => x.distKm - y.distKm), updatedAt: a.updatedAt };
+}
+
+export async function accessPlaces() {
+  return (await load('access'))?.places ?? [];
+}
+
+// ---------- Fishing regulations (weekly build from Title 14, CCR) ----------
+const insideRing = ([x, y], ring) => {
+  let c = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const [xi, yi] = ring[i], [xj, yj] = ring[j];
+    if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) c = !c;
+  }
+  return c;
+};
+export async function countyAt(lat, lon) {
+  const c = await load('counties');
+  const hit = c?.counties.find(k => lon >= k.bbox[0] && lon <= k.bbox[2] && lat >= k.bbox[1] && lat <= k.bbox[3]
+    && k.polys.some(([outer, ...holes]) => insideRing([lon, lat], outer) && !holes.some(h => insideRing([lon, lat], h))));
+  return hit?.name ?? null;
+}
+
+// Regulation names say "Virginia Lakes, Upper and Lower" or "American River, North Fork"; NHD says "Upper Virginia Lake".
+const regKey = s => norm(String(s ?? '').replace(/\b(upper|lower)\b|\b(north|south|middle|east|west)\s+fork\b/gi, '').replace(/\blakes\b/gi, 'lake'));
+
+// Special regulations that name this water (or its county, for county-wide rules), and the statewide rules that apply.
+export async function regsFor(lake) {
+  const r = await load('regs');
+  if (!r) return null;
+  const county = await countyAt(lake.lat, lake.lon) ?? lake.county?.split(',')[0].trim() ?? null;
+  const kind = isRiver(lake) ? 'stream' : 'lake';
+  const key = regKey(lake.name);
+  const special = r.waters.filter(w => {
+    if (w.scope === 'district') return false;
+    if (w.counties.length && county && !w.counties.includes(county)) return false;
+    if (w.scope === 'county') return !!county;
+    if (w.water && w.water !== kind && !(w.tributariesOnly && kind === 'lake')) return false;
+    return key.length > 2 && [w.name, ...w.aliases].some(n => regKey(n) === key);
+  }).map(w => ({ ...w, parts: w.parts.map(p => ({ ...p, open: seasonOpen(p.season) })) }));
+  const statewide = r.statewide.filter(s => s.applies === 'all' || s.applies === kind);
+  return { county, kind, special, statewide, booklet: r.booklet, updatedAt: r.updatedAt };
+}
+
+// Is a season like "Last Sat. in Apr. through Nov. 15." open on a date? true / false, or null when the wording isn't understood.
+const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+const DAYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+const ORD = { first: 1, second: 2, third: 3, fourth: 4 };
+function seasonDay(phrase, year) {
+  const p = phrase.toLowerCase().replace(/^the\s+/, '').replace(/\./g, '').trim();
+  let m;
+  if ((m = p.match(/^(sun|mon|tue|wed|thu|fri|sat)\w*\s+preceding\s+(.+)$/))) {
+    const ref = seasonDay(m[2], year);
+    if (!ref) return null;
+    const d = new Date(ref); d.setDate(d.getDate() - 1);
+    while (d.getDay() !== DAYS.indexOf(m[1])) d.setDate(d.getDate() - 1);
+    return d;
+  }
+  if (/^memorial day$/.test(p)) { const d = new Date(year, 4, 31); while (d.getDay() !== 1) d.setDate(d.getDate() - 1); return d; }
+  if ((m = p.match(/^(first|second|third|fourth|last)\s+(sun|mon|tue|wed|thu|fri|sat)\w*\s+in\s+([a-z]{3})/))) {
+    const month = MONTHS.indexOf(m[3]), day = DAYS.indexOf(m[2]);
+    if (m[1] === 'last') { const d = new Date(year, month + 1, 0); while (d.getDay() !== day) d.setDate(d.getDate() - 1); return d; }
+    const d = new Date(year, month, 1); while (d.getDay() !== day) d.setDate(d.getDate() + 1); d.setDate(d.getDate() + 7 * (ORD[m[1]] - 1)); return d;
+  }
+  if ((m = p.match(/^last day (?:in|of) ([a-z]{3})/))) return new Date(year, MONTHS.indexOf(m[1]) + 1, 0);
+  if ((m = p.match(/^(?:(?:sun|mon|tue|wed|thu|fri|sat)\w*,?\s+)?([a-z]{3})[a-z]*\s+(\d{1,2})(?:st|nd|rd|th)?$/)) && MONTHS.includes(m[1])) return new Date(year, MONTHS.indexOf(m[1]), +m[2]);
+  return null;
+}
+export function seasonOpen(season, date = new Date()) {
+  const s = String(season ?? '').trim();
+  if (!s) return null;
+  if (/^closed to all fishing all year/i.test(s)) return false;
+  if (/^all year/i.test(s)) return true;
+  const m = s.replace(/\b(jan|feb|mar|apr|jun|jul|aug|sept?|oct|nov|dec|sun|mon|tue|wed|thu|fri|sat)\./gi, '$1').match(/^(.+?)\s+through\s+(.+?)(?:\.|,|$)/i);
+  if (!m) return null;
+  const day = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  for (const y of [day.getFullYear() - 1, day.getFullYear()]) {
+    const start = seasonDay(m[1], y);
+    if (!start) return null;
+    let end = seasonDay(m[2], y);
+    if (!end) return null;
+    if (end < start) end = seasonDay(m[2], y + 1); // e.g. Nov. 16 through the Fri. preceding the last Sat. in Apr.
+    if (day >= start && day <= end) return true;
+  }
+  return false;
+}
+
+// Warnings for a catch against the rules here: closed season, release-only, size limits, bag limit.
+// `kept` is how many of this species you've already kept here today. Returns plain-text strings.
+export async function catchWarnings(lake, { species = '', length, time, kept = 0, released = false } = {}) {
+  const regs = await regsFor(lake);
+  if (!regs || released) return [];
+  const when = time ? new Date(time) : new Date();
+  const out = [];
+  const group = /trout|steelhead|salmon/i.test(species) ? 'trout' : /\bbass\b/i.test(species) && !/striped|white/i.test(species) ? 'bass' : /catfish|bullhead/i.test(species) ? 'catfish' : null;
+  if (!group) return out;
+  const mine = regs.special.filter(w => !w.tributariesOnly && (group === 'bass' ? w.sec === '5.00' : group === 'catfish' ? w.sec === '5.15' : /^7\./.test(w.sec)));
+  for (const w of mine) {
+    const parts = w.parts.filter(p => !p.where || p.cont);
+    const ref = `§${w.sec}${w.ref}`;
+    const open = parts.map(p => seasonOpen(p.season, when));
+    if (parts.length && open.every(o => o === false)) out.push(`Closed season here on this date (${ref}).`);
+    const now = parts.find((p, i) => open[i] !== false) ?? parts[0];
+    const bag = now && parseInt(now.bag, 10);
+    if (now && bag === 0) out.push(`Catch and release only (${ref}).`);
+    else if (Number.isFinite(bag) && kept + 1 > bag) out.push(`Over the ${bag}-fish daily bag limit (${ref}).`);
+    const min = now?.size?.match(/(\d+)-inch minimum/i)?.[1];
+    if (min && length && +length < +min) out.push(`Under the ${min}-inch minimum size (${ref}).`);
+  }
+  if (!mine.length && group === 'trout' && kept + 1 > 5) out.push('Over the statewide 5-trout daily bag limit (§5.85).');
+  if (!mine.length && group === 'trout' && regs.kind === 'stream' && seasonOpen('Last Sat. in Apr. through Nov. 15.', when) === false) out.push('Statewide stream trout season is closed (0 bag, artificial barbless lures only) (§5.85).');
+  if (!mine.some(w => w.sec === '5.00') && group === 'bass' && regs.kind === 'lake' && length && +length < 12) out.push('Under the 12-inch minimum for black bass in lakes (§5.00).');
+  if (!mine.some(w => w.sec === '5.00') && group === 'bass' && kept + 1 > 5) out.push('Over the 5-bass daily bag limit (§5.00).');
+  return out;
+}

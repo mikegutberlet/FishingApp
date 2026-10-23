@@ -67,7 +67,7 @@ for (const [id, c] of cases) {
   if (!pts.length) continue;
   advisories.push({
     id: String(id), name: (r.Official_Water_Body_Name || r.Water_Body_Name || r.Case_Water_Body_Name || '').trim(), alt: (r.Case_Water_Body_Name ?? '').trim(),
-    landmark: r.Landmark ?? '', county: r.County ?? '', level, advisory: r.Advisory_Recommended ?? 'Not yet assessed', date: r.date,
+    landmark: (r.Landmark ?? '').trim(), county: r.County ?? '', level, advisory: r.Advisory_Recommended ?? 'Not yet assessed', date: r.date,
     observed: valid(r.Observation_Date), detail: r.AdvisoryDetail ?? '', description: (r.Advisory_Detail_Description ?? '').slice(0, 400), status: r.Case_Status ?? '', pts,
   });
 }

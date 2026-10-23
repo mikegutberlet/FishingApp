@@ -35,6 +35,10 @@ const SHELL = [
   'views/tabs/info.js',
   'views/tabs/notes.js',
   'views/tabs/stocking.js',
+  'views/tabs/safety.js',
+  'views/access.js',
+  'views/new-plants.js',
+  'safety-map.js',
 ];
 
 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())));

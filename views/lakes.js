@@ -4,6 +4,7 @@ import * as CA from '../states/ca.js';
 import { $, esc, fmtDate, showView, onShow } from '../ui.js';
 import { refreshMap, statewide as loadedStatewide } from '../map.js';
 import { openLake, openWater } from './lake.js';
+import { showNewPlantBadges } from './new-plants.js';
 
 export async function renderLakeList() {
   $('#lake-detail').classList.add('hidden');
@@ -12,10 +13,11 @@ export async function renderLakeList() {
   const lakes = (await db.all('lakes')).sort((a, b) => a.name.localeCompare(b.name));
   list.innerHTML = `<h2>Lakes & rivers</h2><div class="row" style="margin-bottom:12px"><button id="find-any" style="flex:1">🔎 Any California water</button><button id="find-waters" style="flex:1">🐟 Stocked waters</button></div>`
     + (lakes.length ? '' : `<div class="card muted">No waters yet. Find one above, or use “＋ Lake here” on the map.</div>`)
-    + lakes.map(l => `<div class="card lake-item" data-id="${l.id}"><div><b>${esc(l.name)}</b><div class="muted small">${esc(l.type)}${l.county ? ' · ' + esc(l.county) : ''}${l.state ? ', ' + esc(l.state) : ''}</div></div><span>›</span></div>`).join('');
+    + lakes.map(l => `<div class="card lake-item" data-id="${l.id}"><div><b>${esc(l.name)}</b> <span data-new-plants="${l.id}"></span><div class="muted small">${esc(l.type)}${l.county ? ' · ' + esc(l.county) : ''}${l.state ? ', ' + esc(l.state) : ''}</div></div><span>›</span></div>`).join('');
   list.querySelectorAll('.lake-item').forEach(el => el.onclick = () => openLake(el.dataset.id));
   $('#find-waters').onclick = renderFindWaters;
   $('#find-any').onclick = renderFindAny;
+  showNewPlantBadges(list, lakes);
 }
 
 // Search every named California lake, reservoir and river from the statewide list.

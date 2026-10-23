@@ -23,7 +23,7 @@ async function sql(q) {
   }
 }
 
-const clean = s => String(s ?? '').replace(/\s+/g, ' ').trim();
+const clean = s => String(s ?? '').replace(/(\w)\?(\w)/g, '$1-$2').replace(/\s+/g, ' ').trim(); // "Site?specific": a mangled hyphen
 // "Bass, Black" → "Black Bass"; "Catfish Species" stays.
 const species = s => clean(s).replace(/^([^,]+),\s*(.+)$/, '$2 $1');
 

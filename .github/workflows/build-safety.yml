@@ -49,7 +49,7 @@ jobs:
           exit ${PIPESTATUS[0]}
       - name: Commit changes
         run: |
-          for f in data/ca/regs.json data/ca/oehha.json data/ca/access.json data/ca/logs; do if [ -e "$f" ]; then git add "$f"; fi; done
+          for f in data/ca/regs.json data/ca/counties.json data/ca/oehha.json data/ca/access.json data/ca/logs; do if [ -e "$f" ]; then git add "$f"; fi; done
           if git diff --cached --quiet; then echo "No data changes"; exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898699+github-actions[bot]@users.noreply.github.com"

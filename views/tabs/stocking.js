@@ -4,6 +4,7 @@ import * as CA from '../../states/ca.js';
 import { parseStockingCsv } from '../../data-sources.js';
 import { $, esc, fmtDate, status } from '../../ui.js';
 import { openLake } from '../lake.js';
+import { isNew, markPlantsSeen } from '../new-plants.js';
 
 export async function renderStocking(lake, body) {
   if (lake.unsaved) {
@@ -69,10 +70,15 @@ async function renderStateStocking(lake, el) {
   const past = plants.filter(p => p.weekEnd < today);
   const perYear = Object.entries(past.reduce((m, p) => { const y = p.week.slice(0, 4); m[y] = (m[y] || 0) + 1; return m; }, {})).sort();
   const maxN = Math.max(1, ...perYear.map(r => r[1]));
+  const tag = p => isNew(lake, p) && !lake.unsaved ? ' <span class="badge">new</span>' : '';
+  const feed = CA.plantCalendarUrl(lake.cdfwStockId);
   el.innerHTML = `<div class="card"><h3>CDFW plants</h3>
-    ${upcoming.length ? `<p>🟢 <b>${upcoming.map(p => `${esc(p.species)} planned week of ${fmtDate(p.week)}`).join('<br>')}</b></p>` : ''}
-    ${past.length ? `<p class="small">Last plant: week of ${fmtDate(past[0].week)} (${esc(past[0].species)})</p>` : '<p class="muted small">No plants in the schedule window yet.</p>'}
+    ${upcoming.length ? `<p>🟢 <b>${upcoming.map(p => `${esc(p.species)} planned week of ${fmtDate(p.week)}${tag(p)}`).join('<br>')}</b></p>` : ''}
+    ${past.length ? `<p class="small">Last plant: week of ${fmtDate(past[0].week)} (${esc(past[0].species)})${tag(past[0])}</p>` : '<p class="muted small">No plants in the schedule window yet.</p>'}
+    <p class="small">📅 Subscribe to plants: <a href="${esc(feed.replace(/^https?:/, 'webcal:'))}">iPhone / Mac calendar</a> · <a href="https://calendar.google.com/calendar/r?cid=${encodeURIComponent(feed.replace(/^https?:/, 'webcal:'))}" target="_blank" rel="noopener">Google Calendar</a> · <a href="${esc(feed)}" download>.ics file</a>
+      <br><span class="muted">Your calendar app checks this water's public plant feed on this app's site; no account, and no list of who subscribed.</span></p>
     ${perYear.length ? `<div class="bars">${perYear.map(([y, n]) => `<div class="barrow"><span class="lbl">${y}</span><div class="fill" style="width:${n / maxN * 70}%"></div><span>${n} plant${n > 1 ? 's' : ''}</span></div>`).join('')}</div>` : ''}
     ${past.length ? `<details><summary class="small">All ${past.length} plants</summary><table>${past.map(p => `<tr><td>${fmtDate(p.week)}</td><td>${esc(p.species)}</td></tr>`).join('')}</table></details>` : ''}
     <p class="muted small">CDFW publishes the week and species, not counts. History grows each night from the public schedule. <a href="${CA.waterUrl(lake.cdfwStockId)}" target="_blank" rel="noopener">CDFW map ↗</a></p></div>`;
+  markPlantsSeen(lake, plants);
 }

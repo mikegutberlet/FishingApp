@@ -1,6 +1,7 @@
 // Info tab: basic facts and links for the water.
 import * as CA from '../../states/ca.js';
 import { esc } from '../../ui.js';
+import { renderAccess } from '../access.js';
 
 export function renderInfo(lake, body) {
   const field = (k, v) => v ? `<tr><th>${k}</th><td>${esc(v)}</td></tr>` : '';
@@ -11,5 +12,7 @@ export function renderInfo(lake, body) {
     ${field('Regulations', lake.regs)}${field('Access', lake.access)}${field('Coordinates', `${lake.lat.toFixed(5)}, ${lake.lon.toFixed(5)}`)}
   </table>${lake.infoUrl ? `<p><a href="${esc(lake.infoUrl)}" target="_blank" rel="noopener">State lake page ↗</a></p>` : ''}
   ${lake.cdfwStockId ? `<p><a href="${CA.waterUrl(lake.cdfwStockId)}" target="_blank" rel="noopener">CDFW fishing guide for this water ↗</a></p>` : ''}
-  <p class="muted small">${lake.unsaved ? 'Names, size and elevation from the USGS National Hydrography Dataset.' : 'Tap Edit to fill in details from your state lake page.'}</p></div>`;
+  <p class="muted small">${lake.unsaved ? 'Names, size and elevation from the USGS National Hydrography Dataset.' : 'Tap Edit to fill in details from your state lake page.'}</p></div><div id="access"></div>`;
+  renderAccess(lake, body.querySelector('#access'));
+  if (!lake.county) CA.countyAt(lake.lat, lake.lon).then(c => c && body.querySelector('table')?.insertAdjacentHTML('afterbegin', field('County', c)));
 }
