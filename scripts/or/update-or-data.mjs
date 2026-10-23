@@ -539,10 +539,11 @@ async function habAdvisories(waters) {
     const lat = +field(it, /^lat|latitude/i), lon = +field(it, /^lon|^long|longitude/i);
     // "South Umpqua River and mainstream Umpqua River" is two waters; "Lake X" is also "X Lake".
     const names = name.split(/[(,]/)[0].split(/\s+and\s+/).map(n => n.replace(/\b(mainstream|mainstem)\s+/i, '').trim()).filter(Boolean);
-    const keys = new Set(names.flatMap(n => [kindKey(n), kindKey(n.replace(/^Lake\s+(.+)$/i, '$1 Lake'))]));
+    const keys = new Set(names.flatMap(n => [kindKey(n), kindKey(n.replace(/^Lake\s+(.+)$/i, '$1 Lake')), kindKey(n.replace(/^(.+?)\s+(Lake|Reservoir)$/i, 'Lake $1'))]));
     // Only a same-named water in the county OHA gives: Oregon has several Willow Creek Reservoirs and Blue Lakes.
+    // A point in no county is on the state line (Hells Canyon's NHD point is midstream).
     const counties = county.split(/\s+and\s+|\s*\/\s*|\s*,\s*/).filter(Boolean);
-    const inCounty = c => !counties.length || !COUNTIES.length || counties.includes(countyAt(c.lat, c.lon));
+    const inCounty = c => { if (!counties.length || !COUNTIES.length) return true; const at = countyAt(c.lat, c.lon); return !at || counties.includes(at); };
     const spot = Number.isFinite(lat) && lat && Number.isFinite(lon) && lon ? { lat: round(lat), lon: round(lon) }
       : lakes.filter(l => keys.has(kindKey(l.name)) && inCounty(l)).sort((a, b) => b.acres - a.acres)[0] ?? waters.find(w => w.lat != null && keys.has(kindKey(w.name)) && inCounty(w));
     const permanent = /permanent/i.test(`${status} ${name}`);
