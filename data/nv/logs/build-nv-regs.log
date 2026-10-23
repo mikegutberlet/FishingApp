@@ -1,64 +1,20 @@
 {
- "statewide": [
-  "# General Statewide Regulations (3p 3r)",
-  "## License Requirements (1p 0r)",
-  "## Daily Limit (3p 0r)",
-  "## Possession Limit (7p 0r)",
-  "## Size Limit (1p 0r)",
-  "## Seasons and Hours (1p 0r)",
-  "## “Fishes,” “Fishing,” “Fished” and “To Fish” Defined (1p 0r)",
-  "## Filleting Fish (1p 0r)",
-  "## Methods of Fishing (1p 0r)",
-  "## Spearfishing/Bowfishing (1p 0r)",
-  "## General Statewide Bait Use (7p 0r)",
-  "## Chumming (1p 0r)",
-  "## Unprotected Fish (1p 0r)",
-  "## Ice Fishing (2p 0r)",
-  "## Artificial Lures (1p 0r)",
-  "## Artificial Lures with Single Barbless Hooks (1p 0r)",
-  "## Northern Pike (1p 0r)",
-  "## Game Fish Transportation (1p 0r)",
-  "## Bullfrogs (1p 0r)",
-  "## Crayfish (1p 0r)",
-  "## Coldwater Game Fish (1p 0r)",
-  "## Warmwater Game Fish (1p 0r)",
-  "## Protected Fish and Amphibians (43p 0r)"
- ],
- "western": [
-  "# Western Region Regulations (4p 3r)",
-  "## Western Region General Regulations (2p 0r)",
-  "## Western Region Daily Limits (2p 0r)",
-  "## Possession Limits (1p 0r)",
-  "## Artificial Lure Waters (1p 0r)",
-  "## Bait Regulations (5p 74r)",
-  "#### The Nevada Division of Public and Behavioral Health has issued health advisories that recommend limited consumption of fish species due to elevated mercury levels in their flesh. For more information about mercury in fish, visit the Nevada Department of Wildlife mercury in fish blog . (27p 8r)"
- ],
- "southern": [
-  "# Southern Region Regulations (4p 3r)",
-  "## Southern Region General Regulations (2p 0r)",
-  "## Southern Region Daily Limits (2p 0r)",
-  "## Possession Limits (1p 0r)",
-  "## Bait Regulations (1p 0r)",
-  "## Tackle Restrictions (1p 0r)",
-  "## Artificial Lure Waters (1p 0r)",
-  "## Spearfishing (34p 33r)"
- ],
- "eastern": [
-  "# Eastern Region Regulations (4p 2r)",
-  "## Eastern Region General Regulations (1p 0r)",
-  "## Eastern Region Daily Limits (2p 0r)",
-  "## Possession Limits (1p 0r)",
-  "## Artificial Lure Waters (1p 0r)",
-  "## Bait Regulations (5p 0r)",
-  "#### The Nevada Division of Public and Behavioral Health has issued health advisories that recommend limited consumption of fish species due to elevated mercury levels in their flesh. For more information about mercury levels in fish, visit the Nevada Department of Wildlife mercury in fish blog . (28p 32r)"
- ],
- "stripers": [
-  "# New Striper Limit on Lakes Mead and Mohave (40p 0r)"
- ],
- "baitfish": [
-  "# Fishing with Bait Fish (2p 0r)",
-  "## Eastern Region (1p 0r)",
-  "## Southern Region (2p 12r)",
-  "## Western Region (29p 0r)"
- ]
+ "statewide": {},
+ "western": {
+  "waters": 32,
+  "advisories": 4,
+  "closed": 7
+ },
+ "southern": {
+  "waters": 18,
+  "advisories": 0,
+  "closed": 3
+ },
+ "eastern": {
+  "waters": 11,
+  "advisories": 1,
+  "closed": 4
+ },
+ "stripers": {},
+ "baitfish": {}
 }
