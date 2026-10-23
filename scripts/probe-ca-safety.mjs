@@ -1,53 +1,38 @@
-// Temporary: logs what the safety-data sources look like from a GitHub runner. Removed before merge. Round 2.
+// Temporary: logs what the safety-data sources look like from a GitHub runner. Removed before merge. Round 3.
 const UA = { 'User-Agent': 'TackleBox-fishing-app (personal, github.com/mikegutberlet/FishingApp)' };
-const strip = s => s.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi, '').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ');
+const text = s => s.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
 async function get(url, init) {
   try {
     const r = await fetch(url, { ...init, headers: { ...UA, ...init?.headers }, signal: AbortSignal.timeout(200000) });
     const body = await r.text();
-    console.log(`\n=== ${r.status} ${url} (${body.length} bytes, ${r.headers.get('content-type')})`);
+    console.log(`\n=== ${r.status} ${url} (${body.length} bytes)`);
     return body;
   } catch (e) { console.log(`\n=== FAIL ${url}: ${e.message}`); return ''; }
 }
+const sql = async q => { const j = await get(`https://data.ca.gov/api/3/action/datastore_search_sql?sql=${encodeURIComponent(q)}`); try { for (const r of JSON.parse(j).result.records) { delete r._full_text; console.log(JSON.stringify(r)); } } catch { console.log(j.slice(0, 800)); } };
 
-for (const id of ['c6a36b91-ad38-4611-8750-87ee99e497dd', '7805faef-ed21-43e9-a13e-4920a9440bb8', '55b9a341-04e1-4f4a-9839-6eb36e6cc8ed']) {
-  const j = await get(`https://data.ca.gov/api/3/action/datastore_search?resource_id=${id}&limit=3&sort=_id%20desc`);
-  try { const r = JSON.parse(j).result; console.log('total', r.total, 'fields', r.fields.map(f => `${f.id}:${f.type}`).join(', ')); for (const x of r.records) console.log(JSON.stringify(x)); } catch { console.log(j.slice(0, 500)); }
-}
-// Distinct values for advisory level fields in bloom reports (field names guessed from round 1 output below)
-const sql = encodeURIComponent('SELECT * FROM "c6a36b91-ad38-4611-8750-87ee99e497dd" LIMIT 1');
-console.log((await get(`https://data.ca.gov/api/3/action/datastore_search_sql?sql=${sql}`)).slice(0, 1500));
+const HAB = 'c6a36b91-ad38-4611-8750-87ee99e497dd';
+await sql(`SELECT "Advisory_Recommended", "Reported_Advisory_Types", "Case_Status", count(*) n FROM "${HAB}" GROUP BY 1,2,3 ORDER BY n DESC LIMIT 60`);
+await sql(`SELECT "Bloom_Report_ID","Case_ID","Water_Body_Name","Official_Water_Body_Name","Case_Water_Body_Name","County","Observation_Date","Advisory_Recommended","AdvisoryStartDate","AdvisoryEndDate","Advisory_Date","Case_Status","Case_End_Date","Last_Field_Result_Sample_Date","AdvisoryDetail","Advisory_Detail_Description" FROM "${HAB}" WHERE "Observation_Date" > '2026-06-01' AND "Advisory_Recommended" IS NOT NULL ORDER BY "Observation_Date" DESC LIMIT 40`);
+await sql(`SELECT count(*) FROM "${HAB}" WHERE "Case_Status" = 'Open'`);
 
-for (const layer of [0, 1, 2]) {
-  const base = `https://gispublic.waterboards.ca.gov/arcgis/rest/services/WQMC/WQMC_Fish_Advisories/MapServer/${layer}`;
-  const meta = await get(`${base}?f=json`);
-  try { const m = JSON.parse(meta); console.log(m.name, m.geometryType, (m.fields ?? []).map(f => f.name).join(', ')); } catch { console.log(meta.slice(0, 300)); }
-  console.log((await get(`${base}/query?where=1%3D1&outFields=*&returnGeometry=true&outSR=4326&resultRecordCount=2&f=json`)).slice(0, 2500));
-  console.log((await get(`${base}/query?where=1%3D1&returnCountOnly=true&f=json`)).slice(0, 200));
-}
+const SERV = '55b9a341-04e1-4f4a-9839-6eb36e6cc8ed';
+await sql(`SELECT count(*) FROM "${SERV}" WHERE "Advisory" IS NOT NULL`);
+await sql(`SELECT * FROM "${SERV}" WHERE "Advisory" IS NOT NULL ORDER BY "_id" LIMIT 40`);
+await sql(`SELECT * FROM "${SERV}" WHERE "Advisory" = 'Lake Berryessa'`);
 
-// LII statewide sections
-for (const sec of ['7.00', '5.00', '1.05', '7.50']) {
+// LII: district general regulations table and species sections
+for (const sec of ['7.00', '5.00']) {
   const h = await get(`https://www.law.cornell.edu/regulations/california/14-CCR-${sec}`);
-  const i = h.indexOf('<h1');
-  console.log(strip(h.slice(i)).slice(0, sec === '7.50' ? 2500 : 7000));
-  console.log('section links:', [...new Set([...h.matchAll(/href="\/regulations\/california\/14-CCR-([\d.]+)"/g)].map(m => m[1]))].join(' '));
-  if (sec === '7.50') {
-    console.log('rows', (h.match(/<tr/g) ?? []).length, 'tables', (h.match(/<table/g) ?? []).length);
-    const t = strip(h); const k = t.indexOf('(b)'); console.log(t.slice(k - 300, k + 1200));
-    const lakes = [...h.matchAll(/<td>\s*\((\d+(?:\.\d+)?)\)\s*([^<]{0,120})/g)].map(m => `${m[1]} ${m[2].replace(/\s+/g, ' ')}`);
-    console.log(lakes.length, 'numbered entries'); console.log(lakes.join('\n'));
-  }
+  const body = h.slice(h.indexOf('<h1'));
+  const firstTable = body.indexOf('<table');
+  console.log('BEFORE TABLE:', text(body.slice(0, firstTable)).slice(-3000));
+  for (const [, row] of body.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/gi)) console.log('ROW', [...row.matchAll(/<t[dh][^>]*>([\s\S]*?)<\/t[dh]>/gi)].map(m => text(m[1])).join(' | ').slice(0, 400));
+  console.log('AFTER TABLE:', text(body.slice(body.lastIndexOf('</table>'))).slice(0, 1500));
 }
-let h = await get('https://www.law.cornell.edu/regulations/california/title-14/division-1/subdivision-1/chapter-4');
-console.log([...new Set([...h.matchAll(/href="\/regulations\/california\/14-CCR-([\d.]+)"[^>]*>([^<]+)/g)].map(m => `${m[1]} ${m[2]}`))].join('\n'));
-
-// Overpass: the real access query, counts only
-const q = `[out:json][timeout:300];area["ISO3166-2"="US-CA"]->.ca;
-(nwr["leisure"="slipway"](area.ca);)->.ramps;
-(nwr["leisure"="fishing"](area.ca);nwr["man_made"="pier"]["fishing"~"yes|designated"](area.ca);)->.fish;
-(nwr["tourism"="camp_site"](area.ca);)->.camp;
-(nwr["leisure"="marina"](area.ca);nwr["amenity"="boat_rental"](area.ca);nwr["shop"="fishing"](area.ca);)->.other;
-(nwr["amenity"="parking"](around.ramps:250);nwr["amenity"="parking"](around.fish:150);)->.park;
-.ramps out count;.fish out count;.camp out count;.other out count;.park out count;`;
-console.log((await get('https://overpass-api.de/api/interpreter', { method: 'POST', body: new URLSearchParams({ data: q }) })).slice(0, 3000));
+for (const sec of ['5.10', '5.15', '5.25', '5.30', '5.45', '5.50', '5.55', '5.60', '5.65', '5.70', '5.75', '5.80', '5.85', '5.87', '5.88', '5.90', '5.95', '7.40', '8.00', '1.74', '2.00', '2.05', '2.10']) {
+  const h = await get(`https://www.law.cornell.edu/regulations/california/14-CCR-${sec}`);
+  if (!h) continue;
+  const body = h.slice(h.indexOf('<h1'));
+  console.log(text(body).slice(0, 900));
+}
