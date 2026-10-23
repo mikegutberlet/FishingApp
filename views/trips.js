@@ -17,7 +17,7 @@ let miniMap = null;
 export async function activeTrip() {
   const id = localStorage.getItem(KEY);
   // Another tab of the app ended this trip or started a new one: stop following the old one here.
-  if (trip && trip.id !== id) { stopTracking(); trip = null; updatePill(); }
+  if (trip && trip.id !== id) { const old = trip; stopTracking(); trip = null; updatePill(); await flush(old); }
   if (trip) return trip;
   const t = id && await db.get('trips', id);
   return t && !t.end ? t : null;
@@ -25,8 +25,19 @@ export async function activeTrip() {
 
 const fmtDur = ms => { const m = Math.max(0, Math.round(ms / 60e3)); return m < 60 ? `${m} min` : `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, '0')} min`; };
 const clock = ms => { const s = Math.max(0, Math.floor(ms / 1000)); return `${Math.floor(s / 3600)}:${String(Math.floor(s / 60) % 60).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; };
-// Track points as [lat, lon, ms]; a damaged or hand-edited backup can hold anything, so bad points are skipped.
-const trackOf = t => (Array.isArray(t.track) ? t.track : []).filter(p => Array.isArray(p) && Number.isFinite(p[0]) && Number.isFinite(p[1]));
+// Track points are [lat, lon, ms]. A damaged or hand-edited backup can hold anything: numbers written as text are
+// read as numbers, and points without a position are skipped.
+const num = v => typeof v === 'string' && v.trim() ? Number(v) : v;
+const trackOf = t => (Array.isArray(t.track) ? t.track : []).filter(Array.isArray)
+  .map(([lat, lon, ms]) => [num(lat), num(lon), ms]).filter(p => Number.isFinite(p[0]) && Number.isFinite(p[1]));
+const pointTime = ms => { const d = new Date(typeof ms === 'string' && ms.trim() && isFinite(ms) ? +ms : ms ?? NaN); return isNaN(d) ? null : d; };
+// Two tabs can follow the same trip, each with its own copy of the track. Saving adds this tab's points to the stored
+// ones (up to the trip's end, if another tab ended it) instead of replacing them.
+function withTrack(saved, mine) {
+  const have = new Set(trackOf(saved).map(p => p[2])), end = saved.end ? Date.parse(saved.end) : Infinity;
+  const add = mine.filter(p => !have.has(p[2]) && p[2] <= end);
+  return add.length ? { ...saved, track: [...trackOf(saved), ...add].sort((a, b) => a[2] - b[2]) } : saved;
+}
 const trackKm = track => track.reduce((km, p, i) => i ? km + haversineKm(track[i - 1][0], track[i - 1][1], p[0], p[1]) : 0, 0);
 const tripCatches = async t => (await db.all('catches')).filter(c => c.tripId === t.id).sort((a, b) => a.time.localeCompare(b.time));
 const tripEvents = async t => (await db.all('events')).filter(e => e.tripId === t.id);
@@ -111,11 +122,12 @@ function onFix(p) {
   if (++dirty >= 10) flush();
 }
 
-async function flush() {
-  if (!trip || !dirty) return;
+async function flush(t = trip) {
+  if (!t || !dirty) return;
   dirty = 0;
-  const saved = await db.get('trips', trip.id);
-  if (saved) await db.put('trips', { ...saved, track: trip.track });
+  const saved = await db.get('trips', t.id);
+  const next = saved && withTrack(saved, t.track);
+  if (next && next !== saved) await db.put('trips', next);
 }
 
 // Where you are now if the GPS fix is fresh, otherwise the water's own position.
@@ -145,9 +157,9 @@ $('#trip-pill').onclick = () => trip && openTrip(trip.id);
 
 // ---------- Trip page ----------
 export async function openTrip(id) {
+  const active = await activeTrip(); // first: forgets a trip another tab ended, so it's read fresh below
   let t = trip?.id === id ? trip : await db.get('trips', id);
   if (!t) return;
-  const active = await activeTrip();
   if (!t.end && active?.id === id && !trip) { trip = t; startTracking(); }
   // An unfinished trip that isn't running here (e.g. restored from a backup) is closed at its last activity.
   if (!t.end && active?.id !== id) t = await closeStale(t);
@@ -157,7 +169,7 @@ export async function openTrip(id) {
 
 export async function closeStale(t) {
   if (t.id === localStorage.getItem(KEY)) return t; // the running trip (maybe in another tab) is never closed here
-  const times = [...(await tripCatches(t)).map(c => c.time), ...(await tripEvents(t)).map(e => e.time), ...trackOf(t).map(p => new Date(p[2])).filter(d => !isNaN(d)).map(d => d.toISOString())];
+  const times = [...(await tripCatches(t)).map(c => c.time), ...(await tripEvents(t)).map(e => e.time), ...trackOf(t).map(p => pointTime(p[2])).filter(Boolean).map(d => d.toISOString())];
   const end = times.reduce((a, b) => b > a ? b : a, t.start);
   return db.put('trips', { ...t, end });
 }
@@ -259,8 +271,8 @@ async function endTrip(t) {
   const saved = await db.get('trips', t.id);
   if (running) { trip = null; if (localStorage.getItem(KEY) === t.id) localStorage.removeItem(KEY); stopTracking(); updatePill(); }
   if (!saved) return showView('journal'); // removed meanwhile, e.g. by restoring a backup
-  if (saved.end && !running) return renderSummary(saved); // already ended elsewhere: keep its end time
-  const ended = await db.put('trips', { ...saved, track: running ? t.track : saved.track, end: new Date().toISOString() });
+  if (saved.end && !running) return renderSummary(saved); // already ended in another tab: keep its end time
+  const ended = await db.put('trips', { ...(running ? withTrack(saved, t.track) : saved), end: new Date().toISOString() });
   await linkCatches(ended);
   renderSummary(ended);
 }
