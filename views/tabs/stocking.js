@@ -1,0 +1,78 @@
+// Stocking tab: CDFW plants for the water, plus your own stocking records.
+import { db } from '../../db.js';
+import * as CA from '../../states/ca.js';
+import { parseStockingCsv } from '../../data-sources.js';
+import { $, esc, fmtDate, status } from '../../ui.js';
+import { openLake } from '../lake.js';
+
+export async function renderStocking(lake, body) {
+  if (lake.unsaved) {
+    body.innerHTML = `<div id="state-stock"><div class="card muted">No CDFW stocking found for this water.</div></div><p class="muted small">Save this water to keep your own stocking notes.</p>`;
+    renderStateStocking(lake, $('#state-stock'));
+    return;
+  }
+  const rows = (await db.byLake('stocking', lake.id)).sort((a, b) => b.date.localeCompare(a.date));
+  const byYear = {};
+  for (const r of rows) { const y = r.date.slice(0, 4); byYear[y] ??= {}; byYear[y][r.species] = (byYear[y][r.species] || 0) + (r.count || 0); }
+  const years = Object.keys(byYear).sort();
+  const yearTotals = years.map(y => [y, Object.values(byYear[y]).reduce((a, b) => a + b, 0)]);
+  const maxTotal = Math.max(1, ...yearTotals.map(t => t[1]));
+  body.innerHTML = `<div id="state-stock"></div><div class="card"><h3>${lake.cdfwStockId ? 'Your stocking notes' : 'Stocking history'}</h3>
+      ${lake.stockingUrl ? `<p class="small"><a href="${esc(lake.stockingUrl)}" target="_blank" rel="noopener">Latest state stocking report ↗</a></p>` : '<p class="muted small">Add your state’s stocking report link under Edit.</p>'}
+      ${years.length ? `<div class="bars">${yearTotals.map(([y, t]) => `<div class="barrow"><span class="lbl">${y}</span><div class="fill" style="width:${t / maxTotal * 70}%"></div><span>${t.toLocaleString()}</span></div>`).join('')}</div>` : '<p class="muted">No stocking records yet.</p>'}
+    </div>
+    <form class="card form" id="stock-form"><h3>Add a stocking event</h3>
+      <div class="row"><label>Date <input name="date" type="date" required></label><label>Species <input name="species" list="species-list" required></label></div>
+      <div class="row"><label>Number <input name="count" type="number"></label><label>Size <input name="size" placeholder="fingerling, 7 in…"></label></div>
+      <button class="primary">Add</button>
+      <label class="file-btn" style="margin-top:8px">Import CSV (date, species, number, size) <input type="file" accept=".csv" hidden id="stock-csv"></label>
+    </form>
+    ${rows.length ? `<div class="card"><table><tr><th>Date</th><th>Species</th><th>Number</th><th>Size</th><th></th></tr>
+      ${rows.map(r => `<tr><td>${esc(r.date)}</td><td>${esc(r.species)}</td><td>${r.count?.toLocaleString() ?? ''}</td><td>${esc(r.size)}</td><td><a href="#" data-del="${r.id}">✕</a></td></tr>`).join('')}</table></div>` : ''}`;
+  renderStateStocking(lake, $('#state-stock'));
+  $('#stock-form').onsubmit = async e => {
+    e.preventDefault();
+    const f = Object.fromEntries(new FormData(e.target));
+    await db.put('stocking', { lakeId: lake.id, ...f, count: f.count ? +f.count : null });
+    openLake(lake.id, 'stocking');
+  };
+  $('#stock-csv').onchange = async e => {
+    try {
+      const recs = parseStockingCsv(await e.target.files[0].text());
+      for (const r of recs) await db.put('stocking', { lakeId: lake.id, ...r });
+      status(`Imported ${recs.length} stocking records`);
+      openLake(lake.id, 'stocking');
+    } catch (err) { alert(err.message); }
+  };
+  body.querySelectorAll('[data-del]').forEach(a => a.onclick = async e => { e.preventDefault(); await db.del('stocking', a.dataset.del); openLake(lake.id, 'stocking'); });
+}
+
+async function renderStateStocking(lake, el) {
+  if (lake.state?.toUpperCase() !== 'CA') return;
+  if (!lake.cdfwStockId) {
+    const near = await CA.nearestWaters(lake.lat, lake.lon);
+    if (!near.length || !el.isConnected) return;
+    el.innerHTML = `<div class="card"><h3>Link to CDFW stocking</h3><p class="small">Pick the matching water to get California's planting schedule automatically.</p>
+      ${near.slice(0, 5).map(w => `<div class="lake-item" style="margin:6px 0"><span>${esc(w.name)} <span class="muted small">${w.distKm.toFixed(1)} km</span></span><button data-link="${w.id}">Link</button></div>`).join('')}</div>`;
+    el.querySelectorAll('[data-link]').forEach(b => b.onclick = async () => {
+      const linked = { ...lake, cdfwStockId: +b.dataset.link, stockingUrl: lake.stockingUrl || CA.waterUrl(b.dataset.link) };
+      if (lake.unsaved) return openLake(linked, 'stocking');
+      await db.put('lakes', linked);
+      openLake(lake.id, 'stocking');
+    });
+    return;
+  }
+  const plants = await CA.plantsFor(lake.cdfwStockId);
+  if (!el.isConnected) return;
+  const today = new Date().toISOString().slice(0, 10);
+  const upcoming = plants.filter(p => p.weekEnd >= today);
+  const past = plants.filter(p => p.weekEnd < today);
+  const perYear = Object.entries(past.reduce((m, p) => { const y = p.week.slice(0, 4); m[y] = (m[y] || 0) + 1; return m; }, {})).sort();
+  const maxN = Math.max(1, ...perYear.map(r => r[1]));
+  el.innerHTML = `<div class="card"><h3>CDFW plants</h3>
+    ${upcoming.length ? `<p>🟢 <b>${upcoming.map(p => `${esc(p.species)} planned week of ${fmtDate(p.week)}`).join('<br>')}</b></p>` : ''}
+    ${past.length ? `<p class="small">Last plant: week of ${fmtDate(past[0].week)} (${esc(past[0].species)})</p>` : '<p class="muted small">No plants in the schedule window yet.</p>'}
+    ${perYear.length ? `<div class="bars">${perYear.map(([y, n]) => `<div class="barrow"><span class="lbl">${y}</span><div class="fill" style="width:${n / maxN * 70}%"></div><span>${n} plant${n > 1 ? 's' : ''}</span></div>`).join('')}</div>` : ''}
+    ${past.length ? `<details><summary class="small">All ${past.length} plants</summary><table>${past.map(p => `<tr><td>${fmtDate(p.week)}</td><td>${esc(p.species)}</td></tr>`).join('')}</table></details>` : ''}
+    <p class="muted small">CDFW publishes the week and species, not counts. History grows each night from the public schedule. <a href="${CA.waterUrl(lake.cdfwStockId)}" target="_blank" rel="noopener">CDFW map ↗</a></p></div>`;
+}

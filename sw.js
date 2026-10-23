@@ -1,7 +1,35 @@
 // Caches the app shell so it opens with no signal on the water. Your data is in IndexedDB, not here.
-const CACHE = 'tackle-box-v3';
-const SHELL = ['./', 'index.html', 'styles.css', 'app.js', 'db.js', 'data-sources.js', 'manifest.json', 'icon.svg', 'states/ca.js', 'icons/icon-180.png', 'icons/icon-192.png',
-  'vendor/leaflet/leaflet.css', 'vendor/leaflet/leaflet.js'];
+const CACHE = 'tackle-box-v4';
+// One file per line. Add new files here and bump CACHE.
+const SHELL = [
+  './',
+  'index.html',
+  'styles.css',
+  'manifest.json',
+  'icon.svg',
+  'icons/icon-180.png',
+  'icons/icon-192.png',
+  'vendor/leaflet/leaflet.css',
+  'vendor/leaflet/leaflet.js',
+  'app.js',
+  'ui.js',
+  'map.js',
+  'db.js',
+  'data-sources.js',
+  'states/ca.js',
+  'views/lake.js',
+  'views/lakes.js',
+  'views/log.js',
+  'views/settings.js',
+  'views/stats.js',
+  'views/tabs/catches.js',
+  'views/tabs/conditions.js',
+  'views/tabs/depth.js',
+  'views/tabs/history.js',
+  'views/tabs/info.js',
+  'views/tabs/notes.js',
+  'views/tabs/stocking.js',
+];
 
 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())));
 self.addEventListener('activate', e => e.waitUntil(
