@@ -16,14 +16,39 @@ function inside([x, y], ring) {
   return c;
 }
 
-// The state whose rough outline holds this point, or null outside every state we have data for.
+// The state whose rough outline holds this point. Just outside every outline (a river on the border), the state
+// whose box holds it; null far from every state we have data for.
 export function stateAt(lat, lon) {
-  return list.find(s => inside([lon, lat], s.outline)) ?? null;
+  return list.find(s => inside([lon, lat], s.outline))
+    ?? list.find(s => lon >= s.bbox[0] && lon <= s.bbox[2] && lat >= s.bbox[1] && lat <= s.bbox[3]) ?? null;
 }
 
 // The state module for a water: the state saved on it, else where it sits on the map.
 export function forLake(lake) {
   return STATES[String(lake?.state ?? '').toUpperCase()] ?? (lake?.lat != null ? stateAt(lake.lat, lake.lon) : null);
+}
+
+// Lake level gauge for a water: its state's nearest or name-matching gauge. A station pinned under Edit may belong
+// to the next state over (Lake Tahoe's gauge is California's), so look for it in every state.
+export async function reservoirFor(lake) {
+  const opts = { name: lake.name, acres: lake.acres };
+  const S = forLake(lake);
+  if (lake.cdecStation) {
+    for (const st of [S, ...list.filter(x => x !== S)]) {
+      const r = st && await st.nearestReservoir(lake.lat, lake.lon, lake.cdecStation, opts);
+      if (r && r.id.toUpperCase() === String(lake.cdecStation).toUpperCase()) return r;
+    }
+  }
+  // A gauge named for this water beats an unnamed nearby one, even across the state line (Lake Tahoe's
+  // Nevada shore and California's Tahoe City gauge).
+  const own = S ? await S.nearestReservoir(lake.lat, lake.lon, null, opts) : null;
+  if (own?.named) return own;
+  const base = String(lake.name ?? '').split(/\s+[–—-]\s+/)[0];
+  for (const st of list.filter(x => x !== S)) {
+    const r = await st.nearestReservoir(lake.lat, lake.lon, null, { ...opts, name: base, maxKm: 40 });
+    if (r?.named) return r;
+  }
+  return own;
 }
 
 // The state's stocked-water id saved on a lake (CDFW stock id, NDOW water slug, ODFW schedule name), or null.

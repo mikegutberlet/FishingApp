@@ -5,7 +5,7 @@ const NV = {
   code: 'NV', name: 'Nevada',
   // Lake Mead and Lake Mohave sit on the Arizona line, so the outline takes in the river's east bank too.
   bbox: { xmin: -120.01, ymin: 34.99, xmax: -114.03, ymax: 42.01 },
-  outline: [[-120.0, 42.0], [-114.04, 42.0], [-114.04, 36.2], [-114.0, 36.0], [-114.0, 35.0], [-114.63, 35.0], [-120.0, 39.0]],
+  outline: [[-120.0, 42.0], [-114.04, 42.0], [-114.04, 36.2], [-114.0, 36.0], [-114.0, 35.0], [-114.63, 35.0], [-115.27, 35.512], [-115.919, 36.022], [-116.577, 36.528], [-117.244, 37.03], [-117.92, 37.529], [-118.605, 38.024], [-119.298, 38.514], [-120.0, 39.0]],
   // Early events NAS doesn't record against a specific water.
   narrative: [
     { year: '1873', text: 'The first fish are carried into Nevada by rail: eastern brook trout and other species released into streams near the Central Pacific line.', source: 'NDOW history' },

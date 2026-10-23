@@ -1,6 +1,8 @@
 // Oregon: ODFW's weekly trout stocking schedule and Recreation Report, USGS, Army Corps and Reclamation lake levels,
 // read from the files the Oregon data jobs write to data/or/ (scripts/or/*.mjs and scripts/build-state-*.mjs).
-import { stateData, sameWater } from './common.js';
+import { stateData } from './common.js';
+// Name matching for rules and advisories is Nevada's (same agency-style names: "Walker River, East Fork").
+import { sameWater } from './nv.js';
 import { haversineKm } from '../data-sources.js';
 
 const d = stateData('or', 'OR');

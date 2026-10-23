@@ -8,6 +8,9 @@ const SCHEMA = {
   notes: ['lakeId'],
   stocking: ['lakeId'],
   depthSets: ['lakeId'],
+  trips: ['lakeId'],
+  events: ['tripId'],
+  tackle: [],
 };
 export const STORES = Object.keys(SCHEMA);
 const DB_VERSION = STORES.reduce((n, name) => n + 1 + SCHEMA[name].length, 0) - 8;
@@ -67,19 +70,73 @@ export async function exportAll() {
   const out = { app: 'tackle-box', version: DB_VERSION, exportedAt: new Date().toISOString() };
   for (const name of STORES) {
     const rows = await db.all(name);
-    for (const row of rows) if (row.photo instanceof Blob) row.photo = await blobToDataUrl(row.photo);
+    for (const row of rows) {
+      if (row.photo instanceof Blob) row.photo = await blobToDataUrl(row.photo);
+      if (Array.isArray(row.photos)) row.photos = await Promise.all(row.photos.map(p => p instanceof Blob ? blobToDataUrl(p) : p));
+    }
     out[name] = rows;
   }
   return out;
 }
 
+// A backup or a friend's shared lake is someone else's data until it's checked. The views put ids, numbers and dates
+// into HTML as they are and escape only free text, so on import: ids must be plain tokens (else the row is skipped),
+// numeric fields must be numbers, links must be http(s), photos must be images, and every other string loses the
+// characters that could open a tag or close an attribute. Free text (names, notes, species, lures...) stays as typed.
+const SAFE_ID = /^[\w.:-]{0,100}$/;
+const FREE_TEXT = new Set(['name', 'notes', 'note', 'text', 'journal', 'species', 'lure', 'technique', 'companions', 'title', 'color', 'size', 'brand', 'from', 'description', 'county',
+  'regs', 'access', 'number']);
+const NUMERIC = new Set(['lat', 'lon', 'acres', 'elevationFt', 'maxDepth', 'maxDepthFt', 'lengthKm', 'km', 'length', 'weight', 'weightEst', 'depth',
+  'waterTemp', 'airTemp', 'wind', 'windDir', 'gusts', 'cloud', 'pressureInHg', 'levelFt', 'count', 'inches', 'qty', 'rating', 'accuracy']);
+const BAD = Symbol('unsafe id');
+function clean(v, k = '') {
+  if (k === 'id' || k.endsWith('Id')) return v == null || typeof v === 'number' || (typeof v === 'string' && SAFE_ID.test(v)) ? v : BAD;
+  if (v == null || typeof v === 'boolean') return v;
+  if (NUMERIC.has(k)) { const n = typeof v === 'number' ? v : typeof v === 'string' && v.trim() ? Number(v) : NaN; return Number.isFinite(n) ? n : undefined; }
+  if (typeof v === 'number') return Number.isFinite(v) ? v : undefined;
+  if (FREE_TEXT.has(k)) return typeof v === 'string' ? v : undefined;
+  if (typeof v === 'string') {
+    if (k === 'photo' || k === 'photos') return /^data:image\/(?!svg)[\w.+-]+;base64,/.test(v) ? v : undefined;
+    if (/url$/i.test(k)) return /^https?:\/\/[^\s<>"'`]*$/i.test(v) ? v : undefined;
+    return v.replace(/[<>"'`]/g, '');
+  }
+  if (Array.isArray(v)) {
+    const out = [];
+    for (const x of v) { const c = clean(x, k === 'photos' ? k : ''); if (c === BAD) return BAD; if (c !== undefined) out.push(c); }
+    return out;
+  }
+  if (typeof v === 'object') {
+    const out = {};
+    for (const [kk, x] of Object.entries(v)) { const c = clean(x, kk); if (c === BAD) return BAD; if (c !== undefined) out[kk] = c; }
+    return out;
+  }
+}
+// A lake also needs a place on the map: one without coordinates breaks the map for every lake.
+const cleanRow = (row, store) => {
+  if (!row || typeof row !== 'object' || Array.isArray(row) || row.id == null || row.id === '') return null;
+  const c = clean(row);
+  if (c === BAD) return null;
+  return store === 'lakes' && !(Number.isFinite(c.lat) && Number.isFinite(c.lon)) ? null : c;
+};
+
+// Returns how many rows were skipped as unsafe.
 export async function importAll(data, { replace = false } = {}) {
   if (data.app !== 'tackle-box') throw new Error('Not a Tackle Box backup file');
+  let skipped = 0;
+  for (const name of STORES) {
+    const rows = Array.isArray(data[name]) ? data[name] : [];
+    data[name] = rows.map(r => cleanRow(r, name)).filter(Boolean);
+    skipped += rows.length - data[name].length;
+  }
   for (const name of STORES) {
     if (replace) await db.clear(name);
-    for (const row of data[name] || []) {
+    for (const row of data[name]) {
+      // Merging keeps whichever copy was edited last, so an old backup can't undo newer work on this device.
+      if (!replace && (await db.get(name, row.id))?.updatedAt > (row.updatedAt ?? '')) continue;
       if (typeof row.photo === 'string' && row.photo.startsWith('data:')) row.photo = await dataUrlToBlob(row.photo);
+      if (Array.isArray(row.photos)) row.photos = await Promise.all(row.photos.map(p => typeof p === 'string' && p.startsWith('data:') ? dataUrlToBlob(p) : p));
       await tx(name, 'readwrite', s => s.put(row));
     }
   }
+  return skipped;
 }

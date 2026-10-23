@@ -4,14 +4,19 @@
 import { map, refreshMap } from './map.js';
 import { db } from './db.js';
 import { STATES } from './states/index.js';
-import { $, showView, COMMON_SPECIES } from './ui.js';
+import { $, showView, onShow, COMMON_SPECIES } from './ui.js';
 import { openLake, openWater } from './views/lake.js';
 import { addStateWater } from './views/lakes.js';
 import './views/log.js';
+import './views/journal.js';
+import { resumeTrip } from './views/trips.js';
+import './units.js';
 import './views/stats.js';
 import './views/settings.js';
 import './radar.js';
 import './wind-layer.js';
+import './views/today.js';
+import './views/planner.js';
 
 document.querySelectorAll('nav button').forEach(b => b.onclick = () => showView(b.dataset.view));
 
@@ -26,9 +31,22 @@ document.addEventListener('click', e => {
 // ---------- Startup ----------
 $('#species-list').innerHTML = COMMON_SPECIES.map(s => `<option value="${s}">`).join('');
 navigator.storage?.persist?.(); // ask the browser not to evict our data
+resumeTrip();
 if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js');
+// Today is the home screen. The map starts hidden, so frame your lakes the first time it is shown (a hidden map has no size).
+showView('today');
+let framed = false, lakeBounds = null;
+const frame = () => {
+  if (framed || !lakeBounds || !$('#view-map').classList.contains('active')) return;
+  framed = true;
+  map.invalidateSize();
+  map.fitBounds(lakeBounds, { maxZoom: 13 });
+};
 refreshMap().then(async () => {
   const lakes = await db.all('lakes');
-  if (lakes.length) map.fitBounds(L.latLngBounds(lakes.map(l => [l.lat, l.lon])).pad(0.3), { maxZoom: 13 });
+  if (lakes.length) lakeBounds = L.latLngBounds(lakes.map(l => [l.lat, l.lon])).pad(0.3);
+  frame();
 });
+// Size the map as soon as it's shown, so a fitBounds right after showView('map') (depth maps, surveys) sees its real size.
+onShow('map', () => { map.invalidateSize(); frame(); });
 window.__app = { db, openLake, showView, openWater, ...STATES }; window.__map = map; // handy for debugging from the console

@@ -5,26 +5,31 @@ import { haversineKm } from '../data-sources.js';
 export const norm = s => (s ?? '').toLowerCase().replace(/\b(lake|reservoir|river|creek|pond|the|of)\b|[^a-z0-9]/g, '');
 export const isRiver = lake => lake.kind === 'river' || /river|creek|stream|slough|canal/i.test(lake.type ?? '');
 
-// Names in regulations and agency pages are written several ways: "Walker River, East Fork",
-// "East Walker River", "South Fork of the Humboldt River". This key makes those the same.
-const regKey = s => String(s ?? '').toLowerCase().replace(/[’']/g, '').replace(/^(.+?),\s*(.+)$/, '$2 $1').replace(/\s*[–—-]\s+.*$/, '')
-  .replace(/\b(the|of|fork)\b|[^a-z0-9]/g, '');
-const WATER_WORD = /^(lake|reservoir|res|pond|ponds|river|creek|wash)/;
-// Same water: same key, or one is the other plus a place ("Lake Tahoe – Cave Rock"), not plus another water word
-// ("Cold Creek" is not "Cold Creek Reservoir").
-export function sameWater(a, b) {
-  const x = regKey(a), y = regKey(b);
-  if (x.length < 4 || y.length < 4) return false;
-  if (x === y) return true;
-  const [long, short] = x.length > y.length ? [x, y] : [y, x];
-  // A rule for "Jarbidge River" covers its West Fork too.
-  if (/(river|creek)$/.test(short) && long.replace(/^(north|south|east|west|middle)/, '') === short) return true;
-  return long.startsWith(short) && !WATER_WORD.test(long.slice(short.length));
+// Does a free-text place ("West Walker River near Coleville") name this water? Whole words only, so Lake Mead is
+// not "Truckee Meadows", and a lake is not the river of the same name (Carson Lake vs Carson River).
+const WATER_WORD = /^(lake|lakes|reservoir|pond|ponds|river|creek|slough|wash)$/;
+const TYPE_WORDS = /\b(lake|lakes|reservoir|pond|river|creek|slough|wash)\b/i;
+function namedIn(lake) {
+  const name = String(lake.name ?? '').toLowerCase().split(/\s+[–—-]\s+/)[0];
+  // A name with its type word ("Walker Lake") must appear whole: "West Walker River" isn't it.
+  const full = name.match(/[a-z0-9]+/g) ?? [];
+  if (TYPE_WORDS.test(name) && full.join('').length >= 6) {
+    const re = new RegExp(`\\b${full.join('\\W+')}\\b`, 'i');
+    return locality => !!locality && re.test(locality);
+  }
+  const words = name.replace(/\b(lake|reservoir|river|creek|pond|the|of)\b/g, ' ').match(/[a-z0-9]+/g) ?? [];
+  if (words.join('').length < 4) return () => false;
+  const re = new RegExp(`\\b${words.join('\\W+')}\\b`, 'i');
+  const type = isRiver(lake) ? /\b(river|creek|slough|wash)\b/i : /\b(lake|lakes|reservoir|pond)\b/i;
+  return locality => !!locality && re.test(locality) && (!TYPE_WORDS.test(locality) || type.test(locality));
 }
 
 export function stateData(dir, code) {
   const cache = {};
-  const load = name => cache[name] ??= fetch(`data/${dir}/${name}.json`).then(r => r.ok ? r.json() : null).catch(() => null);
+  // A failed fetch (offline, or the file isn't there yet) is tried again after 30 s rather than kept for the session.
+  const get = (key, url) => cache[key] ??= fetch(url).then(r => r.ok ? r.json() : Promise.reject(new Error(r.status)))
+    .catch(() => { setTimeout(() => delete cache[key], 30000); return null; });
+  const load = name => get(name, `data/${dir}/${name}.json`);
 
   // Every stocked water with a map point, newest stocking first, plus its stocking history.
   async function waters() {
@@ -68,10 +73,12 @@ export function stateData(dir, code) {
     const key = norm(name);
     const best = r.reservoirs
       .map(s => ({ ...s, distKm: haversineKm(lat, lon, s.lat, s.lon), named: key.length > 2 && norm(s.name).includes(key) }))
-      .filter(s => s.distKm <= maxKm)
+      // A named gauge may sit at the dam, far from the middle of a big lake (Lake Mead's is 35 km off).
+      // An exact name may be 80 km off (Lake Mead's far bays from its middle).
+      .filter(s => s.distKm <= (s.named ? (norm(s.name) === key ? 80 : Math.max(maxKm, Math.sqrt((acres ?? 0) / 247) * 4)) : maxKm))
       .sort((a, b) => (b.named - a.named) || a.distKm - b.distKm)[0];
     if (!best) return null;
-    const limit = best.named ? maxKm : Math.max(3, Math.sqrt((acres ?? 0) / 247) * 2.5);
+    const limit = best.named ? Infinity : Math.max(3, Math.sqrt((acres ?? 0) / 247) * 2.5);
     return best.distKm <= limit ? { ...best, updatedAt: r.updatedAt } : null;
   }
 
@@ -104,10 +111,10 @@ export function stateData(dir, code) {
     const h = await load('history');
     if (!h) return { note: '', statewide: [], local: [] };
     const radius = isRiver(lake) ? 3 : Math.max(1.5, Math.sqrt((lake.acres ?? 50) / 247) * 1.5);
-    const key = norm(lake.name);
+    const named = namedIn(lake);
     const seen = new Set();
     const local = h.places
-      .filter(([lat, lon, , , locality]) => (key.length > 3 && norm(locality).includes(key)) || haversineKm(lake.lat, lake.lon, lat, lon) <= radius)
+      .filter(([lat, lon, , , locality]) => named(locality) || haversineKm(lake.lat, lake.lon, lat, lon) <= radius)
       .filter(([, , year, species]) => !seen.has(`${year}|${species}`) && seen.add(`${year}|${species}`))
       .map(([, , year, species, locality, status]) => ({ year: String(year), text: `${species}${locality ? ` (${locality})` : ''}${status ? ` · ${status.toLowerCase()}` : ''}` }));
     return { note: h.note, statewide: h.statewide, local };
@@ -128,7 +135,7 @@ export function stateData(dir, code) {
 
   // Public depth-contour surveys covering this water.
   async function bathymetryFor(lake) {
-    const idx = cache.bathy ??= fetch(`data/${dir}/bathymetry/index.json`).then(r => r.ok ? r.json() : null).catch(() => null);
+    const idx = get('bathy', `data/${dir}/bathymetry/index.json`);
     const surveys = (await idx)?.surveys ?? [];
     const pad = 0.01;
     return surveys.filter(s => lake.lat >= s.bbox[1] - pad && lake.lat <= s.bbox[3] + pad && lake.lon >= s.bbox[0] - pad && lake.lon <= s.bbox[2] + pad);
