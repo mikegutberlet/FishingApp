@@ -14,8 +14,10 @@ import './radar.js';
 import './wind-layer.js';
 import './offline.js';
 import { initWaypoints } from './waypoints.js';
+import { initHeatmap } from './heatmap.js';
 
 initWaypoints();
+initHeatmap();
 
 document.querySelectorAll('nav button').forEach(b => b.onclick = () => showView(b.dataset.view));
 

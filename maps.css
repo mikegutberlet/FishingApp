@@ -14,3 +14,23 @@ dialog.sheet progress { width: 100%; height: 10px; }
 .wpt span { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; font-size: 16px; border-radius: 50%; background: rgba(255,255,255,.92); box-shadow: 0 1px 4px rgba(0,0,0,.45); }
 .acts { display: flex; gap: 6px; flex-shrink: 0; margin-left: 8px; }
 .acts button { margin-left: 0; }
+h4.sub { margin: 12px 0 4px; font-size: 14px; }
+.inset { background: var(--bg); border-radius: 10px; padding: 10px; margin: 8px 0; }
+.inset input, .inset select { background: var(--card); }
+details summary { cursor: pointer; color: var(--accent); margin-top: 10px; }
+svg.chart { width: 100%; height: auto; display: block; margin: 4px 0; font-size: 11px; }
+svg.chart text { fill: var(--muted); }
+svg.chart .grid { stroke: var(--line); stroke-width: 1; }
+svg.chart .range { stroke: #5aa9e6; stroke-width: 3; stroke-linecap: round; opacity: .5; }
+svg.chart .scan { fill: #1f78c8; }
+svg.chart .catchdot { fill: #f28c28; }
+svg.chart .thermo { fill: #f2c94c; opacity: .35; }
+svg.chart polyline { fill: none; stroke-width: 2; stroke-linejoin: round; }
+svg.chart polyline.latest { stroke: #1f78c8; stroke-width: 2.5; }
+svg.chart polyline.older { stroke: var(--muted); opacity: .45; }
+.clabel { background: none; border: 0; }
+.clabel span { display: inline-block; transform: translate(-50%, -50%); font-size: 10px; font-weight: 700; color: #0b2545; background: rgba(255,255,255,.8); padding: 0 3px; border-radius: 3px; }
+.heat-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; padding: 4px 6px; background: var(--card); color: var(--text); font-size: 12px; max-width: 220px; }
+.heat-ctl select { font: inherit; padding: 2px; max-width: 100%; }
+.heat-canvas { pointer-events: none; }
+.file-btn input[hidden] { display: none; } /* .form input's display:block was showing the native file picker */
