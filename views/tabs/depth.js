@@ -1,21 +1,22 @@
 // Depth tab: published depth facts, USGS survey contours, and your own sonar imports.
 import { db } from '../../db.js';
-import * as CA from '../../states/ca.js';
+import { forLake } from '../../states/index.js';
 import { parseDepthCsv, parseDepthXml } from '../../data-sources.js';
 import { $, esc, fmtDate, status, M_TO_FT } from '../../ui.js';
 import { showDepthSet, showSurvey } from '../../map.js';
 import { openLake } from '../lake.js';
 
 async function renderSurveys(lake, el) {
-  const surveys = await CA.bathymetryFor(lake);
+  const surveys = await forLake(lake)?.bathymetryFor(lake) ?? [];
   if (!surveys.length || !el.isConnected) return;
   el.innerHTML = `<div class="card"><h3>Depth chart</h3>${surveys.map((s, i) => `<div class="lake-item" style="margin:6px 0"><span class="small">${esc(s.title)}</span><button data-survey="${i}">Show</button></div>`).join('')}
-    <p class="muted small">Public USGS survey contours, shown as depth at today's level when the lake has a CDEC gauge.</p></div>`;
+    <p class="muted small">Public USGS survey contours, shown as depth at today's level when the lake has a level gauge.</p></div>`;
   el.querySelectorAll('[data-survey]').forEach(b => b.onclick = () => showSurvey(surveys[+b.dataset.survey], lake));
 }
 
 async function depthFacts(lake) {
-  const [est, surveys] = await Promise.all([CA.hydroFor(lake).catch(() => null), CA.bathymetryFor(lake).catch(() => [])]);
+  const S = forLake(lake);
+  const [est, surveys] = await Promise.all([S?.hydroFor(lake).catch(() => null), S?.bathymetryFor(lake).catch(() => []) ?? []]);
   const stat = (v, label) => v ? `<div class="stat"><b>${v}</b><span>${label}</span></div>` : '';
   let html = '';
   if (lake.maxDepth || lake.meanDepth) {

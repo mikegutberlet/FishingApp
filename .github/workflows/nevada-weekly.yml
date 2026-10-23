@@ -1,0 +1,55 @@
+name: Build Nevada waters and rules
+
+on:
+  schedule:
+    - cron: '11 12 * * 1' # weekly, Monday morning
+  workflow_dispatch:
+  push:
+    paths:
+      - scripts/states.mjs
+      - scripts/build-state-waters.mjs
+      - scripts/build-state-history.mjs
+      - scripts/nv/build-nv-regs.mjs
+      - .github/workflows/nevada-weekly.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Nevada waters
+        continue-on-error: true
+        run: |
+          mkdir -p data/nv/logs
+          node scripts/build-state-waters.mjs nv 2>&1 | tee data/nv/logs/build-state-waters.log
+          exit ${PIPESTATUS[0]}
+      - name: Nevada history
+        continue-on-error: true
+        run: |
+          node scripts/build-state-history.mjs nv 2>&1 | tee data/nv/logs/build-state-history.log
+          exit ${PIPESTATUS[0]}
+      - name: Nevada regulations and fish advisories
+        continue-on-error: true
+        run: |
+          node scripts/nv/build-nv-regs.mjs 2>&1 | tee data/nv/logs/build-nv-regs.log
+          exit ${PIPESTATUS[0]}
+      - name: Commit changes
+        run: |
+          git add data/nv/
+          if git diff --cached --quiet; then echo "No data changes"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update Nevada waters and rules"
+          for i in 1 2 3; do if git pull --rebase origin "${GITHUB_REF_NAME}" && git push; then exit 0; fi; sleep 10; done
+          echo "push failed"; exit 1

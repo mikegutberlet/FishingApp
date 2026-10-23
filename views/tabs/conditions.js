@@ -1,6 +1,6 @@
 // Conditions tab: weather alerts, weather now, bite windows, 24 hours and 10 days, wind on the water,
 // lake level (CDEC), USGS gauges with flow vs normal, and Windy.
-import * as CA from '../../states/ca.js';
+import { forLake } from '../../states/index.js';
 import { pressureTrend, fetchUsgsNearby, moonPhase, WEATHER_CODES, compass } from '../../data-sources.js';
 import { weatherFor, fetchAlerts, alertLevel, fetchFlowStats, flowRating } from '../../forecast.js';
 import { solunar, dayRating, stars, windowAt, windowLabel, windowSpan, shortTime } from '../../solunar.js';
@@ -54,7 +54,7 @@ export async function renderConditions(lake, body) {
     $('#windcard').innerHTML = `<h3>Wind on the water</h3><div class="wind-card">${windSvg(x)}<div class="small">${windText(x)}</div></div>`;
     $('#windcard').classList.remove('hidden');
   } catch (e) { if (body.isConnected) $('#wx').textContent = `Weather: ${e.message} (offline?)`; }
-  CA.nearestReservoir(lake.lat, lake.lon, lake.cdecStation, { name: lake.name, acres: lake.acres }).then(r => {
+  forLake(lake)?.nearestReservoir(lake.lat, lake.lon, lake.cdecStation, { name: lake.name, acres: lake.acres }).then(r => {
     if (!r || !body.isConnected) return;
     const el = $('#res'), e = r.elevation, s = r.storage;
     const change = days => e.length > days ? (e.at(-1)[1] - e.at(-1 - days)[1]) : null;
@@ -63,7 +63,7 @@ export async function renderConditions(lake, body) {
       ${e.length ? `<div class="stat"><b>${e.at(-1)[1].toLocaleString()} ft</b><span>Elevation ${fmtDate(e.at(-1)[0] + 'T12:00')}</span></div>
       <div class="stat"><b>${signed(change(7))}</b><span>Last 7 days</span></div><div class="stat"><b>${signed(change(29))}</b><span>Last 30 days</span></div>` : ''}
       ${s.length ? `<div class="stat"><b>${Math.round(s.at(-1)[1]).toLocaleString()}</b><span>Storage, acre-ft</span></div>` : ''}</div>
-      <p class="muted small">CDEC station ${esc(r.id)} · ${r.distKm.toFixed(1)} km away${lake.cdecStation ? '' : ' · wrong lake? set the station under Edit'}</p>`;
+      <p class="muted small">${esc(r.source ?? 'CDEC')} station ${esc(r.id)} · ${r.distKm.toFixed(1)} km away${lake.cdecStation ? '' : ' · wrong lake? set the station under Edit'}</p>`;
     el.classList.remove('hidden');
   });
   try {

@@ -3,7 +3,7 @@
 // functions. Keep it that way: no top-level code that touches another app module's const or let exports.
 import { map, refreshMap } from './map.js';
 import { db } from './db.js';
-import * as CA from './states/ca.js';
+import { STATES } from './states/index.js';
 import { $, showView, COMMON_SPECIES } from './ui.js';
 import { openLake, openWater } from './views/lake.js';
 import { addStateWater } from './views/lakes.js';
@@ -15,12 +15,12 @@ import './wind-layer.js';
 
 document.querySelectorAll('nav button').forEach(b => b.onclick = () => showView(b.dataset.view));
 
-// Links inside map popups and lists: data-open-lake="<id>", data-add-water="<CDFW stock id>".
+// Links inside map popups and lists: data-open-lake="<id>", data-add-water="<state's stock id>" data-state="CA|NV".
 document.addEventListener('click', e => {
   const id = e.target.dataset?.openLake;
   if (id) { e.preventDefault(); openLake(id); }
   const waterId = e.target.dataset?.addWater;
-  if (waterId) { e.preventDefault(); addStateWater(+waterId); }
+  if (waterId) { e.preventDefault(); addStateWater(waterId, e.target.dataset.state ?? 'CA'); }
 });
 
 // ---------- Startup ----------
@@ -31,4 +31,4 @@ refreshMap().then(async () => {
   const lakes = await db.all('lakes');
   if (lakes.length) map.fitBounds(L.latLngBounds(lakes.map(l => [l.lat, l.lon])).pad(0.3), { maxZoom: 13 });
 });
-window.__app = { db, openLake, showView, openWater, CA }; window.__map = map; // handy for debugging from the console
+window.__app = { db, openLake, showView, openWater, ...STATES }; window.__map = map; // handy for debugging from the console

@@ -1,6 +1,6 @@
 // One water's page: a saved lake with all its tabs, or a statewide water you can look at before saving it.
 import { db } from '../db.js';
-import * as CA from '../states/ca.js';
+import { forLake } from '../states/index.js';
 import { $, esc, showView } from '../ui.js';
 import { map, refreshMap } from '../map.js';
 import { renderLakeList, editLake } from './lakes.js';
@@ -17,11 +17,12 @@ import { renderInfo } from './tabs/info.js';
 export async function openWater(w, tab = 'conditions') {
   const saved = (await db.all('lakes')).find(l => l.nhdId === String(w.id));
   if (saved) return openLake(saved.id, tab);
-  const stocked = await CA.matchStockedWater(w);
+  const S = forLake(w);
+  const stocked = await S?.matchStockedWater(w);
   openLake({
-    unsaved: true, nhdId: String(w.id), kind: w.kind, name: w.name, type: w.type, state: 'CA', lat: w.lat, lon: w.lon,
+    unsaved: true, nhdId: String(w.id), kind: w.kind, name: w.name, type: w.type, state: S?.code ?? w.state, lat: w.lat, lon: w.lon,
     acres: w.acres ?? null, elevationFt: w.elevationFt ?? null, maxDepth: w.maxDepthFt ?? null, meanDepth: w.meanDepthFt ?? null, depthSource: w.depthSource ?? null,
-    lengthKm: w.km ?? null, cdfwStockId: stocked?.id ?? null, stockingUrl: stocked ? CA.waterUrl(stocked.id) : null,
+    lengthKm: w.km ?? null, ...(S && { [S.stockField]: stocked?.id ?? null }), stockingUrl: stocked ? S.waterUrl(stocked.id) : null,
   }, tab);
 }
 
