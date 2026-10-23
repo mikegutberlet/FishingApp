@@ -60,6 +60,14 @@ function isoDate(s) {
   const n = String(s).match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})/);
   return n ? `${n[3].length === 2 ? '20' + n[3] : n[3]}-${n[1].padStart(2, '0')}-${n[2].padStart(2, '0')}` : null;
 }
+// ODFW's spelling of a water as an id that is safe in backups and data-* attributes (same as states/or.js odfwId):
+// letters, digits and "-" as they are, a space as "_", anything else as ".XX" per UTF-8 byte.
+const odfwId = raw => [...String(raw)].map(c => /[A-Za-z0-9-]/.test(c) ? c : c === ' ' ? '_'
+  : [...new TextEncoder().encode(c)].map(b => '.' + b.toString(16).toUpperCase().padStart(2, '0')).join('')).join('');
+// A key that keeps the water word, with Lake and Reservoir as one: "Lost Creek Reservoir" is "Lost Creek Lake",
+// not "Lost Lake".
+const kindKey = s => decode(s).toLowerCase().replace(/\(.*?\)/g, '').replace(/\b(reservoirs?|res|lakes)\b/g, 'lake').replace(/\bponds\b/g, 'pond')
+  .replace(/\b(the|of|park)\b|[^a-z0-9]/g, '');
 const tableRows = html => [...html.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)].map(m => [...m[1].matchAll(/<t([dh])\b[^>]*>([\s\S]*?)<\/t\1>/gi)].map(c => ({ html: c[2], text: clean(c[2]) })));
 
 // ---------- ODFW stocking schedule ----------
@@ -85,7 +93,8 @@ function waterName(raw) {
   head = head.replace(/\b(PD|LK|RES|R)-(\d+)\b/gi, '$1 $2');
   const words = s => s.split(' ').map(word).join(' ');
   let name = words(head);
-  if (quals.length) name = `${quals.map(q => words(q)).reverse().join(' ')} ${name}`;
+  // A lone "B" or "L" after the comma is Big or Little ("CULTUS LK, B", "LAVA LK, L").
+  if (quals.length) name = `${quals.map(q => /^[BL]$/i.test(q) ? (/b/i.test(q) ? 'Big' : 'Little') : words(q)).reverse().join(' ')} ${name}`;
   return name.replace(/\s+/g, ' ').trim();
 }
 
@@ -118,6 +127,9 @@ function scheduleRows(html) {
 
 // ODFW keeps 2 years of stockings and the weeks already planned. The print view lists up to 500 rows, so the job
 // asks for a month at a time (half a month when a month is full).
+// Date windows that came back tonight: a planned stocking in one of them that isn't on tonight's schedule was moved
+// or cancelled.
+const FETCHED = [];
 async function scheduleFetch() {
   const log = report.schedule = { windows: [] };
   const byKey = new Map();
@@ -135,6 +147,7 @@ async function scheduleFetch() {
       let rows = await ask(from, to);
       if (rows.length >= 490) rows = [...await ask(from, day(t + 15 * 864e5)), ...await ask(day(t + 16 * 864e5), to)];
       for (const r of rows) byKey.set(`${r.week}|${r.raw}`, r);
+      FETCHED.push([from, to]);
     } catch (e) { log.windows.push(`${from}..${to}: ${e.message}`); }
     await new Promise(res => setTimeout(res, 700));
   }
@@ -230,20 +243,22 @@ function lookupNames(name) {
   return { names: [...names], where };
 }
 
+const zoneOk = (w, c) => !ZONES.length || sameZone(zoneAt(c.lat, c.lon), w.zone);
 async function pickPoint(w, maps, nhd) {
   const { names, where } = lookupNames(w.name);
-  const keys = new Set(names.map(norm).filter(k => k.length >= 3));
+  const keys = new Set(names.map(kindKey).filter(k => k.length >= 5));
   const flowing = isFlowing(w.name);
-  const okZone = c => !ZONES.length || sameZone(zoneAt(c.lat, c.lon), w.zone);
+  const okZone = c => zoneOk(w, c);
   const near = where ? (await geocode(where))?.[0] : null;
-  // 1. ODFW's own map: same name (it spells waters out in full).
+  // 1. ODFW's own map: a placemark whose schedule link is this water's exact spelling. That is ODFW saying which
+  // water it is, so it stands even just over a zone line (ponds on the Columbia zone's edge).
   const byRaw = maps.filter(m => m.raws.includes(w.raw.toUpperCase()));
-  if (byRaw.length) return { lat: byRaw[0].lat, lon: byRaw[0].lon, via: 'odfw', about: byRaw[0].about };
-  const mm = maps.filter(m => keys.has(norm(m.name)));
-  const mHit = mm.find(okZone) ?? (mm.length === 1 ? mm[0] : null);
-  if (mHit) return { lat: mHit.lat, lon: mHit.lon, via: 'odfw', about: mHit.about };
+  if (byRaw.length) { const b = byRaw.find(okZone) ?? byRaw[0]; return { lat: b.lat, lon: b.lon, via: 'odfw', match: 'raw', about: b.about }; }
+  // Then the same name in the right zone (Oregon has many Fish Lakes and Devils Lakes).
+  const mHit = maps.filter(m => keys.has(kindKey(m.name))).find(okZone);
+  if (mHit) return { lat: mHit.lat, lon: mHit.lon, via: 'odfw', match: 'name', about: mHit.about };
   // 2. USGS NHD names, in the right zone (Oregon has many Clear Lakes and Mud Lakes).
-  let same = nhd.filter(c => keys.has(norm(c.name)) && (c.kind === 'stream') === flowing && okZone(c));
+  let same = nhd.filter(c => keys.has(kindKey(c.name)) && (c.kind === 'stream') === flowing && okZone(c));
   if (near) same = same.map(c => ({ ...c, d: km([c.lat, c.lon], [near.lat, near.lon]) })).filter(c => c.d <= 40).sort((a, b) => a.d - b.d);
   if (same.length) {
     const groups = new Set(same.map(c => c.line ?? `${c.lat},${c.lon}`));
@@ -302,7 +317,10 @@ export function mentions(text, name) {
   const bare = name.replace(/\s*\(.*?\)\s*/g, ' ').trim();
   const base = bare.replace(/^Lake\s+/i, '').replace(/\s+(Lake|Lakes|Reservoir|Pond|Ponds|River|Creek|Canal)$/i, '').trim();
   if (base.length < 4 || /^(north|south|east|west|upper|lower|middle|big|little|clear|mud|fish|blue|lost|long|round)$/i.test(base)) return false;
-  const kind = KIND.find(([re]) => re.test(bare))?.[0] ?? /\b(lake|lakes|reservoir|res|pond|ponds|river|rivers|creek|creeks)\b/i;
+  // A name ending in its water word wants that word ("Malheur Reservoir" isn't "Malheur Lake"). Same as states/or.js.
+  const own = bare.match(/\s(Lake|Reservoir|Pond|River|Creek|Canal)$/i)?.[1]?.toLowerCase();
+  const kind = own ? new RegExp(`\\b(${own}|${own}s${own === 'reservoir' ? '|res' : ''})\\b`, 'i')
+    : KIND.find(([re]) => re.test(bare))?.[0] ?? /\b(lake|lakes|reservoir|res|pond|ponds|river|rivers|creek|creeks)\b/i;
   const b = base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   // The name, then the kind of water within a few words ("Siltcoos and Tahkenitch lakes"), or "Lake Billy Chinook".
   return new RegExp(`\\b${b}\\b(?:[\\s,]+[\\w'’-]+){0,3}?[\\s,]+${kind.source.replace(/\\b/g, '')}\\b`, 'i').test(text) || (/^Lake /i.test(bare) && new RegExp(`\\blake\\s+${b}\\b`, 'i').test(text));
@@ -313,23 +331,26 @@ async function buildWaters(rows, reports) {
   ZONES = (await readOld('zones.json'))?.zones ?? [];
   COUNTIES = (await readOld('counties.json'))?.counties ?? [];
   GEO = (await readOld('geocode-cache.json')) ?? {};
-  const old = new Map(((await readOld('waters.json'))?.waters ?? []).map(w => [w.id, w]));
+  // The first runs used slug ids, then ODFW's raw spelling; both carry the raw name, so key old entries by the new id.
+  const old = new Map(((await readOld('waters.json'))?.waters ?? []).filter(w => w.raw && (w.id === w.raw || w.id === odfwId(w.raw))).map(w => [odfwId(w.raw), w]));
   const byWater = new Map();
   for (const r of rows) {
-    const id = r.raw;
+    const id = odfwId(r.raw);
     const w = byWater.get(id) ?? { id, raw: r.raw, name: waterName(r.raw), zone: r.zone, office: r.office, weeks: [] };
     w.weeks.push(r.week);
     w.zone ??= r.zone; w.office ??= r.office;
     byWater.set(id, w);
   }
-  // Ids are ODFW's spelling of the name (what the schedule's filter takes). The first runs used slugs; drop those.
-  for (const w of old.values()) if (!byWater.has(w.id) && w.raw === w.id) byWater.set(w.id, { id: w.id, raw: w.raw ?? w.name, name: w.name, zone: w.zone, office: w.office, weeks: [] });
+  // Waters no longer on the schedule stay, so their history still has a home.
+  for (const [id, w] of old) if (!byWater.has(id)) byWater.set(id, { id, raw: w.raw, name: waterName(w.raw), zone: w.zone, office: w.office, weeks: [] });
   report.points = { nhd: nhd.length, odfwMaps: maps.length, via: {}, unmatched: [] };
   const waters = [];
   for (const w of byWater.values()) {
     const prev = old.get(w.id);
-    // Keep last night's point unless it came from a weaker source than tonight's.
-    const pt = prev?.via === 'odfw' ? prev : await pickPoint(w, maps, nhd) ?? (prev?.lat != null ? prev : null);
+    // Keep last night's ODFW point when it is ODFW's own link for the water or sits in the water's zone; otherwise
+    // pick again (early runs, before zones.json, pinned some waters on a same-named water elsewhere).
+    const prevOk = prev?.lat != null && (prev.match === 'raw' || zoneOk(w, prev));
+    const pt = prev?.via === 'odfw' && prevOk ? prev : await pickPoint(w, maps, nhd) ?? (prevOk ? prev : null);
     if (!pt) report.points.unmatched.push(`${w.raw} → ${w.name} (${w.zone})`);
     report.points.via[pt?.via ?? 'none'] = (report.points.via[pt?.via ?? 'none'] ?? 0) + 1;
     const rep = reports.map(x => ({ ...x, lines: (x.items ?? []).filter(t => mentions(t, w.name)) })).find(x => x.lines.length && (sameZone(x.zone, w.zone) || /Columbia/.test(x.zone)));
@@ -338,8 +359,8 @@ async function buildWaters(rows, reports) {
     waters.push({
       id: w.id, raw: w.raw, name: w.name, type: isFlowing(w.name) ? 'River' : /Pond/.test(w.name) ? 'Pond' : 'Lake', zone: w.zone, office: w.office,
       counties: [w.zone && `${w.zone} Zone`, w.office].filter(Boolean).join(' · '), county: pt ? countyAt(pt.lat, pt.lon) : null,
-      lat: pt?.lat ?? null, lon: pt?.lon ?? null, via: pt?.via ?? null, acres: pt?.acres ?? prev?.acres ?? null,
-      about: pt?.about ?? prev?.about ?? null,
+      lat: pt?.lat ?? null, lon: pt?.lon ?? null, via: pt?.via ?? null, ...(pt?.match && { match: pt.match }), acres: pt?.acres ?? (pt === prev ? prev?.acres : null) ?? null,
+      about: pt?.about ?? (pt === prev ? prev?.about : null) ?? null,
       report: rep ? rep.lines.join('\n') : null, reportDate: rep?.date ?? null, reportUrl: rep?.url ?? null, url: scheduleLink(w.raw),
       lastYearStocked: years.at(-1) ?? prev?.lastYearStocked ?? null,
     });
@@ -353,11 +374,19 @@ async function buildPlants(rows) {
   const old = (await readOld('plants.json'))?.plants ?? [];
   const byKey = new Map();
   const key = p => `${p.stockId}|${p.week}|${p.species}`;
-  // The first runs keyed plants by a slug of the name; ids are now ODFW's own spelling.
-  for (const p of old) if (!/^[a-z0-9-]+$/.test(p.stockId)) byKey.set(key(p), p);
+  // The first runs keyed plants by a lowercase slug (dropped), then by ODFW's raw spelling (converted).
+  const tonight = new Set(rows.map(r => `${odfwId(r.raw)}|${r.week}`));
+  let moved = 0;
+  for (const o of old) {
+    if (/^[a-z0-9-]+$/.test(o.stockId)) continue;
+    const p = /^[\w.:-]*$/.test(o.stockId) ? o : { ...o, stockId: odfwId(o.stockId) };
+    // In a window ODFW answered tonight, a stocking not on tonight's schedule was moved or cancelled.
+    if (!tonight.has(`${p.stockId}|${p.week}`) && FETCHED.some(([from, to]) => p.week >= from && p.week <= to)) { moved++; continue; }
+    byKey.set(key(p), p);
+  }
   let fresh = 0;
   for (const r of rows) {
-    const stockId = r.raw;
+    const stockId = odfwId(r.raw);
     // The schedule can change before the week comes; tonight's numbers replace last night's for that week.
     for (const [k] of SIZES) byKey.delete(key({ stockId, week: r.week, species: SIZES.find(s => s[0] === k)[1] }));
     for (const [k, species] of SIZES) {
@@ -370,7 +399,7 @@ async function buildPlants(rows) {
   // ODFW plans a year ahead and moves weeks as it goes; keep the next 8 weeks, like the other states' schedules.
   const horizon = new Date(Date.now() + 56 * 864e5).toISOString().slice(0, 10);
   for (const [k, p] of byKey) if (p.week > horizon) byKey.delete(k);
-  report.plants = { total: byKey.size, new: fresh, kept: old.length };
+  report.plants = { total: byKey.size, new: fresh, kept: old.length, movedOrCancelled: moved };
   return [...byKey.values()].sort((a, b) => b.week.localeCompare(a.week) || a.water.localeCompare(b.water));
 }
 
@@ -490,6 +519,7 @@ async function habAdvisories(waters) {
   // An empty list would read as "no advisories anywhere": treat it as a failure and keep last night's file.
   if (!items.length) throw new Error('OHA advisory list came back empty');
   const lakes = (await readOld('lakes.json'))?.lakes ?? [];
+  if (!COUNTIES.length) COUNTIES = (await readOld('counties.json'))?.counties ?? [];
   const log = report.hab = { items: items.length, fields: Object.keys(items[0] ?? {}).filter(k => !/^(odata|__|FileSystem|ServerRedirected|ContentType|Compliance|OData_|Attachments|GUID|AuthorId|EditorId|Created|Modified|ID$|Id$)/.test(k)), sample: items.slice(0, 3) };
   // Field names in this list aren't documented; pick them by name.
   const field = (it, re, not) => { const k = Object.keys(it).find(k => re.test(k) && !(not && not.test(k)) && it[k] != null && it[k] !== ''); return k ? it[k] : null; };
@@ -507,11 +537,16 @@ async function habAdvisories(waters) {
     const issued = field(it, /issue|date/i, /lift|modified|created/i);
     const date = issued ? (String(issued).match(/^\d{4}-\d{2}-\d{2}/)?.[0] ?? isoDate(String(issued))) : null;
     const lat = +field(it, /^lat|latitude/i), lon = +field(it, /^lon|^long|longitude/i);
-    const key = norm(name.split(/[(,]/)[0]);
+    // "South Umpqua River and mainstream Umpqua River" is two waters; "Lake X" is also "X Lake".
+    const names = name.split(/[(,]/)[0].split(/\s+and\s+/).map(n => n.replace(/\b(mainstream|mainstem)\s+/i, '').trim()).filter(Boolean);
+    const keys = new Set(names.flatMap(n => [kindKey(n), kindKey(n.replace(/^Lake\s+(.+)$/i, '$1 Lake'))]));
+    // Only a same-named water in the county OHA gives: Oregon has several Willow Creek Reservoirs and Blue Lakes.
+    const counties = county.split(/\s+and\s+|\s*\/\s*|\s*,\s*/).filter(Boolean);
+    const inCounty = c => !counties.length || !COUNTIES.length || counties.includes(countyAt(c.lat, c.lon));
     const spot = Number.isFinite(lat) && lat && Number.isFinite(lon) && lon ? { lat: round(lat), lon: round(lon) }
-      : waters.find(w => w.lat != null && norm(w.name) === key) ?? lakes.filter(l => norm(l.name) === key).sort((a, b) => b.acres - a.acres)[0];
+      : lakes.filter(l => keys.has(kindKey(l.name)) && inCounty(l)).sort((a, b) => b.acres - a.acres)[0] ?? waters.find(w => w.lat != null && keys.has(kindKey(w.name)) && inCounty(w));
     const permanent = /permanent/i.test(`${status} ${name}`);
-    advisories.push({ name, county, level, permanent, advisory: permanent ? 'Permanent recreational use advisory' : level === 'warning' ? 'Recreational use health advisory' : 'Precaution', date,
+    advisories.push({ name, names, county, level, permanent, advisory: permanent ? 'Permanent recreational use advisory' : level === 'warning' ? 'Recreational use health advisory' : 'Precaution', date,
       detail: text(field(it, /comment|detail|description|note|area/i, /title|waterbody|county/i)).slice(0, 400), lat: spot?.lat ?? null, lon: spot?.lon ?? null });
   }
   // A water across a county line is listed once per county: keep one, naming both.

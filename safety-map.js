@@ -18,21 +18,29 @@ export function addSafetyLayers() {
   layersControl.addOverlay(hab, 'Toxic algae advisories');
   layersControl.addOverlay(access, 'Ramps & access');
   map.on('overlayadd', e => {
-    if (e.layer === hab && !hab.getLayers().length) drawHab(hab);
+    if (e.layer === hab && drawn.size < 3) drawHab(hab);
     if (e.layer === access) drawAccess(access);
   });
   map.on('moveend', () => map.hasLayer(access) && drawAccess(access));
   hab.addTo(map); // on by default: it's safety information
 }
 
-let habRetry = 31e3;
+// Each state's list loads on its own, so one missing file (offline after an update, a failed fetch) doesn't hide
+// the others; the missing ones are tried again later, backing off, since the layer is on by default.
+let habRetry = 31e3, habTimer = null;
+const drawn = new Set();
 async function drawHab(layer) {
-  const data = await CA.habAdvisories();
-  if (!data) { // offline at startup, or the file failed: try again later (backing off), since the layer is on by default
-    setTimeout(() => map.hasLayer(layer) && !layer.getLayers().length && drawHab(layer), habRetry);
+  const [ca, nv, or] = await Promise.all([drawn.has('CA') ? null : CA.habAdvisories(), drawn.has('NV') ? null : NV.habAdvisories(), drawn.has('OR') ? null : OR.habAdvisories()]);
+  if (ca) { drawn.add('CA'); drawCa(layer, ca); }
+  if (nv) { drawn.add('NV'); drawNv(layer, nv); }
+  if (or) { drawn.add('OR'); drawOr(layer, or); }
+  if (drawn.size < 3 && !habTimer) {
+    habTimer = setTimeout(() => { habTimer = null; if (map.hasLayer(layer)) drawHab(layer); }, habRetry);
     habRetry = Math.min(habRetry * 2, 10 * 60e3);
-    return;
   }
+}
+
+function drawCa(layer, data) {
   for (const a of data.advisories ?? []) {
     const l = HAB_LEVELS[a.level];
     const big = ['danger', 'warning'].includes(a.level);
@@ -43,8 +51,10 @@ async function drawHab(layer) {
         .addTo(layer);
     }
   }
-  // Nevada's list (one point per water). It loads on its own, so a missing file doesn't hide California's.
-  const nv = await NV.habAdvisories();
+}
+
+// Nevada's list: one point per water.
+function drawNv(layer, nv) {
   for (const a of nv?.advisories ?? []) {
     const l = NV_HAB[a.level];
     if (!l || a.lat == null) continue;
@@ -53,8 +63,10 @@ async function drawHab(layer) {
         <span style="font-size:12px;color:#666">${esc(a.detail)}${a.date ? ` · updated ${fmtDate(a.date + 'T12:00')}` : ''}</span><br><a href="${esc(nv.portal)}" target="_blank" rel="noopener">Nevada HAB reports ↗</a>`)
       .addTo(layer);
   }
-  // Oregon's (one point per water; waters OHA names that the nightly job couldn't place aren't drawn).
-  const or = await OR.habAdvisories();
+}
+
+// Oregon's: one point per water (waters OHA names that the nightly job couldn't place aren't drawn).
+function drawOr(layer, or) {
   for (const a of or?.advisories ?? []) {
     const l = OR_HAB[a.level];
     if (!l || a.lat == null) continue;

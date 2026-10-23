@@ -13,13 +13,29 @@ export const agency = 'ODFW';
 export const stockField = 'odfwWaterId';
 export const levelSource = 'USGS';
 export const scheduleUrl = 'https://myodfw.com/fishing/species/trout/stocking-schedule';
-// ODFW has no page per water; the schedule filtered to the water (ids are ODFW's spelling of the name) is closest.
-export const waterUrl = id => `${scheduleUrl}?field_zone_value=All&field_waterbody_name_value_1=${encodeURIComponent(id).replace(/%20/g, '+')}`;
+// ODFW's spelling of a water ("DEVIL'S LK") as an id that is safe in backups and data-* attributes: letters, digits
+// and "-" as they are, a space as "_", anything else as ".XX" per UTF-8 byte. The nightly job makes ids the same way.
+export const odfwId = raw => [...String(raw)].map(c => /[A-Za-z0-9-]/.test(c) ? c : c === ' ' ? '_'
+  : [...new TextEncoder().encode(c)].map(b => '.' + b.toString(16).toUpperCase().padStart(2, '0')).join('')).join('');
+export const odfwName = id => decodeURIComponent(String(id).replace(/_/g, ' ').replace(/\.([0-9A-F]{2})/g, '%$1'));
+// ODFW has no page per water; the schedule filtered to the water's name is closest.
+export const waterUrl = id => `${scheduleUrl}?${new URLSearchParams({ field_zone_value: 'All', field_waterbody_name_value_1: odfwName(id) })}`;
+
+// Lakes saved before ids were made safe carry ODFW's raw spelling: rewrite them once (at startup).
+export async function migrateSavedIds(db) {
+  for (const l of await db.all('lakes')) {
+    if (typeof l.odfwWaterId !== 'string' || /^[\w.:-]*$/.test(l.odfwWaterId)) continue;
+    const id = odfwId(l.odfwWaterId);
+    await db.put('lakes', { ...l, odfwWaterId: id, ...(l.stockingUrl?.startsWith(scheduleUrl) && { stockingUrl: waterUrl(id) }), ...(l.infoUrl?.startsWith(scheduleUrl) && { infoUrl: waterUrl(id) }) });
+  }
+}
 export const searchBy = 'zone';
 // The Columbia and the Snake make the north and east lines; the box takes in both rivers.
 export const bbox = [-124.75, 41.99, -116.45, 46.3];
-export const outline = [[-124.6, 42.0], [-117.03, 42.0], [-117.03, 44.3], [-116.9, 44.5], [-116.46, 45.6], [-116.92, 46.0], [-119.0, 46.0], [-119.3, 45.93],
-  [-120.5, 45.7], [-121.2, 45.65], [-122.25, 45.55], [-122.76, 45.65], [-122.8, 45.9], [-123.1, 46.18], [-123.9, 46.27], [-124.2, 46.27], [-124.2, 45.0], [-124.6, 42.8]];
+export const outline = [[-124.6, 42.0], [-117.03, 42.0], [-117.03, 44.3], [-116.9, 44.5], [-116.46, 45.6], [-116.92, 46.0], [-119.0, 46.0], [-119.3, 45.94],
+  // Midstream down the Columbia, so Gorge towns (Hood River, Cascade Locks) are in and Washington's bank is out.
+  [-119.9, 45.86], [-120.2, 45.75], [-120.74, 45.71], [-120.97, 45.655], [-121.18, 45.625], [-121.4, 45.705], [-121.52, 45.73], [-121.89, 45.685],
+  [-121.95, 45.65], [-122.12, 45.59], [-122.39, 45.575], [-122.67, 45.625], [-122.76, 45.66], [-122.8, 45.9], [-123.1, 46.18], [-123.9, 46.27], [-124.2, 46.27], [-124.2, 45.0], [-124.6, 42.8]];
 export const plantsNote = 'ODFW schedules the week, not the day, and counts each size class: legal (8 to 12″), trophy (12″+), brood fish and fingerlings. Schedules can change with weather and road access.';
 export const searchHint = 'Detroit, Deschutes River, Diamond…';
 export const stockedHint = 'Hagg, Detroit, Willamette zone…';
@@ -51,6 +67,34 @@ async function zoneOf(lake) {
   return (lake.lat != null ? await zoneAt(lake.lat, lake.lon) : null) ?? stocked?.zone ?? null;
 }
 
+// Names a water goes by in ODFW's and OHA's lists: its own, its stocked water's, and those with the water word
+// swapped. The map's "Hills Creek Lake" is the rules' "Hills Creek Reservoir", "Lake Selmac" is "Selmac Lake" and
+// "Tenmile Lake" is in "Tenmile Lakes". Lake X and X Lake swap only when X isn't itself a water ("Lake Creek").
+function variants(name) {
+  const bare = String(name ?? '').replace(/\s*\(.*?\)\s*/g, ' ').replace(/\s+/g, ' ').trim();
+  const out = new Set([bare]);
+  const front = bare.match(/^Lake\s+(.+)$/i)?.[1];
+  const base = bare.match(/^(.+?)\s+(?:Lake|Lakes|Reservoir|Reservoirs)$/i)?.[1] ?? front;
+  if (base) {
+    for (const t of ['Lake', 'Reservoir']) out.add(`${base} ${t}`);
+    if (!/\b(lake|lakes|reservoir|pond|ponds|river|creek|slough)$/i.test(base)) out.add(`Lake ${base}`);
+  }
+  return [...out];
+}
+async function namesOf(lake) {
+  const id = lake.odfwWaterId ?? (lake.lat != null ? (await matchStockedWater(lake))?.id : null);
+  const stocked = id ? (await d.load('waters'))?.waters.find(w => w.id === id) : null;
+  return [...new Set([lake.name, stocked?.name].filter(Boolean).flatMap(variants))];
+}
+// A list's name for a water matches one of the water's names, read in the singular ("Tenmile Lakes", "Cottage Grove
+// Reservoirs"). A reach ("Lower Columbia River", "Mid-Columbia River") also matches the whole river, since a map
+// label has no reach.
+const listed = (names, n) => {
+  const one = String(n).replace(/\b(Lake|Reservoir|Pond)s\b/gi, '$1');
+  return names.some(a => sameWater(a, one) || (/\b(river|creek)$/i.test(one) && sameWater(a, one.replace(/^(lower|upper|middle|mid)[\s-]+/i, ''))));
+};
+const countiesOf = s => String(s ?? '').split(/\s+and\s+|\s*\/\s*|\s*,\s*/).map(c => c.replace(/\s*County$/i, '').trim()).filter(Boolean);
+
 // Whether a Recreation Report line is about this water: its name without "Lake"/"River", then that kind of water
 // within a few words ("Siltcoos and Tahkenitch lakes" is about Siltcoos Lake). Same test as the nightly job's.
 const KIND = [/\b(lake|lakes|reservoir|reservoirs|res|pond|ponds)\b/i, /\b(river|rivers|creek|creeks)\b/i, /\b(canal|canals)\b/i];
@@ -58,7 +102,10 @@ export function mentions(text, name) {
   const bare = String(name ?? '').replace(/\s*\(.*?\)\s*/g, ' ').trim();
   const base = bare.replace(/^Lake\s+/i, '').replace(/\s+(Lake|Lakes|Reservoir|Pond|Ponds|River|Creek|Canal)$/i, '').trim();
   if (base.length < 4 || /^(north|south|east|west|upper|lower|middle|big|little|clear|mud|fish|blue|lost|long|round)$/i.test(base)) return false;
-  const kind = KIND.find(re => re.test(bare)) ?? /\b(lake|lakes|reservoir|res|pond|ponds|river|rivers|creek|creeks)\b/i;
+  // A name ending in its water word wants that word ("Malheur Reservoir" isn't "Malheur Lake").
+  const own = bare.match(/\s(Lake|Reservoir|Pond|River|Creek|Canal)$/i)?.[1]?.toLowerCase();
+  const kind = own ? new RegExp(`\\b(${own}|${own}s${own === 'reservoir' ? '|res' : ''})\\b`, 'i')
+    : KIND.find(re => re.test(bare)) ?? /\b(lake|lakes|reservoir|res|pond|ponds|river|rivers|creek|creeks)\b/i;
   const b = base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   return new RegExp(`\\b${b}\\b(?:[\\s,]+[\\w'’-]+){0,3}?[\\s,]+${kind.source.replace(/\\b/g, '')}\\b`, 'i').test(text) || (/^Lake /i.test(bare) && new RegExp(`\\blake\\s+${b}\\b`, 'i').test(text));
 }
@@ -86,18 +133,24 @@ export async function habAdvisories() {
   return d.load('hab');
 }
 
-// Current toxic algae advisories on this water (Oregon Health Authority list, matched by name and place).
+// Current toxic algae advisories on this water (Oregon Health Authority list). OHA names the water and its county:
+// a name match counts in that county (anywhere in it), a point match only close by and not in another county.
 export async function habFor(lake) {
-  const h = await d.load('hab');
-  return (h?.advisories ?? []).map(a => ({ ...a, distKm: a.lat != null ? haversineKm(lake.lat, lake.lon, a.lat, a.lon) : null }))
-    .filter(a => sameWater(lake.name, a.name.split(/[(,]/)[0].trim()) ? a.distKm == null || a.distKm < 60 : a.distKm != null && a.distKm <= reach(lake));
+  const [h, names, county] = await Promise.all([d.load('hab'), namesOf(lake), lake.lat != null ? countyAt(lake.lat, lake.lon) : null]);
+  return (h?.advisories ?? []).map(a => ({ ...a, distKm: a.lat != null && lake.lat != null ? haversineKm(lake.lat, lake.lon, a.lat, a.lon) : null }))
+    .filter(a => {
+      const counties = countiesOf(a.county), inCounty = !counties.length || !county || counties.includes(county);
+      if ((a.names ?? [a.name.split(/[(,]/)[0].trim()]).some(n => listed(names, n))) return counties.length && county ? inCounty : a.distKm == null || a.distKm < 60;
+      return inCounty && a.distKm != null && a.distKm <= reach(lake);
+    });
 }
 
 // Oregon Health Authority advice on eating fish caught here.
 export async function fishAdviceFor(lake) {
   const f = await d.load('advisories');
   if (!f) return null;
-  const site = f.advisories.filter(a => a.names.some(n => sameWater(lake.name, n)));
+  const names = await namesOf(lake);
+  const site = f.advisories.filter(a => a.names.some(n => listed(names, n)));
   return { site, statewide: f.statewide, meal: f.meal, url: f.url, updatedAt: f.updatedAt };
 }
 
@@ -106,11 +159,18 @@ export async function fishAdviceFor(lake) {
 export async function regsFor(lake) {
   const r = await d.load('regs');
   if (!r) return null;
-  const zone = await zoneOf(lake);
-  const zoneKey = Object.keys(r.zones).find(z => sameZone(z, zone ?? '')) ?? null;
-  const county = lake.lat != null ? await countyAt(lake.lat, lake.lon) : null;
+  const [zone, names, county] = await Promise.all([zoneOf(lake), namesOf(lake), lake.lat != null ? countyAt(lake.lat, lake.lon) : null]);
+  let zoneKey = Object.keys(r.zones).find(z => sameZone(z, zone ?? '')) ?? null;
   // Outside every zone (not in Oregon) only the Columbia and Snake rules, which name their river, can apply.
-  const special = r.waters.filter(w => (!w.county || (county && county === w.county)) && (zoneKey ? w.zone === zoneKey || /Columbia|Snake/.test(w.zone) : /Columbia|Snake/.test(w.zone))
-    && [w.name, ...w.aliases].some(n => sameWater(lake.name, n)));
-  return { zone: zoneKey ?? zone, special, zoneRules: zoneKey ? r.zones[zoneKey] : null, statewide: r.statewide, booklet: r.booklet, updates: r.updates, source: r.source, updatedAt: r.updatedAt };
+  // A rule for one county's water ("Beaver Creek (Nestucca Basin, Tillamook Co.)") applies only in that county.
+  const special = r.waters.filter(w => {
+    const counties = w.counties ?? (w.county ? [w.county] : []);
+    return (!counties.length || (county && counties.includes(county))) && (zoneKey ? w.zone === zoneKey || /Columbia|Snake/.test(w.zone) : /Columbia|Snake/.test(w.zone))
+      && [w.name, ...w.aliases].some(n => listed(names, n));
+  });
+  // The Columbia and Snake zones are the rivers and their reservoirs, thinner than the zone map can show: a water
+  // named in their rules (Brownlee, Hells Canyon) gets that zone's limits unless its own zone's rules name it too.
+  const river = special.find(w => /Columbia|Snake/.test(w.zone));
+  if (river && !special.some(w => w.zone === zoneKey)) zoneKey = river.zone;
+  return { zone: zoneKey ?? zone, inOregon: !!zone, special, zoneRules: zoneKey ? r.zones[zoneKey] : null, statewide: r.statewide, booklet: r.booklet, updates: r.updates, source: r.source, updatedAt: r.updatedAt };
 }

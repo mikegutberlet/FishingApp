@@ -16,16 +16,31 @@ function inside([x, y], ring) {
   return c;
 }
 
-// The state whose rough outline holds this point. Just outside every outline (a river on the border), the state
-// whose box holds it; null far from every state we have data for.
-export function stateAt(lat, lon) {
-  return list.find(s => inside([lon, lat], s.outline))
-    ?? list.find(s => lon >= s.bbox[0] && lon <= s.bbox[2] && lat >= s.bbox[1] && lat <= s.bbox[3]) ?? null;
+// Degrees from a point to the nearest edge of an outline (flat-earth, fine at a few km).
+function edgeDeg([x, y], ring) {
+  let best = Infinity;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const [ax, ay] = ring[j], [bx, by] = ring[i], dx = bx - ax, dy = by - ay;
+    const t = Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy || 1)));
+    best = Math.min(best, Math.hypot(x - ax - t * dx, y - ay - t * dy));
+  }
+  return best;
 }
 
-// The state module for a water: the state saved on it, else where it sits on the map.
+// The state whose rough outline holds this point. Just outside every outline (a river or reservoir on the border,
+// within about 2 km), the state whose box holds it; null elsewhere, so a Washington or Idaho lake inside Oregon's
+// box doesn't get Oregon's rules.
+export function stateAt(lat, lon) {
+  return list.find(s => inside([lon, lat], s.outline))
+    ?? list.find(s => lon >= s.bbox[0] && lon <= s.bbox[2] && lat >= s.bbox[1] && lat <= s.bbox[3] && edgeDeg([lon, lat], s.outline) < 0.02) ?? null;
+}
+
+// The state module for a water: the state saved on it (null for a state we have no data for), else where it sits
+// on the map.
 export function forLake(lake) {
-  return STATES[String(lake?.state ?? '').toUpperCase()] ?? (lake?.lat != null ? stateAt(lake.lat, lake.lon) : null);
+  const code = String(lake?.state ?? '').trim().toUpperCase();
+  if (code) return STATES[code] ?? list.find(s => s.name.toUpperCase() === code) ?? null;
+  return lake?.lat != null ? stateAt(lake.lat, lake.lon) : null;
 }
 
 // Lake level gauge for a water: its state's nearest or name-matching gauge. A station pinned under Edit may belong

@@ -51,6 +51,7 @@ function regsCard(regs) {
   const z = regs.zoneRules;
   return `<div class="card"><h3>Fishing regulations</h3>
     ${regs.special.length ? `<p class="small">Exceptions to the ${esc(regs.zone ?? '')} Zone rules for this water:</p>${regs.special.map(ruleRow).join('')}`
+      : !regs.inOregon && !regs.zoneRules ? '<p class="small">This water isn’t in an Oregon angling zone, so Oregon’s rules may not apply: check the state it’s in.</p>'
       : `<p class="small">No exceptions name this water, so the ${regs.zone ? `${esc(regs.zone)} Zone’s` : 'zone’s'} general limits below apply.</p>`}
     ${z ? `<h3 style="margin-top:10px">${esc(regs.zone)} Zone</h3>
       ${z.general.length ? `<table><tr><th class="small">Fish</th><th class="small">Bag limit</th><th class="small">Size and season</th></tr>${z.general.map(g => `<tr><td class="small">${esc(g.species)}</td><td class="small">${esc(g.bag)}</td><td class="small">${esc([g.size, g.season].filter(Boolean).join(' · '))}</td></tr>`).join('')}</table>` : ''}
@@ -61,10 +62,11 @@ function regsCard(regs) {
 
 function eatCard(eat) {
   if (!eat) return `<div class="card"><h3>Eating your catch</h3><p class="muted small">Fish advisories haven’t been downloaded yet.</p></div>`;
-  const meals = n => /^0$/.test(String(n).trim()) ? '<b class="dont">Don’t eat</b>' : esc(n);
+  const meals = (n, f) => /^0$/.test(String(n).trim()) ? '<b class="dont">Don’t eat</b>'
+    : f.link && !/\d/.test(n) ? `<a href="${esc(f.link)}" target="_blank" rel="noopener">See OHA guidance ↗</a>` : esc(n);
   return `<div class="card"><h3>Eating your catch</h3>
     ${eat.site.length ? eat.site.map(a => `<p class="small"><b>${esc(a.area)}</b></p><table><tr><th class="small">Fish</th><th class="small">Kids, pregnant or nursing</th><th class="small">Everyone else</th></tr>
-      ${a.fish.map(f => `<tr><td class="small">${esc(f.fish)}<div class="muted small">${esc(f.contaminant)}</div></td><td class="small">${meals(f.vulnerable)}</td><td class="small">${meals(f.everyone)}</td></tr>`).join('')}</table><p class="muted small">Meals a month.</p>`).join('')
+      ${a.fish.map(f => `<tr><td class="small">${esc(f.fish)}<div class="muted small">${esc(f.contaminant)}</div></td><td class="small">${meals(f.vulnerable, f)}</td><td class="small">${meals(f.everyone, f)}</td></tr>`).join('')}</table><p class="muted small">Meals a month.</p>`).join('')
       : '<p class="small">No advisory names this water.</p>'}
     <p class="small">${esc(eat.statewide)}</p>${eat.meal ? `<p class="muted small">${esc(eat.meal)}</p>` : ''}
     <p class="muted small">Oregon Health Authority fish advisories, refreshed weekly. <a href="${esc(eat.url)}" target="_blank" rel="noopener">OHA fish advisories ↗</a></p></div>`;

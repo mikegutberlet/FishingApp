@@ -86,7 +86,10 @@ function aliases(title) {
   if (!out.size && t.length > 2) out.add(t.trim());
   return [...out];
 }
-const county = title => title.match(/\(([A-Z][a-z]+(?: [A-Z][a-z]+)?) Co(?:\.|unty)\)?/)?.[1] ?? null;
+// Counties a heading names: "(Nestucca Basin, Tillamook Co.)" → Tillamook, "(Clatsop/Columbia Co.)" → both,
+// "(Gilliam and Morrow Co.)" → both. "(Charles Metzger County Park)" is a park, not a county.
+const counties = title => [...title.matchAll(/\(([^)]*?)\s*Co(?:\.|unty)\)/g)].flatMap(m => m[1].split(',').pop().split(/\s+and\s+|\s*\/\s*/))
+  .map(s => s.trim()).filter(s => /^[A-Z][a-z]+(?: [A-Z][a-z]+)?$/.test(s));
 
 const SKIP = /^Last Updated:/i;
 
@@ -102,7 +105,7 @@ function zonePage(zone, url, secs) {
   const exStart = secs.findIndex(s => /^exceptions/i.test(s.title));
   const intro = secs.slice(1, exStart < 0 ? secs.length : exStart).map(s => ({ title: s.title, text: s.text.filter(t => !SKIP.test(t)) })).filter(s => s.text.length);
   const waters = exStart < 0 ? [] : secs.slice(exStart + 1).filter(s => s.text.length && s.level >= 3)
-    .map(s => ({ name: s.title, aliases: aliases(s.title), county: county(s.title), zone, rules: s.text }));
+    .map(s => ({ name: s.title, aliases: aliases(s.title), counties: counties(s.title), zone, rules: s.text }));
   return { url, general, intro, waters };
 }
 
@@ -161,14 +164,15 @@ if (waters.length) {
 try {
   const url = 'https://www.oregon.gov/oha/ph/healthyenvironments/recreation/fishconsumption/pages/fishadvisories.aspx';
   const html = await fetchText(url);
-  const rows = [...html.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)].map(m => [...m[1].matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)].map(c => clean(c[1])));
+  const rawRows = [...html.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)].map(m => [...m[1].matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)].map(c => c[1]));
+  const rows = rawRows.map(r => r.map(clean));
   report.advisoryRows = rows;
   const advisories = [];
   let zone = '', last = null;
   // Link labels that sit in the waterbody cell.
   const LINKS = /\s*(Press release|Fact ?sheet|Technical report:?|Frequently asked questions|Information OHA used to warrant a statewide advisory|Meal guidance|Map)\b.*$/gi;
   let prev = { contaminant: '', fish: '' }, started = false;
-  for (const r of rows) {
+  for (const [i, r] of rows.entries()) {
     if (/^zone$/i.test(r[0]) || /MEALS PER MONTH/.test(r.join(' '))) { if (started && /^zone$/i.test(r[0])) break; continue; }
     // A one-cell row is the note under the table; the shellfish tables after it are a different shape.
     if (r.length === 1) { if (started) break; continue; }
@@ -184,11 +188,15 @@ try {
     const one = rest.length === 1 && WATERISH.test(rest[0]);
     const [rawWater, contaminant, fish] = rest.length >= 3 ? rest : rest.length === 2 ? [last?.area ?? '', ...rest] : one ? [rest[0], prev.contaminant, prev.fish] : [last?.area ?? '', prev.contaminant, rest[0]];
     const [vulnerable, everyone] = meals;
+    // Some rows give no numbers, only a link to OHA's meal guidance for the place: keep the link.
+    const href = !two && !/\d/.test(meals[0]) ? rawRows[i].at(-1).match(/href="([^"]+)"/i)?.[1] : null;
+    const link = href ? new URL(decode(href), url).href : null;
     prev = { contaminant, fish };
     const water = rawWater.replace(LINKS, '').replace(/\s+,/g, ',').replace(/\s+/g, ' ').trim();
     if (!water || /coast/i.test(zone) && /clam/i.test(water)) continue;
-    if (last && last.area === water) last.fish.push({ fish, contaminant, vulnerable, everyone });
-    else { last = { zone, area: water, names: aliases(water.replace(/\s*Does not apply to:.*$/i, '')), fish: [{ fish, contaminant, vulnerable, everyone }] }; advisories.push(last); }
+    const entry = { fish, contaminant, vulnerable, everyone, ...(link && { link }) };
+    if (last && last.area === water) last.fish.push(entry);
+    else { last = { zone, area: water, names: aliases(water.replace(/\s*Does not apply to:.*$/i, '')), fish: [entry] }; advisories.push(last); }
   }
   report.advisories = advisories.map(a => `${a.zone}: ${a.area} → ${a.names.join(' | ')} (${a.fish.length})`);
   if (advisories.length) {

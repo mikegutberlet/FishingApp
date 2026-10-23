@@ -109,12 +109,14 @@ function scanForm(lake, el, draft, save, cancel) {
   const form = $('#scan-form', el), hintEl = $('#level-hint', el);
   // The level last filled in from the gauge, the date it was for, and the gauge. Seeded from the saved scan, so an
   // edit keeps a CDEC level the app no longer has a reading for (it only keeps about 30 days).
-  const fromGauge = /^(CDEC|USGS|USBR) ./.test(draft.levelSource ?? '') && typeof draft.levelFt === 'number';
+  // levelSource is "<agency> <station>" (CDEC SHA, USGS 10336645, USACE DET…) or "entered".
+  const m = /^([A-Z]+) (.+)$/.exec(draft.levelSource ?? '');
+  const fromGauge = !!m && typeof draft.levelFt === 'number';
   let auto = fromGauge ? draft.levelFt : null, autoDate = fromGauge ? draft.scanDate : null;
-  let station = fromGauge ? draft.levelSource.slice(5) : null, source = fromGauge ? draft.levelSource.slice(0, 4) : 'CDEC';
+  let station = fromGauge ? m[2] : null, source = fromGauge ? m[1] : 'CDEC';
   // Where to look an older reading up: the gauge's own page.
-  const GAUGE_PAGES = { CDEC: id => `https://cdec.water.ca.gov/dynamicapp/staMeta?station_id=${id}`, USGS: id => `https://waterdata.usgs.gov/monitoring-location/${id}/`, USBR: () => 'https://www.usbr.gov/lc/region/g4000/hourly/levels.html' };
-  const cdecLink = id => `<a href="${esc((GAUGE_PAGES[source] ?? GAUGE_PAGES.CDEC)(encodeURIComponent(id)))}" target="_blank" rel="noopener">${esc(source)} ↗</a>`;
+  const GAUGE_PAGES = { CDEC: id => `https://cdec.water.ca.gov/dynamicapp/staMeta?station_id=${id}`, USGS: id => `https://waterdata.usgs.gov/monitoring-location/${id}/`, USBR: () => forLake(lake)?.code === 'OR' ? 'https://www.usbr.gov/pn/hydromet/' : 'https://www.usbr.gov/lc/region/g4000/hourly/levels.html' };
+  const cdecLink = id => GAUGE_PAGES[source] ? `<a href="${esc(GAUGE_PAGES[source](encodeURIComponent(id)))}" target="_blank" rel="noopener">${esc(source)} ↗</a>` : `the ${esc(source)} site`;
   const hint = async () => {
     const date = form.scanDate.value;
     // A gauge reading belongs to its date: clear it only when the date has changed and the value wasn't retyped.
