@@ -1,7 +1,6 @@
 depth: 403 https://pasta.lternet.edu/package/search/eml?defType=edismax&q=title:%22LAGOS-US%20DEPTH%22&fl=packageid,title,pubdate&rows=20
-rivers: 504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?where=GNIS_NAME+IS+NOT+NULL+AND+%28GNIS_NAME+LIKE+%27%25+River%25%27+OR+GNIS_NAME+LIKE+%27%25+Creek%25%27+OR+GNIS_NAME+LIKE+%27
 {
-  "startedAt": "2026-10-23T07:12:38.546Z",
+  "startedAt": "2026-10-23T07:28:08.116Z",
   "steps": {
     "nhdLayers": [
       {
@@ -125,7 +124,12 @@ rivers: 504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/q
         }
       ]
     },
-    "riversError": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?where=GNIS_NAME+IS+NOT+NULL+AND+%28GNIS_NAME+LIKE+%27%25+River%25%27+OR+GNIS_NAME+LIKE+%27%25+Creek%25%27+OR+GNIS_NAME+LIKE+%27"
+    "rivers": {
+      "layer": 6,
+      "segments": 105689,
+      "named": 3995,
+      "kept": 634
+    }
   },
-  "finishedAt": "2026-10-23T07:26:47.063Z"
+  "finishedAt": "2026-10-23T08:05:44.085Z"
 }
