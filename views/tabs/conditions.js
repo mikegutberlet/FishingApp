@@ -1,21 +1,36 @@
-// Conditions tab: weather now, 24 hours and 10 days, lake level (CDEC), USGS gauges and Windy.
+// Conditions tab: weather alerts, weather now, bite windows, 24 hours and 10 days, wind on the water,
+// lake level (CDEC), USGS gauges with flow vs normal, and Windy.
 import * as CA from '../../states/ca.js';
-import { fetchWeather, pressureTrend, fetchUsgsNearby, moonPhase, WEATHER_CODES, compass } from '../../data-sources.js';
+import { pressureTrend, fetchUsgsNearby, moonPhase, WEATHER_CODES, compass } from '../../data-sources.js';
+import { weatherFor, fetchAlerts, alertLevel, fetchFlowStats, flowRating } from '../../forecast.js';
+import { solunar, dayRating, stars, windowAt, windowLabel, windowSpan, shortTime } from '../../solunar.js';
+import { windOnWater, windText, windSvg } from '../../wind.js';
 import { $, esc, fmtDate, fmtTime, arrow } from '../../ui.js';
 
 export async function renderConditions(lake, body) {
   const moon = moonPhase();
-  body.innerHTML = `<div class="card" id="wx">Loading weather…</div><div class="card hidden" id="res"></div><div class="card" id="water">Looking for USGS gauges…</div>
+  body.innerHTML = `<div id="alerts"></div><div class="card" id="wx">Loading weather…</div><div class="card hidden" id="bite"></div><div class="card hidden" id="windcard"></div>
+    <div class="card hidden" id="res"></div><div class="card" id="water">Looking for USGS gauges…</div>
     <div class="card"><h3>Windy</h3>
       <iframe class="windy" loading="lazy" src="https://embed.windy.com/embed2.html?lat=${lake.lat}&lon=${lake.lon}&detailLat=${lake.lat}&detailLon=${lake.lon}&zoom=10&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=mph&metricTemp=%C2%B0F"></iframe>
       <p class="small"><a href="https://www.windy.com/${lake.lat.toFixed(3)}/${lake.lon.toFixed(3)}?${lake.lat.toFixed(3)},${lake.lon.toFixed(3)},11" target="_blank" rel="noopener">Open in Windy (uses your Premium login)</a>
-      · <a href="https://myradar.com/" target="_blank" rel="noopener">Open MyRadar</a></p></div>`;
+      · <a href="https://myradar.com/" target="_blank" rel="noopener">Open MyRadar</a> · radar is also on the map (layers ▸ Rain radar)</p></div>`;
+  fetchAlerts(lake.lat, lake.lon).then(alerts => {
+    if (!body.isConnected || !alerts.length) return;
+    $('#alerts').innerHTML = alerts.sort((a, b) => alertLevel(b) - alertLevel(a)).map(a => `<details class="alert sev-${alertLevel(a)}">
+      <summary>⚠️ <b>${esc(a.event)}</b>${a.ends ? ` <span class="small">until ${esc(new Date(a.ends).toLocaleString(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' }))}</span>` : ''}</summary>
+      ${a.headline ? `<p class="small"><b>${esc(a.headline)}</b></p>` : ''}<p class="small">${esc(a.description).replace(/\n\n/g, '<br><br>')}</p>
+      ${a.instruction ? `<p class="small">${esc(a.instruction).replace(/\n\n/g, '<br><br>')}</p>` : ''}<p class="muted small">${esc(a.sender)} · National Weather Service</p></details>`).join('');
+  }).catch(() => {}); // outside the US, or NWS down: no banner
   try {
-    const w = await fetchWeather(lake.lat, lake.lon);
+    const w = await weatherFor(lake.lat, lake.lon);
     if (!body.isConnected) return; // user moved on before the forecast arrived
     const c = w.current, trend = pressureTrend(w);
     const now = Date.parse(c.time);
     const hours = w.hourly.time.map((t, i) => ({ t, i })).filter(({ t }) => Date.parse(t) >= now).slice(0, 24);
+    const sols = new Map(); // bite windows per local day
+    const solFor = t => { const k = new Date(t).toDateString(); if (!sols.has(k)) sols.set(k, solunar(new Date(t), lake.lat, lake.lon)); return sols.get(k); };
+    const biteAt = t => windowAt(solFor(Date.parse(t)), Date.parse(t));
     $('#wx').innerHTML = `<h3>Now · ${WEATHER_CODES[c.weather_code] ?? ''}</h3>
       <div class="grid">
         <div class="stat"><b>${Math.round(c.temperature_2m)}°F</b><span>Feels ${Math.round(c.apparent_temperature)}°</span></div>
@@ -26,10 +41,18 @@ export async function renderConditions(lake, body) {
         <div class="stat"><b>☀ ${fmtTime(w.daily.sunrise[1])}</b><span>Sunset ${fmtTime(w.daily.sunset[1])}</span></div>
       </div>
       <h3 style="margin-top:12px">Next 24 hours</h3>
-      <div class="hours">${hours.map(({ t, i }) => `<div class="hour">${fmtTime(t)}<br><b>${Math.round(w.hourly.temperature_2m[i])}°</b><br>${arrow(w.hourly.wind_direction_10m[i])} ${Math.round(w.hourly.wind_speed_10m[i])}<br><span class="muted">g${Math.round(w.hourly.wind_gusts_10m[i])}</span><br>${w.hourly.precipitation_probability[i] ?? 0}%💧</div>`).join('')}</div>
+      <div class="hours">${hours.map(({ t, i }) => { const b = biteAt(t); return `<div class="hour${b ? ' ' + b.type : ''}">${fmtTime(t)}<br><b>${Math.round(w.hourly.temperature_2m[i])}°</b><br>${arrow(w.hourly.wind_direction_10m[i])} ${Math.round(w.hourly.wind_speed_10m[i])}<br><span class="muted">g${Math.round(w.hourly.wind_gusts_10m[i])}</span><br>${w.hourly.precipitation_probability[i] ?? 0}%💧${b ? `<div class="bite-tag">${b.type === 'major' ? '🐟 Major' : 'Minor'}</div>` : ''}</div>`; }).join('')}</div>
       <h3 style="margin-top:12px">10 days</h3>
-      <table>${w.daily.time.slice(1).map((t, j) => { const i = j + 1; return `<tr><td>${new Date(t + 'T12:00').toLocaleDateString(undefined, { weekday: 'short' })}</td><td>${WEATHER_CODES[w.daily.weather_code[i]] ?? ''}</td><td>${Math.round(w.daily.temperature_2m_min[i])}–${Math.round(w.daily.temperature_2m_max[i])}°</td><td>${arrow(w.daily.wind_direction_10m_dominant[i])} ${Math.round(w.daily.wind_speed_10m_max[i])} (g${Math.round(w.daily.wind_gusts_10m_max[i])})</td><td>${w.daily.precipitation_probability_max[i] ?? 0}%</td></tr>`; }).join('')}</table>
-      <p class="muted small">Open-Meteo forecast · moon phase computed on device</p>`;
+      <table class="days">${w.daily.time.slice(1).map((t, j) => {
+        const i = j + 1, sol = solFor(Date.parse(t + 'T12:00')), r = dayRating(sol, w.daily.sunrise[i], w.daily.sunset[i]);
+        return `<tr><td>${new Date(t + 'T12:00').toLocaleDateString(undefined, { weekday: 'short' })}</td><td>${WEATHER_CODES[w.daily.weather_code[i]] ?? ''}</td><td>${Math.round(w.daily.temperature_2m_min[i])}–${Math.round(w.daily.temperature_2m_max[i])}°</td><td>${arrow(w.daily.wind_direction_10m_dominant[i])} ${Math.round(w.daily.wind_speed_10m_max[i])} (g${Math.round(w.daily.wind_gusts_10m_max[i])})</td><td>${w.daily.precipitation_probability_max[i] ?? 0}%</td></tr>
+          <tr class="bite-row"><td colspan="5"><span class="stars" title="Solunar rating ${r} of 4">${stars(r)}</span> Major ${sol.majors.map(m => shortTime(m.peak)).join(', ') || '–'}${sol.minors.length ? ` · minor ${sol.minors.map(m => shortTime(m.peak)).join(', ')}` : ''}</td></tr>`;
+      }).join('')}</table>
+      <p class="muted small">Open-Meteo forecast · moon and bite windows computed on device · times are peak of each window</p>`;
+    renderBite(solFor(now), w, now);
+    const x = windOnWater(w);
+    $('#windcard').innerHTML = `<h3>Wind on the water</h3><div class="wind-card">${windSvg(x)}<div class="small">${windText(x)}</div></div>`;
+    $('#windcard').classList.remove('hidden');
   } catch (e) { if (body.isConnected) $('#wx').textContent = `Weather: ${e.message} (offline?)`; }
   CA.nearestReservoir(lake.lat, lake.lon, lake.cdecStation, { name: lake.name, acres: lake.acres }).then(r => {
     if (!r || !body.isConnected) return;
@@ -47,8 +70,35 @@ export async function renderConditions(lake, body) {
     let sites = await fetchUsgsNearby(lake.lat, lake.lon);
     if (!body.isConnected) return;
     if (lake.usgsSite) sites = sites.filter(s => s.id === lake.usgsSite).concat(sites.filter(s => s.id !== lake.usgsSite));
-    $('#water').innerHTML = `<h3>Water (USGS)</h3>` + (sites.length ? sites.slice(0, 3).map(s => `<p><b>${esc(s.name)}</b> <span class="muted small">#${s.id} · ${s.distKm.toFixed(1)} km</span><br>
+    sites = sites.slice(0, 3);
+    $('#water').innerHTML = `<h3>Water (USGS)</h3>` + (sites.length ? sites.map(s => `<p><b>${esc(s.name)}</b> <span class="muted small">#${s.id} · ${s.distKm.toFixed(1)} km</span><br>
       ${s.readings.map(r => r.code === '00010' ? `Water temp: <b>${(r.value * 9 / 5 + 32).toFixed(1)}°F</b>` : `${esc(r.name.split(',')[0])}: <b>${r.value} ${esc(r.unit)}</b>`).join('<br>')}
+      <span class="flow" data-site="${esc(s.id)}"></span>
       <br><span class="muted small">${fmtDate(s.readings[0].time)} ${fmtTime(s.readings[0].time)}</span></p>`).join('') : '<p class="muted">No active gauges nearby. Common for natural lakes; rivers and reservoirs usually have one.</p>');
+    const river = lake.kind === 'river' || /river|creek|stream|fork/i.test(`${lake.type} ${lake.name}`);
+    for (const s of sites) {
+      const q = s.readings.find(r => r.code === '00060');
+      if (!q) continue;
+      fetchFlowStats(s.id).then(st => {
+        const f = flowRating(q.value, st), el = body.querySelector(`.flow[data-site="${CSS.escape(s.id)}"]`);
+        if (!f || !el) return;
+        el.innerHTML = `<br>Flow: <b>${f.pct}% of normal</b> for ${new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}${river ? ` <span class="chip ${f.tone}">${f.label}</span>` : ''}
+          <br><span class="muted small">Median ${Math.round(st.p50).toLocaleString()} cfs, middle half ${Math.round(st.p25).toLocaleString()}–${Math.round(st.p75).toLocaleString()} cfs (${esc(st.from)}–${esc(st.to)}, ${st.years} yrs)</span>
+          ${river ? `<br><span class="small">${f.tip}</span>` : ''}`;
+      }).catch(() => {});
+    }
   } catch (e) { if (body.isConnected) $('#water').textContent = `USGS: ${e.message}`; }
+}
+
+// Today's bite windows, and which one is on now or next.
+function renderBite(sol, w, now) {
+  const r = dayRating(sol, w.daily.sunrise[1], w.daily.sunset[1]);
+  const next = sol.windows.find(x => x.end > now);
+  const el = $('#bite');
+  el.innerHTML = `<h3>Bite windows today <span class="stars" title="Solunar rating ${r} of 4">${stars(r)}</span></h3>
+    ${next ? `<p>${next.start <= now ? '🐟 <b>On now</b>' : `Next: <b>${shortTime(next.start)}</b>`}, ${windowLabel(next).toLowerCase()} until ${shortTime(next.end)}</p>` : '<p class="muted">No more windows today.</p>'}
+    <table>${sol.windows.map(x => `<tr class="${x.end < now ? 'muted' : ''}"><td>${x.type === 'major' ? '🐟🐟' : '🐟'}</td><td>${windowSpan(x)}</td><td>${windowLabel(x)}</td></tr>`).join('')}</table>
+    <p class="muted small">${esc(sol.phase.name)}${sol.moonrise ? ` · moonrise ${shortTime(sol.moonrise)}` : ''}${sol.moonset ? ` · moonset ${shortTime(sol.moonset)}` : ''}.
+      Solunar theory: fish feed more around moon overhead/underfoot (major, 2 h) and moonrise/set (minor, 1 h); best near new and full moon and when a window meets sunrise or sunset.</p>`;
+  el.classList.remove('hidden');
 }
