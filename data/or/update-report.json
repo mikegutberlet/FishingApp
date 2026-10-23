@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-23T17:19:24.807Z",
+  "startedAt": "2026-10-23T17:23:18.177Z",
   "schedule": {
     "windows": [
       "2024-10-23..2024-11-22: 16",
@@ -270,12 +270,12 @@
       "SUMMIT PRAIRIE PD → Summit Prairie Pond (Southeast)",
       "DREWS GAP PD → Drews Gap Pond (Southeast)"
     ],
-    "geocoderCalls": 9
+    "geocoderCalls": 0
   },
   "plants": {
     "total": 2300,
-    "new": 3438,
-    "kept": 2294,
+    "new": 1138,
+    "kept": 2300,
     "movedOrCancelled": 0
   },
   "usgs": {
@@ -458,9 +458,9 @@
     "USACE LOS Lost Creek Dam: 2026-10-23 1781.54 / -",
     "USACE OCH Ochoco Reservoir: 2026-10-23 3080.68 / -",
     "USACE PHL Mason Dam&Phillips Lk nr Baker: 2026-10-23 3982.78 / -",
-    "USACE PHLO Powder R nr Sumpter: 2026-10-23 3982.79 / -",
+    "USACE PHLO Powder R nr Sumpter: 2026-10-23 3982.78 / -",
     "USACE PRV Prineville Reservoir: 2026-10-23 3175.43 / -",
-    "USACE SCO Scoggins Dam: 2026-10-23 260.68 / -",
+    "USACE SCO Scoggins Dam: 2026-10-23 260.67 / -",
     "USACE WAR Warm Springs Dam nr Rvrside: 2026-10-23 3343.65 / -",
     "USACE WIL Willow Creek Lake at Heppner: 2026-10-23 2047.4 / -",
     "USBR WIC Wickiup Reservoir: 2026-10-22 4300.93 / 2026-10-22 30111",
@@ -584,7 +584,7 @@
       "Diamond Lake (Douglas): caution 2026-08-21 located",
       "Lemolo Lake (Douglas): caution 2026-08-21 located",
       "Agate Reservoir (Jackson): caution 2026-08-21 located",
-      "Oswego Lake (Clackamas): caution 2026-08-19 NO POINT",
+      "Oswego Lake (Clackamas): caution 2026-08-19 located",
       "Unity Reservoir (Baker): caution 2026-08-19 located",
       "Phillips Lake (Baker): caution 2026-08-19 located",
       "Eckman Lake (Lincoln): warning 2026-08-28 located",
@@ -614,12 +614,12 @@
       "Willow Creek Reservoir (Morrow): caution 2026-05-15 located",
       "McKay Reservoir (Umatilla): caution 2026-05-15 located",
       "South Umpqua River and mainstream Umpqua River (Douglas): warning  NO POINT",
-      "Owyhee Reservoir (Malheur): caution 2026-09-21 NO POINT",
+      "Owyhee Reservoir (Malheur): caution 2026-09-21 located",
       "Blue Lake (Multnomah): caution 2026-09-17 located",
       "Penland Lake (Morrow): caution 2026-10-06 located",
       "Lake Selmac (Josephine): caution 2026-10-07 located",
       "Howard Prairie Lake (Jackson): caution 2026-10-13 located"
     ]
   },
-  "finishedAt": "2026-10-23T17:22:11.006Z"
+  "finishedAt": "2026-10-23T17:24:39.707Z"
 }
