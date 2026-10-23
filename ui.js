@@ -1,7 +1,8 @@
 // Small helpers shared by every view, and navigation between the bottom-nav views.
 export const $ = (sel, root = document) => root.querySelector(sel);
 export const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-export const fmtDate = iso => iso ? new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+// A date with no time (a plant week, '2026-10-25') means that calendar day, so read it as local noon, not UTC midnight.
+export const fmtDate = iso => iso ? new Date(/^\d{4}-\d\d-\d\d$/.test(iso) ? iso + 'T12:00' : iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '';
 export const fmtTime = iso => new Date(iso).toLocaleTimeString(undefined, { hour: 'numeric' });
 export const status = msg => { $('#status').textContent = msg; if (msg) setTimeout(() => $('#status').textContent === msg && ($('#status').textContent = ''), 4000); };
 export const arrow = deg => `<span class="arrow" style="transform:rotate(${deg + 180}deg)">↑</span>`;

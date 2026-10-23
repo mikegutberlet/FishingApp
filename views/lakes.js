@@ -110,7 +110,7 @@ export function editLake(lake) {
         <label>Lon <input name="lon" type="number" step="any" required value="${lake.lon ?? ''}"></label></div>
       <button class="primary">Save</button>
     </form>${lake.id ? '<button class="danger" id="del-lake">Delete this lake and everything logged on it</button>' : ''}`;
-  $('#back').onclick = () => lake.id ? openLake(lake.id) : renderLakeList();
+  $('#back', d).onclick = () => lake.id ? openLake(lake.id) : renderLakeList();
   $('#lake-form').onsubmit = async e => {
     e.preventDefault();
     const f = Object.fromEntries(new FormData(e.target));
