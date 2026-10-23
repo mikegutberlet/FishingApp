@@ -10,6 +10,8 @@ import { addStateWater } from './views/lakes.js';
 import './views/log.js';
 import './views/stats.js';
 import './views/settings.js';
+import './radar.js';
+import './wind-layer.js';
 
 document.querySelectorAll('nav button').forEach(b => b.onclick = () => showView(b.dataset.view));
 
