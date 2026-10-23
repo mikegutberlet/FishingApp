@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-23T07:12:42.199Z",
+  "startedAt": "2026-10-23T07:30:42.398Z",
   "ndow": {
     "waters": 551
   },
@@ -74,7 +74,7 @@
       "Galena Canyon Creek (Eastern, Creek or Stream)",
       "Dawley Canyon (Eastern, Creek or Stream)"
     ],
-    "geocoderCalls": 102
+    "geocoderCalls": 0
   },
   "plants": {
     "total": 1698,
@@ -122,4 +122,4 @@
         "/rise/api/catalog-item/6131 Lake Mohave Davis Dam and Powerplant Daily Lake/Reservoir Release - Total-af Time Series Data",
         "/rise/api/catalog-item/6132 Lake Mohave Davis Dam and Powerplant Daily Water Temperature-DegF Time Series Data",
         "/rise/api/catalog-item/6133 Lake Mohave Davis Dam and Powerplant Daily Lake/Reservoir Elevation-ft Time Series Data",
-       
+        "

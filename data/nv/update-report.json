@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-23T07:12:42.199Z",
+  "startedAt": "2026-10-23T07:30:42.398Z",
   "ndow": {
     "waters": 551
   },
@@ -74,7 +74,7 @@
       "Galena Canyon Creek (Eastern, Creek or Stream)",
       "Dawley Canyon (Eastern, Creek or Stream)"
     ],
-    "geocoderCalls": 102
+    "geocoderCalls": 0
   },
   "plants": {
     "total": 1698,
@@ -139,7 +139,7 @@
   "reservoirs": [
     "USGS 10288500 Walker Lake near Hawthorne, NV: 2026-10-22 3914.22 / 2026-10-22 1132000",
     "USGS 10297000 Topaz Lake near Topaz, CA: 2026-10-21 4982.63 / 2026-10-21 16440",
-    "USGS 10301700 Weber Reservoir near Schurz, NV: 2026-10-22 4201.05 / 2026-10-22 5332",
+    "USGS 10301700 Weber Reservoir near Schurz, NV: 2026-10-22 4201.05 / 2026-10-22 5333",
     "USGS 10312100 Lahontan Reservoir near Fallon, NV: 2026-10-22 4124.96 / 2026-10-22 60990",
     "USGS 10336710 Marlette Lake near Carson City, NV: 2026-10-21 7818.41 / 2026-10-21 4981",
     "USGS 13174000 Wild Horse Reservoir near Gold Cr, NV: 2026-10-21 6182.24 / 2026-10-21 21760",
@@ -157,5 +157,5 @@
     "Lake Mohave including Placer Cove and Eagle Wash: HAB Watch 2026-06-11 located",
     "Walker Lake: HAB Warning 2026-05-19 located"
   ],
-  "finishedAt": "2026-10-23T07:15:33.815Z"
+  "finishedAt": "2026-10-23T07:30:55.386Z"
 }
