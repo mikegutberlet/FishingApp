@@ -213,6 +213,9 @@ function inRing([x, y], ring) {
   return c;
 }
 const zoneAt = (lat, lon) => ZONES.find(z => lon >= z.bbox[0] && lon <= z.bbox[2] && lat >= z.bbox[1] && lat <= z.bbox[3] && z.polys.some(([outer]) => inRing([lon, lat], outer)))?.name ?? null;
+// County of a point, from the outlines the weekly job saves (counties.json).
+let COUNTIES = [];
+const countyAt = (lat, lon) => COUNTIES.find(c => lon >= c.bbox[0] && lon <= c.bbox[2] && lat >= c.bbox[1] && lat <= c.bbox[3] && c.polys.some(([outer]) => inRing([lon, lat], outer)))?.name ?? null;
 const sameZone = (a, b) => !a || !b || a.toLowerCase().replace(/\s*zone$/, '').replace(/ river$/, '') === b.toLowerCase().replace(/\s*zone$/, '').replace(/ river$/, '');
 const isFlowing = name => /\b(river|creek|fork|slough|canal)\b/i.test(name) && !/\b(lake|reservoir|pond|ponds|lakes)\b/i.test(name);
 
@@ -308,6 +311,7 @@ export function mentions(text, name) {
 async function buildWaters(rows, reports) {
   const [maps, nhd] = await Promise.all([stockingMaps(), nhdWaters()]);
   ZONES = (await readOld('zones.json'))?.zones ?? [];
+  COUNTIES = (await readOld('counties.json'))?.counties ?? [];
   GEO = (await readOld('geocode-cache.json')) ?? {};
   const old = new Map(((await readOld('waters.json'))?.waters ?? []).map(w => [w.id, w]));
   const byWater = new Map();
@@ -333,7 +337,7 @@ async function buildWaters(rows, reports) {
     const years = w.weeks.filter(d => d <= today).map(d => +d.slice(0, 4)).sort();
     waters.push({
       id: w.id, raw: w.raw, name: w.name, type: isFlowing(w.name) ? 'River' : /Pond/.test(w.name) ? 'Pond' : 'Lake', zone: w.zone, office: w.office,
-      counties: [w.zone && `${w.zone} Zone`, w.office].filter(Boolean).join(' · '),
+      counties: [w.zone && `${w.zone} Zone`, w.office].filter(Boolean).join(' · '), county: pt ? countyAt(pt.lat, pt.lon) : null,
       lat: pt?.lat ?? null, lon: pt?.lon ?? null, via: pt?.via ?? null, acres: pt?.acres ?? prev?.acres ?? null,
       about: pt?.about ?? prev?.about ?? null,
       report: rep ? rep.lines.join('\n') : null, reportDate: rep?.date ?? null, reportUrl: rep?.url ?? null, url: scheduleLink(w.raw),
@@ -363,6 +367,9 @@ async function buildPlants(rows) {
       byKey.set(key(p), p);
     }
   }
+  // ODFW plans a year ahead and moves weeks as it goes; keep the next 8 weeks, like the other states' schedules.
+  const horizon = new Date(Date.now() + 56 * 864e5).toISOString().slice(0, 10);
+  for (const [k, p] of byKey) if (p.week > horizon) byKey.delete(k);
   report.plants = { total: byKey.size, new: fresh, kept: old.length };
   return [...byKey.values()].sort((a, b) => b.week.localeCompare(a.week) || a.water.localeCompare(b.water));
 }

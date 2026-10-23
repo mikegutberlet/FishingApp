@@ -188,6 +188,23 @@ try {
   if (out.length) await writeFile(new URL('zones.json', OUT), JSON.stringify({ updatedAt: new Date().toISOString(), source: 'ODFW angling zones (nrimp.dfw.state.or.us)', zones: out }) + '\n');
 } catch (e) { report.zonesError = e.message; }
 
+// ---------- Counties ----------
+// So the app (and the nightly job) can tell which county a water is in: some exceptions name the county.
+try {
+  const params = new URLSearchParams({ where: "STATE='41'", outFields: 'BASENAME', outSR: '4326', maxAllowableOffset: '0.004', f: 'geojson' });
+  const r = await fetch(`https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?${params}`, { signal: AbortSignal.timeout(90000) });
+  if (!r.ok) throw new Error(`${r.status} TIGERweb`);
+  const r4 = n => +n.toFixed(4);
+  const counties = (await r.json()).features.map(f => {
+    const polys = f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates;
+    const pts = polys.flat(2);
+    return { name: f.properties.BASENAME, bbox: [Math.min(...pts.map(p => p[0])), Math.min(...pts.map(p => p[1])), Math.max(...pts.map(p => p[0])), Math.max(...pts.map(p => p[1]))].map(r4),
+      polys: polys.map(poly => poly.map(ring => ring.map(([x, y]) => [r4(x), r4(y)]))) };
+  });
+  report.counties = counties.length;
+  if (counties.length) await writeFile(new URL('counties.json', OUT), JSON.stringify({ updatedAt: new Date().toISOString(), source: 'US Census TIGERweb', counties }) + '\n');
+} catch (e) { report.countiesError = e.message; }
+
 report.finishedAt = new Date().toISOString();
 await writeFile(new URL('regs-report.json', OUT), JSON.stringify(report, null, 1) + '\n');
 console.log(JSON.stringify({ ...report, pages: Object.fromEntries(Object.entries(report.pages).map(([k, v]) => [k, v.error ?? (Array.isArray(v) ? v.length : { general: v.general, waters: v.waters })])) }, null, 1).slice(0, 8000));

@@ -46,7 +46,7 @@ async function zoneOf(lake) {
 
 // Whether a Recreation Report line is about this water: its name without "Lake"/"River", then that kind of water
 // within a few words ("Siltcoos and Tahkenitch lakes" is about Siltcoos Lake). Same test as the nightly job's.
-const KIND = [/\b(lake|lakes|reservoir|reservoirs|res|pond|ponds|canal)\b/i, /\b(river|rivers|creek|creeks)\b/i];
+const KIND = [/\b(lake|lakes|reservoir|reservoirs|res|pond|ponds)\b/i, /\b(river|rivers|creek|creeks)\b/i, /\b(canal|canals)\b/i];
 export function mentions(text, name) {
   const bare = String(name ?? '').replace(/\s*\(.*?\)\s*/g, ' ').trim();
   const base = bare.replace(/^Lake\s+/i, '').replace(/\s+(Lake|Lakes|Reservoir|Pond|Ponds|River|Creek|Canal)$/i, '').trim();
