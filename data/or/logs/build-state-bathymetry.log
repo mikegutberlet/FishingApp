@@ -1,7 +1,8 @@
-hydrolakes: terminated
 {
   "searched": 138,
   "candidates": 3,
   "saved": [],
-  "hydrolakes": "terminated"
+  "hydrolakes": {
+    "rows": 629
+  }
 }
