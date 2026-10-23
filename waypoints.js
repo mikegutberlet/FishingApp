@@ -78,11 +78,9 @@ export async function editWaypoint(w = {}) {
     if (loc) map.panTo([loc.lat, loc.lon]);
     const hint = 'Tap the spot for the waypoint';
     status(hint);
-    const box = map.getContainer(), view = document.getElementById('view-map');
-    const left = new MutationObserver(() => { if (!view.classList.contains('active')) pickPoint(null); });
-    const finish = () => { box.classList.remove('picking'); left.disconnect(); picking = false; dropPending = null; if ($('#status').textContent === hint) status(''); };
+    const box = map.getContainer();
+    const finish = () => { box.classList.remove('picking'); picking = false; dropPending = null; if ($('#status').textContent === hint) status(''); };
     box.classList.add('picking');
-    left.observe(view, { attributes: true, attributeFilter: ['class'] });
     dropPending = () => pickPoint(null);
     pickPoint(({ lat, lng }) => { finish(); dlg.showModal(); setLoc({ lat, lon: lng }); }, () => { finish(); dlg.remove(); });
   };

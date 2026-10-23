@@ -79,7 +79,11 @@ function dropStrays(points, link) {
   });
   if (size.size === 1) return ok;
   const main = [...size].sort((a, b) => b[1] - a[1])[0][0], tiny = Math.max(5, ok.length * 0.001);
-  const stray = new Set([...size].filter(([c, n]) => c !== main && (n < tiny || spots.get(c).size <= 3)).map(([c]) => c));
+  // A clump holding most of one scan's soundings is that session (a short scan of another arm), never too small.
+  const perScan = new Map(), byScan = new Map();
+  ok.forEach((p, i) => { perScan.set(p[3], (perScan.get(p[3]) ?? 0) + 1); const k = `${clump[i]}|${p[3]}`; byScan.set(k, (byScan.get(k) ?? 0) + 1); });
+  const session = new Set([...byScan].filter(([k, m]) => 2 * m > perScan.get(+k.split('|')[1])).map(([k]) => k.split('|')[0]));
+  const stray = new Set([...size].filter(([c, n]) => c !== main && ((n < tiny && !session.has(c)) || spots.get(c).size <= 3)).map(([c]) => c));
   const n = [...stray].reduce((sum, c) => sum + size.get(c), 0);
   return n && n <= Math.max(2, ok.length * 0.05) ? ok.filter((_, i) => !stray.has(clump[i])) : ok;
 }
