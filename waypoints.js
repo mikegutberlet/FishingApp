@@ -65,7 +65,7 @@ export async function editWaypoint(w = {}) {
   };
   showLoc();
   let picking = false;
-  dlg.onclose = () => { if (!picking) dlg.remove(); };
+  dlg.onclose = () => { if (!picking && !('parked' in dlg.dataset)) dlg.remove(); }; // parked = app lock, keep the edits
   $('#wpt-cancel', dlg).onclick = () => dlg.close(); // not a submit button, so Enter in Name saves instead of cancelling
   $('#wpt-gps', dlg).onclick = () => { $('#wpt-loc', dlg).textContent = 'Finding you…'; locate().then(setLoc).catch(e => { $('#wpt-loc', dlg).textContent = e.message; }); };
   $('#wpt-tap', dlg).onclick = () => {

@@ -1,6 +1,7 @@
 // Startup. Each view lives in views/ and registers itself with onShow(); see ui.js.
 // map.js and the views import each other, which is safe because modules only use each other's exports inside
 // functions. Keep it that way: no top-level code that touches another app module's const or let exports.
+import './lock.js'; // first, so the lock screen is up before anything else draws
 import { map, refreshMap } from './map.js';
 import { db } from './db.js';
 import * as CA from './states/ca.js';
@@ -25,6 +26,10 @@ import { initHeatmap } from './heatmap.js';
 initOffline();
 initWaypoints();
 initHeatmap();
+import './insights.js';
+import { initCrew } from './crew.js';
+import './license.js';
+import { checkReminders } from './reminders.js';
 
 document.querySelectorAll('nav button').forEach(b => b.onclick = () => showView(b.dataset.view));
 
@@ -41,6 +46,8 @@ $('#species-list').innerHTML = COMMON_SPECIES.map(s => `<option value="${s}">`).
 addSafetyLayers();
 navigator.storage?.persist?.(); // ask the browser not to evict our data
 resumeTrip();
+initCrew();
+checkReminders();
 if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js');
 // Today is the home screen. The map starts hidden, so frame your lakes the first time it is shown (a hidden map has no size).
 showView('today');

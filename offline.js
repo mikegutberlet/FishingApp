@@ -175,7 +175,8 @@ export async function offlineDialog(lake) {
   form.onchange = estimate;
   estimate();
   const abort = new AbortController();
-  dlg.onclose = () => { abort.abort(); dlg.remove(); };
+  // Parked by the app lock (lock.js) is not a real close: keep downloading.
+  dlg.onclose = () => { if ('parked' in dlg.dataset) return; abort.abort(); dlg.remove(); };
   $('#off-go', dlg).onclick = async e => {
     e.preventDefault();
     const { bounds, p, kept, own, left } = choice();
@@ -202,7 +203,7 @@ export async function offlineDialog(lake) {
     Object.assign(pack, { bytes, missing, complete: !missing, savedAt: new Date().toISOString() });
     await writeMeta(cache, pack);
     status(abort.signal.aborted ? 'Offline download stopped; what finished is saved' : `${lake.name} saved for offline${missing ? ` (${missing} tiles failed; download again to retry)` : ''}`);
-    if (dlg.open) dlg.close();
+    if (dlg.open) dlg.close(); else if ('parked' in dlg.dataset) dlg.remove();
   };
   dlg.showModal();
 }

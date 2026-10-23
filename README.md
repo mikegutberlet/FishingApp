@@ -18,7 +18,7 @@ A Fish Deeper–style app that keeps all of your data on your own device. No acc
 | Catch log | Species, length, weight, depth, water temp, lure, technique, photo, GPS spot, released. Weather, wind, pressure trend and moon are captured automatically | Device |
 | Notes | Per-lake notes, optionally pinned to a spot | Device |
 | Stats | By species, lake, lure, hour, pressure trend, moon phase, depth band | Device |
-| Backup | Export/import one JSON file (photos included) to move devices or keep a copy | Device |
+| Backup | Export/import one JSON file (photos included), optionally password-encrypted, to move devices or keep a copy | Device |
 
 It is a PWA: open it once in Safari/Chrome, choose **Add to Home Screen**, and it behaves like an app and opens with no signal (map tiles you've already viewed are cached).
 
@@ -49,6 +49,15 @@ It is a PWA: open it once in Safari/Chrome, choose **Add to Home Screen**, and i
 * **Plant calendars:** each stocked water has a calendar feed (`data/ca/ics/<stockId>.ics`); *Subscribe to plants* on the Stocking tab adds it to Apple or Google Calendar, with no server knowing who subscribed.
 * **New since last visit:** the lake list badges saved waters with CDFW plants added since you last opened their Stocking tab.
 * **Catch form warnings:** as you log a catch, a *Check the regs* box above Save flags a closed season, catch-and-release-only rules, wild fish that must go back, size minimums and the daily bag limit (counting what you've kept there that day). It never blocks saving. `CA.regsFor(lake)` and `CA.catchWarnings(lake, catch)` are the API behind it.
+
+## Insights, privacy and sharing
+
+* **Days like today** (Stats, and the Today screen): every catch is scored by how much its day resembles today (date in the season, pressure trend, air temp, wind, moon, time of day, same water), and the card says which species, lures, depths, hours and waters produced on the most similar days. Computed on the device.
+* **Stats**: catch rate (fish per hour) from trips, by water and by hour of day; catches by lure color and water clarity (a new optional field on the catch form), with the best color for each clarity; and a **Year in review** page.
+* **App lock** (Data view): a 4–8 digit passcode, plus Face ID / Touch ID / fingerprint through the phone's own authenticator (WebAuthn, no server). Locks on open and after a chosen time in the background. It guards the screens; files that leave the phone should use the encrypted backup.
+* **Encrypted backup**: the whole backup locked with a password (AES-256-GCM, key from PBKDF2-SHA256 with 600,000 rounds), saved through the share sheet (Save to Files → iCloud Drive, or Drive) or a folder you pick on a computer. Optional reminder when the last backup is older than a week, two weeks or a month. Plain JSON backups still import as before.
+* **Crew sharing**: pick catches or a spot and send them as a file (AirDrop, Messages, email) or a QR code, optionally protected by a passphrase. The QR code holds the whole share in the link's `#` fragment, which browsers never send to the website. Shared photos are redrawn so camera and GPS data are gone, and catches leave out the exact spot unless you tick it. Friends' catches go to a separate Crew list (the water's **Crew** tab and the *Crew* map layer), never into your own stats.
+* **License and report cards**: store your CDFW license and report-card dates; the app reminds you 30 days ahead and can make a calendar file with alerts.
 
 ## California
 

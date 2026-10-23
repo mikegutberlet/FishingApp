@@ -1,0 +1,45 @@
+/* Insights, app lock, backups, crew sharing, license reminders. */
+.locked header, .locked main, .locked nav, .locked #trip-pill, .locked #reminders { visibility: hidden; }
+#lock { position: fixed; inset: 0; z-index: 3000; background: #0f3b4c; color: #fff; display: flex; align-items: center; justify-content: center; padding: 24px 16px calc(24px + env(safe-area-inset-bottom)); }
+.lock-box { width: 100%; max-width: 320px; text-align: center; }
+.lock-box .muted { color: #b7d3dd; }
+.lock-box a { color: #b7d3dd; }
+.lock-logo { font-size: 44px; }
+.lock-box h2 { font-size: 20px; margin: 8px 0 4px; }
+.lock-sub { min-height: 1.4em; }
+.dots { display: flex; justify-content: center; gap: 14px; margin: 18px 0 22px; }
+.dots i { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #fff; }
+.dots i.on { background: #fff; }
+.pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+.pad button { height: 68px; border-radius: 50%; font-size: 26px; background: #ffffff1f; border: 0; color: #fff; }
+.pad button:active { background: #ffffff40; }
+.lock-box > button { background: none; color: #fff; border-color: #ffffff60; }
+.shake { animation: shake .35s; }
+@keyframes shake { 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
+
+#reminders { position: fixed; z-index: 1500; top: calc(var(--head-h) + 6px); left: 8px; right: 8px; display: flex; flex-direction: column; gap: 6px; }
+.reminder { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 10px; background: #fff4d6; color: #4a3500; border: 1px solid #e8c45c; box-shadow: 0 2px 8px rgba(0,0,0,.15); font-size: 13px; }
+.reminder.bad { background: #fde2df; color: #5c0f0a; border-color: #e58b82; }
+.reminder span { flex: 1; }
+.reminder button { padding: 4px 10px; font-size: 13px; white-space: nowrap; }
+
+.sheet { position: fixed; inset: 0; z-index: 2500; background: rgba(0,0,0,.55); display: flex; align-items: center; justify-content: center; padding: 16px; }
+.sheet-card { background: var(--card); color: var(--text); border-radius: 16px; padding: 16px; width: 100%; max-width: 420px; max-height: 100%; overflow-y: auto; }
+.qr { background: #fff; border-radius: 12px; padding: 8px; margin: 8px auto; max-width: 340px; }
+.qr svg { display: block; width: 100%; height: auto; }
+.qr-video { width: 100%; border-radius: 12px; margin-bottom: 10px; background: #000; }
+
+.pick { margin-bottom: 8px; }
+.pick-row { display: flex; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 14px; color: var(--text) !important; align-items: flex-start !important; }
+.pick-row input { margin-top: 3px !important; }
+#crew-card .form label.check, #crew-card .form label { color: var(--text); }
+.crew-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--line); }
+
+.lic { display: flex; gap: 8px; align-items: center; padding: 8px; margin-bottom: 6px; border-radius: 8px; background: var(--bg); }
+.lic.warn { background: #fff4d6; color: #4a3500; } .lic.bad { background: #fde2df; color: #5c0f0a; }
+.lic-act a { margin-left: 6px; }
+
+.dlt { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; font-size: 14px; }
+.dlt > div { background: var(--bg); border-radius: 8px; padding: 6px 8px; }
+.yir-list > div { padding: 6px 0; border-bottom: 1px solid var(--line); }
+.yir-list > div:last-child { border-bottom: 0; }

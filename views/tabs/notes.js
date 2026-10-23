@@ -3,13 +3,14 @@ import { db } from '../../db.js';
 import { $, esc, fmtDate, status, showView } from '../../ui.js';
 import { map, pickPoint } from '../../map.js';
 import { openLake } from '../lake.js';
+import { openComposer } from '../../crew.js';
 
 export async function renderNotes(lake, body) {
   const notes = (await db.byLake('notes', lake.id)).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   body.innerHTML = `<form class="card form" id="note-form"><label>New note <textarea name="text" rows="4" required placeholder="Weed edge on the north bay held fish at 12 ft…"></textarea></label>
     <div class="row"><button type="button" id="note-pin">📍 Pin to a spot</button><span id="note-loc" class="muted small"></span></div>
     <button class="primary" style="margin-top:8px">Save note</button></form>
-    ${notes.map(n => `<div class="card"><div class="muted small">${fmtDate(n.createdAt)}${n.lat ? ` · <a href="#" data-goto="${n.lat},${n.lon}">spot</a>` : ''} · <a href="#" data-del="${n.id}">delete</a></div><div style="white-space:pre-wrap">${esc(n.text)}</div></div>`).join('')}`;
+    ${notes.map(n => `<div class="card"><div class="muted small">${fmtDate(n.createdAt)}${n.lat ? ` · <a href="#" data-goto="${n.lat},${n.lon}">spot</a> · <a href="#" data-share="${n.id}">share</a>` : ''} · <a href="#" data-del="${n.id}">delete</a></div><div style="white-space:pre-wrap">${esc(n.text)}</div></div>`).join('')}`;
   let loc = null;
   $('#note-pin').onclick = () => {
     showView('map'); map.setView([lake.lat, lake.lon], 14); status('Tap the spot');
@@ -21,5 +22,6 @@ export async function renderNotes(lake, body) {
     openLake(lake.id, 'notes');
   };
   body.querySelectorAll('[data-del]').forEach(a => a.onclick = async e => { e.preventDefault(); await db.del('notes', a.dataset.del); openLake(lake.id, 'notes'); });
+  body.querySelectorAll('[data-share]').forEach(a => a.onclick = e => { e.preventDefault(); openComposer({ spots: [a.dataset.share] }); });
   body.querySelectorAll('[data-goto]').forEach(a => a.onclick = e => { e.preventDefault(); const [la, lo] = a.dataset.goto.split(','); showView('map'); map.setView([+la, +lo], 17); L.popup().setLatLng([+la, +lo]).setContent('Note spot').openOn(map); });
 }
