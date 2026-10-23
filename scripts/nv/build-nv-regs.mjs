@@ -144,6 +144,8 @@ for (const [k, path] of Object.entries(pages)) {
   try {
     const html = await page(path);
     const bl = blocks(html);
+    // A bot check or a redesign comes back as a 200 with none of the booklet's text blocks.
+    if (!bl.length) throw new Error(`no text blocks (${html.length} bytes, title "${clean(html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? '')}")`);
     parsed[k] = { url: `${BASE}/${path}`, sections: sections(bl) };
     report.pages[k] = { blocks: bl.length, outline: parsed[k].sections.map(s => `${'#'.repeat(s.level)} ${s.title} (${s.text.length}p ${s.rows.length}r)`).slice(0, 200) };
   } catch (e) { report.pages[k] = { error: e.message }; }
@@ -175,11 +177,13 @@ for (const a of advisories) a.areas ??= AREAS.filter(([re]) => re.test(a.area)).
 report.sampleWaters = waters.slice(0, 8);
 report.advisories = advisories;
 
+const statewide = parsed.statewide ? statewideRules(parsed.statewide.sections, parsed.statewide.url) : [];
+if (!statewide.length) parsed.statewide = null;
 if (!parsed.statewide) report.regsError = `${report.regsError ? report.regsError + '; ' : ''}statewide page failed, kept last run's regs.json`;
 if (waters.length && parsed.statewide) {
   await writeFile(new URL('regs.json', OUT), JSON.stringify({
     updatedAt: new Date().toISOString(), source: 'Nevada Fishing Regulations (NDOW Commission Regulation), published on eRegulations', booklet: BASE,
-    statewide: [...statewideRules(parsed.statewide.sections, parsed.statewide.url), ...(parsed.stripers ? [{ title: 'Striped bass, Lakes Mead and Mohave', text: parsed.stripers.sections[0].text.filter(x => !SKIP.test(x)).slice(0, 6), url: parsed.stripers.url }] : [])],
+    statewide: [...statewide, ...(parsed.stripers ? [{ title: 'Striped bass, Lakes Mead and Mohave', text: parsed.stripers.sections[0].text.filter(x => !SKIP.test(x)).slice(0, 6), url: parsed.stripers.url }] : [])],
     regions, waters, closed,
   }) + '\n');
 }
