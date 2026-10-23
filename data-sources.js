@@ -7,7 +7,7 @@ export async function fetchWeather(lat, lon) {
   const url = new URL('https://api.open-meteo.com/v1/forecast');
   url.search = new URLSearchParams({
     latitude: lat.toFixed(3), longitude: lon.toFixed(3), timezone: 'auto',
-    temperature_unit: F, wind_speed_unit: MPH, precipitation_unit: 'inch', forecast_days: 7, past_days: 1,
+    temperature_unit: F, wind_speed_unit: MPH, precipitation_unit: 'inch', forecast_days: 11, past_days: 1,
     current: 'temperature_2m,apparent_temperature,weather_code,cloud_cover,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m,precipitation',
     hourly: 'temperature_2m,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m,precipitation_probability,weather_code',
     daily: 'weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant,precipitation_probability_max',

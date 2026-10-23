@@ -38,7 +38,8 @@ const lakeLayer = L.layerGroup().addTo(map);
 const catchLayer = L.layerGroup().addTo(map);
 const depthLayer = L.layerGroup().addTo(map);
 const stockedLayer = L.layerGroup();
-L.control.layers({ Satellite: satellite, Streets: street }, { Lakes: lakeLayer, Catches: catchLayer, Depth: depthLayer, 'CA stocked waters': stockedLayer }).addTo(map);
+const watersLayer = L.layerGroup().addTo(map);
+L.control.layers({ Satellite: satellite, Streets: street }, { 'California waters': watersLayer, 'My lakes': lakeLayer, Catches: catchLayer, Depth: depthLayer, 'CA stocked waters': stockedLayer }).addTo(map);
 map.on('overlayadd', async e => {
   if (e.layer !== stockedLayer || stockedLayer.getLayers().length) return;
   const recent = Date.now() - 30 * 864e5;
@@ -52,7 +53,86 @@ map.on('overlayadd', async e => {
 const canvas = L.canvas({ padding: 0.3 });
 
 let picking = null; // callback when the user is choosing a point on the map
-map.on('click', e => { if (picking) { const cb = picking; picking = null; cb(e.latlng); } });
+map.on('click', e => {
+  if (picking) { const cb = picking; picking = null; cb(e.latlng); return; }
+  const w = nearestLabeledWater(e.latlng);
+  if (w) openWater(w);
+});
+
+// ---------- Statewide labels: every named California lake and river ----------
+let statewide = null;
+let shownWaters = [];
+CA.statewide().then(d => { statewide = d; drawWaterLabels(); });
+map.on('moveend', drawWaterLabels);
+map.on('overlayadd overlayremove', drawWaterLabels);
+
+// Show bigger waters first as you zoom out, every named one when zoomed in close.
+// Labels that would overlap an already placed one are skipped, and a river gets one label per view when zoomed out.
+function drawWaterLabels() {
+  watersLayer.clearLayers();
+  shownWaters = [];
+  if (!statewide || !map.hasLayer(watersLayer)) return;
+  const z = map.getZoom();
+  if (z < 7) return;
+  const minAcres = z >= 12 ? 0 : z >= 11 ? 20 : z >= 10 ? 80 : z >= 9 ? 300 : z >= 8 ? 1500 : 6000;
+  const b = map.getBounds().pad(0.05);
+  const center = map.getCenter();
+  const lakes = statewide.lakes.filter(l => l.acres >= minAcres && b.contains([l.lat, l.lon]));
+  let rivers = statewide.riverLabels.filter(r => (z >= 11 || (r.type === 'River' && (z >= 9 || r.km >= 150))) && b.contains([r.lat, r.lon]));
+  if (z < 12) {
+    const best = new Map();
+    for (const r of rivers) {
+      const d = Math.hypot(r.lat - center.lat, r.lon - center.lng);
+      if (!best.has(r.id) || d < best.get(r.id).d) best.set(r.id, { r, d });
+    }
+    rivers = [...best.values()].map(x => x.r);
+  }
+  const placed = [];
+  const fits = (w, px) => {
+    const box = { x1: px.x - w.name.length * 3.4, x2: px.x + w.name.length * 3.4, y1: px.y - 8, y2: px.y + 8 };
+    if (placed.some(p => box.x1 < p.x2 && box.x2 > p.x1 && box.y1 < p.y2 && box.y2 > p.y1)) return false;
+    placed.push(box);
+    return true;
+  };
+  const candidates = [...lakes.sort((a, b) => b.acres - a.acres), ...rivers.sort((a, b) => b.km - a.km)];
+  for (const w of candidates) {
+    if (shownWaters.length >= 400) break;
+    if (!fits(w, map.latLngToContainerPoint([w.lat, w.lon]))) continue;
+    shownWaters.push(w);
+    const label = L.divIcon({ className: `wlabel ${w.kind}`, html: `<span>${esc(w.name)}</span>`, iconSize: null });
+    L.marker([w.lat, w.lon], { icon: label, keyboard: false }).on('click', () => openWater(w)).addTo(watersLayer);
+  }
+}
+
+// A tap on open water picks the closest labeled lake or river within ~40 px.
+function nearestLabeledWater(latlng) {
+  const p = map.latLngToContainerPoint(latlng);
+  let best = null, bestD = 40;
+  for (const w of shownWaters) {
+    const d = p.distanceTo(map.latLngToContainerPoint([w.lat, w.lon]));
+    if (d < bestD) { bestD = d; best = w; }
+  }
+  return best;
+}
+
+// Opens a statewide water: the saved lake if you already have it, otherwise a read-only page you can save.
+async function openWater(w, tab = 'conditions') {
+  const saved = (await db.all('lakes')).find(l => l.nhdId === String(w.id));
+  if (saved) return openLake(saved.id, tab);
+  const stocked = await CA.matchStockedWater(w);
+  openLake({
+    unsaved: true, nhdId: String(w.id), kind: w.kind, name: w.name, type: w.type, state: 'CA', lat: w.lat, lon: w.lon,
+    acres: w.acres ?? null, elevationFt: w.elevationFt ?? null, maxDepth: w.maxDepthFt ?? null, meanDepth: w.meanDepthFt ?? null, depthSource: w.depthSource ?? null,
+    lengthKm: w.km ?? null, cdfwStockId: stocked?.id ?? null, stockingUrl: stocked ? CA.waterUrl(stocked.id) : null,
+  }, tab);
+}
+
+async function saveWater(lake, tab) {
+  const { unsaved, ...rest } = lake;
+  const saved = await db.put('lakes', rest);
+  await refreshMap();
+  openLake(saved.id, tab);
+}
 
 $('#btn-locate').onclick = () => locate().then(p => map.setView([p.lat, p.lon], 14)).catch(e => status(e.message));
 $('#btn-add-lake').onclick = () => {
@@ -113,17 +193,65 @@ async function showDepthSet(setId) {
   map.fitBounds(L.latLngBounds(set.points.map(p => [p[0], p[1]])));
 }
 
+// Contour surveys store elevations; depth = surface elevation - contour elevation.
+async function showSurvey(survey, lake) {
+  const [gj, res] = await Promise.all([fetch(CA.bathymetryUrl(survey.id)).then(r => r.json()), CA.nearestReservoir(lake.lat, lake.lon, lake.cdecStation, { name: lake.name, acres: lake.acres })]);
+  const toFt = survey.units === 'm' ? M_TO_FT : 1;
+  const current = res?.elevation?.at(-1)?.[1];
+  // Only trust the CDEC level if it falls within the survey's range (same datum, same lake).
+  const surfaceFt = current && current > survey.minElev * toFt && current < survey.maxElev * toFt + 30 ? current : survey.maxElev * toFt;
+  const maxDepth = surfaceFt - survey.minElev * toFt;
+  depthLayer.clearLayers();
+  L.geoJSON(gj, {
+    filter: f => f.properties.e * toFt <= surfaceFt,
+    style: f => ({ color: depthColor(surfaceFt - f.properties.e * toFt, maxDepth), weight: 1.5, opacity: 0.9, fill: false }),
+    onEachFeature: (f, layer) => layer.bindTooltip(`${Math.round(surfaceFt - f.properties.e * toFt)} ft deep`, { sticky: true }),
+  }).addTo(depthLayer);
+  const legend = $('#depth-legend');
+  const grad = [0, .25, .5, .75, 1].map(t => depthColor(t * maxDepth, maxDepth)).join(',');
+  legend.innerHTML = `<b>${esc(lake.name)} contours</b><div class="bar" style="background:linear-gradient(90deg,${grad})"></div>0 ft <span style="float:right">${Math.round(maxDepth)} ft</span>
+    <div class="muted" style="font-size:11px">${surfaceFt === current ? `At today's level, ${Math.round(current)} ft (CDEC ${esc(res.id)})` : 'At full pool'} · USGS survey</div><a href="#" id="hide-depth">Hide</a>`;
+  legend.classList.remove('hidden');
+  $('#hide-depth').onclick = e => { e.preventDefault(); depthLayer.clearLayers(); legend.classList.add('hidden'); };
+  if (!map.hasLayer(depthLayer)) depthLayer.addTo(map);
+  showView('map');
+  map.fitBounds([[survey.bbox[1], survey.bbox[0]], [survey.bbox[3], survey.bbox[2]]]);
+}
+
 // ---------- Lakes ----------
 async function renderLakeList() {
   $('#lake-detail').classList.add('hidden');
   const list = $('#lake-list');
   list.classList.remove('hidden');
   const lakes = (await db.all('lakes')).sort((a, b) => a.name.localeCompare(b.name));
-  list.innerHTML = `<h2>Lakes & rivers</h2><button id="find-waters" style="width:100%;margin-bottom:12px">🔎 Find California stocked waters</button>`
+  list.innerHTML = `<h2>Lakes & rivers</h2><div class="row" style="margin-bottom:12px"><button id="find-any" style="flex:1">🔎 Any California water</button><button id="find-waters" style="flex:1">🐟 Stocked waters</button></div>`
     + (lakes.length ? '' : `<div class="card muted">No waters yet. Find one above, or use “＋ Lake here” on the map.</div>`)
     + lakes.map(l => `<div class="card lake-item" data-id="${l.id}"><div><b>${esc(l.name)}</b><div class="muted small">${esc(l.type)}${l.county ? ' · ' + esc(l.county) : ''}${l.state ? ', ' + esc(l.state) : ''}</div></div><span>›</span></div>`).join('');
   list.querySelectorAll('.lake-item').forEach(el => el.onclick = () => openLake(el.dataset.id));
   $('#find-waters').onclick = renderFindWaters;
+  $('#find-any').onclick = renderFindAny;
+}
+
+// Search every named California lake, reservoir and river from the statewide list.
+async function renderFindAny() {
+  const list = $('#lake-list');
+  list.innerHTML = `<button id="back">‹ My waters</button><h2>California lakes & rivers</h2>
+    <div class="card form"><label>Name <input id="asearch" type="search" placeholder="Shasta, Kern River, Convict…" autofocus></label></div>
+    <div id="aresults" class="muted">Type a name to search ${statewide ? (statewide.lakes.length + new Set(statewide.riverLabels.map(r => r.id)).size).toLocaleString() : ''} waters.</div>`;
+  $('#back').onclick = renderLakeList;
+  if (!statewide) statewide = await CA.statewide();
+  const rivers = [...new Map(statewide.riverLabels.map(r => [r.id, r])).values()];
+  const draw = () => {
+    const q = $('#asearch').value.trim().toLowerCase();
+    if (q.length < 2) { $('#aresults').innerHTML = ''; return; }
+    const hits = [...statewide.lakes, ...rivers].filter(w => w.name.toLowerCase().includes(q))
+      .sort((a, b) => (a.name.toLowerCase().startsWith(q) ? 0 : 1) - (b.name.toLowerCase().startsWith(q) ? 0 : 1) || (b.acres ?? b.km ?? 0) - (a.acres ?? a.km ?? 0)).slice(0, 60);
+    $('#aresults').innerHTML = hits.length ? hits.map((w, i) => `<div class="card lake-item" data-i="${i}"><div><b>${esc(w.name)}</b>
+        <div class="muted small">${esc(w.type)}${w.acres ? ` · ${w.acres.toLocaleString()} acres` : ''}${w.km ? ` · ${Math.round(w.km * 0.621)} mi` : ''}${w.maxDepthFt ? ` · ${w.maxDepthFt} ft deep` : ''}${w.elevationFt ? ` · ${w.elevationFt.toLocaleString()} ft elev.` : ''}</div></div><span>›</span></div>`).join('')
+      : '<div class="card muted">No matches.</div>';
+    $('#aresults').querySelectorAll('.lake-item').forEach(el => el.onclick = () => openWater(hits[+el.dataset.i]));
+  };
+  $('#asearch').oninput = draw;
 }
 
 // Browse CDFW stocked waters and add one as a lake in a tap.
@@ -213,10 +341,12 @@ function editLake(lake) {
   };
 }
 
-const LAKE_TABS = { conditions: 'Conditions', depth: 'Depth', stocking: 'Stocking', catches: 'Catches', notes: 'Notes', info: 'Info' };
+const LAKE_TABS = { conditions: 'Conditions', depth: 'Depth', stocking: 'Stocking', history: 'History', catches: 'Catches', notes: 'Notes', info: 'Info' };
+const WATER_TABS = ['conditions', 'stocking', 'depth', 'history', 'info'];
 
 async function openLake(id, tab = 'conditions') {
-  const lake = await db.get('lakes', id);
+  const lake = typeof id === 'object' ? id : await db.get('lakes', id);
+  if (lake.unsaved) return openUnsaved(lake, tab);
   showView('lakes');
   $('#lake-list').classList.add('hidden');
   const d = $('#lake-detail');
@@ -231,7 +361,24 @@ async function openLake(id, tab = 'conditions') {
   $('#share').onclick = () => shareLake(lake);
   d.querySelectorAll('.tabs button').forEach(b => b.onclick = () => openLake(id, b.dataset.tab));
   const body = $('#tab-body');
-  await ({ conditions: renderConditions, depth: renderDepth, stocking: renderStocking, catches: renderLakeCatches, notes: renderNotes, info: renderInfo })[tab](lake, body);
+  await TAB_RENDERERS[tab](lake, body);
+}
+
+const TAB_RENDERERS = { conditions: renderConditions, depth: renderDepth, stocking: renderStocking, history: renderHistory, catches: renderLakeCatches, notes: renderNotes, info: renderInfo };
+
+function openUnsaved(lake, tab) {
+  showView('lakes');
+  $('#lake-list').classList.add('hidden');
+  const d = $('#lake-detail');
+  d.classList.remove('hidden');
+  d.innerHTML = `<button id="back">‹ Map</button> <button id="save" class="primary" style="width:auto;padding:8px 12px">＋ Save to my lakes</button>
+    <h2>${esc(lake.name)}</h2><div class="muted small">${esc(lake.type)}${lake.acres ? ` · ${lake.acres.toLocaleString()} acres` : ''}${lake.lengthKm ? ` · ${Math.round(lake.lengthKm * 0.621)} mi` : ''}${lake.maxDepth ? ` · max depth ${lake.maxDepth} ft` : ''}</div>
+    <div class="tabs">${WATER_TABS.map(k => `<button data-tab="${k}" class="${k === tab ? 'active' : ''}">${LAKE_TABS[k]}</button>`).join('')}</div>
+    <div id="tab-body"></div>`;
+  $('#back').onclick = () => showView('map');
+  $('#save').onclick = () => saveWater(lake, tab);
+  d.querySelectorAll('.tabs button').forEach(b => b.onclick = () => openUnsaved(lake, b.dataset.tab));
+  TAB_RENDERERS[tab](lake, $('#tab-body'));
 }
 
 async function renderConditions(lake, body) {
@@ -258,11 +405,11 @@ async function renderConditions(lake, body) {
       </div>
       <h3 style="margin-top:12px">Next 24 hours</h3>
       <div class="hours">${hours.map(({ t, i }) => `<div class="hour">${fmtTime(t)}<br><b>${Math.round(w.hourly.temperature_2m[i])}°</b><br>${arrow(w.hourly.wind_direction_10m[i])} ${Math.round(w.hourly.wind_speed_10m[i])}<br><span class="muted">g${Math.round(w.hourly.wind_gusts_10m[i])}</span><br>${w.hourly.precipitation_probability[i] ?? 0}%💧</div>`).join('')}</div>
-      <h3 style="margin-top:12px">7 days</h3>
+      <h3 style="margin-top:12px">10 days</h3>
       <table>${w.daily.time.slice(1).map((t, j) => { const i = j + 1; return `<tr><td>${new Date(t + 'T12:00').toLocaleDateString(undefined, { weekday: 'short' })}</td><td>${WEATHER_CODES[w.daily.weather_code[i]] ?? ''}</td><td>${Math.round(w.daily.temperature_2m_min[i])}–${Math.round(w.daily.temperature_2m_max[i])}°</td><td>${arrow(w.daily.wind_direction_10m_dominant[i])} ${Math.round(w.daily.wind_speed_10m_max[i])} (g${Math.round(w.daily.wind_gusts_10m_max[i])})</td><td>${w.daily.precipitation_probability_max[i] ?? 0}%</td></tr>`; }).join('')}</table>
       <p class="muted small">Open-Meteo forecast · moon phase computed on device</p>`;
   } catch (e) { if (body.isConnected) $('#wx').textContent = `Weather: ${e.message} (offline?)`; }
-  CA.nearestReservoir(lake.lat, lake.lon, lake.cdecStation).then(r => {
+  CA.nearestReservoir(lake.lat, lake.lon, lake.cdecStation, { name: lake.name, acres: lake.acres }).then(r => {
     if (!r || !body.isConnected) return;
     const el = $('#res'), e = r.elevation, s = r.storage;
     const change = days => e.length > days ? (e.at(-1)[1] - e.at(-1 - days)[1]) : null;
@@ -284,14 +431,46 @@ async function renderConditions(lake, body) {
   } catch (e) { if (body.isConnected) $('#water').textContent = `USGS: ${e.message}`; }
 }
 
+async function renderSurveys(lake, el) {
+  const surveys = await CA.bathymetryFor(lake);
+  if (!surveys.length || !el.isConnected) return;
+  el.innerHTML = `<div class="card"><h3>Depth chart</h3>${surveys.map((s, i) => `<div class="lake-item" style="margin:6px 0"><span class="small">${esc(s.title)}</span><button data-survey="${i}">Show</button></div>`).join('')}
+    <p class="muted small">Public USGS survey contours, shown as depth at today's level when the lake has a CDEC gauge.</p></div>`;
+  el.querySelectorAll('[data-survey]').forEach(b => b.onclick = () => showSurvey(surveys[+b.dataset.survey], lake));
+}
+
+async function depthFacts(lake) {
+  const [est, surveys] = await Promise.all([CA.hydroFor(lake).catch(() => null), CA.bathymetryFor(lake).catch(() => [])]);
+  const stat = (v, label) => v ? `<div class="stat"><b>${v}</b><span>${label}</span></div>` : '';
+  let html = '';
+  if (lake.maxDepth || lake.meanDepth) {
+    html += `<div class="grid">${stat(lake.maxDepth && `${lake.maxDepth} ft`, 'Max depth')}${stat(lake.meanDepth && `${lake.meanDepth} ft`, 'Average depth')}${stat(lake.elevationFt?.toLocaleString() && `${lake.elevationFt.toLocaleString()} ft`, 'Surface elevation')}</div>
+      <p class="muted small">${lake.depthSource === 'Wikidata' ? 'Depth from Wikidata (Wikipedia lake data).' : lake.depthSource === 'LAGOS' ? 'Depth from LAGOS-US DEPTH (published lake surveys).' : 'From your lake notes.'} Reservoirs vary with water level.</p>`;
+  } else {
+    html += surveys.length ? `<p class="muted small">Tap <b>Show</b> on the survey above for the full contour chart; the legend gives today's max depth.</p>`
+      : `<p class="muted small">No published depth survey for this water yet. Your own Deeper scans are the best depth map you can have.</p>`;
+    if (!est && lake.elevationFt) html += `<div class="grid">${stat(`${lake.elevationFt.toLocaleString()} ft`, 'Surface elevation')}</div>`;
+  }
+  if (est) {
+    html += `<h4 style="margin:10px 0 4px">Estimated from the lake's shape</h4><div class="grid">${lake.meanDepth ? '' : stat(`${Math.round(est.meanDepthFt)} ft`, 'Average depth (est.)')}${stat(est.volumeAcreFt?.toLocaleString() && `${est.volumeAcreFt.toLocaleString()} ac·ft`, 'Volume (est.)')}${stat(est.shoreMi && `${est.shoreMi} mi`, 'Shoreline')}${stat(est.residenceDays && (est.residenceDays > 730 ? `${(est.residenceDays / 365).toFixed(1)} yr` : `${est.residenceDays} days`), 'Water turnover (est.)')}${(lake.maxDepth || lake.meanDepth) || !lake.elevationFt ? '' : stat(`${lake.elevationFt.toLocaleString()} ft`, 'Surface elevation')}</div>
+      <p class="muted small">HydroLAKES models these from the shoreline and surrounding terrain; they are rough guides, not soundings.</p>`;
+  }
+  return html;
+}
+
 async function renderDepth(lake, body) {
+  if (lake.unsaved) {
+    body.innerHTML = `<div id="surveys"></div><div class="card"><h3>Depth</h3>${await depthFacts(lake)}<p class="small">Save this water to import your Deeper scans and see them as a depth map.</p></div>`;
+    renderSurveys(lake, $('#surveys'));
+    return;
+  }
   const sets = await db.byLake('depthSets', lake.id);
-  body.innerHTML = `<div class="card"><h3>Depth maps</h3>
+  body.innerHTML = `<div id="surveys"></div><div class="card"><h3>Your depth maps</h3>
     <p class="small">Import soundings from your Deeper (Fish Deeper → Lakebook → export) or any sonar: CSV with latitude, longitude and depth columns, or GPX/KML.</p>
     <form class="form" id="depth-form"><div class="row"><label>Units in file <select name="units"><option value="ft">Feet</option><option value="m">Meters</option></select></label>
       <label>Name <input name="name" placeholder="Spring 2026 scan"></label></div>
       <label class="file-btn">Choose file… <input type="file" name="file" accept=".csv,.txt,.gpx,.kml" hidden></label></form>
-    ${lake.maxDepth ? `<p class="muted small">Recorded max depth: ${esc(lake.maxDepth)} ft</p>` : ''}</div>
+    ${await depthFacts(lake)}</div>
     ${sets.map(s => `<div class="card lake-item"><div><b>${esc(s.name)}</b><div class="muted small">${s.points.length.toLocaleString()} points · max ${Math.max(...s.points.map(p => p[2])).toFixed(1)} ft · ${fmtDate(s.createdAt)}</div></div>
       <div><button data-show="${s.id}">Show</button> <button class="danger" data-del="${s.id}">✕</button></div></div>`).join('')}`;
   body.querySelector('input[type=file]').onchange = async e => {
@@ -309,10 +488,16 @@ async function renderDepth(lake, body) {
     } catch (err) { alert(err.message); }
   };
   body.querySelectorAll('[data-show]').forEach(b => b.onclick = () => showDepthSet(b.dataset.show));
+  renderSurveys(lake, $('#surveys'));
   body.querySelectorAll('[data-del]').forEach(b => b.onclick = async () => { if (confirm('Delete this depth map?')) { await db.del('depthSets', b.dataset.del); openLake(lake.id, 'depth'); } });
 }
 
 async function renderStocking(lake, body) {
+  if (lake.unsaved) {
+    body.innerHTML = `<div id="state-stock"><div class="card muted">No CDFW stocking found for this water.</div></div><p class="muted small">Save this water to keep your own stocking notes.</p>`;
+    renderStateStocking(lake, $('#state-stock'));
+    return;
+  }
   const rows = (await db.byLake('stocking', lake.id)).sort((a, b) => b.date.localeCompare(a.date));
   const byYear = {};
   for (const r of rows) { const y = r.date.slice(0, 4); byYear[y] ??= {}; byYear[y][r.species] = (byYear[y][r.species] || 0) + (r.count || 0); }
@@ -357,7 +542,9 @@ async function renderStateStocking(lake, el) {
     el.innerHTML = `<div class="card"><h3>Link to CDFW stocking</h3><p class="small">Pick the matching water to get California's planting schedule automatically.</p>
       ${near.slice(0, 5).map(w => `<div class="lake-item" style="margin:6px 0"><span>${esc(w.name)} <span class="muted small">${w.distKm.toFixed(1)} km</span></span><button data-link="${w.id}">Link</button></div>`).join('')}</div>`;
     el.querySelectorAll('[data-link]').forEach(b => b.onclick = async () => {
-      await db.put('lakes', { ...lake, cdfwStockId: +b.dataset.link, stockingUrl: lake.stockingUrl || CA.waterUrl(b.dataset.link) });
+      const linked = { ...lake, cdfwStockId: +b.dataset.link, stockingUrl: lake.stockingUrl || CA.waterUrl(b.dataset.link) };
+      if (lake.unsaved) return openLake(linked, 'stocking');
+      await db.put('lakes', linked);
       openLake(lake.id, 'stocking');
     });
     return;
@@ -375,6 +562,19 @@ async function renderStateStocking(lake, el) {
     ${perYear.length ? `<div class="bars">${perYear.map(([y, n]) => `<div class="barrow"><span class="lbl">${y}</span><div class="fill" style="width:${n / maxN * 70}%"></div><span>${n} plant${n > 1 ? 's' : ''}</span></div>`).join('')}</div>` : ''}
     ${past.length ? `<details><summary class="small">All ${past.length} plants</summary><table>${past.map(p => `<tr><td>${fmtDate(p.week)}</td><td>${esc(p.species)}</td></tr>`).join('')}</table></details>` : ''}
     <p class="muted small">CDFW publishes the week and species, not counts. History grows each night from the public schedule. <a href="${CA.waterUrl(lake.cdfwStockId)}" target="_blank" rel="noopener">CDFW map ↗</a></p></div>`;
+}
+
+async function renderHistory(lake, body) {
+  body.innerHTML = '<div class="card muted">Loading history…</div>';
+  const [hist, plants] = await Promise.all([CA.historyFor(lake), lake.cdfwStockId ? CA.plantsFor(lake.cdfwStockId) : []]);
+  if (!body.isConnected) return;
+  const perYear = Object.entries(plants.reduce((m, p) => { const y = p.week.slice(0, 4); m[y] = (m[y] || 0) + 1; return m; }, {})).sort().reverse();
+  const item = e => `<div class="hist"><b>${esc(e.year)}</b><div>${esc(e.text)}${e.source ? ` <span class="muted small">(${esc(e.source)})</span>` : ''}</div></div>`;
+  body.innerHTML = `
+    <div class="card"><h3>Recorded at ${esc(lake.name)}</h3>${hist.local.length ? hist.local.map(item).join('') : '<p class="muted small">No historical introduction records for this water.</p>'}</div>
+    ${perYear.length ? `<div class="card"><h3>CDFW plants by year</h3>${perYear.map(([y, n]) => `<div class="hist"><b>${y}</b><div>${n} plant${n > 1 ? 's' : ''}</div></div>`).join('')}</div>` : ''}
+    <details class="card"><summary><b>How California's waters were stocked, 1870 on</b></summary>${hist.statewide.map(item).join('') || '<p class="muted">History not loaded yet.</p>'}</details>
+    <p class="muted small">${esc(hist.note)}</p>`;
 }
 
 async function renderLakeCatches(lake, body) {
@@ -407,11 +607,13 @@ async function renderNotes(lake, body) {
 function renderInfo(lake, body) {
   const field = (k, v) => v ? `<tr><th>${k}</th><td>${esc(v)}</td></tr>` : '';
   body.innerHTML = `<div class="card"><table>
-    ${field('Type', lake.type)}${field('State', lake.state)}${field('County', lake.county)}${field('Acres', lake.acres)}
-    ${field('Max depth (ft)', lake.maxDepth)}${field('Clarity (ft)', lake.clarity)}${field('Species', lake.species)}
+    ${field('Type', lake.type)}${field('State', lake.state)}${field('County', lake.county)}${field('Acres', lake.acres?.toLocaleString?.() ?? lake.acres)}
+    ${field('Length (mi)', lake.lengthKm && Math.round(lake.lengthKm * 0.621))}${field('Surface elevation (ft)', lake.elevationFt?.toLocaleString())}
+    ${field('Max depth (ft)', lake.maxDepth)}${field('Average depth (ft)', lake.meanDepth)}${field('Clarity (ft)', lake.clarity)}${field('Species', lake.species)}
     ${field('Regulations', lake.regs)}${field('Access', lake.access)}${field('Coordinates', `${lake.lat.toFixed(5)}, ${lake.lon.toFixed(5)}`)}
   </table>${lake.infoUrl ? `<p><a href="${esc(lake.infoUrl)}" target="_blank" rel="noopener">State lake page ↗</a></p>` : ''}
-  <p class="muted small">Tap Edit to fill in details from your state DNR lake page.</p></div>`;
+  ${lake.cdfwStockId ? `<p><a href="${CA.waterUrl(lake.cdfwStockId)}" target="_blank" rel="noopener">CDFW fishing guide for this water ↗</a></p>` : ''}
+  <p class="muted small">${lake.unsaved ? 'Names, size and elevation from the USGS National Hydrography Dataset.' : 'Tap Edit to fill in details from your state lake page.'}</p></div>`;
 }
 
 // ---------- Catch log ----------
@@ -576,4 +778,4 @@ refreshMap().then(async () => {
   const lakes = await db.all('lakes');
   if (lakes.length) map.fitBounds(L.latLngBounds(lakes.map(l => [l.lat, l.lon])).pad(0.3), { maxZoom: 13 });
 });
-window.__app = { db, openLake, showView }; // handy for debugging from the console
+window.__app = { db, openLake, showView, openWater, CA }; window.__map = map; // handy for debugging from the console

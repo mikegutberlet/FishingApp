@@ -33,6 +33,32 @@ Data is refreshed daily by `.github/workflows/update-data.yml` running `scripts/
 
 **Nevada and Oregon (planned)**: same shape, as `states/nv.js` and `states/or.js` plus a nightly script each. The sources are NDOW's weekly stocking reports and ODFW's trout stocking schedule and past stocking reports. Nevada reservoir levels come from USBR and USGS. Oregon lake levels come from USGS and the Army Corps of Engineers.
 
+## Every California lake and river
+
+* **Labels on the map** for every named lake, reservoir and river in California (zoom in for the small ones). Tap a label or the water itself to open it.
+* **Tap any water** for current weather and a 10-day forecast, CDFW stocking and upcoming plants, lake level, depth, history and basic facts (size, elevation), all before you save it. *Save to my lakes* adds it to your list for catches and notes.
+* **Lakes → Any California water** searches the whole list by name.
+* **Depth:** max and average depth where a published survey exists, and full depth-contour charts for lakes USGS has surveyed (Calaveras, San Antonio, Whiskeytown and more as they appear), drawn as depth at today's level when the lake has a CDEC gauge.
+* **History tab:** introductions and plantings recorded at that water, back to the 1870s, plus a statewide timeline of how California's waters were stocked.
+
+### Where the statewide data comes from
+
+| Data | Source | Refresh |
+|---|---|---|
+| Lake and river names, size, elevation | USGS National Hydrography Dataset | weekly |
+| Max and mean depth | LAGOS-US DEPTH (published lake depth surveys), Wikidata for lakes it misses | weekly |
+| Estimated average depth, volume, shoreline | HydroLAKES (modelled from lake shape and terrain, every lake over 25 acres) | monthly |
+| Depth contour charts | USGS ScienceBase bathymetric surveys | monthly |
+| Historical introductions and plantings | USGS Nonindigenous Aquatic Species database, plus documented early events (Fish Bulletin 178) | weekly |
+| Current plants and stocking history | CDFW planting schedule | nightly |
+| Lake levels | CDEC | nightly |
+
+### What the records can and can't tell you
+
+* CDFW's digital planting records begin in the 2000s, and the public schedule shows about a year; the app keeps every day it sees, so history grows from October 2025 forward.
+* Before that, the record is species introductions: the state Fish Commission (founded 1870), the U.S. Fish Commission and private parties moved shad, carp, bass, catfish, brown and brook trout into California waters from 1871 on. Those events, where they were recorded, show on the History tab.
+* Native fish planted inside their native range, such as most rainbow trout plants in Sierra streams, were rarely logged by water before the 1930s and are not in any public database. Miners and settlers did carry trout into fishless high-country lakes from the 1870s; the golden trout transplant of 1876 is the best documented.
+
 ## Sharing with friends
 
 * Everyone installs the same link. Each person's catches, notes and spots stay on their own phone. There are no shared accounts.
@@ -85,6 +111,9 @@ Reverse-engineering other apps isn't needed: the public sources above cover cond
 * `app.js`: views, map, catch log, stats
 * `db.js`: IndexedDB storage and backup
 * `data-sources.js`: Open-Meteo, USGS, moon phase, CSV/GPX/KML parsers
-* `states/ca.js`: California stocking and reservoir lookups
-* `scripts/update-ca-data.mjs` and `data/ca/`: nightly public-data refresh and its output
+* `states/ca.js`: California stocking, reservoir, statewide water, depth-survey and history lookups
+* `scripts/update-ca-data.mjs`: nightly CDFW plants, stocked waters and CDEC levels → `data/ca/`
+* `scripts/build-ca-waters.mjs`, `build-ca-history.mjs`: weekly statewide water list and history
+* `scripts/build-ca-bathymetry.mjs`: monthly depth contours → `data/ca/bathymetry/`
+* `data/ca/logs/`: output of each data job, committed so problems can be read from the repo
 * `sw.js`, `manifest.json`: offline + install
