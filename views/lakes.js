@@ -1,4 +1,4 @@
-// The Lakes view: your saved waters, statewide search, the state stocked-waters finder (CDFW, NDOW), and the lake editor.
+// The Lakes view: your saved waters, statewide search, the state stocked-waters finder (CDFW, NDOW, ODFW), and the lake editor.
 import { db } from '../db.js';
 import { STATES, list as stateList, selected, select, stateAt } from '../states/index.js';
 import { $, esc, fmtDate, status, showView, onShow } from '../ui.js';
@@ -55,7 +55,7 @@ async function renderFindAny(S) {
 async function renderFindWaters(S) {
   const list = $('#lake-list');
   list.innerHTML = `<button id="back">‹ My waters</button><h2>${S.name} stocked waters</h2>
-    <div class="card form"><label>Search by name or ${S.code === 'NV' ? 'region' : 'county'} <input id="wsearch" type="search" placeholder="${S.stockedHint}"></label>
+    <div class="card form"><label>Search by name or ${S.searchBy ?? 'county'} <input id="wsearch" type="search" placeholder="${S.stockedHint}"></label>
       <label class="check"><input type="checkbox" id="wrecent" checked> Planted in the last 30 days or coming up</label></div>
     <div id="wresults" class="muted">Loading ${S.agency} data…</div><p class="muted small" id="wdates"></p>`;
   $('#back').onclick = renderLakeList;
@@ -117,7 +117,7 @@ export function editLake(lake) {
       <label>State lake page (DNR) URL <input name="infoUrl" type="url" value="${esc(lake.infoUrl)}"></label>
       <label>Stocking report URL <input name="stockingUrl" type="url" value="${esc(lake.stockingUrl)}"></label>
       <label>USGS gauge id (optional, pins a specific gauge) <input name="usgsSite" value="${esc(lake.usgsSite)}"></label>
-      <label>Lake level station (optional: CDEC id like SHA in California, USGS site number in Nevada) <input name="cdecStation" value="${esc(lake.cdecStation)}"></label>
+      <label>Lake level station (optional: CDEC id like SHA in California, USGS site number in Nevada and Oregon) <input name="cdecStation" value="${esc(lake.cdecStation)}"></label>
       <div class="row"><label>Lat <input name="lat" type="number" step="any" required value="${lake.lat ?? ''}"></label>
         <label>Lon <input name="lon" type="number" step="any" required value="${lake.lon ?? ''}"></label></div>
       <button class="primary">Save</button>

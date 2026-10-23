@@ -2,8 +2,9 @@
 // Each state module (states/<st>.js) exports the same functions; add a state by importing it here.
 import * as CA from './ca.js';
 import * as NV from './nv.js';
+import * as OR from './or.js';
 
-export const STATES = { CA, NV };
+export const STATES = { CA, NV, OR };
 export const list = Object.values(STATES);
 
 function inside([x, y], ring) {
@@ -25,7 +26,7 @@ export function forLake(lake) {
   return STATES[String(lake?.state ?? '').toUpperCase()] ?? (lake?.lat != null ? stateAt(lake.lat, lake.lon) : null);
 }
 
-// The state's stocked-water id saved on a lake (CDFW stock id, NDOW water slug), or null.
+// The state's stocked-water id saved on a lake (CDFW stock id, NDOW water slug, ODFW schedule name), or null.
 export function stockIdOf(lake) {
   const s = forLake(lake);
   return s ? lake[s.stockField] ?? null : null;

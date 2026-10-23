@@ -3,6 +3,7 @@
 import * as NV from '../../states/nv.js';
 import { forLake } from '../../states/index.js';
 import { esc, fmtDate } from '../../ui.js';
+import { renderOrSafety } from './or-safety.js';
 
 const day = iso => iso ? fmtDate(iso + 'T12:00') : '';
 
@@ -70,9 +71,10 @@ function eatCard(eat) {
     <p class="muted small">Nevada Division of Public and Behavioral Health advisories, as listed in the fishing regulations. <a href="${esc(eat.url)}" target="_blank" rel="noopener">Mercury in fish ↗</a></p></div>`;
 }
 
-// The tab for any water: Nevada's rules here; other states link to their own regulations until they have a tab.
+// The tab for any water: Nevada's rules here, Oregon's in or-safety.js; other states link to their own regulations until they have a tab.
 export async function renderStateSafety(lake, body) {
   const S = forLake(lake);
   if (S === NV) return renderNvSafety(lake, body);
+  if (S?.code === 'OR') return renderOrSafety(lake, body);
   body.innerHTML = `<div class="card"><h3>Fishing regulations</h3><p class="small">${S ? `See the <a href="${S.code === 'CA' ? 'https://wildlife.ca.gov/Regulations' : '#'}" target="_blank" rel="noopener">${esc(S.name)} fishing regulations ↗</a>.` : 'Check your state’s fishing regulations.'}</p></div>`;
 }

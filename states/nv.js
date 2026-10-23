@@ -1,6 +1,6 @@
 // Nevada: NDOW stocking and fishing reports, USGS and Reclamation lake levels, read from the files the Nevada data
 // jobs write to data/nv/ (scripts/nv/*.mjs and scripts/build-state-*.mjs).
-import { stateData } from './common.js';
+import { stateData, sameWater } from './common.js';
 import { haversineKm } from '../data-sources.js';
 
 const d = stateData('nv', 'NV');
@@ -16,9 +16,11 @@ export const scheduleUrl = 'https://www.ndow.org/get-outside/fishing-stocking-re
 export const bbox = [-120.01, 34.99, -114.03, 42.01];
 export const outline = [[-120.0, 42.0], [-114.04, 42.0], [-114.04, 36.2], [-114.0, 36.0], [-114.0, 35.0], [-114.63, 35.0], [-120.0, 39.0]];
 export const plantsNote = 'NDOW reports each stocking with the number and average length of the fish. History grows each night from the NDOW water pages.';
+export const searchBy = 'region';
 export const searchHint = 'Pyramid, Truckee River, Wildhorse…';
 export const stockedHint = 'Topaz, Sparks Marina, Wildhorse…';
 
+export { sameWater };
 export const { waters, plantsFor, dataDates, nearestWaters, nearestReservoir, statewide, history, matchStockedWater, historyFor, hydroFor, bathymetryFor, bathymetryUrl } = d;
 
 // NDOW's page for a stocked water: latest fishing report and the "pertinent information" write-up.
@@ -29,22 +31,6 @@ export async function reportFor(lake) {
 }
 
 // ---------- Safety: toxic algae (nightly), regulations and fish consumption advisories (weekly) ----------
-// Names in the regulations and on NDOW's pages are written several ways: "Walker River, East Fork",
-// "East Walker River", "South Fork of the Humboldt River". This key makes those the same.
-const regKey = s => String(s ?? '').toLowerCase().replace(/[’']/g, '').replace(/^(.+?),\s*(.+)$/, '$2 $1').replace(/\s*[–—-]\s+.*$/, '')
-  .replace(/\b(the|of|fork)\b|[^a-z0-9]/g, '');
-const WATER_WORD = /^(lake|reservoir|res|pond|ponds|river|creek|wash)/;
-// Same water: same key, or one is the other plus a place ("Lake Tahoe – Cave Rock"), not plus another water word
-// ("Cold Creek" is not "Cold Creek Reservoir").
-export function sameWater(a, b) {
-  const x = regKey(a), y = regKey(b);
-  if (x.length < 4 || y.length < 4) return false;
-  if (x === y) return true;
-  const [long, short] = x.length > y.length ? [x, y] : [y, x];
-  // A rule for "Jarbidge River" covers its West Fork too.
-  if (/(river|creek)$/.test(short) && long.replace(/^(north|south|east|west|middle)/, '') === short) return true;
-  return long.startsWith(short) && !WATER_WORD.test(long.slice(short.length));
-}
 const reach = lake => /river|creek|stream/i.test(`${lake.kind} ${lake.type}`) ? 3 : Math.max(1.5, Math.sqrt((lake.acres ?? 50) / 247) * 1.5 + 0.5);
 
 function inRing([x, y], ring) {

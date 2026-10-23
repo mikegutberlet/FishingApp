@@ -5,6 +5,23 @@ import { haversineKm } from '../data-sources.js';
 export const norm = s => (s ?? '').toLowerCase().replace(/\b(lake|reservoir|river|creek|pond|the|of)\b|[^a-z0-9]/g, '');
 export const isRiver = lake => lake.kind === 'river' || /river|creek|stream|slough|canal/i.test(lake.type ?? '');
 
+// Names in regulations and agency pages are written several ways: "Walker River, East Fork",
+// "East Walker River", "South Fork of the Humboldt River". This key makes those the same.
+const regKey = s => String(s ?? '').toLowerCase().replace(/[’']/g, '').replace(/^(.+?),\s*(.+)$/, '$2 $1').replace(/\s*[–—-]\s+.*$/, '')
+  .replace(/\b(the|of|fork)\b|[^a-z0-9]/g, '');
+const WATER_WORD = /^(lake|reservoir|res|pond|ponds|river|creek|wash)/;
+// Same water: same key, or one is the other plus a place ("Lake Tahoe – Cave Rock"), not plus another water word
+// ("Cold Creek" is not "Cold Creek Reservoir").
+export function sameWater(a, b) {
+  const x = regKey(a), y = regKey(b);
+  if (x.length < 4 || y.length < 4) return false;
+  if (x === y) return true;
+  const [long, short] = x.length > y.length ? [x, y] : [y, x];
+  // A rule for "Jarbidge River" covers its West Fork too.
+  if (/(river|creek)$/.test(short) && long.replace(/^(north|south|east|west|middle)/, '') === short) return true;
+  return long.startsWith(short) && !WATER_WORD.test(long.slice(short.length));
+}
+
 export function stateData(dir, code) {
   const cache = {};
   const load = name => cache[name] ??= fetch(`data/${dir}/${name}.json`).then(r => r.ok ? r.json() : null).catch(() => null);
