@@ -23,9 +23,9 @@ const QUERIES = STATE.bathymetryQueries;
 const MAX_FILE = 400e6, MAX_GEOJSON = 4e6;
 const report = { startedAt: new Date().toISOString(), items: [] };
 
-const INCLUDE = /\b(lake|reservoir|res\.)\b/i;
-const TOPIC = /bathymetr|contour|stage-?storage|depth/i;
-const EXCLUDE = /orthomosaic|imagery|digital surface model|\bdsm\b|hillshade|water[- ]?table|ground-?water|potentiometric|clay|subsidence|insar|\bned\b|arc-second|tidal|marsh|multibeam|canyon|borderland|delta|slough|\briver\b|ship channel|geochemical|diatom|grain size|seafloor|offshore|coast|ocean|island|estuar|\bbay\b|lagoon|topobathymetric|sediment core|vapor transport/i;
+const INCLUDE = /\b(lakes?|reservoirs?|res\.)\b/i;
+const TOPIC = /bathymetr|contour|stage-?storage|depth|elevation model|elevation-area-volume/i;
+const EXCLUDE = /orthomosaic|imagery|digital surface model|\bdsm\b|hillshade|water[- ]?table|ground-?water|potentiometric|clay|subsidence|insar|\bned\b|arc-second|tidal|marsh|multibeam|canyon(?! (reservoir|dam))|borderland|delta|slough|\briver\b|ship channel|geochemical|diatom|grain size|seafloor|offshore|coast|ocean|island|estuar|\bbay\b|lagoon|sediment core|vapor transport|topo map vector|spatial metadata/i;
 
 async function get(url, tries = 4) {
   for (let i = 1; ; i++) {
