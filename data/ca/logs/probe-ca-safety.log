@@ -1,291 +1,433 @@
 
-=== 200 https://data.ca.gov/api/3/action/datastore_search_sql?sql=SELECT%20%22Advisory_Recommended%22%2C%20%22Reported_Advisory_Types%22%2C%20%22Case_Status%22%2C%20count(*)%20n%20FROM%20%22c6a36b91-ad38-4611-8750-87ee99e497dd%22%20GROUP%20BY%201%2C2%2C3%20ORDER%20BY%20n%20DESC%20LIMIT%2060 (7173 bytes)
-{"Advisory_Recommended":"None","Reported_Advisory_Types":"None","Case_Status":"Closed","n":768}
-{"Advisory_Recommended":"Caution","Reported_Advisory_Types":"Caution","Case_Status":"Closed","n":538}
-{"Advisory_Recommended":"None","Reported_Advisory_Types":null,"Case_Status":"Open","n":285}
-{"Advisory_Recommended":"NA - refer to Report Details","Reported_Advisory_Types":"NA - refer to Report Details","Case_Status":"Closed","n":280}
-{"Advisory_Recommended":"None","Reported_Advisory_Types":null,"Case_Status":"Closed","n":141}
-{"Advisory_Recommended":null,"Reported_Advisory_Types":null,"Case_Status":"Open","n":128}
-{"Advisory_Recommended":"Caution","Reported_Advisory_Types":null,"Case_Status":"Open","n":119}
-{"Advisory_Recommended":"Danger","Reported_Advisory_Types":"Danger","Case_Status":"Closed","n":102}
-{"Advisory_Recommended":null,"Reported_Advisory_Types":"None","Case_Status":"Open","n":102}
-{"Advisory_Recommended":"None","Reported_Advisory_Types":null,"Case_Status":"Ongoing","n":94}
-{"Advisory_Recommended":"None","Reported_Advisory_Types":"None","Case_Status":"Open","n":70}
-{"Advisory_Recommended":"Algal mat alert sign","Reported_Advisory_Types":null,"Case_Status":"Open","n":69}
-{"Advisory_Recommended":"Caution","Reported_Advisory_Types":"None","Case_Status":"Open","n":67}
-{"Advisory_Recommended":null,"Reported_Advisory_Types":null,"Case_Status":"Closed","n":62}
-{"Advisory_Recommended":"Caution","Reported_Advisory_Types":null,"Case_Status":"Ongoing","n":57}
-{"Advisory_Recommended":"Warning","Reported_Advisory_Types":"Warning","Case_Status":"Closed","n":52}
-{"Advisory_Recommended":"NA - refer to Report Details","Reported_Advisory_Types":"None","Case_Status":"Open","n":48}
-{"Advisory_Recommended":null,"Reported_Advisory_Types":"None","Case_Status":"Closed","n":37}
-{"Advisory_Recommended":"None","Reported_Advisory_Types":"None","Case_Status":"Ongoing","n":32}
-{"Advisory_Recommended":"Caution","Reported_Advisory_Types":"None","Case_Status":"Ongoing","n":31}
-{"Advisory_Recommended":"NA - refer to Report Details","Reported_Advisory_Types":null,"Case_Status":"Open","n":30}
-{"Advisory_Recommended":"Visual observation","Reported_Advisory_Types":"None","Case_Status":"Open","n":27}
-{"Advisory_Recommended":"Caution","Reported_Advisory_Types":null,"Case_Status":"Closed","n":26}
-{"Advisory_Recommended":"Caution","Reported_Advisory_Types":"None","Case_Status":"Closed","n":25}
-{"Advisory_Recommended":"Algal mat alert sign","Reported_Advisory_Types":"Algal mat alert sign","Case_Status":"Closed","n":25}
-{"Advisory_Recommended":"Algal mat general awareness sign","Reported_Advisory_Types":null,"Case_Status":"Open","n":24}
-{"Advisory_Recommended":"Algal mat general awareness sign","Reported_Advisory_Types":"Algal mat general awareness sign","Case_Status":"Closed","n":23}
-{"Advisory_Recommended":null,"Reported_Advisory_Types":null,"Case_Status":"Ongoing","n":19}
-{"Advisory_Recommended":"Caution","Reported_Advisory_Types":"Caution","Case_Status":"Open","n":19}
-{"Advisory_Recommended":"Warning","Reported_Advisory_Types":null,"Case_Status":"Ongoing","n":17}
-{"Advisory_Recommended":"Algal mat alert sign","Reported_Advisory_Types":"None","Case_Status":"Open","n":17}
-{"Advisory_Recommended":"Visual observation","Reported_Advisory_Types":null,"Case_Status":"Open","n":17}
-{"Advisory_Recommended":"Danger","Reported_Advisory_Types":null,"Case_Status":"Open","n":14}
-{"Advisory_Recommended":"General awareness","Reported_Advisory_Types":null,"Case_Status":"Closed","n":13}
-{"Advisory_Recommended":"NA - refer to Report Details","Reported_Advisory_Types":null,"Case_Status":"Closed","n":12}
-{"Advisory_Recommended":"Danger","Reported_Advisory_Types":null,"Case_Status":"Ongoing","n":12}
-{"Advisory_Recommended":"NA - refer to Report Details","Reported_Advisory_Types":"None","Case_Status":"Closed","n":12}
-{"Advisory_Recommended":"Visual observation","Reported_Advisory_Types":null,"Case_Status":"Ongoing","n":12}
-{"Advisory_Recommended":"General awareness","Reported_Advisory_Types":null,"Case_Status":"Open","n":10}
-{"Advisory_Recommended":"Algal mat general awareness sign","Reported_Advisory_Types":"None","Case_Status":"Closed","n":10}
-{"Advisory_Recommended":"Algal mat alert sign","Reported_Advisory_Types":null,"Case_Status":"Ongoing","n":10}
-{"Advisory_Recommended":"Algal mat alert sign","Reported_Advisory_Types":null,"Case_Status":"Closed","n":10}
-{"Advisory_Recommended":"Warning","Reported_Advisory_Types":null,"Case_Status":"Open","n":9}
-{"Advisory_Recommended":"None","Reported_Advisory_Types":"Caution","Case_Status":"Closed","n":9}
-{"Advisory_Recommended":null,"Reported_Advisory_Types":"None","Case_Status":"Ongoing","n":9}
-{"Advisory_Recommended":"Danger","Reported_Advisory_Types":"None","Case_Status":"Closed","n":9}
-{"Advisory_Recommended":"Visual observation","Reported_Advisory_Types":"None","Case_Status":"Ongoing","n":8}
-{"Advisory_Recommended":null,"Reported_Advisory_Types":"Caution","Case_Status":"Closed","n":8}
-{"Advisory_Recommended":null,"Reported_Advisory_Types":"Caution","Case_Status":"Open","n":8}
-{"Advisory_Recommended":"Algal mat alert sign","Reported_Advisory_Types":"None","Case_Status":"Closed","n":7}
-{"Advisory_Recommended":"General awareness","Reported_Advisory_Types":null,"Case_Status":"Ongoing","n":7}
-{"Advisory_Recommended":"Caution","Reported_Advisory_Types":"General awareness","Case_Status":"Open","n":7}
-{"Advisory_Recommended":"General awareness","Reported_Advisory_Types":"None","Case_Status":"Open","n":7}
-{"Advisory_Recommended":"Danger","Reported_Advisory_Types":null,"Case_Status":"Closed","n":7}
-{"Advisory_Recommended":null,"Reported_Advisory_Types":"None","Case_Status":null,"n":7}
-{"Advisory_Recommended":"Danger","Reported_Advisory_Types":"None","Case_Status":"Open","n":6}
-{"Advisory_Recommended":"General awareness","Reported_Advisory_Types":"None","Case_Status":"Closed","n":6}
-{"Advisory_Recommended":null,"Reported_Advisory_Types":"General awareness","Case_Status":"Open","n":6}
-{"Advisory_Recommended":"Algal mat general awareness sign","Reported_Advisory_Types":"None","Case_Status":"Open","n":6}
-{"Advisory_Recommended":"None","Reported_Advisory_Types":"Caution","Case_Status":"Ongoing","n":5}
+=== 200 https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/0?f=json (6179 bytes)
+0 States esriGeometryPolygon MTFCC,OID,GEOID,STATE,STATENS,BASENAME,NAME,LSADC,FUNCSTAT,AREALAND,AREAWATER,REGION,DIVISION,STUSAB,STGEOMETRY,CENTLAT,CENTLON,INTPTLAT,INTPTLON,OBJECTID
 
-=== 200 https://data.ca.gov/api/3/action/datastore_search_sql?sql=SELECT%20%22Bloom_Report_ID%22%2C%22Case_ID%22%2C%22Water_Body_Name%22%2C%22Official_Water_Body_Name%22%2C%22Case_Water_Body_Name%22%2C%22County%22%2C%22Observation_Date%22%2C%22Advisory_Recommended%22%2C%22AdvisoryStartDate%22%2C%22AdvisoryEndDate%22%2C%22Advisory_Date%22%2C%22Case_Status%22%2C%22Case_End_Date%22%2C%22Last_Field_Result_Sample_Date%22%2C%22AdvisoryDetail%22%2C%22Advisory_Detail_Description%22%20FROM%20%22c6a36b91-ad38-4611-8750-87ee99e497dd%22%20WHERE%20%22Observation_Date%22%20%3E%20'2026-06-01'%20AND%20%22Advisory_Recommended%22%20IS%20NOT%20NULL%20ORDER%20BY%20%22Observation_Date%22%20DESC%20LIMIT%2040 (27740 bytes)
-{"Bloom_Report_ID":4900,"Case_ID":1642,"Water_Body_Name":"Wildcat Creek","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Wildcat Creek","County":"Alameda","Observation_Date":"2555-07-09","Advisory_Recommended":"Caution","AdvisoryStartDate":"2025-07-10","AdvisoryEndDate":null,"Advisory_Date":"2025-07-10","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Suspected illness reported; Under investigation","Advisory_Detail_Description":"Suspected illness was reported and is under investigation by the Interagency HAB-related Illness Workgroup, no determination has been made.  This report is under investigation."}
-{"Bloom_Report_ID":5377,"Case_ID":1787,"Water_Body_Name":"Hume Lake","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Hume Lake","County":"Fresno","Observation_Date":"2026-10-09","Advisory_Recommended":"NA - refer to Report Details","AdvisoryStartDate":"2026-10-14","AdvisoryEndDate":null,"Advisory_Date":"2026-10-14","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Suspected illness reported","Advisory_Detail_Description":"Suspected illness was reported and is under investigation by the Interagency HAB-related Illness Workgroup, no determination has been made."}
-{"Bloom_Report_ID":5375,"Case_ID":1384,"Water_Body_Name":"Spring Lake","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Spring Lake","County":"Sonoma","Observation_Date":"2026-10-03","Advisory_Recommended":"None","AdvisoryStartDate":"2026-10-09","AdvisoryEndDate":"2026-10-16","Advisory_Date":"2026-10-16","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Testing results below posting triggers","Advisory_Detail_Description":"Water testing of samples resulted in no exceedance of an advisory trigger threshold."}
-{"Bloom_Report_ID":5370,"Case_ID":1856,"Water_Body_Name":"Carter Creek","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Carter Creek","County":"Tehama","Observation_Date":"2026-10-01","Advisory_Recommended":"None","AdvisoryStartDate":"2026-10-01","AdvisoryEndDate":null,"Advisory_Date":"2026-10-01","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Updates from routine monitoring program-organization","Advisory_Detail_Description":"Updates to this report are provided by a routine water monitoring program conducting site visits at this waterway, refer to Organization field above for more information."}
-{"Bloom_Report_ID":5369,"Case_ID":1860,"Water_Body_Name":"Stafford Lake","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Stafford Lake","County":"Marin","Observation_Date":"2026-09-30","Advisory_Recommended":"General awareness","AdvisoryStartDate":"2026-10-09","AdvisoryEndDate":null,"Advisory_Date":"2026-10-09","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Suspected bloom, investigation ongoing","Advisory_Detail_Description":"A suspected harmful algal bloom was reported, an investigation is underway and this report will be updated once info is provided by the responding organizations."}
-{"Bloom_Report_ID":5371,"Case_ID":1857,"Water_Body_Name":"Miramar Reservoir","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Miramar","County":"San Diego","Observation_Date":"2026-09-22","Advisory_Recommended":"Caution","AdvisoryStartDate":"2026-10-02","AdvisoryEndDate":null,"Advisory_Date":"2026-10-02","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Advisory based on visual and toxins","Advisory_Detail_Description":"Advisory based on presence of harmful algal bloom and water testing that detected cyanotoxins."}
-{"Bloom_Report_ID":5359,"Case_ID":1649,"Water_Body_Name":"Pacific Ocean","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Pacific Ocean","County":"Santa Cruz","Observation_Date":"2026-09-18","Advisory_Recommended":"NA - refer to Report Details","AdvisoryStartDate":"2026-10-09","AdvisoryEndDate":null,"Advisory_Date":"2026-10-09","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Under investigation","Advisory_Detail_Description":"This report is under investigation."}
-{"Bloom_Report_ID":5368,"Case_ID":1855,"Water_Body_Name":"La Mirada Lake","Official_Water_Body_Name":null,"Case_Water_Body_Name":"La Miranda Community Regional  Park","County":"Los Angeles","Observation_Date":"2026-09-18","Advisory_Recommended":"Visual observation","AdvisoryStartDate":"2026-09-28","AdvisoryEndDate":null,"Advisory_Date":"2026-09-28","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Visual monitoring only-present bloom","Advisory_Detail_Description":"Visual observation of harmful algal bloom from shoreline or boat. Water testing was not conducted to measure toxicity of bloom according to statewide guidelines. Contact the water or land manager listed above to request water testing due to the confirmed visible bloom."}
-{"Bloom_Report_ID":5360,"Case_ID":1851,"Water_Body_Name":"Lake of the Pines","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Lake of the Pines","County":"Nevada","Observation_Date":"2026-09-18","Advisory_Recommended":"Caution","AdvisoryStartDate":"2026-09-22","AdvisoryEndDate":null,"Advisory_Date":"2026-09-22","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Suspected illness reported","Advisory_Detail_Description":"Suspected illness was reported and is under investigation by the Interagency HAB-related Illness Workgroup, no determination has been made."}
-{"Bloom_Report_ID":5366,"Case_ID":1854,"Water_Body_Name":"John Anson Ford Park Lake","Official_Water_Body_Name":null,"Case_Water_Body_Name":"John Anson Ford Park","County":"Los Angeles","Observation_Date":"2026-09-16","Advisory_Recommended":"Visual observation","AdvisoryStartDate":"2026-09-28","AdvisoryEndDate":null,"Advisory_Date":"2026-09-28","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Visual monitoring only-present bloom","Advisory_Detail_Description":"Visual observation of harmful algal bloom from shoreline or boat. Water testing was not conducted to measure toxicity of bloom according to statewide guidelines. Contact the water or land manager listed above to request water testing due to the confirmed visible bloom."}
-{"Bloom_Report_ID":5361,"Case_ID":1530,"Water_Body_Name":"New Bullards Bar Reservoir","Official_Water_Body_Name":null,"Case_Water_Body_Name":"New Bullards Bar Resevoir","County":"Yuba","Observation_Date":"2026-09-16","Advisory_Recommended":"NA - refer to Report Details","AdvisoryStartDate":"2026-09-22","AdvisoryEndDate":null,"Advisory_Date":"2026-09-22","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Under investigation","Advisory_Detail_Description":"This report is under investigation."}
-{"Bloom_Report_ID":5365,"Case_ID":1853,"Water_Body_Name":"Santa Ana River","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Santa Ana River","County":"San Bernardino","Observation_Date":"2026-09-15","Advisory_Recommended":"Algal mat general awareness sign","AdvisoryStartDate":"2026-09-25","AdvisoryEndDate":null,"Advisory_Date":"2026-09-25","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Advisory based on visual and toxins","Advisory_Detail_Description":"Advisory based on presence of harmful algal bloom and water testing that detected cyanotoxins."}
-{"Bloom_Report_ID":5363,"Case_ID":1852,"Water_Body_Name":"North Fork Battle Creek","Official_Water_Body_Name":null,"Case_Water_Body_Name":"North Fork Battle Creek","County":"Shasta","Observation_Date":"2026-09-15","Advisory_Recommended":"None","AdvisoryStartDate":"2026-09-24","AdvisoryEndDate":null,"Advisory_Date":"2026-09-24","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":null,"Advisory_Detail_Description":null}
-{"Bloom_Report_ID":5348,"Case_ID":1847,"Water_Body_Name":"North Yuba River","Official_Water_Body_Name":null,"Case_Water_Body_Name":"North Yuba River","County":"Yuba","Observation_Date":"2026-09-12","Advisory_Recommended":"Caution","AdvisoryStartDate":"2026-09-17","AdvisoryEndDate":null,"Advisory_Date":"2026-09-17","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Suspected illness reported","Advisory_Detail_Description":"Suspected illness was reported and is under investigation by the Interagency HAB-related Illness Workgroup, no determination has been made."}
-{"Bloom_Report_ID":5338,"Case_ID":1844,"Water_Body_Name":"Strap Ravine","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Strap Ravine","County":"Placer","Observation_Date":"2026-09-10","Advisory_Recommended":"NA - refer to Report Details","AdvisoryStartDate":"2026-09-14","AdvisoryEndDate":null,"Advisory_Date":"2026-09-14","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"No cyano bloom w/photos","Advisory_Detail_Description":"Visual observations of suspicious algae reported - Water Boards staff determined that no harmful algal bloom produced by cyanobacteria was present. Other types of nuisance algae were present."}
-{"Bloom_Report_ID":5350,"Case_ID":1849,"Water_Body_Name":"Battle Creek","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Battle Creek","County":"Tehama","Observation_Date":"2026-09-09","Advisory_Recommended":"Algal mat alert sign","AdvisoryStartDate":"2026-09-17","AdvisoryEndDate":null,"Advisory_Date":"2026-09-17","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Alert-high concentration toxins","Advisory_Detail_Description":"Alert! High concentration of one or more cyanotoxins measured at this site indicating elevated health risk to humans and animals."}
-{"Bloom_Report_ID":5337,"Case_ID":926,"Water_Body_Name":"Lake Oroville","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Lake Oroville","County":"Butte","Observation_Date":"2026-09-09","Advisory_Recommended":"None","AdvisoryStartDate":"2026-09-10","AdvisoryEndDate":null,"Advisory_Date":"2026-10-14","Case_Status":"Ongoing","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Updates from routine monitoring program-organization","Advisory_Detail_Description":"Updates to this report are provided by a routine water monitoring program conducting site visits at this waterway, refer to Organization field above for more information."}
-{"Bloom_Report_ID":5347,"Case_ID":1563,"Water_Body_Name":"Arnot Creek","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Arnot Creek","County":"Alpine","Observation_Date":"2026-09-09","Advisory_Recommended":"None","AdvisoryStartDate":"2026-09-16","AdvisoryEndDate":null,"Advisory_Date":"2026-09-16","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":null,"Advisory_Detail_Description":null}
-{"Bloom_Report_ID":5340,"Case_ID":1843,"Water_Body_Name":"Martis Creek Reservoir","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Martis Creek Reservoir","County":"Nevada","Observation_Date":"2026-09-08","Advisory_Recommended":"None","AdvisoryStartDate":null,"AdvisoryEndDate":null,"Advisory_Date":"2026-09-25","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Testing results below posting triggers","Advisory_Detail_Description":"Water testing of samples resulted in no exceedance of an advisory trigger threshold."}
-{"Bloom_Report_ID":5333,"Case_ID":1754,"Water_Body_Name":"Lake Almanor","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Lake Almanor","County":"Plumas","Observation_Date":"2026-09-08","Advisory_Recommended":"Caution","AdvisoryStartDate":"2026-09-10","AdvisoryEndDate":null,"Advisory_Date":"2026-09-10","Case_Status":"Closed","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Under investigation","Advisory_Detail_Description":"This report is under investigation."}
-{"Bloom_Report_ID":5349,"Case_ID":1848,"Water_Body_Name":"Feather River","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Feather River","County":"Butte","Observation_Date":"2026-09-08","Advisory_Recommended":"None","AdvisoryStartDate":"2026-09-17","AdvisoryEndDate":null,"Advisory_Date":"2026-09-17","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":null,"Advisory_Detail_Description":null}
-{"Bloom_Report_ID":5346,"Case_ID":1425,"Water_Body_Name":"Meeks Creek","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Meeks Creek","County":"El Dorado","Observation_Date":"2026-09-08","Advisory_Recommended":"None","AdvisoryStartDate":"2026-09-16","AdvisoryEndDate":null,"Advisory_Date":"2026-09-16","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":null,"Advisory_Detail_Description":null}
-{"Bloom_Report_ID":5339,"Case_ID":1861,"Water_Body_Name":"Bolsa Chico Ecological Reserve","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Bolsa Chico Ecological Reserve","County":"Orange","Observation_Date":"2026-09-07","Advisory_Recommended":"NA - refer to Report Details","AdvisoryStartDate":"2026-10-09","AdvisoryEndDate":null,"Advisory_Date":"2026-10-09","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Under investigation","Advisory_Detail_Description":"This report is under investigation."}
-{"Bloom_Report_ID":5342,"Case_ID":1524,"Water_Body_Name":"Lake Oroville","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Lake Oroville","County":"Butte","Observation_Date":"2026-09-05","Advisory_Recommended":"NA - refer to Report Details","AdvisoryStartDate":"2026-09-14","AdvisoryEndDate":null,"Advisory_Date":"2026-10-13","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Suspected illness report closed","Advisory_Detail_Description":"Suspected HAB-related illness was reported and the investigation of the illness report is closed. Water Boards recommends removing the posted advisory at this site."}
-{"Bloom_Report_ID":5345,"Case_ID":1846,"Water_Body_Name":"Lake Zyac","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Lake Zyac","County":"Nevada","Observation_Date":"2026-09-04","Advisory_Recommended":"Caution","AdvisoryStartDate":"2026-09-15","AdvisoryEndDate":null,"Advisory_Date":"2026-09-15","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Suspected illness reported","Advisory_Detail_Description":"Suspected illness was reported and is under investigation by the Interagency HAB-related Illness Workgroup, no determination has been made."}
-{"Bloom_Report_ID":5332,"Case_ID":1511,"Water_Body_Name":"Mad River","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Mad River","County":"Humboldt","Observation_Date":"2026-09-01","Advisory_Recommended":"Algal mat alert sign","AdvisoryStartDate":"2026-09-04","AdvisoryEndDate":null,"Advisory_Date":"2026-09-15","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Advisory based on visual and toxins; Bottom/benthic bloom observed; Suspected illness reported","Advisory_Detail_Description":"Advisory based on presence of harmful algal bloom and water testing that detected cyanotoxins.  Observations at this site include confirmation of harmful algal bloom that  forms potential toxic algal mats that grow attached to cobble, sand, and plants on the bottom of the waterway. The water can appear clear when algal mats are attached to the bottom. These mats can dislodge and float downstream or strand on the shoreline, children and dogs should avoid touching mat material.  Suspected illness was reported and is under investigation by the Interagency HAB-related Illness Workgroup, no determination has been made."}
-{"Bloom_Report_ID":5336,"Case_ID":1106,"Water_Body_Name":"Rice Creek","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Rice Creek","County":"Plumas","Observation_Date":"2026-09-01","Advisory_Recommended":"Algal mat alert sign","AdvisoryStartDate":"2026-09-09","AdvisoryEndDate":null,"Advisory_Date":"2026-09-09","Case_Status":"Ongoing","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Alert-high concentration toxins","Advisory_Detail_Description":"Alert! High concentration of one or more cyanotoxins measured at this site indicating elevated health risk to humans and animals."}
-{"Bloom_Report_ID":5335,"Case_ID":1094,"Water_Body_Name":"Rock Creek","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Rock Creek","County":"Plumas","Observation_Date":"2026-08-31","Advisory_Recommended":"None","AdvisoryStartDate":"2026-09-09","AdvisoryEndDate":null,"Advisory_Date":"2026-09-09","Case_Status":"Ongoing","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":null,"Advisory_Detail_Description":null}
-{"Bloom_Report_ID":5334,"Case_ID":1187,"Water_Body_Name":"South Yuba River","Official_Water_Body_Name":null,"Case_Water_Body_Name":"South Yuba River","County":"Nevada","Observation_Date":"2026-08-30","Advisory_Recommended":"Caution","AdvisoryStartDate":"2026-09-09","AdvisoryEndDate":null,"Advisory_Date":"2026-09-09","Case_Status":"Closed","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Suspected illness reported","Advisory_Detail_Description":"Suspected illness was reported and is under investigation by the Interagency HAB-related Illness Workgroup, no determination has been made."}
-{"Bloom_Report_ID":5328,"Case_ID":1842,"Water_Body_Name":"Ellis Lake","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Ellis Lake","County":"Yuba","Observation_Date":"2026-08-30","Advisory_Recommended":"Caution","AdvisoryStartDate":"2026-09-04","AdvisoryEndDate":null,"Advisory_Date":"2026-09-24","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Lake-wide advisory; Suspected illness reported; visual monitoring based advisory","Advisory_Detail_Description":"Advisory applies to the full extent of the lake or reservoir (lake-wide advisory) and is not to limited the location symbolized by this report.  Advisory is based on visual monitoring for indicators of harmful algal bloom and trigger public health posting of “caution” advisory level.    Suspected illness was reported and is under investigation by the Interagency HAB-related Illness Workgroup, no determination has been made."}
-{"Bloom_Report_ID":5276,"Case_ID":1813,"Water_Body_Name":"Cold Stream","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Cold Stream","County":"Sierra","Observation_Date":"2026-08-28","Advisory_Recommended":"Algal mat alert sign","AdvisoryStartDate":"2026-08-07","AdvisoryEndDate":null,"Advisory_Date":"2026-08-07","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Updates from routine monitoring program-organization","Advisory_Detail_Description":"Updates to this report are provided by a routine water monitoring program conducting site visits at this waterway, refer to Organization field above for more information."}
-{"Bloom_Report_ID":5326,"Case_ID":1347,"Water_Body_Name":"Kern River","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Kern River","County":"Kern","Observation_Date":"2026-08-27","Advisory_Recommended":"Caution","AdvisoryStartDate":"2026-08-31","AdvisoryEndDate":null,"Advisory_Date":"2026-08-31","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Suspected illness reported","Advisory_Detail_Description":"Suspected illness was reported and is under investigation by the Interagency HAB-related Illness Workgroup, no determination has been made."}
-{"Bloom_Report_ID":5356,"Case_ID":1850,"Water_Body_Name":"Pulikla Reservation","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Pulikla Tribe Reservation","County":"Del Norte","Observation_Date":"2026-08-26","Advisory_Recommended":"None","AdvisoryStartDate":"2026-09-18","AdvisoryEndDate":null,"Advisory_Date":"2026-09-18","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Updates from routine monitoring program-organization","Advisory_Detail_Description":"Updates to this report are provided by a routine water monitoring program conducting site visits at this waterway, refer to Organization field above for more information."}
-{"Bloom_Report_ID":5351,"Case_ID":1850,"Water_Body_Name":"Klamath River","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Pulikla Tribe Reservation","County":"Del Norte","Observation_Date":"2026-08-26","Advisory_Recommended":"Caution","AdvisoryStartDate":"2026-09-18","AdvisoryEndDate":null,"Advisory_Date":"2026-09-18","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Updates from routine monitoring program-organization","Advisory_Detail_Description":"Updates to this report are provided by a routine water monitoring program conducting site visits at this waterway, refer to Organization field above for more information."}
-{"Bloom_Report_ID":5352,"Case_ID":1850,"Water_Body_Name":"Waukell Creek","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Pulikla Tribe Reservation","County":"Del Norte","Observation_Date":"2026-08-26","Advisory_Recommended":"None","AdvisoryStartDate":"2026-09-18","AdvisoryEndDate":null,"Advisory_Date":"2026-09-18","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Updates from routine monitoring program-organization","Advisory_Detail_Description":"Updates to this report are provided by a routine water monitoring program conducting site visits at this waterway, refer to Organization field above for more information."}
-{"Bloom_Report_ID":5357,"Case_ID":1850,"Water_Body_Name":"Pulikla Reservation","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Pulikla Tribe Reservation","County":"Del Norte","Observation_Date":"2026-08-26","Advisory_Recommended":"None","AdvisoryStartDate":"2026-09-18","AdvisoryEndDate":null,"Advisory_Date":"2026-09-18","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Updates from routine monitoring program-organization","Advisory_Detail_Description":"Updates to this report are provided by a routine water monitoring program conducting site visits at this waterway, refer to Organization field above for more information."}
-{"Bloom_Report_ID":5355,"Case_ID":1850,"Water_Body_Name":"Pulikla Reservation","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Pulikla Tribe Reservation","County":"Del Norte","Observation_Date":"2026-08-26","Advisory_Recommended":"None","AdvisoryStartDate":"2026-09-18","AdvisoryEndDate":null,"Advisory_Date":"2026-09-18","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Updates from routine monitoring program-organization","Advisory_Detail_Description":"Updates to this report are provided by a routine water monitoring program conducting site visits at this waterway, refer to Organization field above for more information."}
-{"Bloom_Report_ID":5319,"Case_ID":1836,"Water_Body_Name":"Lake Merced","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Lake Merced","County":"San Francisco","Observation_Date":"2026-08-25","Advisory_Recommended":"NA - refer to Report Details","AdvisoryStartDate":"2026-09-01","AdvisoryEndDate":null,"Advisory_Date":"2026-09-01","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Suspected bloom, investigation ongoing","Advisory_Detail_Description":"A suspected harmful algal bloom was reported, an investigation is underway and this report will be updated once info is provided by the responding organizations."}
-{"Bloom_Report_ID":5317,"Case_ID":1841,"Water_Body_Name":"South Fork Trinity River","Official_Water_Body_Name":null,"Case_Water_Body_Name":"South Fork Trinity River","County":"Trinity","Observation_Date":"2026-08-23","Advisory_Recommended":"None","AdvisoryStartDate":"2026-08-24","AdvisoryEndDate":null,"Advisory_Date":"2026-08-24","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Under investigation","Advisory_Detail_Description":"This report is under investigation."}
-{"Bloom_Report_ID":5341,"Case_ID":1723,"Water_Body_Name":"Russian River","Official_Water_Body_Name":null,"Case_Water_Body_Name":"Russian River","County":"Sonoma","Observation_Date":"2026-08-22","Advisory_Recommended":"Algal mat alert sign","AdvisoryStartDate":"2026-09-14","AdvisoryEndDate":null,"Advisory_Date":"2026-09-14","Case_Status":"Open","Case_End_Date":null,"Last_Field_Result_Sample_Date":null,"AdvisoryDetail":"Under investigation","Advisory_Detail_Description":"This report is under investigation."}
+=== 200 https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1?f=json (6008 bytes)
+1 Counties esriGeometryPolygon MTFCC,OID,GEOID,STATE,COUNTY,COUNTYNS,BASENAME,NAME,LSADC,FUNCSTAT,COUNTYCC,AREALAND,AREAWATER,OBJECTID,STGEOMETRY,CENTLAT,CENTLON,INTPTLAT,INTPTLON
 
-=== 200 https://data.ca.gov/api/3/action/datastore_search_sql?sql=SELECT%20count(*)%20FROM%20%22c6a36b91-ad38-4611-8750-87ee99e497dd%22%20WHERE%20%22Case_Status%22%20%3D%20'Open' (295 bytes)
-{"count":1162}
+=== 200 https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/11?f=json (6019 bytes)
+11 Counties esriGeometryPolygon MTFCC,OID,GEOID,STATE,COUNTY,COUNTYNS,BASENAME,NAME,LSADC,FUNCSTAT,COUNTYCC,AREALAND,AREAWATER,OBJECTID,STGEOMETRY,CENTLAT,CENTLON,INTPTLAT,INTPTLON
 
-=== 200 https://data.ca.gov/api/3/action/datastore_search_sql?sql=SELECT%20count(*)%20FROM%20%2255b9a341-04e1-4f4a-9839-6eb36e6cc8ed%22%20WHERE%20%22Advisory%22%20IS%20NOT%20NULL (294 bytes)
-{"count":833}
+=== 200 https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/12?f=json (6188 bytes)
+12 States esriGeometryPolygon MTFCC,OID,GEOID,STATE,STATENS,BASENAME,NAME,LSADC,FUNCSTAT,AREALAND,AREAWATER,REGION,DIVISION,STUSAB,STGEOMETRY,CENTLAT,CENTLON,INTPTLAT,INTPTLON,OBJECTID
 
-=== 200 https://data.ca.gov/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%2255b9a341-04e1-4f4a-9839-6eb36e6cc8ed%22%20WHERE%20%22Advisory%22%20IS%20NOT%20NULL%20ORDER%20BY%20%22_id%22%20LIMIT%2040 (15481 bytes)
-{"_id":1,"Advisory":"Advisory for Fish that Migrate","County":"California Rivers, Estuaries, and \nCoastal Waters","Species":"White Sturgeon","Contaminant":"Hg, PCBs","SEN_serving":0,"GEN_serving":1,"Year":2022,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":2,"Advisory":"Advisory for Fish that Migrate","County":"California Rivers, Estuaries, and \nCoastal Waters","Species":"Bass, Striped","Contaminant":"Hg, PCBs","SEN_serving":0,"GEN_serving":1,"Year":2022,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":3,"Advisory":"Advisory for Fish that Migrate","County":"California Rivers, Estuaries, and \nCoastal Waters","Species":"Salmon, Chinook","Contaminant":"Hg, PCBs","SEN_serving":2,"GEN_serving":5,"Year":2022,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":4,"Advisory":"Advisory for Fish that Migrate","County":"California Rivers, Estuaries, and \nCoastal Waters","Species":"Trout, Steelhead","Contaminant":"Hg","SEN_serving":2,"GEN_serving":5,"Year":2022,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":5,"Advisory":"Advisory for Fish that Migrate","County":"California Rivers, Estuaries, and \nCoastal Waters","Species":"American Shad","Contaminant":"Hg","SEN_serving":2,"GEN_serving":7,"Year":2022,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":6,"Advisory":"Alamitos Creek","County":"Santa Clara","Species":"All fish","Contaminant":"Hg","SEN_serving":0,"GEN_serving":0,"Year":2020,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":7,"Advisory":"Alamo River","County":"Imperial ","Species":"Catfish, Channel","Contaminant":"Hg, DDTs, PCBs","SEN_serving":2,"GEN_serving":3,"Year":2016,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":8,"Advisory":"Alamo River","County":"Imperial ","Species":"Common Carp","Contaminant":"Hg, Se","SEN_serving":3,"GEN_serving":3,"Year":2016,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":9,"Advisory":"Alamo River","County":"Imperial ","Species":"Tilapia","Contaminant":"Se","SEN_serving":3,"GEN_serving":3,"Year":2016,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":10,"Advisory":"All-American Canal","County":"Imperial ","Species":"Common Carp","Contaminant":"PCBs","SEN_serving":2,"GEN_serving":2,"Year":2018,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":11,"Advisory":"All-American Canal","County":"Imperial ","Species":"Catfish, Channel","Contaminant":"PCBs","SEN_serving":2,"GEN_serving":2,"Year":2018,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":12,"Advisory":"All-American Canal","County":"Imperial ","Species":"Bass, Black","Contaminant":"Hg, Se","SEN_serving":2,"GEN_serving":4,"Year":2018,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":13,"Advisory":"All-American Canal","County":"Imperial ","Species":"Sunfish Species","Contaminant":"Se","SEN_serving":4,"GEN_serving":4,"Year":2018,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":14,"Advisory":"All-American Canal","County":"Imperial ","Species":"Catfish, Flathead","Contaminant":"Hg","SEN_serving":2,"GEN_serving":5,"Year":2018,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":15,"Advisory":"Almaden Lake","County":"Santa Clara","Species":"All fish","Contaminant":"Hg","SEN_serving":0,"GEN_serving":0,"Year":2020,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":16,"Advisory":"Almaden Reservoir","County":"Santa Clara","Species":"All fish","Contaminant":"Hg","SEN_serving":0,"GEN_serving":0,"Year":2020,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":17,"Advisory":"Alondra Park Lake","County":"Los Angeles","Species":"Common Carp","Contaminant":"PCBs","SEN_serving":1,"GEN_serving":1,"Year":2020,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":18,"Advisory":"Alondra Park Lake","County":"Los Angeles","Species":"Bass, Black","Contaminant":"Hg","SEN_serving":1,"GEN_serving":2,"Year":2020,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":19,"Advisory":"Alondra Park Lake","County":"Los Angeles","Species":"Sunfish Species","Contaminant":"Hg","SEN_serving":5,"GEN_serving":7,"Year":2020,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":20,"Advisory":"American River, Lower","County":"Sacramento","Species":"Bass, Black","Contaminant":"Hg ","SEN_serving":0,"GEN_serving":1,"Year":2009,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":21,"Advisory":"American River, Lower","County":"Sacramento","Species":"Sacramento Pikeminnow","Contaminant":"Hg ","SEN_serving":0,"GEN_serving":1,"Year":2009,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":22,"Advisory":"American River, Lower","County":"Sacramento","Species":"Bass, Striped","Contaminant":"Hg, PCBs","SEN_serving":0,"GEN_serving":1,"Year":2022,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":23,"Advisory":"American River, Lower","County":"Sacramento","Species":"Catfish, White","Contaminant":"Hg ","SEN_serving":1,"GEN_serving":2,"Year":2009,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":24,"Advisory":"American River, Lower","County":"Sacramento","Species":"Sacramento Sucker","Contaminant":"Hg ","SEN_serving":1,"GEN_serving":2,"Year":2009,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":25,"Advisory":"American River, Lower","County":"Sacramento","Species":"Sunfish Species","Contaminant":"Hg ","SEN_serving":1,"GEN_serving":2,"Year":2009,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":26,"Advisory":"American River, Lower","County":"Sacramento","Species":"Salmon, Chinook","Contaminant":"Hg, PCBs ","SEN_serving":2,"GEN_serving":5,"Year":2022,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":27,"Advisory":"American River, Lower","County":"Sacramento","Species":"Trout, Steelhead","Contaminant":"Hg ","SEN_serving":2,"GEN_serving":5,"Year":2022,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":28,"Advisory":"American River, Lower","County":"Sacramento","Species":"American Shad","Contaminant":"Hg ","SEN_serving":2,"GEN_serving":7,"Year":2022,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":29,"Advisory":"American River, Lower","County":"Sacramento","Species":"White Sturgeon","Contaminant":"Hg, PCBs ","SEN_serving":0,"GEN_serving":1,"Year":2022,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":30,"Advisory":"Anderson Lake","County":"Santa Clara","Species":"Bass, Black","Contaminant":"Hg","SEN_serving":0,"GEN_serving":1,"Year":2017,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":31,"Advisory":"Anderson Lake","County":"Santa Clara","Species":"Catfish, Channel","Contaminant":"Hg ","SEN_serving":0,"GEN_serving":1,"Year":2017,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":32,"Advisory":"Anderson Lake","County":"Santa Clara","Species":"Common Carp","Contaminant":"Hg, PCBs","SEN_serving":0,"GEN_serving":2,"Year":2017,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":33,"Advisory":"Anderson Lake","County":"Santa Clara","Species":"Crappie Species","Contaminant":"Hg","SEN_serving":1,"GEN_serving":2,"Year":2017,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":34,"Advisory":"Anderson Lake","County":"Santa Clara","Species":"Sunfish Species","Contaminant":"Hg","SEN_serving":1,"GEN_serving":2,"Year":2017,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":35,"Advisory":"Antelope Lake","County":"Plumas","Species":"Bullhead Species","Contaminant":"Hg","SEN_serving":2,"GEN_serving":6,"Year":2022,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":36,"Advisory":"Antelope Lake","County":"Plumas","Species":"Golden Shiner","Contaminant":"Hg","SEN_serving":7,"GEN_serving":7,"Year":2022,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":37,"Advisory":"Antelope Lake","County":"Plumas","Species":"Sunfish Species","Contaminant":"Hg","SEN_serving":7,"GEN_serving":7,"Year":2022,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":38,"Advisory":"Antelope Lake","County":"Plumas","Species":"Bass, Black","Contaminant":"Hg","SEN_serving":7,"GEN_serving":7,"Year":2022,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":39,"Advisory":"Bear Creek","County":"Colusa","Species":"All fish","Contaminant":"Hg","SEN_serving":0,"GEN_serving":0,"Year":2005,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":40,"Advisory":"Bear River ","County":"Nevada, Placer, Sutter, Yuba","Species":"Bass, Black","Contaminant":"Hg","SEN_serving":0,"GEN_serving":1,"Year":2018,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
+=== 200 https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/13?f=json (6022 bytes)
+13 Counties esriGeometryPolygon MTFCC,OID,GEOID,STATE,COUNTY,COUNTYNS,BASENAME,NAME,LSADC,FUNCSTAT,COUNTYCC,AREALAND,AREAWATER,OBJECTID,STGEOMETRY,CENTLAT,CENTLON,INTPTLAT,INTPTLON
 
-=== 200 https://data.ca.gov/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%2255b9a341-04e1-4f4a-9839-6eb36e6cc8ed%22%20WHERE%20%22Advisory%22%20%3D%20'Lake%20Berryessa' (2741 bytes)
-{"_id":257,"Advisory":"Lake Berryessa","County":"Napa","Species":"Bass, Black","Contaminant":"Hg","SEN_serving":0,"GEN_serving":1,"Year":2024,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":258,"Advisory":"Lake Berryessa","County":"Napa","Species":"Catfish Species","Contaminant":"Hg","SEN_serving":0,"GEN_serving":1,"Year":2024,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":259,"Advisory":"Lake Berryessa","County":"Napa","Species":"Salmon, Chinook","Contaminant":"Hg","SEN_serving":0,"GEN_serving":1,"Year":2024,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":260,"Advisory":"Lake Berryessa","County":"Napa","Species":"Inland Silverside","Contaminant":"Hg","SEN_serving":1,"GEN_serving":2,"Year":2024,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":261,"Advisory":"Lake Berryessa","County":"Napa","Species":"Trout, Rainbow","Contaminant":"Hg","SEN_serving":1,"GEN_serving":3,"Year":2024,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
-{"_id":262,"Advisory":"Lake Berryessa","County":"Napa","Species":"Threadfin Shad","Contaminant":"Hg","SEN_serving":2,"GEN_serving":7,"Year":2024,"unsafe_":null,"unsafe__2":null,"unsafe__3":null,"unsafe__4":null}
+=== 200 https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D'06'&outFields=NAME,STATE,COUNTY&returnGeometry=false&f=json (4366 bytes)
+{"displayFieldName":"NAME","fieldAliases":{"NAME":"NAME","STATE":"STATE","COUNTY":"COUNTY"},"fields":[{"name":"NAME","type":"esriFieldTypeString","alias":"NAME","length":100},{"name":"STATE","type":"esriFieldTypeString","alias":"STATE","length":2},{"name":"COUNTY","type":"esriFieldTypeString","alias":"COUNTY","length":3}],"features":[{"attributes":{"NAME":"San Joaquin County","STATE":"06","COUNTY":"077"}},{"attributes":{"NAME":"Imperial County","STATE":"06","COUNTY":"025"}},{"attributes":{"NAME":"Shasta County","STATE":"06","COUNTY":"089"}},{"attributes":{"NAME":"Humboldt County","STATE":"06","COUNTY":"023"}},{"attributes":{"NAME":"Orange County","STATE":"06","COUNTY":"059"}},{"attributes":{"NAME":"Trinity County","STATE":"06","COUNTY":"105"}},{"attributes":{"NAME":"Monterey County","STATE
 
-=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-7.00 (56498 bytes)
-BEFORE TABLE: Cal. Code Regs. Tit. 14, § 7.00 - District General Regulations State Regulations Compare Unless otherwise provided, waters shown as open to hatchery trout and hatchery steelhead fishing in subsections (a) through (g) below are open to fishing for other species. Gear restrictions listed in this section apply to the take of all species of fish unless otherwise noted. Every body of water listed in subsections (a) through (g) is closed to all fishing, except during the open season as shown. Unless otherwise provided, waters closed to hatchery trout and hatchery steelhead fishing are closed to fishing for all other species, except that these closures do not apply to fishing for amphibians (see Section 5.05 ), freshwater clams (see Section 5.20 ), crayfish (see Section 5.35 ), and lamprey (see Section 5.40 ), using legal fishing methods other than hook-and-line fishing, and saltwater clams, crabs, ghost shrimp, and blue mud shrimp (see Ocean Regulations Booklet Sections 29.20 to 29.87 ). Crabs may only be taken using hoop nets or by hand, and Dungeness crab may only be taken within the North Coast District and Sonoma and Mendocino Counties. Daily bag and possession limits, unless otherwise provided, mean the total number of hatchery trout and hatchery steelhead. Unless otherwise provided, no more than one daily bag limit may be possessed. Coho (silver) Salmon may not be taken in any of the waters of the State. Incidentally hooked Coho (silver) Salmon must be immediately released unharmed to the waters where they are hooked. In waters where the bag limit for hatchery trout and hatchery steelhead is zero, fish for which the bag limit is zero must be released unharmed and should not be removed from the water. These waters may also be subject to restrictions on fishing methods and gear (Sections 2.00 through 2.45 ), fishing hours (Section 3.00 ), and the use of bait (Sections 4.00 through 4.30 ). (a) North Coast District
-ROW District/Water | Open Season and Special Restrictions | Daily Bag and Possession Limit
+=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-5.70 (30038 bytes)
+Cal. Code Regs. Tit. 14, § 5.70 - Splittail, Sacramento State Regulations Compare (a) Open season: All year, except for closures listed under district or special regulations. (b) Limit: Two (c) Methods of take: Splittail may be only taken by angling. Notes Cal. Code Regs. Tit. 14 , § 5.70 1. New section filed 2-9-2010; operative 3-1-2010 pursuant to Government Code section 11343.4 (Register 2010, No. 7). For prior history, see Register 2002 , No. 2. 2. Change without regulatory effect amending NOTE filed 8-8-2019 pursuant to section 100 , title 1, California Code of Regulations (Register 2019, No. 32). Note: Authority cited: Sections 200 , 205 and 265 , Fish and Game Code. Reference: Sections 200 , 205 and 265 , Fish and Game Code. 1. New section filed 2-9-2010; operative 3-1-2010 pursuant to Government Code section 11343.4 (Register 2010, No. 7). For prior history, see Register 2002, No. 2. 2. Change without regulatory effect amending Note filed 8-8-2019 pursuant to section 100 , title 1, California Code of Regulations ( Register 2019, No. 32 ). State regulations are updated quarterly; we currently have two versions available. Below is a comparison between our most recent version and the prior quarterly release. More comparison features will be added as we have more versions to compare. No prior version found. googletag.cmd.push(function () { googletag.display('div-gpt-ad-bottom'); }); State Regulations Toolbox var addthis_config = { data_track_addressbar: false, data_track_clickback: true, publid: 'liiadverts', ui_tabindex: 0, ui_508_compliant: true }; var addthis_share = { url_transforms: { shorten: { twitter: 'bitly' } }, shorteners: { bitly: { login: 'liicornell', apiKey: 'R_75b99d95e1c3033c4dbea23ce04bf5d3' } }, passthrough: { twitter: { via: 'LIICornell' } } }; g
+rows 0
+
+=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-5.80 (50179 bytes)
+Cal. Code Regs. Tit. 14, § 5.80 - White Sturgeon State Regulations Compare See sections 5.78 and 27.93 for white sturgeon fishing regulations during California Endangered Species Act Candidacy. (a) Open season: All year, except for closures listed under special regulations. (b) Daily and annual bag limit: One fish per day. Three fish per year statewide. (c) Size limit: No fish less than 40 inches fork length or greater than 60 inches fork length may be taken or possessed. (d) Methods of take: Only one single point, single shank, barbless hook may be used on a line when taking sturgeon. The sturgeon must voluntarily take the bait or lure inside its mouth. No sturgeon may be taken by trolling, snagging or by the use of firearms. Sturgeon may not be gaffed, nor shall any person use any type of firearm or snare to take any sturgeon. For the purposes of this section, a snare is a flexible loop made from any material that can be tightened like a noose around any part of the fish. (e) Removal from water. Any sturgeon greater than 68 inches fork length may not be removed from the water and shall be released immediately. (f) Report card required: Any person fishing for or taking sturgeon shall have in their possession a nontransferable Sturgeon Fishing Report Card issued by the department and shall adhere to all reporting and tagging requirements for sturgeon defined in Sections 1.74 and 5.79 , Title 14, CCR. (g) Special North Coast District Sturgeon Closure (Humboldt, Del Norte, Trinity and Siskiyou cos.). It is unlawful to take any sturgeon in the North Coast District at any time. (h) For regulations on take and possession of sturgeon in ocean waters as defined in Section 27.00 , see Sections 27.90 , 27.91 , and 27.95 . (i) Special Sierra and Valley District Sturgeon Closure f
+rows 0
+
+=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-5.81 (32966 bytes)
+Cal. Code Regs. Tit. 14, § 5.81 - Green Sturgeon State Regulations Compare (a) Green sturgeon may not be taken or possessed. (b) Green sturgeon may not be removed from the water and shall be released immediately. (c) Green sturgeon taken and released incidentally to white sturgeon fishing shall be reported on a Sturgeon Fishing Report Card issued by the department, in accordance with procedures defined in Sections 1.74 and 5.79 , Title 14, CCR. Notes Cal. Code Regs. Tit. 14 , § 5.81 1. New section filed 3-20-2006 as an emergency; operative 3-20-2006 (Register 2006, No. 12). A Certificate of Compliance must be transmitted to OAL by 7-18-2006 or emergency language will be repealed by operation of law on the following day. 2. Repealed by operation of Government Code section 11346.1(g) (Register 2006, No. 33). 3. New section filed 2-28-2007; operative 2-28-2007 pursuant to Government Code section 11343.4 (Register 2007, No. 9). 4. Amendment of subsection (b) filed 3-14-2008; operative 4-1-2008 pursuant to Government Code section 11343.4 (Register 2008, No. 11). 5. New subsections (c)-(c)(3) filed 2-9-2010; operative 3-1-2010 pursuant to Government Code section 11343.4 (Register 2010, No. 7). 6. Amendment filed 12-27-2012; operative 1-1-2013 pursuant to Government Code section 11343.4 (Register 2012, No. 52). 7. Repealer of subsections (d)-(d)(1)(C) filed 2-29-2016; operative 3-2-2016 pursuant to Government Code section 11343.4(b)(4) (A) (Register 2016, No. 10). 8. Change without regulatory effect amending NOTE filed 8-8-2019 pursuant to section 100 , title 1, California Code of Regulations (Register 2019, No. 32). Note: Authority cited: Sections 200 , 205 , 265 and 275 , Fish and Game Code. Reference: Sections 110 , 200 and 205 , Fish and Game Code. 1. New section filed 3-2
+rows 0
+
+=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-5.82 (32863 bytes)
+Cal. Code Regs. Tit. 14, § 5.82 - Sunfish and Crappie State Regulations Compare (a) Open season: All year, except for closures listed under district or special regulations. (b) Limit: Combined bag limit of twenty-five sunfish and crappie of all species, except in: (1) Barrett and Upper Otay Lakes (San Diego County): zero bag limit for all species. (c) Size Limit: No size limit, except at Hodges and El Capitan Lakes (San Diego County), where the crappie minimum size limit is 10 inches, total length. Notes Cal. Code Regs. Tit. 14 , § 5.82 1. Renumbering of former section 5.30 to section 5.82 and amendment of section heading and NOTE filed 3-7-94; operative 3-7-94 pursuant to Fish and Game Code section 202 and 215 (Register 94, No. 10). 2. Amendment of subsection (b) filed 12-12-94; operative 12-12-94 pursuant to Government Code section 11346.2(d) (Register 94, No. 50). 3. Amendment of subsection (b) and NOTE filed 2-9-96; operative 2-9-96 pursuant to Fish and Game Code sections 202 and 205 (Register 96, No. 6). 4. Amendment of section and NOTE filed 2-5-98; operative 3-1-98 pursuant to Fish and Game Code sections 202 and 215 (Register 98, No. 6). 5. Amendment of section heading and section filed 2-9-2010; operative 3-1-2010 pursuant to Government Code section 11343.4 (Register 2010, No. 7). 6. Change without regulatory effect amending NOTE filed 8-8-2019 pursuant to section 100 , title 1, California Code of Regulations (Register 2019, No. 32). Note: Authority cited: Sections 200 , 205 , 265 , 270 and 275 , Fish and Game Code. Reference: Sections 110 , 200 , 205 and 275 , Fish and Game Code. 1. Renumbering of former section 5.30 to section 5.82 and amendment of section heading and Note filed 3-7-94; operative 3-7-94 pursuant to Fish and Game Code section 202 and 215 (Regis
+rows 0
+
+=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-5.85 (33399 bytes)
+Cal. Code Regs. Tit. 14, § 5.85 - Trout State Regulations Compare As used in this section and unless otherwise noted, daily bag and possession limits mean the total number of trout in combination including, but not limited to, Rainbow, Golden, Brown, and Cutthroat Trout. (a) General Statewide Regulations: (1) All inland lakes, reservoirs, and ponds, including those on private lands, are open to fishing all year with a five-trout daily bag limit and ten-trout possession limit. (2) All inland streams, rivers, and canals, except those listed in Sections 7.40 (b) and 7.50 (b) , are open to fishing from the last Saturday in April through November 15 with a five-trout daily bag limit and ten-trout possession limit, with no gear restrictions. From November 16 through the Friday preceding the last Saturday in April, a zero-trout bag limit applies, and only artificial lures with barbless hooks may be used for all species of fish. In waters where the bag limit for trout is zero, trout must be released unharmed and should not be removed from the water. (3) Exceptions: (A) All waters listed in Sections 7.40 (b) and 7.50 (b) . (B) Brook Trout bag and possession limits in Section 5.84 and statewide trout daily bag and possession limits are cumulative. Notes Cal. Code Regs. Tit. 14 , § 5.85 1. Change without regulatory effect amending NOTE filed 8-8-2019 pursuant to section 100 , title 1, California Code of Regulations (Register 2019, No. 32). 2. Amendment of section heading, repealer and new section and amendment of NOTE filed 3-1-2021; operative 3-1-2021 pursuant to Fish and Game Code section 265 (Register 2021, No. 10). (Filing deadline specified in Government Code section 11349.3(a) extended 60 calendar days pursuant to Executive Order N-40-20.) 3. Amendment of subsections (a)(1)-
+rows 0
+
+=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-5.86 (32377 bytes)
+Cal. Code Regs. Tit. 14, § 5.86 - Hoopa and Yurok Indian Salmon Possession Limit State Regulations Compare It is unlawful for any person to possess more than one daily bag or possession limit of fish except as follows: Eligible Hoopa Valley and Yurok Reservation Indians, as defined in Chapter 1, Part 250 , Title 25, CFR--Indian Fishing, Hoopa Valley Reservation and Yurok Reservation-Department of the Interior; may possess more than two salmon outside boundaries of the Hoopa Valley Reservation, provided: (a) Such eligible Indians possess and display upon demand by any officer authorized to enforce this section their Indian Fishers identification card. (b) All fish are possessed for subsistence or ceremonial purposes and are clearly marked by removing the dorsal fin prior to transporting them from the reservation. It shall be unlawful to sell or possess for sale any salmon marked pursuant to this section. Notes Cal. Code Regs. Tit. 14 , § 5.86 1. Renumbering of former Section 1.51 to Section 5.86 filed 1-22-86; designated effective 3-1-86 (Register 86, No. 6). For history of former Section 5.86, see Register 82, No. 29. 2. Amendment filed 3-1-90; operative 3-1-90 (Register 90, No. 10). 3. Amendment of section heading filed 12-27-2007; operative 1-26-2008 (Register 2007 , No. 52). 4. Change without regulatory effect amending NOTE filed 8-8-2019 pursuant to section 100 , title 1, California Code of Regulations (Register 2019, No. 32). Note: Authority cited: Sections 200 , 205 , 219 , 265 , 275 and 7708 , Fish and Game Code. Reference: Sections 200 , 205 , 255 , 265 , 275 , 7155 , 7700 , 7702 , 7703 , 7706 , 7708 and 12300 , Fish and Game Code. 1. Renumbering of former Section 1.51 to Section 5.86 filed 1-22-86; designated effective 3-1-86 (Register 86, No. 6). For history o
+rows 0
+
+=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-5.87 (35241 bytes)
+Cal. Code Regs. Tit. 14, § 5.87 - North Coast Salmon Report Card Requirement (See Section 701) State Regulations Compare (a) Report Card Required in Waters of the Klamath-Trinity River System and the Smith River. All anglers must have a North Coast Salmon Report Card in their possession while fishing for or taking salmon in waters of the Klamath-Trinity River System and the Smith River, and must complete and return the card pursuant to regulations in this Section and in Section 1.74 . (b) Prior to beginning fishing activity, the cardholder shall record the month, day, and fishing location on the first available line on the report card. (c) For the Klamath-Trinity River System: Whenever the cardholder lands (either retains or releases) a Chinook Salmon, the angler shall immediately record whether the fish was an adult or a jack, and whether the fish has an adipose fin present. Whenever the cardholder releases a Coho Salmon, the angler shall immediately record whether the maxillary is present or absent. (d) For the Smith River: Whenever the cardholder lands (either retains or releases) a Chinook Salmon, the angler shall immediately record whether the fish was an adult or a jack, and whether the fish has an adipose fin or left ventral fin present. (e) Whenever the cardholder moves to another fishing location, the angler shall record the month, day, and location on the next line on the report card. (f) In the Klamath-Trinity River System, a jack Chinook Salmon is defined in Section 7.40 (b)(50) . In the Smith River, a jack Chinook Salmon is defined in Section 7.40 (b)(105) . (g) In the event an angler fills in all lines and returns a North Coast Salmon Report Card, an additional card may be purchased. See Section 1.74 . (h) The annual fee for the North Coast Salmon Report C
+rows 0
+
+=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-5.88 (33257 bytes)
+Cal. Code Regs. Tit. 14, § 5.88 - Steelhead Report and Restoration Card Requirements for Inland Waters (FG 682) State Regulations Compare (a) Steelhead Fishing Report and Restoration Card Required. All anglers must have a Steelhead Fishing Report and Restoration Card in their possession while fishing for or taking steelhead in anadromous waters, as defined in Section 1.04 . Anglers must complete and return the card pursuant to regulations in this Section and in Section 1.74 . For purposes of these regulations, a steelhead trout is defined as any rainbow trout greater than 16 inches in length found in anadromous waters. (b) Prior to beginning fishing activity, the cardholder must record the month, day, and location code on the first available line on the report card. (c) When a hatchery steelhead is retained, the cardholder must immediately mark the appropriate field. (d) When the cardholder moves to another location code, or finishes fishing for the day, the angler must immediately record on the card the number of wild and hatchery steelhead that were released from that location. (e) In the event an angler fills in all lines and returns a Steelhead Fishing Report and Restoration Card, an additional card must be purchased to continue to fish for steelhead. See Section 1.74 . (f) The annual fee for the Steelhead Fishing Report and Restoration Card is specified in Section 7380 of the Fish and Game Code. Notes Cal. Code Regs. Tit. 14 , § 5.88 1. New section filed 3-14-2008; operative 4-1-2008 pursuant to Government Code section 11343.4 (Register 2008, No. 11). 2. Amendment of subsection (d) filed 2-9-2010; operative 3-1-2010 pursuant to Government Code section 11343.4 (Register 2010, No. 7). 3. Amendment of subsections (c)-(e) filed 2-27-2018; operative 3-1-2018 pursuant to
+rows 0
+
+=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-5.89 (29888 bytes)
+Cal. Code Regs. Tit. 14, § 5.89 - Salmon State Regulations Compare See Chapter 3, Trout, Salmon and Special Regulations. Notes Cal. Code Regs. Tit. 14 , § 5.89 1. New section filed 3-1-2021; operative 3-1-2021 pursuant to Fish and Game Code section 265 (Register 2021, No. 10). (Filing deadline specified in Government Code section 11349.3(a) extended 60 calendar days pursuant to Executive Order N-40-20.) Note: Authority cited: Sections 200 , 205 , 219 , 265 and 275 , Fish and Game Code. Reference: Sections 200 , 205 , 255 , 265 , 270 and 275 , Fish and Game Code. 1. New section filed 3-1-2021; operative 3/1/2021 pursuant to Fish and Game Code section 265 ( Register 2021, No. 10 ). (Filing deadline specified in Government Code section 11349.3(a) extended 60 calendar days pursuant to Executive Order N-40-20.) State regulations are updated quarterly; we currently have two versions available. Below is a comparison between our most recent version and the prior quarterly release. More comparison features will be added as we have more versions to compare. No prior version found. googletag.cmd.push(function () { googletag.display('div-gpt-ad-bottom'); }); State Regulations Toolbox var addthis_config = { data_track_addressbar: false, data_track_clickback: true, publid: 'liiadverts', ui_tabindex: 0, ui_508_compliant: true }; var addthis_share = { url_transforms: { shorten: { twitter: 'bitly' } }, shorteners: { bitly: { login: 'liicornell', apiKey: 'R_75b99d95e1c3033c4dbea23ce04bf5d3' } }, passthrough: { twitter: { via: 'LIICornell' } } }; googletag.cmd.push(function () { googletag.display('div-gpt-ad-top'); }); googletag.cmd.push(function () { googletag.display('div-gpt-ad-middle'); }); Accessibility About LII Contact us Advertise here Help Terms of use Privacy jQuery(document).re
+rows 0
+
+=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-5.90 (30993 bytes)
+Cal. Code Regs. Tit. 14, § 5.90 - White Bass State Regulations Compare (a) Open season: All year. (b) Limit: No limit. No live white bass may be possessed or transported. Any white bass taken must immediately be killed by removing the head or cutting through the gills, except at Lake Nacimiento (San Luis Obispo County) where any white bass taken must immediately be released into the water or killed by removing the head or cutting through the gills. Notes Cal. Code Regs. Tit. 14 , § 5.90 1. Amendment filed 1-30-84; designated effective 2-9-84 (Register 84, No. 5). 2. Amendment of subsection (b) filed 2-28-85 as an emergency; designated effective 3-1-85. Certificate of Compliance included (Register 85, No. 11). 3. Amendment of subsection (b) and NOTE filed 2-5-98; operative 3-1-98 pursuant to Fish and Game Code sections 202 and 215 (Register 98, No. 6). 4. Change without regulatory effect amending NOTE filed 8-8-2019 pursuant to section 100 , title 1, California Code of Regulations (Register 2019, No. 32). Note: Authority cited: Sections 200 , 205 , 265 , 270 and 275 , Fish and Game Code. Reference: Sections 110 , 200 , 205 , 265 , 270 and 275 , Fish and Game Code. 1. Amendment filed 1-30-84; designated effective 2-9-84 (Register 84, No. 5). 2. Amendment of subsection (b) filed 2-28-85 as an emergency; designated effective 3-1-85. Certificate of Compliance included (Register 85, No. 11). 3. Amendment of subsection (b) and Note filed 2-5-98; operative 3-1-98 pursuant to Fish and Game Code sections 202 and 215 (Register 98, No. 6). 4. Change without regulatory effect amending Note filed 8-8-2019 pursuant to section 100 , title 1, California Code of Regulations ( Register 2019, No. 32 ). State regulations are updated quarterly; we currently have two versions available. Below
+rows 0
+
+=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-5.91 (29647 bytes)
+Cal. Code Regs. Tit. 14, § 5.91 - Yellow Perch State Regulations Compare (a) Open season: All year, except for closures listed under district or special regulations. (b) Limit: No limit. Notes Cal. Code Regs. Tit. 14 , § 5.91 1. New section filed 12-27-2012; operative 1-1-2013 pursuant to Government Code section 11343.4 (Register 2012, No. 52). 2. Change without regulatory effect amending NOTE filed 8-8-2019 pursuant to section 100 , title 1, California Code of Regulations (Register 2019, No. 32). Note: Authority cited: Sections 200 , 205 and 265 , Fish and Game Code. Reference: Sections 200 , 205 and 265 , Fish and Game Code. 1. New section filed 12-27-2012; operative 1-1-2013 pursuant to Government Code section 11343.4 (Register 2012, No. 52). 2. Change without regulatory effect amending Note filed 8-8-2019 pursuant to section 100 , title 1, California Code of Regulations ( Register 2019, No. 32 ). State regulations are updated quarterly; we currently have two versions available. Below is a comparison between our most recent version and the prior quarterly release. More comparison features will be added as we have more versions to compare. No prior version found. googletag.cmd.push(function () { googletag.display('div-gpt-ad-bottom'); }); State Regulations Toolbox var addthis_config = { data_track_addressbar: false, data_track_clickback: true, publid: 'liiadverts', ui_tabindex: 0, ui_508_compliant: true }; var addthis_share = { url_transforms: { shorten: { twitter: 'bitly' } }, shorteners: { bitly: { login: 'liicornell', apiKey: 'R_75b99d95e1c3033c4dbea23ce04bf5d3' } }, passthrough: { twitter: { via: 'LIICornell' } } }; googletag.cmd.push(function () { googletag.display('div-gpt-ad-top'); }); googletag.cmd.push(function () { googletag.display('div-gpt-ad-middle'); });
+rows 0
+
+=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-5.95 (29853 bytes)
+Cal. Code Regs. Tit. 14, § 5.95 - Other Species State Regulations Compare Other species of fish may be taken in any number and at any time of the year by angling, except for closures and restrictions listed under district special regulations. Notes Cal. Code Regs. Tit. 14 , § 5.95 1. Amendment of section and NOTE filed 12-27-2007; operative 1-26-2008 (Register 2007 , No. 52). 2. Change without regulatory effect amending NOTE filed 8-8-2019 pursuant to section 100 , title 1, California Code of Regulations (Register 2019, No. 32). Note: Authority cited: Sections 200 , 205 , 219 , 265 and 275 , Fish and Game Code. Reference: Sections 110 , 200 , 219 , 255 , 265 and 275 , Fish and Game Code. 1. Amendment of section and Notefiled 12-27-2007; operative 1-26-2008 (Register 2007, No. 52). 2. Change without regulatory effect amending Note filed 8-8-2019 pursuant to section 100 , title 1, California Code of Regulations ( Register 2019, No. 32 ). State regulations are updated quarterly; we currently have two versions available. Below is a comparison between our most recent version and the prior quarterly release. More comparison features will be added as we have more versions to compare. No prior version found. googletag.cmd.push(function () { googletag.display('div-gpt-ad-bottom'); }); State Regulations Toolbox var addthis_config = { data_track_addressbar: false, data_track_clickback: true, publid: 'liiadverts', ui_tabindex: 0, ui_508_compliant: true }; var addthis_share = { url_transforms: { shorten: { twitter: 'bitly' } }, shorteners: { bitly: { login: 'liicornell', apiKey: 'R_75b99d95e1c3033c4dbea23ce04bf5d3' } }, passthrough: { twitter: { via: 'LIICornell' } } }; googletag.cmd.push(function () { googletag.display('div-gpt-ad-top'); }); googletag.cmd.push(function () { googlet
+rows 0
+
+=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-7.40 (151008 bytes)
+Cal. Code Regs. Tit. 14, § 7.40 - Alphabetical List of Hatchery Trout, Hatchery Steelhead, and Salmon Waters with Special Fishing Regulations State Regulations Compare (a) General Provisions: (1) Every body of water listed in subsection (b) is closed to the take of hatchery trout, hatchery steelhead, and salmon and to fishing for these species, unless otherwise noted. (2) Every body of water listed in subsection (b) is closed to all fishing except during the open season as shown. Unless otherwise provided, waters shown as open to hatchery trout, hatchery steelhead, and salmon fishing in subsection (b) are open to fishing for other species. Gear restrictions listed in this section apply to the take of all species of fish unless otherwise noted. (3) Unless otherwise provided, waters closed to hatchery trout, hatchery steelhead, or salmon fishing are closed to fishing for all other species, except that these closures do not apply to fishing for amphibians (see Section 5.05 ), freshwater clams (see Section 5.20 ), crayfish (see Section 5.35 ), and lamprey (see Section 5.40 ), using legal fishing methods other than hook-and-line fishing, and saltwater clams, crabs, ghost shrimp, and blue mud shrimp (see Ocean Regulations Booklet sections 29.20 to 29.87 ). Crabs may only be taken using hoop nets or by hand, and Dungeness crab may not be taken within the North Coast District and Sonoma and Mendocino counties. (4) Unless otherwise provided, it is unlawful to possess more than one daily bag limit. (5) The waters in subsection (b) may also be subject to restrictions on fishing methods and gear (Sections 2.00 through 2.45 ), fishing hours (Section 3.00 ), and the use of bait (Sections 4.00 through 4.30 ). (b) Body of Water Open Season and Special Restrictions Daily Bag and Possess
+rows 653
+ROW Body of Water | Open Season and Special Restrictions | Daily Bag and Possession Limit
 ROW  |  | 
-ROW (1) Anadromous waters of the Klamath and Trinity River systems, and those entering the ocean south of Humboldt Bay, which are not listed in the Special Regulations. | Closed to all fishing all year. | 
-ROW (2) All anadromous waters tributary to Humboldt Bay, and north of Humboldt Bay, except those of the Klamath and Trinity River systems and those listed by name in the Special Regulations. | Fourth Sat. in May through Oct. 31. Only artificial lures with barbless hooks may be used. | 2 hatchery trout or hatchery steelhead*. 4 hatchery trout or hatchery steelhead* in possession. Closed to the take of 
-ROW District/Water | Open Season and Special Restrictions | Daily Bag and Possession Limit
+ROW (1) Alameda Creek and tributaries (Alameda and Santa Clara Cos.). |  | 
 ROW  |  | 
-ROW (1) All rivers and associated tributaries above Lake Shasta. | Closed to the take of salmon. | 
-ROW (2) Anadromous waters of Tehama and Shasta Cos. not listed in Section 7.40 , Special Regulations). (See subsection (b)(80) of Section 7.40 regarding the Sacramento River.) | Last Sat. in Apr. through Nov. 15. Only artificial lures with barbless hooks may be used. | 2 hatchery trout or hatchery steelhead*. 4 hatchery trout or hatchery steelhead* in possession. Closed to the take of salmon.
-ROW District/Water | Open Season and Special Restrictions | Daily Bag and Possession Limit
+ROW (A) Alameda Creek and tributaries downstream of San Antonio, Calaveras, and Del Valle Reservoirs except for Arroyo Del Valle between Bernal Ave. and the Thiessen St. intersection with Vineyard Ave. | Closed to all fishing all year. | 
 ROW  |  | 
-ROW (1) All streams except those listed by name in Section 7.40 , Special Regulations. | Closed to all fishing all year. | 
-ROW (2) The tidewaters of all streams except those listed by name in Section 7.40 , Special Regulations. Note: Some waters within this district are tide waters under regulations for the ocean and San Francisco Bay District (see sections 1.53 and 27.00 ). | Closed to all fishing all year. | 
-ROW District/Water | Open Season and Special Restrictions | Daily Bag and Possession Limit
+ROW 1. Arroyo Del Valle between Bernal Ave. and the Thiessen St. intersection with Vineyard Ave. | All year. Only artificial lures with barbless hooks may be used. | 0 trout.
 ROW  |  | 
-ROW (1) All anadromous waters except those listed by name in Section 7.40 , Special Regulations (See definition of anadromous waters, Section 1.04 ). | All year. | 2 hatchery trout or hatchery steelhead*. 4 hatchery trout or hatchery steelhead* in possession. Closed to the take of salmon.
-ROW District/Water | Open Season and Special Restrictions | Daily Bag and Possession Limit
-ROW (1) That portion of any stream west of any Highway 1 bridge except those listed by name in Section 7.40 , Special Regulations. | Dec. 1 through Mar. 7, but only on Sat., Sun., Wed., legal holidays and opening and closing days. Only barbless hooks may be used. | 2 hatchery trout or hatchery steelhead*. 4 hatchery trout or hatchery steelhead* in possession. Closed to the take of salmon.
-ROW (2) All anadromous streams and portions of streams except those listed in subsection (e)(1) above or by name in Section 7.40 , Special Regulations. | Closed to all fishing all year. | 
-ROW District/Water | Open Season and Special Restrictions | Daily Bag and Possession Limit
+ROW (2) Albion River (Mendocino Co.). Also see Section 8.00 (b) Low-Flow Restrictions. Main stem below the confluence of South Fork Albion. | Fourth Sat. in May through Mar. 31. Only artificial lures with barbless hooks may be used from from the fourth Sat. in May through Oct 31. Only barbless hooks may
+ROW (3) Alder Creek (Mendocino Co.). Also see Section 8.00 (b) Low-Flow Restrictions. Main stem below Tramway Gulch. | Fourth Sat. in May through Mar. 31. Only artificial lures with barbless hooks may be used from the fourth Sat. in May through Oct 31. Only barbless hooks may be used from Nov. 1 through
 ROW  |  | 
-ROW (1) All anadromous waters except those listed by name in Section 7.40 , Special Regulations (See definition of anadromous waters, Section 1.04 ). | Closed to all fishing all year. | 
-ROW * Hatchery trout or steelhead have a healed adipose fin clip (adipose fin is absent). Unless otherwise provided, all other trout and steelhead must be immediately released. Wild trout or steelhead are those not showing a healed adipose fin clip (adipose fin present).
-AFTER TABLE: Notes Cal. Code Regs. Tit. 14 , § 7.00 1. Repealer and new section filed 3-1-90; operative 3-1-90 (Register 90, No. 10). For prior history, see Register 89, No. 46. 2. New subsections (a)(4) and (b)(7) filed 3-12-92; operative 3-12-92 (Register 92, No. 20). 3. New subsections (a)(5) and (c)(4) and amendment of subsections (a)(1)-(3), (b)(2)-(4) and (c)(1)-(3) filed 3-7-94; operative 3-7-94 pursuant to Fish and Game Code section 202 and 215 (Register 94, No. 10). 4. Amendment of first paragraph, subsections (b)(7) and (f) and new subsections (f)(1)-(5) filed 2-9-96; operative 2-9-96 pursuant to Fish and Game Code sections 202 and 205 (Register 96, No. 6). 5. Editorial correction of subsection (b)(3) (Register 97, No. 26). 6. Amendment of subsections (a)(5), (b)(7), (c)(4) and (e)(2), new subsection (f)(2), subsection renumbering, amendment of newly designated subsection (f)(3), and amendment of NOTE filed 2-5-98; operative 3-1-98 pursuant to Fish and Game Code sections 202 and 215 (Register 98, No. 6). 7. Amendment of subsections (a)(1) and (a)(3), repealer of subsection (a)(5), amendment of subsections (c)(2)-(3), repealer of subsection (c)(4) and amendment of NOTE filed 2-11-98 as an emergency; operative 2-11-98 (Register 98, No. 7). A Certificate of Compliance must be transmitted to OAL by 6-11-98 or emergency language will be repealed by operation of law on the following day. 8. Editorial correction restoring inadvertently deleted subsections (b)-(b)(7)(B) and correcting s
+ROW (4) American River (Sacramento Co.). |  | 
+ROW  |  | 
+ROW (A) From Nimbus Dam to the U.S. Geological Survey gauging station cable crossing about 300 yards downstream from the Nimbus Hatchery fish rack site. | Closed to all fishing all year. | 
+ROW  |  | 
+ROW (B) From the U.S. Geological Survey gauging station cable crossing about 300 yards downstream from the Nimbus Hatchery fish rack site to the SMUD power line crossing at the southwest boundary of Ancil Hoffman Park. | Jan. 1 through Jul. 15. Only barbless hooks may be used. | 2 hatchery trout or hatc
+ROW  |  | 
+ROW  | Jul. 16 through Oct. 31. Only barbless hooks may be used. | 2 hatchery trout or hatchery steelhead ** . 4 hatchery trout or hatchery steelhead ** in possession.
+ROW  |  | Closed to the take and possession of Chinook Salmon.
+ROW  |  | 
+ROW (C) From the SMUD power line crossing at the southwest boundary of Ancil Hoffman Park downstream to the Jibboom Street bridge. | Jan. 1 through Jul. 15. | 2 hatchery trout or hatchery steelhead ** . 4 hatchery trout or hatchery steelhead ** in possession.
+ROW  |  | 
+ROW  | Jul. 16 through Dec. 31. | 2 hatchery trout or hatchery steelhead ** . 4 hatchery trout or hatchery steelhead ** in possession.
+ROW  |  | Closed to the take and possession of Chinook Salmon.
+ROW  |  | 
+ROW (D) From the Jibboom Street bridge to the mouth. | Jan. 1 through Jul. 15. | 2 hatchery trout or hatchery steelhead ** . 4 hatchery trout or hatchery steelhead ** in possession.
+ROW  |  | 
+ROW  | Jul. 16 through Dec. 16. | 2 hatchery trout or hatchery steelhead ** . 4 hatchery trout or hatchery steelhead ** in possession.
+ROW  |  | Closed to the take and possession of Chinook Salmon.
+ROW  |  | 
+ROW  | Dec. 17 through Dec. 31. | 2 hatchery trout or hatchery steelhead ** . 4 hatchery trout or hatchery steelhead ** in possession.
+ROW  |  | 
+ROW (5) Antelope Creek (Tehama Co.). |  | 
+ROW  |  | 
+ROW (A) From confluence with North Fork downstream to U.S. Geological Survey gauging station cable crossing at mouth of Antelope Creek Canyon. | Last Sat. in Apr. through Nov. 15. Only artificial lures with barbless hooks may be used. | 2 hatchery trout or hatchery steelhead ** . 4 hatchery trout or hat
+ROW  |  | 
+ROW (B) From U.S. Geological Survey gauging station cable crossing at mouth of Antelope Creek Canyon downstream to mouth of Antelope Creek. | Jun. 16 through Sep. 30. | 2 hatchery trout or hatchery steelhead ** . 4 hatchery trout or hatchery steelhead ** in possession.
+ROW  |  | 
+ROW (6) Aptos Creek (Santa Cruz Co.) from mouth to bridge on Aptos Creek Road. Also see Low-Flow Restrictions, Section 8.00 (c) . | Dec. 1 through Mar. 7, but only on Sat., Sun., Wed., legal holidays and opening and closing days. Only barbless hooks may be used. | 2 hatchery trout or hatchery steelhead 
+ROW  |  | 
 
-=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-5.00 (42908 bytes)
-BEFORE TABLE: Cal. Code Regs. Tit. 14, § 5.00 - Black Bass State Regulations Compare It is unlawful to take or possess black bass except as provided in this section: (Note: Some waters are closed to all fishing under Sections 7.40 and 7.50 .) (a) General Statewide Restrictions: (1) Lakes/Reservoirs and the Sacramento-San Joaquin Delta: The following waters, except for those listed in subsection (b), are open to fishing all year, with a 12-inch total length minimum size limit and a five-fish daily bag limit: All lakes and reservoirs in the State, and the Sacramento-San Joaquin River Delta (see Section 1.71 for definition of the Delta). (2) Rivers/Streams and Private Ponds: Rivers, streams, canals, and lakes or ponds entirely on private lands that are not listed in subsection (b) are open all year with no size limit and a five-fish daily bag limit. (b) Special Regulations: Counties and individual waters listed below are those having regulations different from the General Statewide Restrictions in subsection (a). DISTRICTS AND COUNTIES WITH SPECIAL REGULATIONS
-ROW Area or Body of Water | Open Season | Size (total length) | Bag Limit
-ROW (1) Colorado River District: All waters (Bag and size limits conform with Arizona regulations.). | All year. | 13-inch minimum. | 6
-ROW  |  |  | 
-ROW (2) Inyo Co.: All streams east of Highway 395 from the southern Inyo Co. line north to the junction of Highway 6 and east of Highway 6 to the Mono Co. line, except those streams listed by name in Section 7.50 (b) , Special Fishing Regulations. | All year. | 12-inch minimum. | 5
-ROW  |  |  | 
-ROW The remaining streams of Inyo Co., except those waters listed in Section 7.50 (b) , Special Fishing Regulations. | Last Sat. in Apr. through Nov. 15. Closed to bass fishing from Nov. 16 through the Fri. preceding the last Sat. in Apr. | 12-inch minimum. | 5
-ROW  |  |  | 
-ROW All Lakes, Big Pine Canal, Fish Spring Canal, and Millpond in Inyo Co. | All year. | 12-inch minimum. | 5
-ROW  |  |  | 
-ROW (3) Mono Co.: All streams except for Fish Slough (see subsection (b)(10)) and those waters listed by name in Section 7.50 (b) , Special Fishing Regulations. | Last Sat. in Apr. through Nov. 15. Closed to bass fishing from Nov. 16 through the Fri. preceding the last Sat. in Apr. | No size limit. | 5
-ROW  |  |  | 
-ROW (4) Plumas Co.: All waters. | All year. | No size limit. | 5
-ROW Area or Body of Water | Open Season | Size (total length) | Bag Limit
-ROW (5) Barrett Lake (San Diego Co.) (Also see Section 2.08 .) | All year. | Catch and Release only. | 0
-ROW  |  |  | 
-ROW (6) Casitas Lake (Ventura Co.) | All year. | 12-inch minimum No more than one over 22 inches. | 5
-ROW  |  |  | 
-ROW (7) Castaic Lake (Los Angeles Co.). | All year. | 12-inch minimum. | 5
-ROW  |  |  | 
-ROW (8) Cuyamaca Lake (San Diego Co.). | All year. | No size limit for Largemouth Bass. Catch and Release only for Smallmouth Bass. | 5
-ROW  |  |  | 
-ROW (9) Fish Slough (Mono Co.), except the fenced portions of Fish Slough within the BLM Spring, which are closed to all fishing all year. See Section 7.50 (b)(49) , Special Fishing Regulations. | All year. | No size limit. | 5
-ROW  |  |  | 
-ROW (10) Hodges Lake (San Diego Co.). | All year. | 15-inch minimum. | 5
-ROW  |  |  | 
-ROW (11) Lett's Lake (Colusa Co.). | All year. | No size limit. | 5
-ROW  |  |  | 
-ROW (12) Plaskett Meadows lakes, upper and lower (Glenn Co.). | All year. | No size limit. | 5
-ROW  |  |  | 
-ROW (13) Shaver Lake (Fresno Co.). | All year. | No size limit. | 5
-ROW  |  |  | 
-ROW (14) Upper Otay Lake (San Diego Co.). (Also see Section 2.08 .) | All year. | Catch and Release only. | 0
-AFTER TABLE: Notes Cal. Code Regs. Tit. 14 , § 5.00 Note: Authority cited: Sections 200 , 205, 265 , 270 and 275, Fish and Game Code. Reference: Sections 200 and 205, Fish and Game Code. Note: Authority cited: Sections 200 , 205 , 265 , 270 and 275 , Fish and Game Code. Reference: Sections 200 and 205 , Fish and Game Code. 1. Amendment filed 2-21-84; designated effective 3-1-84 (Register 84, No. 8). 2. Amendment of subsection (c) filed 2-28-85 as an emergency; designated effective 3-1-85. Certificate of Compliance included (Register 85, No. 11). 3. Amendment filed 1-22-86; designated effective 3-1-86 (Register 86, No. 6). 4. New subsections (b)(4) and (c)(3) filed 4-16-86 as an emergency; effective upon filing (Register 86, No. 16). A Certificate of Compliance must be transmitted to OAL within 120 days or emergency language will be repealed on 8-14-86. 5. Certificate of Compliance transmitted to OAL 8-13-86 and filed 8-14-86 (Register 86, No. 33). 6. Amendment of subsection (c) filed 2-11-87; designated effective 3-1-87 (Register 87, No. 9). 7. Amendment filed 1-26-88; operative 3-1-88 (Register 88, No. 6). 8. New subsection (b)(5) filed 9-11-89 as an emergency; operative 9-11-89 (Register 89, No. 37). A Certificate of Compliance must be transmitted to OAL within 120 days or emergency language will be repealed on 1-9-90. 9. Subsection (b)(5) repealed by operation of law on 1-1-90. Amendment filed 3-1-90; operative 3-1-90 (Register 90, No. 10). 10. Amendment of subsections (a), (o), (q) an
+=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-8.00 (51746 bytes)
+Cal. Code Regs. Tit. 14, § 8.00 - Low-Flow Restrictions State Regulations Compare (a) Eel River, Mad River, Mattole River, Redwood Creek, Smith River and Van Duzen River. Stream closures: Special Low Flow Conditions. (1) From September 1 through April 30: (A) Any of the stream reaches listed in subsections (a)(2) through (8) below shall be closed to all angling on Tuesday and Wednesday when the department determines that the flow on the previous Monday at any of the designated gauging stations is less than the minimum flows set forth in subsections (a)(2) through (8). (B) Any of the stream reaches listed in subsections (a)(2) through (8) below shall be closed to all angling on Thursday and Friday when the department determines that the flow on the previous Wednesday at any of the designated gauging stations is less than the minimum flows set forth in subsections (a)(2) through (8). (C) Any of the stream reaches listed in subsections (a)(2) through (8) below shall be closed to all angling from Saturday through Monday when the department determines that the flow on the previous Friday at any of the designated gauging stations is less than the minimum flows set forth in subsections (a)(2) through (8). (D) Notwithstanding subsections (a)(1)(A) through (C), the department may close or keep a stream reach closed to fishing when the minimum flow is exceeded on the scheduled flow determination day if the department is reasonably assured that the stream flow is likely to decrease below the minimum flow as specified in subsections (a)(2) through (8) before or on the next flow-determination date. (E) The department may reopen a stream at any time during a closed period if the minimum flow as specified in subsections (a)(2) through (8) is exceeded and the department is reasonably a
+rows 0
 
-=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-5.10 (29901 bytes)
-Cal. Code Regs. Tit. 14, § 5.10 - Candlefish or Eulachon State Regulations Compare (a) Candlefish or Eulachon may not be taken or possessed. Notes Cal. Code Regs. Tit. 14 , § 5.10 1. Amendment of subsection (c) filed 1-22-86; designated effective 3-1-86 (Register 86, No. 6). 2. Repealer and new section and amendment of NOTE filed 12-27-2012; operative 1-1-2013 pursuant to Government Code section 11343.4 (Register 2012, No. 52). 3. Change without regulatory effect amending NOTE filed 8-8-2019 pursuant to section 100 , title 1, California Code of Regulations (Register 2019, No. 32). Note: Authority cited: Sections 200 , 205 and 265 , Fish and Game Code. Reference: Sections 200 , 205 and 265 , Fish and Game Code. 1. Amendment of subsection (c) filed 1-22-86; designated effective 3-1-86 (Register 86, No. 6). 2. Repealer and new section and amendment of Note filed 12-27-2012; operative 1-1-20
+=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-2.00 (37382 bytes)
+Cal. Code Regs. Tit. 14, § 2.00 - Fishing Methods-General State Regulations Compare (a) Except as otherwise authorized, all fish may be taken only by angling with one closely attended rod and line or one hand line with not more than three hooks nor more than three artificial lures (each lure may have three hooks attached) attached thereto. Anglers in possession of a valid two-rod stamp and anglers under 16 years of age may use up to two rods in inland waters which regulations provide for the taking of fish by angling, except those waters in which only artificial lures or barbless hooks may be used. See Trout, Salmon and Special Regulations for exceptions. (b) Snagging is prohibited. Snagging is defined as impaling or attempting to impale a fish in any part of its body other than inside the mouth by use of a hook, hooks, gaff, or other mechanical implement. This definition does not include activities otherwise authorized under these regulations for the lawful use of a gaff, bow and arrow, or spear. (c) It is unlawful to kill, or retain in possession any fish which has not voluntarily taken the bait or artificial lure inside its mouth. Any fish not taken pursuant to these regulations, shall be released immediately back into the water. Notes Cal. Code Regs. Tit. 14 , § 2.00 1. Repealer of chapter 2 ( §§ 2 through 34.95, not consecutive) and new chapter 2 (§§ 2.00 through 2.85, not consecutive) filed 1-16-74; designated effective 3-1-74 (Register 74, No. 3). For history of former sections, see Register 60, Nos. 1, 3; 61, Nos. 2, 26; 62, No. 5; 63, No. 1; 64, No. 25; 66, Nos. 1, 45; 67, Nos. 36, 51; 68, Nos. 25, 38, 48; 69, Nos. 8, 31, 51; 70, Nos. 25, 52; 71, No. 15; 72, Nos. 1, 5, 51, 52. 2. Repealer of chapter 2 (sections 2.00-2.90, not consecutive), renumbering of sectio
+rows 0
+
+=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-2.05 (29818 bytes)
+Cal. Code Regs. Tit. 14, § 2.05 - Leader Length Restriction State Regulations Compare It shall be unlawful to use any configuration of fishing tackle in anadromous waters unless the distance between the terminal hook or terminal lure and any weight attached to the line or leader, whether fixed or sliding, is less than six feet. For purposes of this section, "weight" includes any product used to submerge the line or leader, including non-buoyant artificial flies or artificial lures, but does not include integrated or sinking fly fishing lines, lead core lines used while trolling from a boat, dropper weights used while trolling from a boat, or clipped weights used with downrigger systems. Notes Cal. Code Regs. Tit. 14 , § 2.05 1. New section filed 2-27-2018; operative 3-1-2018 pursuant to Government Code section 11343.4(b)(4) (A) (Register 2018, No. 9). For prior history, see Register 96, No. 6. Note: Authority cited: Sections 200 , 205 and 219 , Fish and Game Code. Reference: Section 205 , Fish and Game Code. 1. New section filed 2-27-2018; operative 3/1/2018 pursuant to Government Code section 11343.4(b)(4) (A) ( Register 2018, No. 9 ). For prior history, see Register 96, No. 6. State regulations are updated quarterly; we currently have two versions available. Below is a comparison between our most recent version and the prior quarterly release. More comparison features will be added as we have more versions to compare. No prior version found. googletag.cmd.push(function () { googletag.display('div-gpt-ad-bottom'); }); State Regulations Toolbox var addthis_config = { data_track_addressbar: false, data_track_clickback: true, publid: 'liiadverts', ui_tabindex: 0, ui_508_compliant: true }; var addthis_share = { url_transforms: { shorten: { twitter: 'bitly' } }, shorteners:
+rows 0
+
+=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-2.08 (32583 bytes)
+Cal. Code Regs. Tit. 14, § 2.08 - Special Fishing Methods and Bag Limits-Barrett and Upper Otay Lakes, San Diego County State Regulations Compare The following fishing methods restrictions and bag limits apply to Barrett Lake and Upper Otay Lake: (a) Only artificial lures with barbless hooks may be used. (b) The bag limit for all species is zero. Notes Cal. Code Regs. Tit. 14 , § 2.08 1. New section filed 3-12-92; operative 3-12-92 (Register 92, No. 20). 2. Repealer and new section filed 12-12-94; operative 12-12-94 pursuant to Government Code section 11346.2(d) (Register 94, No. 50). 3. Amendment of section heading, new first paragraph, and amendment of subsections (c) and (c)(3) filed 2-9-96; operative 2-9-96 pursuant to Fish and Game Code sections 202 and 205 (Register 96, No. 6). 4. Amendment of section heading, repealer of subsections (a) and (c)-(c)(3), new subsection (b), subsection relettering, amendment of newly designated subsection (a) and amendment of NOTE filed 2-5-98; operative 3-1-98 pursuant to Fish and Game Code sections 202 and 215 (Register 98, No. 6). 5. Change without regulatory effect amending NOTE filed 8-8-2019 pursuant to section 100 , title 1, California Code of Regulations (Register 2019, No. 32). Note: Authority cited: Sections 200 , 205 , 265 , 270 and 275 , Fish and Game Code. Reference: Sections 110 , 200 , 205 , 265 and 275 , Fish and Game Code. 1. New section filed 3-12-92; operative 3-12-92 (Register 92, No. 20). 2. Repealer and new section filed 12-12-94; operative 12-12-94 pursuant to Government Code section 11346.2(d) (Register 94, No. 50). 3. Amendment of section heading, new first paragraph, and amendment of subsections (c) and (c)(3) filed 2-9-96; operative 2-9-96 pursuant to Fish and Game Code sections 202 and 205 (Register 96, N
+rows 0
+
+=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-2.10 (36231 bytes)
+Cal. Code Regs. Tit. 14, § 2.10 - Hook and Weight Restrictions State Regulations Compare (a) Definition of Gap: For the purposes of this section, "gap" means the distance measured from the point of a hook to the shank. (b) Maximum Gaps and Gear Rigging for Rivers and Streams unless otherwise provided (does not apply to lakes and reservoirs, the Sacramento-San Joaquin Delta (see Section 1.71 for definition of the Delta), and the Colorado River. (1) No person shall use any single hook with a gap greater than 1 inch or any multiple hook with a gap greater than 3/4 inch. (2) It is unlawful to use any hook which is directly or indirectly attached closer than 18 inches to any weight exceeding 1/2 ounce. (3) It is unlawful to use any multiple hook or more than one single hook on non-buoyant artificial lures exceeding one ounce. (4) It is unlawful to use any weight directly attached below a hook. (c) Maximum Gaps for the Sacramento-San Joaquin Delta (see Section 1.71 for definition of the Delta). (1) No person shall use any single hook with a gap greater than 1 inch or any multiple hook with a gap greater than 3/4 inch. Notes Cal. Code Regs. Tit. 14 , § 2.10 1. Editorial correction of subsection (a)(4) filed 9-2-82 (Register 82, No. 36). 2. Amendment of subsection (a)(4)(B) filed 1-20-83; designated effective tenth day thereafter (Register 83, No. 4). 3. Amendment of subsection (a)(4)(A) filed 2-21-84; designated effective 3-1-84 (Register 84, No. 8). 4. Amendment filed 1-22-86; designated effective 3-1-86 (Register 86, No. 6). 5. Amendment of subsection (d) filed 2-11-87; designated effective 3-1-87 (Register 87, No. 9). 6. New subsection (g) filed 9-11-89 as an emergency; operative 9-11-89 (Register 89, No. 37). A Certificate of Compliance must be transmitted to OAL within 12
+rows 0
+
+=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-2.30 (34800 bytes)
+Cal. Code Regs. Tit. 14, § 2.30 - Spearfishing State Regulations Compare Spearfishing is permitted only in: (a) The Colorado River District for carp, tilapia, goldfish and mullet, all year. (b) The Valley District and Black Butte Lake (Tehama County) for American Shad, carp, tilapia, goldfish, striped bass, Sacramento (Western) Sucker, Sacramento blackfish, hardhead, Sacramento pikeminnow and lamprey, from May 1 through September 15, except that no spearfishing is permitted in: (1) Shasta County (see Section 2.12 ). (2) Tehama County except Black Butte Lake. (3) Butte Creek (Butte Co.). (4) Feather River below Oroville Dam (Butte Co.). (5) Yuba River upstream of Simpson Lane Bridge (Yuba Co.). (6) American River upstream of Howe Ave. Bridge (Sacramento Co.). (7) Mokelumne River upstream of Elliot Road Bridge (San Joaquin Co.). (8) San Joaquin River upstream of State Route 99 Bridge (Madera and Fresno Co.). (9) Stanislaus River upstream of S. Santa Fe Road (J7) Bridge (Stanislaus Co.). (10) Tuolumne River upstream of the Geer Road (J14) Bridge (Stanislaus Co.). (11) Merced River upstream of N. Santa Fe Drive (J7) Bridge (Merced Co.). (12) All designated salmon spawning areas (See Fish and Game Code Section 1505 ). (13) Refer to all county, city, and/or local regulations and ordinances to confirm if use and/or possession of projectile weapons is prohibited. (c) The Kern River from the Kern-Tulare County line upstream to the Johnsondale Bridge for carp, goldfish, Sacramento (Western) Sucker, hardhead and Sacramento pikeminnow, from May 1 through September 15. (d) See bullfrogs (Section 5.05 ). Notes Cal. Code Regs. Tit. 14 , § 2.30 Note: Authority cited: Sections 200 , 205, 255 and 265 , Fish and Game Code. Reference: Sections 200 , 205, 255 and 265 , Fish and Game Code. N
+rows 0
+
+=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-1.53 (30692 bytes)
+Cal. Code Regs. Tit. 14, § 1.53 - Inland Waters State Regulations Compare Inland waters are all the fresh, brackish and inland saline waters of the state, including lagoons and tidewaters upstream from the mouths of coastal rivers and streams. Inland waters exclude open or enclosed bays contiguous to the ocean including the waters of San Francisco Bay and the waters of Elkhorn Slough, west of Elkhorn Road between Castroville and Watsonville. See Section 27.00 for the description of San Francisco Bay. Notes Cal. Code Regs. Tit. 14 , § 1.53 1. Amendment of section and NOTE filed 2-5-98; operative 3-1-98 pursuant to Fish and Game Code sections 202 and 215 (Register 98, No. 6). 2. Amendment filed 2-29-2016; operative 3-2-2016 pursuant to Government Code section 11343.4(b)(4) (A) (Register 2016, No. 10). 3. Amendment filed 11-2-2016; operative 1-1-2017 (Register 2016, No. 45). 4. Amendment of section and NOTE filed 2-25-2019; operative 3-1-2019 pursuant to Government Code section 11343.4(b)(4) (A) (Register 2019, No. 9). Note: Authority cited: Sections 200 , 205 , 265 and 270 , Fish and Game Code. Reference: Sections 200 , 205 , 265 and 270 , Fish and Game Code. 1. Amendment of section and Note filed 2-5-98; operative 3-1-98 pursuant to Fish and Game Code sections 202 and 215 (Register 98, No. 6). 2. Amendment filed 2-29-2016; operative 3/2/2016 pursuant to Government Code section 11343.4(b)(4) (A) ( Register 2016, No. 10 ). 3. Amendment filed 11-2-2016; operative 1/1/2017 ( Register 2016, No. 45 ). 4. Amendment of section and Note filed 2-25-2019; operative 3/1/2019 pursuant to Government Code section 11343.4(b)(4) (A) ( Register 2019, No. 9 ). State regulations are updated quarterly; we currently have two versions available. Below is a comparison between our most recent ve
+rows 0
 
 === 200 https://www.law.cornell.edu/regulations/california/14-CCR-5.15 (38031 bytes)
-Cal. Code Regs. Tit. 14, § 5.15 - Catfish and Bullheads State Regulations Compare (a) Open season: All year, except for closures listed under special regulations. (b) Limit: Bullheads, no limit; all other catfish, no limit, except as follows: BODY OR BODIES OF WATER BAG LIMIT (1) All waters of the Colorado River District: Also see subsection (c) below. 10 (2) All waters of the Southern District not listed below: 10 (3) Alameda County: Alameda Creek Quarry Ponds. 5 Chabot Lake. 5 Cull Canyon Lake. 5 Del Valle Reservoir. 5 Don Castro Lake. 5 Jordan Lake. 5 Shadow Cliffs Lake. 5 Temescal Lake. 5 (4) Contra Costa County: Contra Loma Lake. 5 Lafayette Lake. 5 San Pablo Lake. 5 (5) Inyo County: All waters 10 (6) Los Angeles County: Alondra County Park Lake. 5 Belvedere Park Lake. 5 Cerritos Regional Park Lake. 5 Earvin "Magic" Johnson County Park Lake. 5 John Anson Ford Park Lake. 5 Kenneth Ha
-
-=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-5.25 (31263 bytes)
-Cal. Code Regs. Tit. 14, § 5.25 - Corvina in the Salton SEA State Regulations Compare (a) Open season: All year. (b) Bag limit: Two. (c) Possession Limit: Four. (d) Minimum size limit: 18 inches total length. Notes Cal. Code Regs. Tit. 14 , § 5.25 1. Amendment of subsection (b) filed 3-1-90, operative 3-1-90 (Register 90, No. 10). 2. Amendment of subsection (b) and new subsection (c) filed 2-18-2000; operative 3-1-2000 pursuant to Fish and Game Code sections 202 and 215 (Register 2000 , No. 7). 3. Amendment of subsection (b), new subsection (c), subsection relettering and amendment of NOTE filed 11-8-2004; operative 12-8-2004 (Register 2004, No. 46). 4. Change without regulatory effect amending NOTE filed 8-8-2019 pursuant to section 100 , title 1, California Code of Regulations (Register 2019, No. 32). Note: Authority cited: Sections 200 , 205 , 265 , 270 and 275 , Fish and Game Code. R
-
-=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-5.30 (31731 bytes)
-Cal. Code Regs. Tit. 14, § 5.30 - Crappie State Regulations Compare See Section 5.82 for the combined sunfish and crappie bag limit regulations. Notes Cal. Code Regs. Tit. 14 , § 5.30 1. Renumbering of former section 5.30 to section 5.82 and new section filed 3-7-94; operative 3-7-94 pursuant to Fish and Game Code sections 202 and 215 (Register 94, No. 10). For prior history, see Register 90, No. 10. 2. Amendment of subsection (b) and NOTE filed 2-9-96; operative 2-9-96 pursuant to Fish and Game Code sections 202 and 205 (Register 96, No. 6). 3. Editorial correction renumbering erroneously designated HISTORY 2 to HISTORY 3 (Register 98, No. 6). 4. Amendment of section and NOTE filed 2-5-98; operative 3-1-98 pursuant to Fish and Game Code sections 202 and 215 (Register 98, No. 6). 5. Repealer and new section filed 2-9-2010; operative 3-1-2010 pursuant to Government Code section 11343.4 (R
-
-=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-5.45 (29953 bytes)
-Cal. Code Regs. Tit. 14, § 5.45 - Marine Fin Fish, Mollusks and Crustaceans State Regulations Compare Marine fin fish, mollusks and crustaceans taken in lagoons and tidal waters are subject to the bag and possession limits established for the Ocean and San Francisco Bay District (beginning with Section 27.00 ). Notes Cal. Code Regs. Tit. 14 , § 5.45 1. Change without regulatory effect amending NOTE filed 8-8-2019 pursuant to section 100 , title 1, California Code of Regulations (Register 2019, No. 32). Note: Authority cited: Sections 200 , 205 , 219 , 265 and 275 , Fish and Game Code. Reference: Sections 200 , 205 , 255 , 265 , 270 and 275 , Fish and Game Code. 1. Change without regulatory effect amending Note filed 8-8-2019 pursuant to section 100 , title 1, California Code of Regulations ( Register 2019, No. 32 ). State regulations are updated quarterly; we currently have two versions 
-
-=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-5.50 (30230 bytes)
-Cal. Code Regs. Tit. 14, § 5.50 - Mountain Whitefish State Regulations Compare (a) Open season: No mountain whitefish may be taken in any water except when trout may be taken in such water. (b) Limit: Five. Notes Cal. Code Regs. Tit. 14 , § 5.50 1. Amendment of subsection (b) filed 2-24-2004; operative 3-1-2004 pursuant to Government Code section 11343.4 (Register 2004 , No. 9). 2. Change without regulatory effect amending NOTE filed 8-8-2019 pursuant to section 100 , title 1, California Code of Regulations (Register 2019, No. 32). Note: Authority cited: Sections 200 , 205 , 219 , 265 and 275 , Fish and Game Code. Reference: Sections 200 , 205 , 255 , 265 , 270 and 275 , Fish and Game Code. 1. Amendment of subsection (b) filed 2-24-2004; operative 3-1-2004 pursuant to Government Code section 11343.4 (Register 2004, No. 9). 2. Change without regulatory effect amending Note filed 8-8-2019 
-
-=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-5.55 (29149 bytes)
-Cal. Code Regs. Tit. 14, § 5.55 - Mullet. [Repealed] State Regulations Compare Notes Cal. Code Regs. Tit. 14 , § 5.55 1. Repealer filed 1-22-86; designated effective 3-1-86 (Register 86, No. 6). Note: Authority cited: Sections 200 , 202 , 205 , 210 , 219 and 220 , Fish and Game Code. Reference: Sections 200 - 202 , 203.1 , 205 - 210 and 215 - 222, Fish and Game Code. 1. Repealer filed 1-22-86; designated effective 3-1-86 (Register 86, No. 6). State regulations are updated quarterly; we currently have two versions available. Below is a comparison between our most recent version and the prior quarterly release. More comparison features will be added as we have more versions to compare. No prior version found. googletag.cmd.push(function () { googletag.display('div-gpt-ad-bottom'); }); State Regulations Toolbox var addthis_config = { data_track_addressbar: false, data_track_clickback: true,
-
-=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-5.60 (47186 bytes)
-Cal. Code Regs. Tit. 14, § 5.60 - Reptiles State Regulations Compare (a) Only the following reptiles may be taken under the authority of a sportfishing license, subject to the restrictions in this section. No sportfishing license is required for the sport take of any rattlesnake, but bag and possession limits do apply. No reptiles shall be taken from ecological reserves designated by the commission in Section 630 or from state parks, or national parks or monuments. (b) Limit: The limit for each of the species listed below is two, unless otherwise provided. Limit, as used in this section, means daily bag and possession limit. (1) Painted turtle ( Chrysemys picta ): Limit: No limit. (2) Pond slider ( Trachemys scripta ): Limit: No limit. (3) Spiny softshell ( Apalone spinifera ): Limit: No limit. (4) Western banded gecko ( Coleonyx variegatus ), except San Diego banded gecko ( Coleonyx var
-
-=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-5.65 (29813 bytes)
-Cal. Code Regs. Tit. 14, § 5.65 - Shad, American State Regulations Compare (a) Open season: All year, except for closures listed under special regulations. (b) Limit: Twenty-five. (c) Methods of take: Shad may be taken only by angling, except that a dip net may be used in the Valley District. Notes Cal. Code Regs. Tit. 14 , § 5.65 1. Change without regulatory effect amending NOTE filed 8-8-2019 pursuant to section 100 , title 1, California Code of Regulations (Register 2019, No. 32). Note: Authority cited: Sections 200 , 205 , 219 , 265 and 275 , Fish and Game Code. Reference: Sections 200 , 205 , 255 , 265 , 270 and 275 , Fish and Game Code. 1. Change without regulatory effect amending Note filed 8-8-2019 pursuant to section 100 , title 1, California Code of Regulations ( Register 2019, No. 32 ). State regulations are updated quarterly; we currently have two versions available. Below is
-
-=== 503 https://www.law.cornell.edu/regulations/california/14-CCR-5.70 (190 bytes)
-503 Service Temporarily Unavailable nginx
-
-=== 200 https://www.law.cornell.edu/regulations/california/14-CCR-5.75 (35226 bytes)
-Cal. Code Regs. Tit. 14, § 5.75 - Striped Bass State Regulations Compare (a) Open season: All year except for closures listed in special regulations. (b) Limit: Two, except in waters listed in (d) below. (c) Minimum size: 18 inches total length except in waters listed in (d) below. (d) Exceptions: (1) In the Colorado River District, the Southern District, and New Hogan, San Antonio and Santa Margarita lakes. (A) Limit: Ten. (B) Minimum size: No size limit. (e) For the purpose of these regulations, any striped bass hybrid with white bass is considered to be striped bass. Notes Cal. Code Regs. Tit. 14 , § 5.75 1. Amendment filed 1-30-84; designated effective 2-9-84 (Register 84, No. 5). 2. Repealer and new section filed 2-28-85 as an emergency; designated effective 3-1-85. Certificate of Compliance included (Register 85, No. 11). 3. Amendment of subsection (d) filed 1-22-86; designated eff
-
-=== 503 https://www.law.cornell.edu/regulations/california/14-CCR-5.80 (190 bytes)
-503 Service Temporarily Unavailable nginx
-
-=== 503 https://www.law.cornell.edu/regulations/california/14-CCR-5.85 (190 bytes)
-503 Service Temporarily Unavailable nginx
-
-=== 503 https://www.law.cornell.edu/regulations/california/14-CCR-5.87 (190 bytes)
-503 Service Temporarily Unavailable nginx
-
-=== 503 https://www.law.cornell.edu/regulations/california/14-CCR-5.88 (190 bytes)
-503 Service Temporarily Unavailable nginx
-
-=== 503 https://www.law.cornell.edu/regulations/california/14-CCR-5.90 (190 bytes)
-503 Service Temporarily Unavailable nginx
-
-=== 503 https://www.law.cornell.edu/regulations/california/14-CCR-5.95 (190 bytes)
-503 Service Temporarily Unavailable nginx
-
-=== 503 https://www.law.cornell.edu/regulations/california/14-CCR-7.40 (190 bytes)
-503 Service Temporarily Unavailable nginx
-
-=== 503 https://www.law.cornell.edu/regulations/california/14-CCR-8.00 (190 bytes)
-503 Service Temporarily Unavailable nginx
-
-=== 503 https://www.law.cornell.edu/regulations/california/14-CCR-1.74 (190 bytes)
-503 Service Temporarily Unavailable nginx
-
-=== 503 https://www.law.cornell.edu/regulations/california/14-CCR-2.00 (190 bytes)
-503 Service Temporarily Unavailable nginx
-
-=== 503 https://www.law.cornell.edu/regulations/california/14-CCR-2.05 (190 bytes)
-503 Service Temporarily Unavailable nginx
-
-=== 503 https://www.law.cornell.edu/regulations/california/14-CCR-2.10 (190 bytes)
-503 Service Temporarily Unavailable nginx
+ROW  | BODY OR BODIES OF WATER | BAG LIMIT | 
+ROW (1) | All waters of the Colorado River District: |  | 
+ROW  | Also see subsection (c) below. | 10 | 
+ROW (2) | All waters of the Southern District not listed below: | 10 | 
+ROW (3) | Alameda County: |  | 
+ROW  | Alameda Creek Quarry Ponds. | 5 | 
+ROW  | Chabot Lake. | 5 | 
+ROW  | Cull Canyon Lake. | 5 | 
+ROW  | Del Valle Reservoir. | 5 | 
+ROW  | Don Castro Lake. | 5 | 
+ROW  | Jordan Lake. | 5 | 
+ROW  | Shadow Cliffs Lake. | 5 | 
+ROW  | Temescal Lake. | 5 | 
+ROW (4) | Contra Costa County: |  | 
+ROW  | Contra Loma Lake. | 5 | 
+ROW  | Lafayette Lake. | 5 | 
+ROW  | San Pablo Lake. | 5 | 
+ROW (5) | Inyo County: |  | 
+ROW  | All waters | 10 | 
+ROW (6) | Los Angeles County: |  | 
+ROW  | Alondra County Park Lake. | 5 | 
+ROW  | Belvedere Park Lake. | 5 | 
+ROW  | Cerritos Regional Park Lake. | 5 | 
+ROW  | Earvin "Magic" Johnson County Park Lake. | 5 | 
+ROW  | John Anson Ford Park Lake. | 5 | 
+ROW  | Kenneth Hahn Regional Park Lake. | 5 | 
+ROW  | La Mirada Regional Park Lake. | 5 | 
+ROW (7) | Mono County: |  | 
+ROW  | All waters | 10 | 
+ROW (8) | San Bernardino County: |  | 
+ROW  | Cucamonga-Guasti Regional Park Lakes. | 5 | 
+ROW  | Glen Helen Regional Park Lakes. | 5 | 
+ROW  | Gregory Lake. | 5 | 
+ROW  | Mojave Narrows Regional Park. | 5 | 
+ROW  | Prado Regional Park Lakes. | 5 | 
+ROW  | Yucaipa Regional Park Lakes. | 5 | 
+ROW (9) | San Diego County: All Waters except Barrett and Upper Otay lakes | 5 | 
+ROW  | Barrett Lake. | 0 | 
+ROW  | Upper Otay Lake. | 0 | 
+ROW (10) | San Joaquin County: |  | 
+BODY OR BODIES OF
+								WATER</em></strong></td>
+<td><strong><em>BAG
+								LIMIT</em></strong></td>
+<td></td>
+</tr>
+<tr>
+<td>(1)</td>
+<td>All waters of the Colorado River
+								District:</td>
+<td></td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>Also see subsection (c)
+								below.</td>
+<td>10</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>(2)</td>
+<td>All waters of the Southern District not
+								listed below:</td>
+<td>10</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>(3)</td>
+<td>Alameda County:</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>Alameda Creek Quarry
+								Ponds.</td>
+<td>5</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>Chabot Lake.</td>
+<td>5</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>Cull Canyon Lake.</td>
+<td>5</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>Del Valle Reservoir.</td>
+<td>5</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>Don Castro Lake.</td>
+<td>5</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>Jordan Lake.</td>
+<td>5</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>Shadow Cliffs Lake.</td>
+<td>5</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>Temescal Lake.</td>
+<td>5</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>(4)</td>
+<td>Contra Costa County:</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>Contra Loma Lake.</td>
+<td>5</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>Lafayette Lake.</td>
+<td>5</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>San Pablo Lake.</td>
+<td>5</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>(5)</td>
+<td>Inyo County:</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>All waters</td>
+<td>10</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>(6)</td>
+<td>Los Angeles County:</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>Alondra County Park
+								Lake.</td>
+<td>5</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>Belvedere Park Lake.</td>
+<td>5</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>Cerritos Regional Park
+								Lake.</td>
+<td>5</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>Earvin "Magic" Johnson County Park
+								Lake.</td>
+<td>5</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>John Anson Ford Park
+								Lake.</td>
+<td>5</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>Kenneth Hahn Regional Park
+								Lake.</td>
+<td>5</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>La Mirada Regional Park
+								Lake.</td>
+<td>5</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>(7)</td>
+<td>Mono County:</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>All waters</td>
+<td>10</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>(8)</td>
+<td>San Bernardino County:</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td>Cucamonga-Guasti Regional Park
+								Lakes.</td>
+<td>5</td>
+<td>
