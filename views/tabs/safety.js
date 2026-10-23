@@ -29,6 +29,7 @@ export async function renderSafetyBanner(lake, page) {
 }
 
 export async function renderSafety(lake, body) {
+  document.querySelector('.tabs button.active')?.scrollIntoView({ block: 'nearest', inline: 'nearest' }); // the tab sits off-screen on phones
   body.innerHTML = `<div id="hab-card" class="card muted">Checking algae advisories…</div><div id="regs-card" class="card muted">Loading regulations…</div><div id="eat-card" class="card muted">Loading fish advisories…</div>`;
   const [hab, regs, eat, habData] = await Promise.all([CA.habFor(lake), CA.regsFor(lake), CA.fishAdviceFor(lake), CA.habAdvisories()]);
   if (!body.isConnected) return;
