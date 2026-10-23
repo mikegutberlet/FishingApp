@@ -40,7 +40,8 @@ function habCard(hab, data) {
   return `<div class="card"><h3>Toxic algae</h3>
     ${hab.length ? hab.map(a => { const l = NV_HAB[a.level]; return `<div class="banner hab-${a.level}"><b>${l.icon} ${l.label}</b> · ${esc(a.name)}
         <div class="small">${l.advice}</div><div class="small muted">${esc(a.detail)}</div></div>`; }).join('')
-      : data ? '<p class="small">✅ No active toxic algae advisory listed for this water.</p>' : ''}
+      : data && Date.now() - Date.parse(data.updatedAt) < 3 * 864e5 ? '<p class="small">✅ No active toxic algae advisory listed for this water.</p>'
+      : data ? '<p class="small">No advisory for this water on the last list, but that list is more than 3 days old.</p>' : ''}
     <p class="muted small">${data ? `Nevada Office of State Epidemiology list, refreshed nightly (${fmtDate(data.updatedAt)}). ` : 'Algae advisories haven’t been downloaded yet. '}Blooms can appear fast: avoid scum and keep dogs out of discolored water. <a href="${esc(portal)}" target="_blank" rel="noopener">Nevada HAB reports ↗</a></p></div>`;
 }
 
@@ -51,10 +52,17 @@ const ruleRow = w => `<div class="reg"><div><b>${esc(w.name)}</b>${w.county ? ` 
 function regsCard(lake, regs) {
   if (!regs) return `<div class="card"><h3>Fishing regulations</h3><p class="muted small">Regulations haven’t been downloaded yet. See the <a href="https://www.eregulations.com/nevada/fishing" target="_blank" rel="noopener">Nevada fishing regulations ↗</a>.</p></div>`;
   const where = regs.region ? `${regs.region} Region` : 'its region';
+  const countyName = c => `${esc(c)}${/City$/.test(c) ? '' : ' County'}`;
   return `<div class="card"><h3>Fishing regulations</h3>
-    ${regs.special.length ? regs.special.map(ruleRow).join('') : `<p class="small">No special regulations name this water, so ${esc(where)}’s general seasons and limits below apply.</p>`}
+    ${regs.tribal ? `<div class="banner hab-warning"><b>Tribal water: NDOW seasons, limits and licenses don’t apply here</b><div class="small">${esc(regs.tribal)}</div></div>` : ''}
+    ${regs.closedHere.length ? (regs.closedHere.some(c => c.whole) ? `<div class="banner hab-danger"><b>⛔ Closed to fishing</b>` : `<div class="banner hab-caution"><b>⚠️ Part of this water is closed to fishing</b>`)
+      + `${regs.closedHere.map(c => `<div class="small">${esc(c.text)}</div>`).join('')}</div>` : ''}
+    ${regs.special.length ? regs.special.map(ruleRow).join('')
+      : regs.tribal || regs.closedHere.some(c => c.whole) ? ''
+      : regs.county ? `<p class="small">No special regulations name this water, so ${esc(where)}’s general seasons and limits below apply.</p>`
+      : '<p class="small">This spot isn’t inside a Nevada county, so check which state’s rules apply here.</p>'}
     ${regs.regionRules ? `<h3 style="margin-top:10px">${esc(regs.region)} Region</h3>${regs.regionRules.general.map((s, i) => `<details${i < 2 ? ' open' : ''}><summary class="small"><b>${esc(s.title.replace(/^(Western|Southern|Eastern) Region /, ''))}</b></summary>${s.text.map(t => `<p class="small">${esc(t)}</p>`).join('')}</details>`).join('')}` : ''}
-    ${regs.closed.length ? `<details><summary class="small"><b>Closed waters in ${esc(regs.county)}${/City$/.test(regs.county) ? '' : ' County'}</b></summary>${regs.closed.map(c => `<p class="small">${esc(c.text)}</p>`).join('')}</details>` : ''}
+    ${regs.closed.length ? `<details${regs.closedHere.length ? ' open' : ''}><summary class="small"><b>Closed waters in ${countyName(regs.county)}</b></summary>${regs.closed.map(c => `<p class="small">${esc(c.text)}</p>`).join('')}</details>` : ''}
     <h3 style="margin-top:10px">Statewide rules</h3>
     ${regs.statewide.map(s => `<details><summary class="small"><b>${esc(s.title)}</b></summary>${s.text.map(t => `<p class="small">${esc(t)}</p>`).join('')}</details>`).join('')}
     <p class="muted small">${esc(regs.source)}, refreshed weekly (${fmtDate(regs.updatedAt)}); matched to this water by name${regs.county ? ` and county (${esc(regs.county)})` : ''}, so read the wording. The <a href="${esc(regs.booklet)}" target="_blank" rel="noopener">official regulations ↗</a> and posted signs are the final word.</p></div>`;

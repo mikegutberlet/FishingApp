@@ -89,7 +89,7 @@ async function ndowWaters() {
 }
 
 const TYPE = { 'Lake or Reservoir': 'Lake', 'Creek or Stream': 'Stream', River: 'River', 'Community Pond': 'Pond' };
-const isFlowing = w => /Creek|River/.test(w.ndowType ?? '') || /\b(creek|river|fork|canal|ditch|slough)\b/i.test(w.name);
+const isFlowing = w => /Creek|River/.test(w.ndowType ?? '') || (/\b(creek|river|fork|canal|ditch|slough)\b/i.test(w.name) && !/\b(pond|ponds|reservoir|lake)\b/i.test(w.name));
 
 // ---------- Map points ----------
 // NDOW pages carry no coordinates, so each water is found by name: in the USGS NHD statewide list (weekly job),
@@ -117,7 +117,9 @@ async function loadCounties() {
       polys: c.polys.map(poly => poly.map(ring => ring.map(([x, y]) => [r4(x), r4(y)]))) };
   }) });
 }
-const countyAt = (lat, lon) => COUNTIES.find(c => c.polys.some(([outer]) => inOutline([lon, lat], outer)))?.name ?? null;
+const countyIn = (lat, lon) => COUNTIES.find(c => c.polys.some(([outer]) => inOutline([lon, lat], outer)))?.name ?? null;
+// A water on the state line (Lake Mohave) can sit just outside the outlines: try points ~4 km around it (as the app does).
+const countyAt = (lat, lon) => [[0, 0], [0, 0.04], [0, -0.04], [0.04, 0], [-0.04, 0]].map(([a, b]) => countyIn(lat + a, lon + b)).find(Boolean) ?? null;
 // Fallback when the county outlines can't be fetched.
 const regionAt = (lat, lon) => { const c = countyAt(lat, lon); return c ? regionOfCounty(c) : lat < 38.0 ? 'Southern' : lon > -117.2 ? 'Eastern' : 'Western'; };
 
@@ -127,7 +129,9 @@ async function fishableWaters() {
     for (let offset = 0; ; offset += 1000) {
       const params = new URLSearchParams({ where: '1=1', outFields: 'NAME,MAP_LABEL,COUNTY_NAM', outSR: '4326', maxAllowableOffset: '0.001', resultOffset: offset, resultRecordCount: 1000, f: 'geojson' });
       const json = await getJson(`${FISHABLE}/${layer}/query?${params}`);
-      for (const f of json.features ?? []) {
+      // ArcGIS answers errors with a 200 and an error body.
+      if (json.error || !Array.isArray(json.features)) throw new Error(`fishable waters layer ${layer}: ${json.error?.message ?? 'no features'}`);
+      for (const f of json.features) {
         const g = f.geometry;
         if (!g) continue;
         const pts = g.type === 'Polygon' ? g.coordinates[0] : g.type === 'MultiPolygon' ? g.coordinates.sort((a, b) => b[0].length - a[0].length)[0][0]
@@ -212,11 +216,12 @@ async function pickPoint(w, sources) {
   const { names, where } = parseName(w.name);
   const keys = new Set(names.map(norm).filter(k => k.length >= 3));
   if (!keys.size) return null;
-  const flowing = isFlowing(w);
+  const flowing = isFlowing(w), pond = /\bponds?\b/i.test(w.name);
   const county = where && COUNTIES.find(c => c.name.toLowerCase() === where.toLowerCase())?.name;
   const near = where && !county ? (await geocode(where))?.[0] : null;
   for (const [via, list] of sources) {
-    let same = list.filter(c => keys.has(norm(c.name)) && (c.kind === 'stream') === flowing && inOutline([c.lon, c.lat], NV.outline));
+    // A pond isn't the big lake or reservoir of the same name ("Verdi Pond" vs Verdi Lake).
+    let same = list.filter(c => keys.has(norm(c.name)) && (c.kind === 'stream') === flowing && inOutline([c.lon, c.lat], NV.outline) && !(pond && c.acres > 200));
     if (!same.length) continue;
     if (county) same = same.filter(c => countyAt(c.lat, c.lon) === county);
     else if (near) {
@@ -225,8 +230,8 @@ async function pickPoint(w, sources) {
       if (same[0]?.kind === 'lake' && same[0].acres > 2000 && same[0].d <= 15) return { lat: near.lat, lon: near.lon, via: `${via}+osm` };
     } else if (w.region && REGION[w.region]) {
       const inRegion = same.filter(c => regionAt(c.lat, c.lon) === w.region);
-      // Several same-named waters and none in the right region: better no point than the wrong creek.
-      same = inRegion.length ? inRegion : new Set(same.map(c => c.line ?? `${c.lat},${c.lon}`)).size === 1 ? same : [];
+      // None in the right region: better no point than the wrong water (OpenStreetMap is asked next).
+      same = inRegion;
     }
     if (!same.length) continue;
     // A stream's middle label point; otherwise the biggest lake.
@@ -263,6 +268,17 @@ async function buildWaters(raw) {
       lastYearStocked: plants.length ? +plants.at(-1).slice(0, 4) : null,
     });
   }
+  // The NDOW layer or county outlines failed: keep last run's point for any water that has none now.
+  if (report.fishableError || report.countiesError) {
+    const old = new Map(((await readOld('waters.json'))?.waters ?? []).map(w => [w.id, w]));
+    let kept = 0;
+    for (const w of waters) {
+      const o = old.get(w.id);
+      if (w.lat == null && o?.lat != null) { Object.assign(w, { lat: o.lat, lon: o.lon, via: o.via, county: o.county, acres: o.acres }); kept++; }
+      else if (w.county == null && o?.county) w.county = o.county;
+    }
+    report.points.keptFromLastRun = kept;
+  }
   report.points.unmatched = unmatched;
   report.points.geocoderCalls = geoCalls;
   await save('geocode-cache.json', GEO);
@@ -296,12 +312,17 @@ async function buildPlants(raw) {
 // ---------- Lake levels ----------
 const titleCase = s => s.toLowerCase().replace(/\b[a-z]/g, c => c.toUpperCase()).replace(/\bNr\b/g, 'near').replace(/\bRes\b/g, 'Reservoir').replace(/, (Nv|Ca)$/, m => m.toUpperCase());
 
+const EXTRA_USGS_SITES = ['10337000'];
 async function usgsLevels() {
   const PARAMS = '62614,62615,00062,00054';
-  const rdb = await (await get(`https://waterservices.usgs.gov/nwis/site/?format=rdb&stateCd=nv&siteType=LK&parameterCd=${PARAMS}&siteStatus=active&hasDataTypeCd=dv`)).text();
-  const lines = rdb.split('\n').filter(l => l && !l.startsWith('#'));
-  const head = lines[0].split('\t');
-  const sites = lines.slice(2).map(l => Object.fromEntries(l.split('\t').map((v, i) => [head[i], v.trim()])));
+  const siteList = async query => {
+    const rdb = await (await get(`https://waterservices.usgs.gov/nwis/site/?format=rdb&${query}&parameterCd=${PARAMS}&siteStatus=active&hasDataTypeCd=dv`)).text();
+    const lines = rdb.split('\n').filter(l => l && !l.startsWith('#'));
+    const head = lines[0]?.split('\t') ?? [];
+    return lines.slice(2).map(l => Object.fromEntries(l.split('\t').map((v, i) => [head[i], v.trim()])));
+  };
+  // Lake Tahoe's gauge is at Tahoe City, California, but the lake's Nevada shore needs it too.
+  const sites = [...await siteList('stateCd=nv&siteType=LK'), ...await siteList(`sites=${EXTRA_USGS_SITES.join(',')}`).catch(() => [])];
   report.usgs = { sites: sites.map(s => `${s.site_no} ${s.station_nm}`) };
   if (!sites.length) return [];
   const dv = await getJson(`https://waterservices.usgs.gov/nwis/dv/?format=json&sites=${sites.map(s => s.site_no).join(',')}&parameterCd=${PARAMS}&period=P60D&siteStatus=all`);
@@ -327,7 +348,8 @@ async function usgsLevels() {
 // Reclamation's RISE API: Lake Mead (Hoover Dam) and Lake Mohave (Davis Dam) daily elevation and storage.
 const RISE = 'https://data.usbr.gov';
 const RISE_HEADERS = { ...UA, Accept: 'application/vnd.api+json' };
-const RISE_LAKES = [{ location: 3514, id: 'MEAD', name: 'Lake Mead' }, { location: 3513, id: 'MOHAVE', name: 'Lake Mohave' }];
+// RISE places each gauge at its dam; the app matches gauges to waters by distance, so store a point on the lake.
+const RISE_LAKES = [{ location: 3514, id: 'MEAD', name: 'Lake Mead', lat: 36.16237, lon: -114.39388 }, { location: 3513, id: 'MOHAVE', name: 'Lake Mohave', lat: 35.47811, lon: -114.65932 }];
 async function riseLevels() {
   const out = [];
   report.rise = {};
@@ -359,7 +381,7 @@ async function riseLevels() {
       };
       const elevation = await series(picked.elevation), storage = await series(picked.storage);
       log.points = { elevation: elevation.length, storage: storage.length };
-      if (elevation.length || storage.length) out.push({ id: lake.id, name: lake.name, lat: round(lat), lon: round(lon), source: 'USBR', elevation, storage });
+      if (elevation.length || storage.length) out.push({ id: lake.id, name: lake.name, lat: round(lake.lat ?? lat), lon: round(lake.lon ?? lon), source: 'USBR', elevation, storage });
     } catch (e) { log.error = e.message; }
   }
   return out;
@@ -379,18 +401,26 @@ async function habAdvisories(waters) {
   const lakes = (await readOld('lakes.json'))?.lakes ?? [];
   const advisories = [];
   for (const m of section.matchAll(/<summary[^>]*>([\s\S]*?)<\/summary>([\s\S]*?)<\/details>/g)) {
-    const name = text(m[1]).replace(/,\s*[^,]*,\s*NV$/i, '').trim();
+    const summary = text(m[1]);
+    const name = summary.replace(/,\s*[^,]*,\s*NV$/i, '').trim();
     const body = text(m[2]);
-    // The newest change comes first; "upgraded/downgraded ... to a HAB Danger" beats the first level mentioned.
-    const moved = body.match(/(?:upgraded|downgraded|lowered|raised|changed|placed on)[^.]*?\bHAB (Watch|Warning|Danger)/i);
-    const level = (moved ?? body.match(/\bHAB (Watch|Warning|Danger)/i))?.[1];
+    // "Mountain View Pond, Gardnerville, NV" or "... in Gardnerville, NV": the town tells same-named ponds apart.
+    const town = summary.match(/,\s*([^,]+),\s*NV$/i)?.[1] ?? body.match(/\bin ([A-Z][\w .]+?), NV\b/)?.[1] ?? null;
+    // The newest change comes first. "lowered from a HAB Warning to a HAB Watch" is a Watch: take the level after
+    // "to", then "placed on / downgraded to", then the first level mentioned.
+    const level = (body.match(/\bto an? HAB (Watch|Warning|Danger)/i) ?? body.match(/(?:upgraded|downgraded|lowered|raised|changed|placed on|returned)(?: to)? an? HAB (Watch|Warning|Danger)/i)
+      ?? body.match(/\bHAB (Watch|Warning|Danger)/i))?.[1];
     if (!level) continue;
     const dm = body.match(/\b(\d{1,2})\/(\d{1,2})\/(\d{2,4})\b/);
     const date = dm ? `${dm[3].length === 2 ? '20' + dm[3] : dm[3]}-${dm[1].padStart(2, '0')}-${dm[2].padStart(2, '0')}` : null;
     const key = norm(name.split(/\s+(?:including|incl\.?)\s+|[(,]/i)[0]);
-    const spot = waters.find(w => w.lat != null && norm(parseName(w.name).names.at(-1)) === key) ?? lakes.filter(l => norm(l.name) === key).sort((a, b) => b.acres - a.acres)[0];
-    advisories.push({ name, level: HAB_LEVEL[level.toLowerCase()], advisory: `HAB ${level[0].toUpperCase()}${level.slice(1).toLowerCase()}`, date, detail: body.length > 400 ? body.slice(0, body.lastIndexOf('.', 400) + 1 || 400) : body, landmark: '', lat: spot?.lat ?? null, lon: spot?.lon ?? null });
+    let spot = waters.find(w => w.lat != null && norm(parseName(w.name).names.at(-1)) === key) ?? lakes.filter(l => norm(l.name) === key).sort((a, b) => b.acres - a.acres)[0];
+    const townAt = town ? (await geocode(town))?.[0] : null;
+    if (townAt && (!spot || countyAt(spot.lat, spot.lon) !== countyAt(townAt.lat, townAt.lon))) spot = townAt;
+    advisories.push({ name, town, level: HAB_LEVEL[level.toLowerCase()], advisory: `HAB ${level[0].toUpperCase()}${level.slice(1).toLowerCase()}`, date, detail: body.length > 400 ? body.slice(0, body.lastIndexOf('.', 400) + 1 || 400) : body, landmark: '', lat: spot?.lat ?? null, lon: spot?.lon ?? null });
   }
+  // Nothing parsed from a section that still talks about advisories: the markup changed. Keep last night's list.
+  if (!advisories.length && /HAB|advisory/i.test(text(section).replace(/Active HAB Reports/i, '')) && !/no active/i.test(text(section))) throw new Error('Active HAB section not parsed');
   report.hab = advisories.map(a => `${a.name}: ${a.advisory} ${a.date} ${a.lat != null ? 'located' : 'NO POINT'}`);
   return { updatedAt: new Date().toISOString(), source: url, portal: url, advisories };
 }
@@ -413,13 +443,21 @@ if (raw?.length) {
 const reservoirs = [];
 try { reservoirs.push(...await usgsLevels()); } catch (e) { report.usgsError = e.message; console.error('usgs:', e.message); }
 try { reservoirs.push(...await riseLevels()); } catch (e) { report.riseError = e.message; console.error('rise:', e.message); }
+// A source that was down keeps last run's stations (their last dated reading shows their age).
+const oldRes = (await readOld('reservoirs.json'))?.reservoirs ?? [];
+const kept = oldRes.filter(o => !reservoirs.some(r => r.id === o.id));
+if (reservoirs.length) report.keptStations = kept.map(o => o.id);
+reservoirs.push(...(reservoirs.length ? kept : []));
 if (reservoirs.length) {
   await save('reservoirs.json', { updatedAt: new Date().toISOString(), source: 'USGS Water Services and Reclamation RISE', units: { elevation: 'ft', storage: 'acre-ft' }, reservoirs });
 }
 report.reservoirs = reservoirs.map(r => `${r.source} ${r.id} ${r.name}: ${r.elevation.at(-1)?.join(' ') ?? '-'} / ${r.storage.at(-1)?.join(' ') ?? '-'}`);
 
+if (!Object.keys(GEO).length) GEO = (await readOld('geocode-cache.json')) ?? {};
 try { await save('hab.json', await habAdvisories(waters ?? (await readOld('waters.json'))?.waters ?? [])); } catch (e) { report.habError = e.message; console.error('hab:', e.message); }
+await save('geocode-cache.json', GEO);
 
 report.finishedAt = new Date().toISOString();
+if (report.ndowError || report.watersError || report.plantsError || report.habError || report.fishableError) process.exitCode = 1;
 await writeFile(new URL('update-report.json', OUT), JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify(report, null, 2).slice(0, 6000));

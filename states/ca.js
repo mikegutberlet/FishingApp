@@ -17,7 +17,8 @@ export const agency = 'CDFW';
 export const stockField = 'cdfwStockId';
 export const levelSource = 'CDEC';
 export const bbox = [-124.5, 32.5, -114.1, 42.05];
-export const outline = [[-125, 42], [-120.0, 42], [-120.0, 39.0], [-114.63, 35.0], [-114.57, 34.8], [-114.13, 34.27], [-114.72, 32.72], [-117.12, 32.53], [-125, 32.53]];
+// The oblique Nevada line is a geodesic, so it is drawn with vertices (a straight lat/lon edge is up to 10 km off).
+export const outline = [[-125, 42], [-120.0, 42], [-120.0, 39.0], [-119.298, 38.514], [-118.605, 38.024], [-117.92, 37.529], [-117.244, 37.03], [-116.577, 36.528], [-115.919, 36.022], [-115.27, 35.512], [-114.63, 35.0], [-114.57, 34.8], [-114.13, 34.27], [-114.5, 33.05], [-114.44, 32.92], [-114.46, 32.8], [-114.53, 32.745], [-114.72, 32.72], [-117.12, 32.53], [-125, 32.53]];
 export const plantsNote = 'CDFW publishes the week and species, not counts. History grows each night from the public schedule.';
 export const searchHint = 'Shasta, Kern River, Convict…';
 export const stockedHint = 'Lake Cachuma, Shasta, Mono…';

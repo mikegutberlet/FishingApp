@@ -5,9 +5,23 @@ import { haversineKm } from '../data-sources.js';
 export const norm = s => (s ?? '').toLowerCase().replace(/\b(lake|reservoir|river|creek|pond|the|of)\b|[^a-z0-9]/g, '');
 export const isRiver = lake => lake.kind === 'river' || /river|creek|stream|slough|canal/i.test(lake.type ?? '');
 
+// Does a free-text place ("West Walker River near Coleville") name this water? Whole words only, so Lake Mead is
+// not "Truckee Meadows", and a lake is not the river of the same name (Carson Lake vs Carson River).
+const TYPE_WORDS = /\b(lake|lakes|reservoir|pond|river|creek|slough|wash)\b/i;
+function namedIn(lake) {
+  const words = String(lake.name ?? '').toLowerCase().replace(/\b(lake|reservoir|river|creek|pond|the|of)\b/g, ' ').match(/[a-z0-9]+/g) ?? [];
+  if (words.join('').length < 4) return () => false;
+  const re = new RegExp(`\\b${words.join('\\W+')}\\b`, 'i');
+  const type = isRiver(lake) ? /\b(river|creek|slough|wash)\b/i : /\b(lake|lakes|reservoir|pond)\b/i;
+  return locality => !!locality && re.test(locality) && (!TYPE_WORDS.test(locality) || type.test(locality));
+}
+
 export function stateData(dir, code) {
   const cache = {};
-  const load = name => cache[name] ??= fetch(`data/${dir}/${name}.json`).then(r => r.ok ? r.json() : null).catch(() => null);
+  // A failed fetch (offline, or the file isn't there yet) is tried again after 30 s rather than kept for the session.
+  const get = (key, url) => cache[key] ??= fetch(url).then(r => r.ok ? r.json() : Promise.reject(new Error(r.status)))
+    .catch(() => { setTimeout(() => delete cache[key], 30000); return null; });
+  const load = name => get(name, `data/${dir}/${name}.json`);
 
   // Every stocked water with a map point, newest stocking first, plus its stocking history.
   async function waters() {
@@ -51,10 +65,11 @@ export function stateData(dir, code) {
     const key = norm(name);
     const best = r.reservoirs
       .map(s => ({ ...s, distKm: haversineKm(lat, lon, s.lat, s.lon), named: key.length > 2 && norm(s.name).includes(key) }))
-      .filter(s => s.distKm <= maxKm)
+      // A named gauge may sit at the dam, far from the middle of a big lake (Lake Mead's is 35 km off).
+      .filter(s => s.distKm <= (s.named ? Math.max(maxKm, Math.sqrt((acres ?? 0) / 247) * 4) : maxKm))
       .sort((a, b) => (b.named - a.named) || a.distKm - b.distKm)[0];
     if (!best) return null;
-    const limit = best.named ? maxKm : Math.max(3, Math.sqrt((acres ?? 0) / 247) * 2.5);
+    const limit = best.named ? Infinity : Math.max(3, Math.sqrt((acres ?? 0) / 247) * 2.5);
     return best.distKm <= limit ? { ...best, updatedAt: r.updatedAt } : null;
   }
 
@@ -84,10 +99,10 @@ export function stateData(dir, code) {
     const h = await load('history');
     if (!h) return { note: '', statewide: [], local: [] };
     const radius = isRiver(lake) ? 3 : Math.max(1.5, Math.sqrt((lake.acres ?? 50) / 247) * 1.5);
-    const key = norm(lake.name);
+    const named = namedIn(lake);
     const seen = new Set();
     const local = h.places
-      .filter(([lat, lon, , , locality]) => (key.length > 3 && norm(locality).includes(key)) || haversineKm(lake.lat, lake.lon, lat, lon) <= radius)
+      .filter(([lat, lon, , , locality]) => named(locality) || haversineKm(lake.lat, lake.lon, lat, lon) <= radius)
       .filter(([, , year, species]) => !seen.has(`${year}|${species}`) && seen.add(`${year}|${species}`))
       .map(([, , year, species, locality, status]) => ({ year: String(year), text: `${species}${locality ? ` (${locality})` : ''}${status ? ` · ${status.toLowerCase()}` : ''}` }));
     return { note: h.note, statewide: h.statewide, local };
@@ -108,7 +123,7 @@ export function stateData(dir, code) {
 
   // Public depth-contour surveys covering this water.
   async function bathymetryFor(lake) {
-    const idx = cache.bathy ??= fetch(`data/${dir}/bathymetry/index.json`).then(r => r.ok ? r.json() : null).catch(() => null);
+    const idx = get('bathy', `data/${dir}/bathymetry/index.json`);
     const surveys = (await idx)?.surveys ?? [];
     const pad = 0.01;
     return surveys.filter(s => lake.lat >= s.bbox[1] - pad && lake.lat <= s.bbox[3] + pad && lake.lon >= s.bbox[0] - pad && lake.lon <= s.bbox[2] + pad);

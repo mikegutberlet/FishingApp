@@ -1,6 +1,6 @@
 // The map: base layers, overlays, statewide water labels, your lakes and catches, and depth display.
 import { db } from './db.js';
-import { list as stateList, statesIn, forLake } from './states/index.js';
+import { list as stateList, statesIn, forLake, reservoirFor } from './states/index.js';
 import { $, esc, fmtDate, status, M_TO_FT, showView, onShow } from './ui.js';
 import { openWater } from './views/lake.js';
 import { editLake } from './views/lakes.js';
@@ -165,7 +165,7 @@ export async function showDepthSet(setId) {
 // Contour surveys store elevations; depth = surface elevation - contour elevation.
 export async function showSurvey(survey, lake) {
   const S = forLake(lake);
-  const [gj, res] = await Promise.all([fetch(S.bathymetryUrl(survey.id)).then(r => r.json()), S.nearestReservoir(lake.lat, lake.lon, lake.cdecStation, { name: lake.name, acres: lake.acres })]);
+  const [gj, res] = await Promise.all([fetch(S.bathymetryUrl(survey.id)).then(r => r.json()), reservoirFor(lake)]);
   const toFt = survey.units === 'm' ? M_TO_FT : 1;
   const current = res?.elevation?.at(-1)?.[1];
   // Only trust the gauge level if it falls within the survey's range (same datum, same lake).

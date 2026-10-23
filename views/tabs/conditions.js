@@ -1,6 +1,6 @@
 // Conditions tab: weather alerts, weather now, bite windows, 24 hours and 10 days, wind on the water,
 // lake level (CDEC), USGS gauges with flow vs normal, and Windy.
-import { forLake } from '../../states/index.js';
+import { reservoirFor } from '../../states/index.js';
 import { pressureTrend, fetchUsgsNearby, moonPhase, WEATHER_CODES, compass } from '../../data-sources.js';
 import { weatherFor, fetchAlerts, alertLevel, fetchFlowStats, flowRating } from '../../forecast.js';
 import { solunar, dayRating, stars, windowAt, windowLabel, windowSpan, shortTime } from '../../solunar.js';
@@ -54,7 +54,7 @@ export async function renderConditions(lake, body) {
     $('#windcard').innerHTML = `<h3>Wind on the water</h3><div class="wind-card">${windSvg(x)}<div class="small">${windText(x)}</div></div>`;
     $('#windcard').classList.remove('hidden');
   } catch (e) { if (body.isConnected) $('#wx').textContent = `Weather: ${e.message} (offline?)`; }
-  forLake(lake)?.nearestReservoir(lake.lat, lake.lon, lake.cdecStation, { name: lake.name, acres: lake.acres }).then(r => {
+  reservoirFor(lake).then(r => {
     if (!r || !body.isConnected) return;
     const el = $('#res'), e = r.elevation, s = r.storage;
     const change = days => e.length > days ? (e.at(-1)[1] - e.at(-1 - days)[1]) : null;

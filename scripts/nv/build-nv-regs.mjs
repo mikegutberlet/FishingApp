@@ -6,7 +6,7 @@
 //
 // Run by .github/workflows/nevada-weekly.yml. Only public data.
 
-import { writeFile, mkdir, rm } from 'node:fs/promises';
+import { writeFile, readFile, mkdir, rm } from 'node:fs/promises';
 
 const OUT = new URL('../../data/nv/', import.meta.url);
 const BASE = 'https://www.eregulations.com/nevada/fishing';
@@ -149,21 +149,33 @@ for (const [k, path] of Object.entries(pages)) {
   } catch (e) { report.pages[k] = { error: e.message }; }
 }
 
+// A region page that failed or came back without its special-regulations table keeps last run's rules for that
+// region, so one bad page can't drop a region's rules (or its "don't eat" advisories) for a week.
+const readOld = async name => { try { return JSON.parse(await readFile(new URL(name, OUT), 'utf8')); } catch { return null; } };
+const oldRegs = await readOld('regs.json'), oldAdvisories = await readOld('advisories.json');
 const regions = {}, waters = [], advisories = [], closed = [];
 for (const [k, region] of [['western', 'Western'], ['southern', 'Southern'], ['eastern', 'Eastern']]) {
   const p = parsed[k];
-  if (!p) continue;
-  const t = regionTables(region, p.sections);
+  const t = p ? regionTables(region, p.sections) : null;
+  if (!t?.waters.length) {
+    report.regsError = `${report.regsError ? report.regsError + '; ' : ''}${region} page ${p ? 'had no special regulations' : 'failed'}, kept last run's`;
+    if (oldRegs?.regions[region]) regions[region] = oldRegs.regions[region];
+    waters.push(...(oldRegs?.waters ?? []).filter(w => w.region === region));
+    closed.push(...(oldRegs?.closed ?? []).filter(c => c.region === region));
+    advisories.push(...(oldAdvisories?.advisories ?? []).filter(a => a.region === region));
+    continue;
+  }
   waters.push(...t.waters); advisories.push(...t.advisories); closed.push(...t.closed.map(c => ({ ...c, region })));
   const general = p.sections.filter(s => /General Regulations|Daily Limits|Possession Limits|Artificial Lure|Tackle Restrictions|Bait Regulations/i.test(s.title))
     .map(s => ({ title: s.title, text: s.text.filter(x => !SKIP.test(x) && !/^Interstate Waters|^Lake Tahoe and Topaz Lake:/i.test(x)) })).filter(s => s.text.length);
   regions[region] = { url: p.url, general, intro: p.sections[0]?.text.filter(x => !SKIP.test(x)).slice(0, 3) ?? [] };
   report.pages[k].waters = t.waters.length; report.pages[k].advisories = t.advisories.length; report.pages[k].closed = t.closed.length;
 }
-for (const a of advisories) a.areas = AREAS.filter(([re]) => re.test(a.area)).map(([, x]) => x);
+for (const a of advisories) a.areas ??= AREAS.filter(([re]) => re.test(a.area)).map(([, x]) => x);
 report.sampleWaters = waters.slice(0, 8);
 report.advisories = advisories;
 
+if (!parsed.statewide) report.regsError = `${report.regsError ? report.regsError + '; ' : ''}statewide page failed, kept last run's regs.json`;
 if (waters.length && parsed.statewide) {
   await writeFile(new URL('regs.json', OUT), JSON.stringify({
     updatedAt: new Date().toISOString(), source: 'Nevada Fishing Regulations (NDOW Commission Regulation), published on eRegulations', booklet: BASE,
@@ -181,4 +193,5 @@ if (advisories.length) {
 await rm(new URL('regs-raw.json', OUT), { force: true }); // debugging output of the first runs
 report.finishedAt = new Date().toISOString();
 await writeFile(new URL('regs-report.json', OUT), JSON.stringify(report, null, 1) + '\n');
+if (report.regsError) { console.error('regs:', report.regsError); process.exitCode = 1; }
 console.log(JSON.stringify(Object.fromEntries(Object.entries(report.pages).map(([k, v]) => [k, v.error ?? { waters: v.waters, advisories: v.advisories, closed: v.closed }])), null, 1));
