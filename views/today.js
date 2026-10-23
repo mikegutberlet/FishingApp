@@ -14,9 +14,11 @@ import { openLake } from './lake.js';
 const insights = [];
 export const registerTodayInsight = fn => insights.push(fn);
 
+// Re-reads the lake first: the page's copy can be stale (the Stocking tab saves plantsSeen on the same record).
 export async function toggleFavorite(lake, btn) {
-  lake.favorite = !lake.favorite;
-  await db.put('lakes', lake);
+  const fresh = (await db.get('lakes', lake.id)) ?? lake;
+  fresh.favorite = lake.favorite = !lake.favorite;
+  await db.put('lakes', fresh);
   if (btn) { btn.textContent = lake.favorite ? '★' : '☆'; btn.title = lake.favorite ? 'On your Today screen' : 'Add to your Today screen'; }
 }
 

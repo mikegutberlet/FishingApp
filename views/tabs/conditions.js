@@ -67,7 +67,7 @@ export async function renderConditions(lake, body) {
     const signed = v => v == null ? '–' : `${v > 0 ? '+' : ''}${v.toFixed(1)} ft`;
     el.innerHTML = `<h3>Lake level · ${esc(r.name)}</h3><div class="grid">
       ${e.length ? `<div class="stat"><b>${e.at(-1)[1].toLocaleString()} ft</b><span>Elevation ${fmtDate(e.at(-1)[0] + 'T12:00')}</span></div>
-      <div class="stat"><b>${signed(change(7))}</b><span>Last 7 days</span></div><div class="stat"><b>${signed(change(30))}</b><span>Last 30 days</span></div>` : ''}
+      <div class="stat"><b>${signed(change(7))}</b><span>Last 7 days</span></div><div class="stat"><b>${signed(change(28))}</b><span>Last 4 weeks</span></div>` : ''}
       ${s.length ? `<div class="stat"><b>${Math.round(s.at(-1)[1]).toLocaleString()}</b><span>Storage, acre-ft</span></div>` : ''}</div>
       <p class="muted small">CDEC station ${esc(r.id)} · ${r.distKm.toFixed(1)} km away${lake.cdecStation ? '' : ' · wrong lake? set the station under Edit'}</p>`;
     el.classList.remove('hidden');

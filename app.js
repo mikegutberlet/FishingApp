@@ -47,5 +47,6 @@ refreshMap().then(async () => {
   if (lakes.length) lakeBounds = L.latLngBounds(lakes.map(l => [l.lat, l.lon])).pad(0.3);
   frame();
 });
-onShow('map', frame);
+// Size the map as soon as it's shown, so a fitBounds right after showView('map') (depth maps, surveys) sees its real size.
+onShow('map', () => { map.invalidateSize(); frame(); });
 window.__app = { db, openLake, showView, openWater, CA }; window.__map = map; // handy for debugging from the console

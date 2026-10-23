@@ -64,7 +64,7 @@ export async function scoreDay(lake, w, date) {
   // Best time: the bite window with the least wind, preferring ones near sunrise or sunset.
   const windAt = t => { const j = w.hourly.time.findIndex(x => Date.parse(x) >= t); return j < 0 ? 99 : w.hourly.wind_speed_10m[j]; };
   const light = [d('sunrise'), d('sunset')].map(Date.parse);
-  const awake = sol.windows.filter(x => new Date(x.peak).getHours() >= 5 && new Date(x.peak).getHours() <= 21);
+  const awake = sol.windows.filter(x => new Date(x.peak).getHours() >= 5 && new Date(x.peak).getHours() <= 21 && x.end > Date.now()); // not one that's over
   const best = awake.map(x => ({ x, v: windAt(x.peak) - (light.some(s => Math.abs(s - x.peak) < 2 * 3600e3) ? 6 : 0) - (x.type === 'major' ? 2 : 0) })).sort((a, b) => a.v - b.v)[0]?.x;
   return { score: Math.max(0, Math.min(10, score)), reasons, best, summary: `${WEATHER_CODES[code] ?? ''}, ${Math.round(d('temperature_2m_min'))}–${Math.round(hi)}°` };
 }
