@@ -124,6 +124,8 @@ export async function importAll(data, { replace = false } = {}) {
   for (const name of STORES) {
     if (replace) await db.clear(name);
     for (const row of data[name]) {
+      // Merging keeps whichever copy was edited last, so an old backup can't undo newer work on this device.
+      if (!replace && (await db.get(name, row.id))?.updatedAt > (row.updatedAt ?? '')) continue;
       if (typeof row.photo === 'string' && row.photo.startsWith('data:')) row.photo = await dataUrlToBlob(row.photo);
       await tx(name, 'readwrite', s => s.put(row));
     }

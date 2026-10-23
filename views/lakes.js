@@ -25,7 +25,7 @@ async function renderFindAny() {
   list.innerHTML = `<button id="back">‹ My waters</button><h2>California lakes & rivers</h2>
     <div class="card form"><label>Name <input id="asearch" type="search" placeholder="Shasta, Kern River, Convict…" autofocus></label></div>
     <div id="aresults" class="muted">Type a name to search ${statewide ? (statewide.lakes.length + new Set(statewide.riverLabels.map(r => r.id)).size).toLocaleString() : ''} waters.</div>`;
-  $('#back').onclick = renderLakeList;
+  $('#back', list).onclick = renderLakeList;
   statewide ??= await CA.statewide();
   const rivers = [...new Map(statewide.riverLabels.map(r => [r.id, r])).values()];
   const draw = () => {
@@ -48,7 +48,7 @@ async function renderFindWaters() {
     <div class="card form"><label>Search by name or county <input id="wsearch" type="search" placeholder="Lake Cachuma, Shasta, Mono…"></label>
       <label class="check"><input type="checkbox" id="wrecent" checked> Planted in the last 30 days or coming up</label></div>
     <div id="wresults" class="muted">Loading CDFW data…</div><p class="muted small" id="wdates"></p>`;
-  $('#back').onclick = renderLakeList;
+  $('#back', list).onclick = renderLakeList;
   const [all, mine, dates] = await Promise.all([CA.waters(), db.all('lakes'), CA.dataDates()]);
   if (!all.length) { $('#wresults').textContent = 'California data has not been downloaded yet. It refreshes nightly; check back tomorrow.'; return; }
   $('#wdates').textContent = `CDFW planting schedule, updated ${fmtDate(dates.plants)}. Plants are subject to change.`;
@@ -110,7 +110,7 @@ export function editLake(lake) {
         <label>Lon <input name="lon" type="number" step="any" required value="${lake.lon ?? ''}"></label></div>
       <button class="primary">Save</button>
     </form>${lake.id ? '<button class="danger" id="del-lake">Delete this lake and everything logged on it</button>' : ''}`;
-  $('#back').onclick = () => lake.id ? openLake(lake.id) : renderLakeList();
+  $('#back', d).onclick = () => lake.id ? openLake(lake.id) : renderLakeList();
   $('#lake-form').onsubmit = async e => {
     e.preventDefault();
     const f = Object.fromEntries(new FormData(e.target));

@@ -56,7 +56,7 @@ export async function openLake(id, tab = 'conditions') {
     <h2>${esc(lake.name)}</h2>
     <div class="tabs">${Object.entries(LAKE_TABS).map(([k, t]) => `<button data-tab="${k}" class="${k === tab ? 'active' : ''}">${t.label}</button>`).join('')}</div>
     <div id="tab-body"></div>`;
-  $('#back').onclick = renderLakeList;
+  $('#back', d).onclick = renderLakeList;
   $('#edit').onclick = () => editLake(lake);
   $('#center').onclick = () => { showView('map'); map.setView([lake.lat, lake.lon], 14); };
   $('#share').onclick = () => shareLake(lake);
@@ -74,7 +74,7 @@ function openUnsaved(lake, tab) {
     <h2>${esc(lake.name)}</h2><div class="muted small">${esc(lake.type)}${lake.acres ? ` · ${lake.acres.toLocaleString()} acres` : ''}${lake.lengthKm ? ` · ${Math.round(lake.lengthKm * 0.621)} mi` : ''}${lake.maxDepth ? ` · max depth ${lake.maxDepth} ft` : ''}</div>
     <div class="tabs">${WATER_TABS.map(k => `<button data-tab="${k}" class="${k === tab ? 'active' : ''}">${LAKE_TABS[k].label}</button>`).join('')}</div>
     <div id="tab-body"></div>`;
-  $('#back').onclick = () => showView('map');
+  $('#back', d).onclick = () => showView('map');
   $('#save').onclick = () => saveWater(lake, tab);
   d.querySelectorAll('.tabs button').forEach(b => b.onclick = () => openUnsaved(lake, b.dataset.tab));
   LAKE_TABS[tab].render(lake, $('#tab-body'));
