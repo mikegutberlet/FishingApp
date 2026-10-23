@@ -390,6 +390,8 @@ async function riseLevels() {
 // ---------- Toxic algae ----------
 const HAB_LEVEL = { watch: 'caution', warning: 'warning', danger: 'danger' };
 async function habAdvisories(waters) {
+  // The town check needs county outlines even on a night the waters build didn't load them.
+  if (!COUNTIES.length) COUNTIES = (await readOld('counties.json'))?.counties ?? [];
   const url = 'https://nvose.org/hot-topic-harmful-algal-blooms/';
   const html = await (await get(url, { headers: BROWSER })).text();
   // The page has accordions per year: "Active HAB Reports" first, then inactive and past years.

@@ -38,7 +38,16 @@ export async function reservoirFor(lake) {
       if (r && r.id.toUpperCase() === String(lake.cdecStation).toUpperCase()) return r;
     }
   }
-  return S ? S.nearestReservoir(lake.lat, lake.lon, null, opts) : null;
+  // A gauge named for this water beats an unnamed nearby one, even across the state line (Lake Tahoe's
+  // Nevada shore and California's Tahoe City gauge).
+  const own = S ? await S.nearestReservoir(lake.lat, lake.lon, null, opts) : null;
+  if (own?.named) return own;
+  const base = String(lake.name ?? '').split(/\s+[–—-]\s+/)[0];
+  for (const st of list.filter(x => x !== S)) {
+    const r = await st.nearestReservoir(lake.lat, lake.lon, null, { ...opts, name: base, maxKm: 40 });
+    if (r?.named) return r;
+  }
+  return own;
 }
 
 // The state's stocked-water id saved on a lake (CDFW stock id, NDOW water slug), or null.

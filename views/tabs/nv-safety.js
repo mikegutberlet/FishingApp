@@ -59,6 +59,7 @@ function regsCard(lake, regs) {
       + `${regs.closedHere.map(c => `<div class="small">${esc(c.text)}</div>`).join('')}</div>` : ''}
     ${regs.special.length ? regs.special.map(ruleRow).join('')
       : regs.tribal || regs.closedHere.some(c => c.whole) ? ''
+      : regs.county && regs.closedHere.length ? `<p class="small">Where it’s open, ${esc(where)}’s general seasons and limits below apply.</p>`
       : regs.county ? `<p class="small">No special regulations name this water, so ${esc(where)}’s general seasons and limits below apply.</p>`
       : '<p class="small">This spot isn’t inside a Nevada county, so check which state’s rules apply here.</p>'}
     ${regs.regionRules ? `<h3 style="margin-top:10px">${esc(regs.region)} Region</h3>${regs.regionRules.general.map((s, i) => `<details${i < 2 ? ' open' : ''}><summary class="small"><b>${esc(s.title.replace(/^(Western|Southern|Eastern) Region /, ''))}</b></summary>${s.text.map(t => `<p class="small">${esc(t)}</p>`).join('')}</details>`).join('')}` : ''}

@@ -9,7 +9,14 @@ export const isRiver = lake => lake.kind === 'river' || /river|creek|stream|slou
 // not "Truckee Meadows", and a lake is not the river of the same name (Carson Lake vs Carson River).
 const TYPE_WORDS = /\b(lake|lakes|reservoir|pond|river|creek|slough|wash)\b/i;
 function namedIn(lake) {
-  const words = String(lake.name ?? '').toLowerCase().replace(/\b(lake|reservoir|river|creek|pond|the|of)\b/g, ' ').match(/[a-z0-9]+/g) ?? [];
+  const name = String(lake.name ?? '').toLowerCase().split(/\s+[–—-]\s+/)[0];
+  // A name with its type word ("Walker Lake") must appear whole: "West Walker River" isn't it.
+  const full = name.match(/[a-z0-9]+/g) ?? [];
+  if (TYPE_WORDS.test(name) && full.join('').length >= 6) {
+    const re = new RegExp(`\\b${full.join('\\W+')}\\b`, 'i');
+    return locality => !!locality && re.test(locality);
+  }
+  const words = name.replace(/\b(lake|reservoir|river|creek|pond|the|of)\b/g, ' ').match(/[a-z0-9]+/g) ?? [];
   if (words.join('').length < 4) return () => false;
   const re = new RegExp(`\\b${words.join('\\W+')}\\b`, 'i');
   const type = isRiver(lake) ? /\b(river|creek|slough|wash)\b/i : /\b(lake|lakes|reservoir|pond)\b/i;
@@ -66,7 +73,8 @@ export function stateData(dir, code) {
     const best = r.reservoirs
       .map(s => ({ ...s, distKm: haversineKm(lat, lon, s.lat, s.lon), named: key.length > 2 && norm(s.name).includes(key) }))
       // A named gauge may sit at the dam, far from the middle of a big lake (Lake Mead's is 35 km off).
-      .filter(s => s.distKm <= (s.named ? Math.max(maxKm, Math.sqrt((acres ?? 0) / 247) * 4) : maxKm))
+      // An exact name may be 80 km off (Lake Mead's far bays from its middle).
+      .filter(s => s.distKm <= (s.named ? (norm(s.name) === key ? 80 : Math.max(maxKm, Math.sqrt((acres ?? 0) / 247) * 4)) : maxKm))
       .sort((a, b) => (b.named - a.named) || a.distKm - b.distKm)[0];
     if (!best) return null;
     const limit = best.named ? Infinity : Math.max(3, Math.sqrt((acres ?? 0) / 247) * 2.5);

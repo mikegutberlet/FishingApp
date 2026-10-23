@@ -1,6 +1,6 @@
 // Nevada: NDOW stocking and fishing reports, USGS and Reclamation lake levels, read from the files the Nevada data
 // jobs write to data/nv/ (scripts/nv/*.mjs and scripts/build-state-*.mjs).
-import { stateData } from './common.js';
+import { stateData, isRiver } from './common.js';
 import { haversineKm } from '../data-sources.js';
 
 const d = stateData('nv', 'NV');
@@ -83,7 +83,8 @@ export async function habFor(lake) {
   const h = await d.load('hab');
   return (h?.advisories ?? []).map(a => ({ ...a, distKm: a.lat != null ? haversineKm(lake.lat, lake.lon, a.lat, a.lon) : null }))
     // A name match counts within 60 km, or 25 km when the advisory names a town (several ponds share a name).
-    .filter(a => sameWater(lake.name, a.name.split(/\s+(?:including|incl\.?)\s+|[(,]/i)[0]) ? a.distKm == null || a.distKm < (a.town ? 25 : 60) : a.distKm != null && a.distKm <= reach(lake));
+    // A town-placed advisory sits on the town, not the water, so it never matches by distance alone.
+    .filter(a => sameWater(lake.name, a.name.split(/\s+(?:including|incl\.?)\s+|[(,]/i)[0]) ? a.distKm == null || a.distKm < (a.town ? 25 : 60) : !a.town && a.distKm != null && a.distKm <= reach(lake));
 }
 
 // Health advisories on eating fish caught here.
@@ -123,12 +124,20 @@ export async function regsFor(lake) {
   const ndow = lake.ndowWaterId ? await reportFor(lake) : null;
   // No county means the point isn't in Nevada: only rules that name no county could apply.
   const county = at?.county ?? ndow?.county ?? null, region = at?.region ?? ndow?.region ?? null;
-  const special = r.waters.filter(w => (!w.county || w.county === county) && [w.name, ...w.aliases].some(n => sameWater(lake.name, n, { pondOk: true })));
+  const names = w => [w.name, ...w.aliases];
+  const opts = { pondOk: !isRiver(lake) };
+  let special = r.waters.filter(w => (!w.county || w.county === county) && names(w).some(n => sameWater(lake.name, n, opts)));
+  // The booklet sometimes files a water under the wrong county (Willow Creek Reservoir under Lander): an exact
+  // name in the same region still counts.
+  if (!special.length && region) special = r.waters.filter(w => w.region === region && names(w).some(n => regWords(n).join('') === regWords(lake.name).join('')));
   const closed = r.closed.filter(c => county && c.county === county);
-  // A closed-waters sentence that starts with this water's name: part of it is closed, or all of it when the
-  // sentence is just the name ("Smith Creek Reservoir.").
-  const closedHere = closed.flatMap(c => c.text.split(/(?<=\.)\s+/)).filter(t => sameWater(lake.name, t.split(/[,(]/)[0]))
-    .map(text => ({ text, whole: regWords(text).join('') === regWords(lake.name).join('') }));
+  // A closed-waters clause that starts with this water's name: part of it is closed, or all of it when the clause
+  // is just the name ("Smith Creek Reservoir.", "Crowley Creek in the Montana Mountains.", "on Franklin Lake WMA").
+  const me = regWords(lake.name).join('');
+  const closedHere = closed.flatMap(c => c.text.split(/(?<=\.)(?<!\b(?:Mt|St|No)\.)\s+(?=[A-Z])/).flatMap(t => t.split(/;\s*|,\s+and\s+/))
+    .map(t => t.replace(/^(?:and\s+)?(?:in|on)\s+/i, '').trim()))
+    .filter(t => sameWater(lake.name, t.split(/[,(]/)[0]))
+    .map(text => ({ text, whole: regWords(text.replace(/\.$/, '').replace(/\s+(?:in the .+ (?:range|mountains)|wildlife management area|wma)$/i, '')).join('') === me }));
   return {
     county, region, special, regionRules: region ? r.regions[region] : null, closed, closedHere, tribal: tribalFor(lake, r, county),
     statewide: r.statewide, booklet: r.booklet, source: r.source, updatedAt: r.updatedAt,
