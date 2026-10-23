@@ -13,7 +13,7 @@ export async function renderNotes(lake, body) {
   let loc = null;
   $('#note-pin').onclick = () => {
     showView('map'); map.setView([lake.lat, lake.lon], 14); status('Tap the spot');
-    pickPoint(({ lat, lng }) => { loc = { lat, lon: lng }; showView('lakes'); $('#note-loc').textContent = `${lat.toFixed(5)}, ${lng.toFixed(5)}`; });
+    pickPoint(({ lat, lng }) => { loc = { lat, lon: lng }; showView('lakes', { render: false }); $('#note-loc').textContent = `${lat.toFixed(5)}, ${lng.toFixed(5)}`; });
   };
   $('#note-form').onsubmit = async e => {
     e.preventDefault();

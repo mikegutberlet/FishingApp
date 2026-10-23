@@ -13,11 +13,12 @@ export const localNow = () => { const d = new Date(); d.setMinutes(d.getMinutes(
 
 // ---------- Navigation ----------
 // Each view registers what to do when it is shown: onShow('stats', renderStats).
+// render: false switches back to a view without redrawing it, e.g. returning to a half-filled form.
 const showHandlers = {};
 export const onShow = (name, fn) => (showHandlers[name] ??= []).push(fn);
 
-export function showView(name) {
+export function showView(name, { render = true } = {}) {
   document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === `view-${name}`));
   document.querySelectorAll('nav button').forEach(b => b.classList.toggle('active', b.dataset.view === name));
-  for (const fn of showHandlers[name] ?? []) fn();
+  if (render) for (const fn of showHandlers[name] ?? []) fn();
 }
