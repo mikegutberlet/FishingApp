@@ -115,7 +115,8 @@ export function editLake(lake) {
   $('#lake-form').onsubmit = async e => {
     e.preventDefault();
     const f = Object.fromEntries(new FormData(e.target));
-    const saved = await db.put('lakes', { ...lake, ...f, lat: +f.lat, lon: +f.lon });
+    const current = lake.id ? await db.get('lakes', lake.id) : null; // fields other screens saved since the form opened
+    const saved = await db.put('lakes', { ...lake, ...current, ...f, lat: +f.lat, lon: +f.lon });
     await refreshMap();
     openLake(saved.id);
   };

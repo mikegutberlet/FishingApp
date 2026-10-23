@@ -23,7 +23,10 @@
   </header>
 
   <main>
-    <section id="view-map" class="view active">
+    <section id="view-today" class="view active"><div id="today"></div></section>
+    <section id="view-planner" class="view"><div id="planner"></div></section>
+
+    <section id="view-map" class="view">
       <div id="map"></div>
       <div class="map-actions">
         <button id="btn-locate">📍 Me</button>
@@ -103,11 +106,11 @@
       <h2>What leaves your device</h2>
       <div class="card small">
         <ul>
-          <li><b>Open-Meteo</b> (weather/wind): the lake's coordinates.</li>
+          <li><b>Open-Meteo</b> (weather/wind): the lake's coordinates. Today, Plan a trip and the <i>Wind on my lakes</i> map layer send each of your starred or saved waters' coordinates, one request per water.</li>
           <li><b>USGS Water Services</b> (flow, level, water temp): a box around the lake.</li>
           <li><b>Map tiles</b> (OpenStreetMap / Esri): the map area you view.</li>
           <li><b>Windy / MyRadar</b>: only when you open those panels or links.</li>
-          <li><b>National Weather Service</b> (weather alerts): the lake's coordinates.</li>
+          <li><b>National Weather Service</b> (weather alerts): the lake's coordinates, and on Today each starred water's.</li>
           <li><b>USGS statistics</b> (flow vs normal): the gauge's id.</li>
           <li><b>RainViewer</b> (rain radar): the map area you view, only while the radar layer is on.</li>
           <li><b>California stocking and lake levels</b> come from this app's own site (refreshed nightly from CDFW and CDEC), so nothing extra is sent.</li>
@@ -118,7 +121,8 @@
   </main>
 
   <nav>
-    <button data-view="map" class="active">🗺️<span>Map</span></button>
+    <button data-view="today" class="active">🌅<span>Today</span></button>
+    <button data-view="map">🗺️<span>Map</span></button>
     <button data-view="lakes">🏞️<span>Lakes</span></button>
     <button data-view="log">🐟<span>Log</span></button>
     <button data-view="journal">📓<span>Journal</span></button>
