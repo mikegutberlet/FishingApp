@@ -145,23 +145,28 @@ export async function habAdvisories() {
   return load('hab');
 }
 
-// Current toxic algae advisories on this water: a report on or near it, or one naming it nearby.
+// Does a report/advisory named `name` at `distKm` belong to this water? Same name nearby, or close by and not
+// obviously about another water (big lakes have small lakes and creeks around them).
+const WATER_WORD = /\b(lake|lakes|reservoir|pond|lagoon|creek|river|slough|canal|stream)\b/i;
+function belongs(lake, names, distKm, maxNameKm) {
+  if (names.some(n => nameMatch(n, lake.name)) && distKm <= maxNameKm) return true;
+  if (distKm > reachKm(lake) + 0.5) return false;
+  return distKm <= 1 || !names.some(n => WATER_WORD.test(n ?? ''));
+}
+
+// Current toxic algae advisories on this water.
 export async function habFor(lake) {
   const h = await load('hab');
-  const r = reachKm(lake);
   return (h?.advisories ?? []).map(a => ({ ...a, distKm: Math.min(...a.pts.map(([lat, lon]) => haversineKm(lake.lat, lake.lon, lat, lon))) }))
-    .filter(a => a.distKm <= r + 0.5 || ((nameMatch(a.name, lake.name) || nameMatch(a.alt, lake.name)) && a.distKm <= 40));
+    .filter(a => belongs(lake, [a.name, a.alt], a.distKm, 40));
 }
 
 // OEHHA advice on eating fish from this water, or the statewide advice for its kind of water.
 export async function fishAdviceFor(lake) {
   const o = await load('oehha');
   if (!o) return null;
-  // Nearby only counts for the same kind of water, so a lake page doesn't list every creek around it.
-  const streamName = n => /river|creek|stream|slough|canal/i.test(n) ? 'stream' : /lake|reservoir|pond|lagoon/i.test(n) ? 'lake' : null;
-  const kind = isRiver(lake) ? 'stream' : 'lake';
   const site = o.advisories.map(a => ({ ...a, distKm: haversineKm(lake.lat, lake.lon, a.lat, a.lon) }))
-    .filter(a => (a.distKm <= reachKm(lake) + 1 && (streamName(a.name) ?? kind) === kind) || (a.name.split(/,| and /).some(n => nameMatch(n, lake.name)) && a.distKm <= 60))
+    .filter(a => belongs(lake, a.name.split(/,| and /), a.distKm, 60))
     .sort((a, b) => a.distKm - b.distKm);
   const pick = re => o.statewide.find(s => re.test(s.name));
   const statewide = isRiver(lake) ? pick(/rivers|streams/i) : pick(/lakes|reservoirs/i);
@@ -204,7 +209,8 @@ export async function countyAt(lat, lon) {
 }
 
 // Regulation names say "Virginia Lakes, Upper and Lower" or "American River, North Fork"; NHD says "Upper Virginia Lake".
-const regKey = s => norm(String(s ?? '').replace(/\b(upper|lower)\b|\b(north|south|middle|east|west)\s+fork\b/gi, '').replace(/\blakes\b/gi, 'lake'));
+// Upper/Lower only pair up lakes; "Upper Truckee River" is its own river.
+const regKey = (s, kind) => norm(String(s ?? '').replace(kind === 'lake' ? /\b(upper|lower)\b/gi : /^$/, '').replace(/\b(north|south|middle|east|west)\s+fork\b/gi, '').replace(/\blakes\b/gi, 'lake'));
 
 // Special regulations that name this water (or its county, for county-wide rules), and the statewide rules that apply.
 export async function regsFor(lake) {
@@ -212,13 +218,13 @@ export async function regsFor(lake) {
   if (!r) return null;
   const county = await countyAt(lake.lat, lake.lon) ?? lake.county?.split(',')[0].trim() ?? null;
   const kind = isRiver(lake) ? 'stream' : 'lake';
-  const key = regKey(lake.name);
+  const key = regKey(lake.name, kind);
   const special = r.waters.filter(w => {
     if (w.scope === 'district') return false;
     if (w.counties.length && county && !w.counties.includes(county)) return false;
     if (w.scope === 'county') return !!county;
     if (w.water && w.water !== kind && !(w.tributariesOnly && kind === 'lake')) return false;
-    return key.length > 2 && [w.name, ...w.aliases].some(n => regKey(n) === key);
+    return key.length > 2 && [w.name, ...w.aliases].some(n => regKey(n, w.water ?? kind) === key);
   }).map(w => ({ ...w, parts: w.parts.map(p => ({ ...p, open: seasonOpen(p.season) })) }));
   const statewide = r.statewide.filter(s => s.applies === 'all' || s.applies === kind);
   return { county, kind, special, statewide, booklet: r.booklet, updatedAt: r.updatedAt };

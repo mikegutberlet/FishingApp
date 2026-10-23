@@ -37,7 +37,7 @@ function paragraphs(body, { beforeTable = true } = {}) {
   let html = body.slice(body.indexOf('</h1>'));
   if (beforeTable && html.includes('<table')) html = html.slice(0, html.indexOf('<table'));
   const t = text(html).replace(/^State Regulations Compare\s*/, '').replace(/\s*Notes Cal\. Code Regs\.[\s\S]*$/, '');
-  return t.split(/\s(?=\([a-z]\)\s)/).map(s => s.trim()).filter(Boolean);
+  return t.split(/(?<=[.:;])\s(?=\((?:[a-z]|\d+)\)\s)/).map(s => s.trim()).filter(Boolean); // a new subsection, not "Sections 7.40 (b) and ..."
 }
 const rowsOf = body => [...body.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/gi)].map(([, row]) => [...row.matchAll(/<t[dh][^>]*>([\s\S]*?)<\/t[dh]>/gi)].map(m => text(m[1])));
 
