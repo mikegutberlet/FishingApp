@@ -48,6 +48,7 @@ const SHELL = [
   'views/tabs/safety.js',
   'views/access.js',
   'views/new-plants.js',
+  'views/catch-warnings.js',
   'safety-map.js',
 ];
 

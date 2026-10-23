@@ -7,6 +7,7 @@ import { units, reunit, display, fromLen, fromWt, fromDepth, toLen, toWt, toDept
 import { estimateWeight } from '../weight.js';
 import { activeTrip, openTrip, startTripFlow } from './trips.js';
 import { tackleLabel } from './tackle.js';
+import { showCatchWarnings } from './catch-warnings.js';
 
 let editing = null; // the catch being edited, or null for a new one
 
@@ -39,6 +40,7 @@ export async function renderCatchForm() {
   renderCatchCards(catches.slice(0, 20), $('#catch-list'), lakes);
   $('#lure-list').innerHTML = [...new Set([...tackle.map(tackleLabel), ...catches.map(c => c.lure)].filter(Boolean))].map(l => `<option value="${esc(l)}">`).join('');
   showEstimate();
+  showCatchWarnings(form, editing?.id);
 }
 
 $('#btn-gps').onclick = () => locate().then(p => { const f = $('#catch-form'); f.lat.value = p.lat.toFixed(6); f.lon.value = p.lon.toFixed(6); }).catch(e => status(e.message));
@@ -57,6 +59,9 @@ const showEstimate = () => {
 $('#catch-form').species.addEventListener('input', showEstimate);
 $('#catch-form').time.addEventListener('input', e => delete e.target.dataset.auto);
 $('#catch-form').length.addEventListener('input', showEstimate);
+// Regulation warnings follow the water, species, size, date and Released box.
+const WARN_FIELDS = ['lakeId', 'species', 'length', 'time', 'released'];
+for (const type of ['input', 'change']) $('#catch-form').addEventListener(type, e => WARN_FIELDS.includes(e.target.name) && showCatchWarnings(e.currentTarget, editing?.id));
 
 // Current weather, wind, pressure and sky at a spot, or null when offline.
 export async function snapshotConditions(lat, lon) {
@@ -101,6 +106,7 @@ export async function editCatch(id) {
   $('#catch-form-title').textContent = 'Edit catch';
   $('#btn-cancel-edit').classList.remove('hidden');
   showEstimate();
+  showCatchWarnings(f, c.id);
   $('#view-log').scrollTop = 0;
 }
 

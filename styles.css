@@ -108,3 +108,4 @@ body:has(#view-trip.active) #trip-pill { display: none; }
 details summary { cursor: pointer; }
 details table { margin-top: 8px; }
 .form .label { margin-bottom: 10px; font-size: 13px; color: var(--muted); }
+.catch-warn .banner { margin: 4px 0 10px; } .catch-warn .banner div { margin-top: 2px; }

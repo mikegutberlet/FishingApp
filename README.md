@@ -48,7 +48,7 @@ It is a PWA: open it once in Safari/Chrome, choose **Add to Home Screen**, and i
 * **Access & facilities** on the Info tab: boat ramps, fishing piers, parking near them, campgrounds, marinas, boat rentals and bait & tackle from OpenStreetMap, with distance and directions; map layer *Ramps & access* when zoomed in.
 * **Plant calendars:** each stocked water has a calendar feed (`data/ca/ics/<stockId>.ics`); *Subscribe to plants* on the Stocking tab adds it to Apple or Google Calendar, with no server knowing who subscribed.
 * **New since last visit:** the lake list badges saved waters with CDFW plants added since you last opened their Stocking tab.
-* `CA.regsFor(lake)` and `CA.catchWarnings(lake, catch)` return the matched rules and plain-text warnings (closed season, release only, size and bag limits) for a catch form to show.
+* **Catch form warnings:** as you log a catch, a *Check the regs* box above Save flags a closed season, catch-and-release-only rules, wild fish that must go back, size minimums and the daily bag limit (counting what you've kept there that day). It never blocks saving. `CA.regsFor(lake)` and `CA.catchWarnings(lake, catch)` are the API behind it.
 
 ## California
 
