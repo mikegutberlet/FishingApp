@@ -1,22 +1,11 @@
-200 463131 https://www.ndow.org/wp-json/
-200 30222 https://www.ndow.org/wp-json/wp/v2/types
-200 49444 https://www.ndow.org/wp-json/wp/v2/waters?per_page=5
-404 114 https://www.ndow.org/wp-json/wp/v2/water?per_page=5
-200 2274 https://www.ndow.org/sitemap_index.xml
-200 2274 https://www.ndow.org/wp-sitemap.xml
-200 2274 https://www.ndow.org/sitemap.xml
-200 58354 https://www.ndow.org/get-outside/fishing-stocking-reports/
-200 93929 https://www.ndow.org/get-outside/fishing-stocking-reports/database/
-200 62300 https://www.ndow.org/waters/topaz-lake/
-200 62013 https://www.ndow.org/waters/mitch-park-pond/
-200 75190 https://www.ndow.org/get-outside/fishing/
-200 79352 https://www.ndow.org/blog/fishing-report-09-01-2026/
-200 81901 https://nvose.org/hot-topic-harmful-algal-blooms/
-200 4900 https://services.arcgis.com/RyxlXSfFi87rAosq/ArcGIS/rest/services/NDOWFishableWaters/FeatureServer/1/query?where=1%3D1&outFields=*&returnGeometry=false&resultRecordCount=3&f=json
-200 13 https://services.arcgis.com/RyxlXSfFi87rAosq/ArcGIS/rest/services/NDOWFishableWaters/FeatureServer/1/query?where=1%3D1&returnCountOnly=true&f=json
-200 13 https://services.arcgis.com/RyxlXSfFi87rAosq/ArcGIS/rest/services/NDOWFishableWaters/FeatureServer/0/query?where=1%3D1&returnCountOnly=true&f=json
-200 61334 https://services.arcgis.com/RyxlXSfFi87rAosq/ArcGIS/rest/services?f=json
-200 2113 https://waterservices.usgs.gov/nwis/site/?format=rdb&stateCd=nv&parameterCd=62614,62615,00062,72275,00054,62616,62617&siteStatus=active&hasDataTypeCd=dv
-200 17661 https://data.usbr.gov/rise/api/location?search=Mead&itemsPerPage=5
-200 13448 https://data.usbr.gov/rise/api/catalog-item?search=Lake%20Mead%20Elevation&itemsPerPage=5
-200 28188 https://www.law.cornell.edu/regulations/nevada/NAC-503-590
+200 12965 total=1 https://www.ndow.org/wp-json/wp/v2/waters?slug=topaz-lake
+200 14959 total=551 https://www.ndow.org/wp-json/wp/v2/waters?per_page=100&_fields=id,slug,title,modified,location,waters_type
+200 25303 total=4 https://www.ndow.org/wp-json/wp/v2/location
+200 24999 total=4 https://www.ndow.org/wp-json/wp/v2/waters_type?per_page=100
+200 76393 total=null https://www.ndow.org/get-outside/rules-regulations/
+200 487 total=null https://nevada-department-of-wildlife-data-hub-ndow.hub.arcgis.com/api/search/v1/collections/all/items?q=stocking&limit=20
+200 573233 total=null https://nevada-department-of-wildlife-data-hub-ndow.hub.arcgis.com/api/search/v1/collections/all/items?q=fish&limit=40
+200 36393 total=null https://data.usbr.gov/rise/api/location?search=Lake%20Mead&itemsPerPage=20
+200 21872 total=null https://data.usbr.gov/rise/api/location?search=Mohave&itemsPerPage=20
+200 84098 total=null https://data.usbr.gov/rise/api/location?stateId=NV&itemsPerPage=100
+200 19721 total=null https://waterservices.usgs.gov/nwis/dv/?format=json&sites=10288500,10297000&parameterCd=62614,62615,00062,72275,00054&period=P10D
