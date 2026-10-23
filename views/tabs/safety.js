@@ -25,11 +25,11 @@ export async function renderSafetyBanner(lake, page) {
   h2.after(el);
   el.innerHTML = `<div class="banner hab-${top.level}"><b>${l.icon} Toxic algae ${l.label.toLowerCase()}</b> · ${esc((top.landmark || top.name).trim())}, updated ${day(top.date)}
     <div class="small">${l.advice}</div><a href="#" class="small" data-safety-tab>Details ›</a></div>`;
-  el.querySelector('[data-safety-tab]').onclick = e => { e.preventDefault(); document.querySelector('.tabs button[data-tab="safety"]')?.click(); };
+  el.querySelector('[data-safety-tab]').onclick = e => { e.preventDefault(); page.querySelector('.tabs button[data-tab="safety"]')?.click(); };
 }
 
 export async function renderSafety(lake, body) {
-  document.querySelector('.tabs button.active')?.scrollIntoView({ block: 'nearest', inline: 'nearest' }); // the tab sits off-screen on phones
+  body.closest('#lake-detail')?.querySelector('.tabs button.active')?.scrollIntoView({ block: 'nearest', inline: 'nearest' }); // the tab sits off-screen on phones
   body.innerHTML = `<div id="hab-card" class="card muted">Checking algae advisories…</div><div id="regs-card" class="card muted">Loading regulations…</div><div id="eat-card" class="card muted">Loading fish advisories…</div>`;
   const [hab, regs, eat, habData] = await Promise.all([CA.habFor(lake), CA.regsFor(lake), CA.fishAdviceFor(lake), CA.habAdvisories()]);
   if (!body.isConnected) return;
@@ -52,11 +52,13 @@ function habCard(hab, data) {
 const partRow = (p, cols) => `<tr>${p.where ? `<td colspan="${cols.length}" class="small"><b>${esc(p.where)}</b></td></tr><tr>` : ''}${cols.map(c => `<td class="small">${c === 'season' && p.open != null ? (p.open ? '🟢 ' : '🔴 ') : ''}${esc(p[c])}</td>`).join('')}</tr>`;
 const SEC_LABEL = { '7.50': 'Trout special regulations', '7.40': 'Hatchery trout, steelhead & salmon', '5.00': 'Black bass', '5.15': 'Catfish' };
 
+const fold = (n, html) => n > 12 ? `<details><summary class="small">All ${n} rows</summary>${html}</details>` : html; // e.g. the Klamath basin's 71
+
 function specialEntry(w) {
   const cols = w.sec === '5.00' ? ['season', 'size', 'bag'] : w.sec === '5.15' ? ['bag'] : ['season', 'bag'];
   return `<div class="reg"><div><b>${esc(SEC_LABEL[w.sec])}</b> <span class="muted small">§${w.sec}${esc(w.ref)}</span></div>
     <div class="small">${esc(w.text)}</div>
-    ${w.parts.length ? `<table><tr>${cols.map(c => `<th class="small">${{ season: 'Open season', size: 'Size', bag: 'Daily bag' }[c]}</th>`).join('')}</tr>${w.parts.map(p => partRow(p, cols)).join('')}</table>` : ''}</div>`;
+    ${w.parts.length ? fold(w.parts.length, `<table><tr>${cols.map(c => `<th class="small">${{ season: 'Open season', size: 'Size', bag: 'Daily bag' }[c]}</th>`).join('')}</tr>${w.parts.map(p => partRow(p, cols)).join('')}</table>`) : ''}</div>`;
 }
 
 function regsCard(lake, regs) {

@@ -61,7 +61,8 @@ export function describe(raw) {
   }
   let name = s.replace(/\([^()]*\)/g, ' ').replace(/\s*Cos?\.\)|\s+/g, ' ').split(/\.\s|\s(?:from|above|below|upstream|downstream|within|between|except|excluding|including|in the|at the|arising)\s|,/)[0].trim().replace(/\.$/, '');
   const tributariesOnly = /\b(lake|reservoir)\s+tributaries\b/i.test(name);
-  name = name.replace(/^Non-anadromous\s+tributaries\s+of\s+(the\s+)?/i, '').replace(/\s+(and\s+)?((all\s+)?(its|their)\s+|all\s+)?(tributary|tributaries)\b.*$/i, '').trim();
+  name = name.replace(/^Non-anadromous\s+tributaries\s+of\s+(the\s+)?/i, '').replace(/\s+(and\s+)?((all\s+)?(its|their)\s+|all\s+)?(tributary|tributaries)\b.*$/i, '')
+    .replace(/\s+Basin\s+Regulations$/i, '').trim(); // "Klamath River Basin Regulations" is the Klamath River's entry
   const water = /\b(lake|lakes|reservoir|pond|pool|lagoon)\b/i.test(name) ? 'lake' : /\b(river|creek|stream|slough|canal|fork|channel|outfall|complex)\b/i.test(name) ? 'stream' : null;
   return { name, aliases: aliases.filter(a => a.length > 2), counties: [...new Set(counties)], water, tributariesOnly };
 }
