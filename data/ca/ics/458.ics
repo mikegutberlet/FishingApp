@@ -1,0 +1,113 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Kangaroo Lake
+X-WR-CALDESC:CDFW fish planting schedule for Kangaroo Lake. Plants are subj
+ ect to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-05-17-458-trout@tackle-box
+DTSTAMP:20260517T000000Z
+DTSTART;VALUE=DATE:20260517
+DTEND;VALUE=DATE:20260524
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Kangaroo Lake
+DESCRIPTION:CDFW plans to plant Trout at Kangaroo Lake (Siskiyou County) th
+ e week of 2026-05-17. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=458
+GEO:41.33341;-122.63516
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Kangaroo Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-28-458-trout@tackle-box
+DTSTAMP:20260628T000000Z
+DTSTART;VALUE=DATE:20260628
+DTEND;VALUE=DATE:20260705
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Kangaroo Lake
+DESCRIPTION:CDFW plans to plant Trout at Kangaroo Lake (Siskiyou County) th
+ e week of 2026-06-28. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=458
+GEO:41.33341;-122.63516
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Kangaroo Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-07-12-458-trout@tackle-box
+DTSTAMP:20260712T000000Z
+DTSTART;VALUE=DATE:20260712
+DTEND;VALUE=DATE:20260719
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Kangaroo Lake
+DESCRIPTION:CDFW plans to plant Trout at Kangaroo Lake (Siskiyou County) th
+ e week of 2026-07-12. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=458
+GEO:41.33341;-122.63516
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Kangaroo Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-02-458-trout@tackle-box
+DTSTAMP:20260802T000000Z
+DTSTART;VALUE=DATE:20260802
+DTEND;VALUE=DATE:20260809
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Kangaroo Lake
+DESCRIPTION:CDFW plans to plant Trout at Kangaroo Lake (Siskiyou County) th
+ e week of 2026-08-02. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=458
+GEO:41.33341;-122.63516
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Kangaroo Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-23-458-trout@tackle-box
+DTSTAMP:20260823T000000Z
+DTSTART;VALUE=DATE:20260823
+DTEND;VALUE=DATE:20260830
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Kangaroo Lake
+DESCRIPTION:CDFW plans to plant Trout at Kangaroo Lake (Siskiyou County) th
+ e week of 2026-08-23. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=458
+GEO:41.33341;-122.63516
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Kangaroo Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-30-458-trout@tackle-box
+DTSTAMP:20260830T000000Z
+DTSTART;VALUE=DATE:20260830
+DTEND;VALUE=DATE:20260906
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Kangaroo Lake
+DESCRIPTION:CDFW plans to plant Trout at Kangaroo Lake (Siskiyou County) th
+ e week of 2026-08-30. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=458
+GEO:41.33341;-122.63516
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Kangaroo Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

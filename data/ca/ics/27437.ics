@@ -1,0 +1,113 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Lincoln Park Lake
+X-WR-CALDESC:CDFW fish planting schedule for Lincoln Park Lake. Plants are 
+ subject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2025-11-09-27437-trout@tackle-box
+DTSTAMP:20251109T000000Z
+DTSTART;VALUE=DATE:20251109
+DTEND;VALUE=DATE:20251116
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Lincoln Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Lincoln Park Lake (Los Angeles Cou
+ nty) the week of 2025-11-09. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=27437
+GEO:34.06649;-118.20261
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Lincoln Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2025-11-30-27437-trout@tackle-box
+DTSTAMP:20251130T000000Z
+DTSTART;VALUE=DATE:20251130
+DTEND;VALUE=DATE:20251207
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Lincoln Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Lincoln Park Lake (Los Angeles Cou
+ nty) the week of 2025-11-30. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=27437
+GEO:34.06649;-118.20261
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Lincoln Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-01-04-27437-trout@tackle-box
+DTSTAMP:20260104T000000Z
+DTSTART;VALUE=DATE:20260104
+DTEND;VALUE=DATE:20260111
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Lincoln Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Lincoln Park Lake (Los Angeles Cou
+ nty) the week of 2026-01-04. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=27437
+GEO:34.06649;-118.20261
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Lincoln Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-02-08-27437-trout@tackle-box
+DTSTAMP:20260208T000000Z
+DTSTART;VALUE=DATE:20260208
+DTEND;VALUE=DATE:20260215
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Lincoln Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Lincoln Park Lake (Los Angeles Cou
+ nty) the week of 2026-02-08. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=27437
+GEO:34.06649;-118.20261
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Lincoln Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-01-27437-trout@tackle-box
+DTSTAMP:20260301T000000Z
+DTSTART;VALUE=DATE:20260301
+DTEND;VALUE=DATE:20260308
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Lincoln Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Lincoln Park Lake (Los Angeles Cou
+ nty) the week of 2026-03-01. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=27437
+GEO:34.06649;-118.20261
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Lincoln Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-22-27437-trout@tackle-box
+DTSTAMP:20260322T000000Z
+DTSTART;VALUE=DATE:20260322
+DTEND;VALUE=DATE:20260329
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Lincoln Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Lincoln Park Lake (Los Angeles Cou
+ nty) the week of 2026-03-22. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=27437
+GEO:34.06649;-118.20261
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Lincoln Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

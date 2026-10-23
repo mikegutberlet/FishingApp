@@ -1,0 +1,45 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Packer Lake
+X-WR-CALDESC:CDFW fish planting schedule for Packer Lake. Plants are subjec
+ t to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-07-12-12343-trout@tackle-box
+DTSTAMP:20260712T000000Z
+DTSTART;VALUE=DATE:20260712
+DTEND;VALUE=DATE:20260719
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Packer Lake
+DESCRIPTION:CDFW plans to plant Trout at Packer Lake (Sierra County) the we
+ ek of 2026-07-12. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=12343
+GEO:39.62347;-120.65613
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Packer Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-25-12343-trout@tackle-box
+DTSTAMP:20261025T000000Z
+DTSTART;VALUE=DATE:20261025
+DTEND;VALUE=DATE:20261101
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Packer Lake
+DESCRIPTION:CDFW plans to plant Trout at Packer Lake (Sierra County) the we
+ ek of 2026-10-25. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=12343
+GEO:39.62347;-120.65613
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Packer Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

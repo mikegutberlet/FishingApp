@@ -1,0 +1,96 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Sycamore Island Pond
+X-WR-CALDESC:CDFW fish planting schedule for Sycamore Island Pond. Plants a
+ re subject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2025-11-02-28570-trout@tackle-box
+DTSTAMP:20251102T000000Z
+DTSTART;VALUE=DATE:20251102
+DTEND;VALUE=DATE:20251109
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Sycamore Island Pond
+DESCRIPTION:CDFW plans to plant Trout at Sycamore Island Pond (Madera Count
+ y) the week of 2025-11-02. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=28570
+GEO:36.85061;-119.82714
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Sycamore Island Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-01-04-28570-trout@tackle-box
+DTSTAMP:20260104T000000Z
+DTSTART;VALUE=DATE:20260104
+DTEND;VALUE=DATE:20260111
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Sycamore Island Pond
+DESCRIPTION:CDFW plans to plant Trout at Sycamore Island Pond (Madera Count
+ y) the week of 2026-01-04. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=28570
+GEO:36.85061;-119.82714
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Sycamore Island Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-01-25-28570-trout@tackle-box
+DTSTAMP:20260125T000000Z
+DTSTART;VALUE=DATE:20260125
+DTEND;VALUE=DATE:20260201
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Sycamore Island Pond
+DESCRIPTION:CDFW plans to plant Trout at Sycamore Island Pond (Madera Count
+ y) the week of 2026-01-25. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=28570
+GEO:36.85061;-119.82714
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Sycamore Island Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-02-15-28570-trout@tackle-box
+DTSTAMP:20260215T000000Z
+DTSTART;VALUE=DATE:20260215
+DTEND;VALUE=DATE:20260222
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Sycamore Island Pond
+DESCRIPTION:CDFW plans to plant Trout at Sycamore Island Pond (Madera Count
+ y) the week of 2026-02-15. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=28570
+GEO:36.85061;-119.82714
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Sycamore Island Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-08-28570-trout@tackle-box
+DTSTAMP:20260308T000000Z
+DTSTART;VALUE=DATE:20260308
+DTEND;VALUE=DATE:20260315
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Sycamore Island Pond
+DESCRIPTION:CDFW plans to plant Trout at Sycamore Island Pond (Madera Count
+ y) the week of 2026-03-08. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=28570
+GEO:36.85061;-119.82714
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Sycamore Island Pond
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

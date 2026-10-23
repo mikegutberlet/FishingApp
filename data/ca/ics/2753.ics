@@ -1,0 +1,96 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Mather Lake
+X-WR-CALDESC:CDFW fish planting schedule for Mather Lake. Plants are subjec
+ t to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2025-11-02-2753-trout@tackle-box
+DTSTAMP:20251102T000000Z
+DTSTART;VALUE=DATE:20251102
+DTEND;VALUE=DATE:20251109
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Mather Lake
+DESCRIPTION:CDFW plans to plant Trout at Mather Lake (Sacramento County) th
+ e week of 2025-11-02. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=2753
+GEO:38.55549;-121.25351
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Mather Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2025-12-14-2753-trout@tackle-box
+DTSTAMP:20251214T000000Z
+DTSTART;VALUE=DATE:20251214
+DTEND;VALUE=DATE:20251221
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Mather Lake
+DESCRIPTION:CDFW plans to plant Trout at Mather Lake (Sacramento County) th
+ e week of 2025-12-14. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=2753
+GEO:38.55549;-121.25351
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Mather Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-01-11-2753-trout@tackle-box
+DTSTAMP:20260111T000000Z
+DTSTART;VALUE=DATE:20260111
+DTEND;VALUE=DATE:20260118
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Mather Lake
+DESCRIPTION:CDFW plans to plant Trout at Mather Lake (Sacramento County) th
+ e week of 2026-01-11. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=2753
+GEO:38.55549;-121.25351
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Mather Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-02-01-2753-trout@tackle-box
+DTSTAMP:20260201T000000Z
+DTSTART;VALUE=DATE:20260201
+DTEND;VALUE=DATE:20260208
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Mather Lake
+DESCRIPTION:CDFW plans to plant Trout at Mather Lake (Sacramento County) th
+ e week of 2026-02-01. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=2753
+GEO:38.55549;-121.25351
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Mather Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-01-2753-trout@tackle-box
+DTSTAMP:20260301T000000Z
+DTSTART;VALUE=DATE:20260301
+DTEND;VALUE=DATE:20260308
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Mather Lake
+DESCRIPTION:CDFW plans to plant Trout at Mather Lake (Sacramento County) th
+ e week of 2026-03-01. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=2753
+GEO:38.55549;-121.25351
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Mather Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

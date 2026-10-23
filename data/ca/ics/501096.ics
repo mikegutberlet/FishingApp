@@ -1,0 +1,28 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Pit River South Fork
+X-WR-CALDESC:CDFW fish planting schedule for Pit River South Fork. Plants a
+ re subject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-05-17-501096-trout@tackle-box
+DTSTAMP:20260517T000000Z
+DTSTART;VALUE=DATE:20260517
+DTEND;VALUE=DATE:20260524
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Pit River South Fork
+DESCRIPTION:CDFW plans to plant Trout at Pit River South Fork (Modoc County
+ ) the week of 2026-05-17. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501096
+GEO:41.23028;-120.41837
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Pit River South Fork
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

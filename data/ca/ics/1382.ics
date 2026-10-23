@@ -1,0 +1,28 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Paradise Reservoir
+X-WR-CALDESC:CDFW fish planting schedule for Paradise Reservoir. Plants are
+  subject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-02-22-1382-trout@tackle-box
+DTSTAMP:20260222T000000Z
+DTSTART;VALUE=DATE:20260222
+DTEND;VALUE=DATE:20260301
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Paradise Reservoir
+DESCRIPTION:CDFW plans to plant Trout at Paradise Reservoir (Butte County) 
+ the week of 2026-02-22. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=1382
+GEO:39.85957;-121.58241
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Paradise Reservoir
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

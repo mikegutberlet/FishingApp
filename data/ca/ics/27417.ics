@@ -1,0 +1,96 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Shadow Cliff Lake
+X-WR-CALDESC:CDFW fish planting schedule for Shadow Cliff Lake. Plants are 
+ subject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2025-10-26-27417-trout@tackle-box
+DTSTAMP:20251026T000000Z
+DTSTART;VALUE=DATE:20251026
+DTEND;VALUE=DATE:20251102
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Shadow Cliff Lake
+DESCRIPTION:CDFW plans to plant Trout at Shadow Cliff Lake (Alameda County)
+  the week of 2025-10-26. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=27417
+GEO:37.66784;-121.83724
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Shadow Cliff Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2025-11-09-27417-trout@tackle-box
+DTSTAMP:20251109T000000Z
+DTSTART;VALUE=DATE:20251109
+DTEND;VALUE=DATE:20251116
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Shadow Cliff Lake
+DESCRIPTION:CDFW plans to plant Trout at Shadow Cliff Lake (Alameda County)
+  the week of 2025-11-09. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=27417
+GEO:37.66784;-121.83724
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Shadow Cliff Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-01-11-27417-trout@tackle-box
+DTSTAMP:20260111T000000Z
+DTSTART;VALUE=DATE:20260111
+DTEND;VALUE=DATE:20260118
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Shadow Cliff Lake
+DESCRIPTION:CDFW plans to plant Trout at Shadow Cliff Lake (Alameda County)
+  the week of 2026-01-11. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=27417
+GEO:37.66784;-121.83724
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Shadow Cliff Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-02-01-27417-trout@tackle-box
+DTSTAMP:20260201T000000Z
+DTSTART;VALUE=DATE:20260201
+DTEND;VALUE=DATE:20260208
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Shadow Cliff Lake
+DESCRIPTION:CDFW plans to plant Trout at Shadow Cliff Lake (Alameda County)
+  the week of 2026-02-01. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=27417
+GEO:37.66784;-121.83724
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Shadow Cliff Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-02-15-27417-trout@tackle-box
+DTSTAMP:20260215T000000Z
+DTSTART;VALUE=DATE:20260215
+DTEND;VALUE=DATE:20260222
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Shadow Cliff Lake
+DESCRIPTION:CDFW plans to plant Trout at Shadow Cliff Lake (Alameda County)
+  the week of 2026-02-15. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=27417
+GEO:37.66784;-121.83724
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Shadow Cliff Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

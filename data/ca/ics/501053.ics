@@ -1,0 +1,402 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Owens River\, Section 2
+X-WR-CALDESC:CDFW fish planting schedule for Owens River\, Section 2. Plant
+ s are subject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2025-12-14-501053-trout@tackle-box
+DTSTAMP:20251214T000000Z
+DTSTART;VALUE=DATE:20251214
+DTEND;VALUE=DATE:20251221
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Owens River\, Section 2
+DESCRIPTION:CDFW plans to plant Trout at Owens River\, Section 2 (Inyo Coun
+ ty) the week of 2025-12-14. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501053
+GEO:37.18082;-118.26729
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Owens River\, Section 2
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-01-11-501053-trout@tackle-box
+DTSTAMP:20260111T000000Z
+DTSTART;VALUE=DATE:20260111
+DTEND;VALUE=DATE:20260118
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Owens River\, Section 2
+DESCRIPTION:CDFW plans to plant Trout at Owens River\, Section 2 (Inyo Coun
+ ty) the week of 2026-01-11. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501053
+GEO:37.18082;-118.26729
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Owens River\, Section 2
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-01-18-501053-trout@tackle-box
+DTSTAMP:20260118T000000Z
+DTSTART;VALUE=DATE:20260118
+DTEND;VALUE=DATE:20260125
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Owens River\, Section 2
+DESCRIPTION:CDFW plans to plant Trout at Owens River\, Section 2 (Inyo Coun
+ ty) the week of 2026-01-18. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501053
+GEO:37.18082;-118.26729
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Owens River\, Section 2
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-01-25-501053-trout@tackle-box
+DTSTAMP:20260125T000000Z
+DTSTART;VALUE=DATE:20260125
+DTEND;VALUE=DATE:20260201
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Owens River\, Section 2
+DESCRIPTION:CDFW plans to plant Trout at Owens River\, Section 2 (Inyo Coun
+ ty) the week of 2026-01-25. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501053
+GEO:37.18082;-118.26729
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Owens River\, Section 2
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-02-08-501053-trout@tackle-box
+DTSTAMP:20260208T000000Z
+DTSTART;VALUE=DATE:20260208
+DTEND;VALUE=DATE:20260215
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Owens River\, Section 2
+DESCRIPTION:CDFW plans to plant Trout at Owens River\, Section 2 (Inyo Coun
+ ty) the week of 2026-02-08. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501053
+GEO:37.18082;-118.26729
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Owens River\, Section 2
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-08-501053-trout@tackle-box
+DTSTAMP:20260308T000000Z
+DTSTART;VALUE=DATE:20260308
+DTEND;VALUE=DATE:20260315
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Owens River\, Section 2
+DESCRIPTION:CDFW plans to plant Trout at Owens River\, Section 2 (Inyo Coun
+ ty) the week of 2026-03-08. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501053
+GEO:37.18082;-118.26729
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Owens River\, Section 2
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-15-501053-trout@tackle-box
+DTSTAMP:20260315T000000Z
+DTSTART;VALUE=DATE:20260315
+DTEND;VALUE=DATE:20260322
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Owens River\, Section 2
+DESCRIPTION:CDFW plans to plant Trout at Owens River\, Section 2 (Inyo Coun
+ ty) the week of 2026-03-15. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501053
+GEO:37.18082;-118.26729
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Owens River\, Section 2
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-22-501053-trout@tackle-box
+DTSTAMP:20260322T000000Z
+DTSTART;VALUE=DATE:20260322
+DTEND;VALUE=DATE:20260329
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Owens River\, Section 2
+DESCRIPTION:CDFW plans to plant Trout at Owens River\, Section 2 (Inyo Coun
+ ty) the week of 2026-03-22. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501053
+GEO:37.18082;-118.26729
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Owens River\, Section 2
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-04-05-501053-trout@tackle-box
+DTSTAMP:20260405T000000Z
+DTSTART;VALUE=DATE:20260405
+DTEND;VALUE=DATE:20260412
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Owens River\, Section 2
+DESCRIPTION:CDFW plans to plant Trout at Owens River\, Section 2 (Inyo Coun
+ ty) the week of 2026-04-05. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501053
+GEO:37.18082;-118.26729
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Owens River\, Section 2
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-04-12-501053-trout@tackle-box
+DTSTAMP:20260412T000000Z
+DTSTART;VALUE=DATE:20260412
+DTEND;VALUE=DATE:20260419
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Owens River\, Section 2
+DESCRIPTION:CDFW plans to plant Trout at Owens River\, Section 2 (Inyo Coun
+ ty) the week of 2026-04-12. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501053
+GEO:37.18082;-118.26729
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Owens River\, Section 2
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-04-26-501053-trout@tackle-box
+DTSTAMP:20260426T000000Z
+DTSTART;VALUE=DATE:20260426
+DTEND;VALUE=DATE:20260503
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Owens River\, Section 2
+DESCRIPTION:CDFW plans to plant Trout at Owens River\, Section 2 (Inyo Coun
+ ty) the week of 2026-04-26. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501053
+GEO:37.18082;-118.26729
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Owens River\, Section 2
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-05-10-501053-trout@tackle-box
+DTSTAMP:20260510T000000Z
+DTSTART;VALUE=DATE:20260510
+DTEND;VALUE=DATE:20260517
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Owens River\, Section 2
+DESCRIPTION:CDFW plans to plant Trout at Owens River\, Section 2 (Inyo Coun
+ ty) the week of 2026-05-10. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501053
+GEO:37.18082;-118.26729
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Owens River\, Section 2
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-05-24-501053-trout@tackle-box
+DTSTAMP:20260524T000000Z
+DTSTART;VALUE=DATE:20260524
+DTEND;VALUE=DATE:20260531
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Owens River\, Section 2
+DESCRIPTION:CDFW plans to plant Trout at Owens River\, Section 2 (Inyo Coun
+ ty) the week of 2026-05-24. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501053
+GEO:37.18082;-118.26729
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Owens River\, Section 2
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-05-31-501053-trout@tackle-box
+DTSTAMP:20260531T000000Z
+DTSTART;VALUE=DATE:20260531
+DTEND;VALUE=DATE:20260607
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Owens River\, Section 2
+DESCRIPTION:CDFW plans to plant Trout at Owens River\, Section 2 (Inyo Coun
+ ty) the week of 2026-05-31. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501053
+GEO:37.18082;-118.26729
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Owens River\, Section 2
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-14-501053-trout@tackle-box
+DTSTAMP:20260614T000000Z
+DTSTART;VALUE=DATE:20260614
+DTEND;VALUE=DATE:20260621
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Owens River\, Section 2
+DESCRIPTION:CDFW plans to plant Trout at Owens River\, Section 2 (Inyo Coun
+ ty) the week of 2026-06-14. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501053
+GEO:37.18082;-118.26729
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Owens River\, Section 2
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-07-05-501053-trout@tackle-box
+DTSTAMP:20260705T000000Z
+DTSTART;VALUE=DATE:20260705
+DTEND;VALUE=DATE:20260712
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Owens River\, Section 2
+DESCRIPTION:CDFW plans to plant Trout at Owens River\, Section 2 (Inyo Coun
+ ty) the week of 2026-07-05. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501053
+GEO:37.18082;-118.26729
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Owens River\, Section 2
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-07-19-501053-trout@tackle-box
+DTSTAMP:20260719T000000Z
+DTSTART;VALUE=DATE:20260719
+DTEND;VALUE=DATE:20260726
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Owens River\, Section 2
+DESCRIPTION:CDFW plans to plant Trout at Owens River\, Section 2 (Inyo Coun
+ ty) the week of 2026-07-19. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501053
+GEO:37.18082;-118.26729
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Owens River\, Section 2
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-02-501053-trout@tackle-box
+DTSTAMP:20260802T000000Z
+DTSTART;VALUE=DATE:20260802
+DTEND;VALUE=DATE:20260809
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Owens River\, Section 2
+DESCRIPTION:CDFW plans to plant Trout at Owens River\, Section 2 (Inyo Coun
+ ty) the week of 2026-08-02. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501053
+GEO:37.18082;-118.26729
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Owens River\, Section 2
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-09-501053-trout@tackle-box
+DTSTAMP:20260809T000000Z
+DTSTART;VALUE=DATE:20260809
+DTEND;VALUE=DATE:20260816
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Owens River\, Section 2
+DESCRIPTION:CDFW plans to plant Trout at Owens River\, Section 2 (Inyo Coun
+ ty) the week of 2026-08-09. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501053
+GEO:37.18082;-118.26729
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Owens River\, Section 2
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-16-501053-trout@tackle-box
+DTSTAMP:20260816T000000Z
+DTSTART;VALUE=DATE:20260816
+DTEND;VALUE=DATE:20260823
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Owens River\, Section 2
+DESCRIPTION:CDFW plans to plant Trout at Owens River\, Section 2 (Inyo Coun
+ ty) the week of 2026-08-16. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501053
+GEO:37.18082;-118.26729
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Owens River\, Section 2
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-23-501053-trout@tackle-box
+DTSTAMP:20260823T000000Z
+DTSTART;VALUE=DATE:20260823
+DTEND;VALUE=DATE:20260830
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Owens River\, Section 2
+DESCRIPTION:CDFW plans to plant Trout at Owens River\, Section 2 (Inyo Coun
+ ty) the week of 2026-08-23. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501053
+GEO:37.18082;-118.26729
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Owens River\, Section 2
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-30-501053-trout@tackle-box
+DTSTAMP:20260830T000000Z
+DTSTART;VALUE=DATE:20260830
+DTEND;VALUE=DATE:20260906
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Owens River\, Section 2
+DESCRIPTION:CDFW plans to plant Trout at Owens River\, Section 2 (Inyo Coun
+ ty) the week of 2026-08-30. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501053
+GEO:37.18082;-118.26729
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Owens River\, Section 2
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-09-06-501053-trout@tackle-box
+DTSTAMP:20260906T000000Z
+DTSTART;VALUE=DATE:20260906
+DTEND;VALUE=DATE:20260913
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Owens River\, Section 2
+DESCRIPTION:CDFW plans to plant Trout at Owens River\, Section 2 (Inyo Coun
+ ty) the week of 2026-09-06. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=501053
+GEO:37.18082;-118.26729
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Owens River\, Section 2
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

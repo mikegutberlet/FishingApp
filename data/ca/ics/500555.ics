@@ -1,0 +1,45 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Glass Creek
+X-WR-CALDESC:CDFW fish planting schedule for Glass Creek. Plants are subjec
+ t to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-05-10-500555-trout@tackle-box
+DTSTAMP:20260510T000000Z
+DTSTART;VALUE=DATE:20260510
+DTEND;VALUE=DATE:20260517
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Glass Creek
+DESCRIPTION:CDFW plans to plant Trout at Glass Creek (Mono County) the week
+  of 2026-05-10. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=500555
+GEO:37.75196;-118.99883
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Glass Creek
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-28-500555-trout@tackle-box
+DTSTAMP:20260628T000000Z
+DTSTART;VALUE=DATE:20260628
+DTEND;VALUE=DATE:20260705
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Glass Creek
+DESCRIPTION:CDFW plans to plant Trout at Glass Creek (Mono County) the week
+  of 2026-06-28. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=500555
+GEO:37.75196;-118.99883
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Glass Creek
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

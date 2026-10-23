@@ -1,0 +1,45 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Freeman Creek
+X-WR-CALDESC:CDFW fish planting schedule for Freeman Creek. Plants are subj
+ ect to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-04-19-500522-trout@tackle-box
+DTSTAMP:20260419T000000Z
+DTSTART;VALUE=DATE:20260419
+DTEND;VALUE=DATE:20260426
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Freeman Creek
+DESCRIPTION:CDFW plans to plant Trout at Freeman Creek (Tulare County) the 
+ week of 2026-04-19. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=500522
+GEO:36.14552;-118.49157
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Freeman Creek
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-14-500522-trout@tackle-box
+DTSTAMP:20260614T000000Z
+DTSTART;VALUE=DATE:20260614
+DTEND;VALUE=DATE:20260621
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Freeman Creek
+DESCRIPTION:CDFW plans to plant Trout at Freeman Creek (Tulare County) the 
+ week of 2026-06-14. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=500522
+GEO:36.14552;-118.49157
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Freeman Creek
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

@@ -1,0 +1,96 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tackle Box//CDFW plants//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Fish plants: Merced Lake North
+X-WR-CALDESC:CDFW fish planting schedule for Merced Lake North. Plants are 
+ subject to change.
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2025-12-21-4169-trout@tackle-box
+DTSTAMP:20251221T000000Z
+DTSTART;VALUE=DATE:20251221
+DTEND;VALUE=DATE:20251228
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Merced Lake North
+DESCRIPTION:CDFW plans to plant Trout at Merced Lake North (San Francisco C
+ ounty) the week of 2025-12-21. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=4169
+GEO:37.72712;-122.49333
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Merced Lake North
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-01-04-4169-trout@tackle-box
+DTSTAMP:20260104T000000Z
+DTSTART;VALUE=DATE:20260104
+DTEND;VALUE=DATE:20260111
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Merced Lake North
+DESCRIPTION:CDFW plans to plant Trout at Merced Lake North (San Francisco C
+ ounty) the week of 2026-01-04. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=4169
+GEO:37.72712;-122.49333
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Merced Lake North
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-02-08-4169-trout@tackle-box
+DTSTAMP:20260208T000000Z
+DTSTART;VALUE=DATE:20260208
+DTEND;VALUE=DATE:20260215
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Merced Lake North
+DESCRIPTION:CDFW plans to plant Trout at Merced Lake North (San Francisco C
+ ounty) the week of 2026-02-08. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=4169
+GEO:37.72712;-122.49333
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Merced Lake North
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-01-4169-trout@tackle-box
+DTSTAMP:20260301T000000Z
+DTSTART;VALUE=DATE:20260301
+DTEND;VALUE=DATE:20260308
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Merced Lake North
+DESCRIPTION:CDFW plans to plant Trout at Merced Lake North (San Francisco C
+ ounty) the week of 2026-03-01. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=4169
+GEO:37.72712;-122.49333
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Merced Lake North
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-29-4169-trout@tackle-box
+DTSTAMP:20260329T000000Z
+DTSTART;VALUE=DATE:20260329
+DTEND;VALUE=DATE:20260405
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Merced Lake North
+DESCRIPTION:CDFW plans to plant Trout at Merced Lake North (San Francisco C
+ ounty) the week of 2026-03-29. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=4169
+GEO:37.72712;-122.49333
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Merced Lake North
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
+END:VCALENDAR
