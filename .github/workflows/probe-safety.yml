@@ -1,0 +1,26 @@
+name: Probe safety sources (temporary)
+
+on:
+  push:
+    paths:
+      - scripts/probe-ca-safety.mjs
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: |
+          mkdir -p data/ca/logs
+          node scripts/probe-ca-safety.mjs 2>&1 | tee data/ca/logs/probe-ca-safety.log
+      - run: |
+          git add data/ca/logs/probe-ca-safety.log
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Probe log" && git pull --rebase origin "${GITHUB_REF_NAME}" && git push
