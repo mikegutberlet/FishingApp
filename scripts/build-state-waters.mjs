@@ -24,10 +24,18 @@ const report = { startedAt: new Date().toISOString(), steps: {} };
 
 const inCalifornia = pt => inOutline(pt, STATE.outline); // kept the California job's name to stay diffable with it
 
+// NHD sometimes takes a query and never answers, which once held a run until the workflow was cancelled with nothing
+// saved. So every request has a time limit (long enough for the big depth downloads), and once the job's time budget
+// is spent no new NHD tile is started: that list fails and last week's file stays, leaving the workflow time to commit.
+const DEADLINE = Date.now() + (+process.env.WATERS_MINUTES || 120) * 60e3;
+const outOfTime = () => Date.now() > DEADLINE;
 async function get(url, tries = 3) {
   for (let i = 1; ; i++) {
     try {
-      const r = await fetch(url, { headers: /lternet\.edu|edirepository\.org/.test(url) ? BROWSER_UA : UA });
+      const r = await fetch(url, {
+        headers: /lternet\.edu|edirepository\.org/.test(url) ? BROWSER_UA : UA,
+        signal: AbortSignal.timeout(url.startsWith(NHD) ? 120e3 : 600e3),
+      });
       if (!r.ok) throw new Error(`${r.status} ${url.slice(0, 200)}`);
       return r;
     } catch (e) {
@@ -71,8 +79,8 @@ async function layerIds() {
   const find = re => layers.find(l => re.test(l.name))?.id;
   return {
     waterbody: find(/^Waterbody - Large Scale$/i) ?? 12,
-    flowline: find(/^Flowline - Large Scale$/i),
-    flowlineSmall: find(/^Flowline - Small Scale$/i),
+    flowline: find(/^Flowline - Large Scale$/i) ?? 6,
+    flowlineSmall: find(/^Flowline - Small Scale$/i) ?? 4,
   };
 }
 
@@ -87,6 +95,7 @@ async function queryTiled(layerId, where, outFields, offset, tile = 1) {
   const queryTile = async (x, y, size) => {
     const envelope = JSON.stringify({ xmin: x, ymin: y, xmax: x + size, ymax: y + size, spatialReference: { wkid: 4326 } });
     const got = [];
+    if (outOfTime()) throw new Error(`out of time (${report.steps.splitTiles ?? 0} tiles split, ${FAILED.length} skipped)`);
     try {
       for (let page = 0; ; page += 2000) {
         const params = new URLSearchParams({
@@ -99,6 +108,7 @@ async function queryTiled(layerId, where, outFields, offset, tile = 1) {
         if (json.features.length < 2000) break;
       }
     } catch (e) {
+      if (outOfTime()) throw e;
       if (size <= 0.035) {
         failed.push({ layerId, x: round(x), y: round(y), size, error: e.message.slice(0, 80) });
         FAILED.push(failed.at(-1));
@@ -188,8 +198,11 @@ async function attachElevations(lakes) {
 }
 
 // Rivers: merge every named flowline segment by GNIS id, then place label points every ~15 km along it.
+// A state with dense streams (Oregon) reads the small-scale flowlines: the large-scale query times out on its
+// tiles, and the small-scale layer still has every river and long creek a label needs.
+const riverLayer = ids => STATE.riverScale === 'small' ? ids.flowlineSmall : ids.flowline ?? ids.flowlineSmall;
 async function buildRivers(ids) {
-  const layer = ids.flowline ?? ids.flowlineSmall;
+  const layer = riverLayer(ids);
   const feats = await queryTiled(layer, "GNIS_NAME IS NOT NULL AND (GNIS_NAME LIKE '% River%' OR GNIS_NAME LIKE '% Creek%' OR GNIS_NAME LIKE '% Fork%' OR GNIS_NAME LIKE '% Slough%')",
     'GNIS_ID,GNIS_NAME,LENGTHKM', '0.002', 0.5);
   report.steps.rivers = { layer, segments: feats.length };
@@ -378,7 +391,8 @@ function attachDepths(lakes, depths, source) {
 
 await mkdir(OUT, { recursive: true });
 const save = (name, data) => writeFile(new URL(name, OUT), JSON.stringify(data) + '\n');
-let ids = { waterbody: 12 };
+// The service's usual layer ids, for when its layer list doesn't answer.
+let ids = { waterbody: 12, flowline: 6, flowlineSmall: 4 };
 try { ids = await layerIds(); } catch (e) { report.steps.nhdLayersError = e.message; }
 
 // A lake list from the last few days is kept as is, so a code push that re-runs the job only spends its time on the
@@ -409,7 +423,7 @@ if (lakes) {
 }
 try {
   const rivers = await buildRivers(ids);
-  report.steps.rivers.carriedOver = carryOver(rivers, (await readOldFile('rivers.json'))?.rivers, ids.flowline ?? ids.flowlineSmall, r => r.points);
+  report.steps.rivers.carriedOver = carryOver(rivers, (await readOldFile('rivers.json'))?.rivers, riverLayer(ids), r => r.points);
   await save('rivers.json', { updatedAt: new Date().toISOString(), source: 'USGS National Hydrography Dataset', rivers });
 } catch (e) { report.steps.riversError = e.message; console.error('rivers:', e.message); }
 
