@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-23T18:45:29.182Z",
+  "startedAt": "2026-10-24T19:16:11.700Z",
   "steps": {
     "nhdLayers": [
       {
@@ -60,59 +60,8 @@
       "inState": 350,
       "outsideOutline": 0
     },
-    "splitTiles": 6,
-    "failedTiles": [
-      {
-        "layerId": 6,
-        "x": -119.635,
-        "y": 34.99,
-        "size": 0.03125,
-        "error": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?whe"
-      },
-      {
-        "layerId": 6,
-        "x": -119.60375,
-        "y": 34.99,
-        "size": 0.03125,
-        "error": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?whe"
-      },
-      {
-        "layerId": 6,
-        "x": -119.635,
-        "y": 35.02125,
-        "size": 0.03125,
-        "error": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?whe"
-      },
-      {
-        "layerId": 6,
-        "x": -119.60375,
-        "y": 35.02125,
-        "size": 0.03125,
-        "error": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?whe"
-      },
-      {
-        "layerId": 6,
-        "x": -119.54125,
-        "y": 35.02125,
-        "size": 0.03125,
-        "error": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?whe"
-      },
-      {
-        "layerId": 6,
-        "x": -119.60375,
-        "y": 35.0525,
-        "size": 0.03125,
-        "error": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?whe"
-      },
-      {
-        "layerId": 6,
-        "x": -119.635,
-        "y": 35.08375,
-        "size": 0.03125,
-        "error": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?whe"
-      }
-    ],
-    "riversError": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?where=GNIS_NAME+IS+NOT+NULL+AND+%28GNIS_NAME+LIKE+%27%25+River%25%27+OR+GNIS_NAME+LIKE+%27%25+Creek%25%27+OR+GNIS_NAME+LIKE+%27"
+    "splitTiles": 5,
+    "riversError": "out of time (5 tiles split, 0 skipped)"
   },
-  "finishedAt": "2026-10-23T19:05:22.519Z"
+  "finishedAt": "2026-10-24T21:16:39.493Z"
 }
