@@ -1,5 +1,5 @@
 {
- "startedAt": "2026-10-23T18:45:30.403Z",
+ "startedAt": "2026-10-24T20:23:34.941Z",
  "pages": {
   "license-tag-permit-fees": [
    "# License, Tag & Permit Fees (40p 71r)"
@@ -89,7 +89,7 @@
     {
      "name": "Alsea River, North Fork",
      "aliases": [
-      "Alsea River"
+      "North Fork Alsea River"
      ],
      "counties": [],
      "zone": "Northwest",
@@ -103,7 +103,7 @@
     {
      "name": "Alsea River, South Fork",
      "aliases": [
-      "Alsea River"
+      "South Fork Alsea River"
      ],
      "counties": [],
      "zone": "Northwest",
@@ -660,6 +660,10 @@
   "columbia-river-zone",
   "pdf"
  ],
+ "places": {
+  "lookedUp": 20,
+  "found": 14
+ },
  "advisoryRows": [
   [
    "",
@@ -947,7 +951,7 @@
   "Willamette: Dorena Reservoirs → Dorena Reservoirs (1)",
   "Willamette: Lower Willamette River, from the Sellwood Bridge to its confluence with the Columbia, to include Multnomah Channel from its confluence with the Willamette to the Sauvie Island Bridge. → Lower Willamette River (1)",
   "Willamette: Lower Willamette River → Lower Willamette River (1)",
-  "Willamette: Willamette River, from its mouth on the Columbia River southward to Eugene Includes: Coast Fork to Cottage Grove Reservoir Does not apply to: Middle Fork, North Fork of the Middle Fork, or to any other tributary emptying into the Willamette → Willamette River (1)",
+  "Willamette: Willamette River, from its mouth on the Columbia River southward to Eugene Includes: Coast Fork to Cottage Grove Reservoir Does not apply to: Middle Fork, North Fork of the Middle Fork, or to any other tributary emptying into the Willamette → Willamette River | Coast Fork Willamette River (1)",
   "Willamette: Multnomah Channel and Scappoose Bay → Multnomah Channel | Scappoose Bay (1)",
   "Snake River: Snake River, from just south of Adrien, OR north to the WA border Includes: Brownlee Reservoir and the Powder River arm → Snake River | Brownlee Reservoir | Powder River arm (1)"
  ],
@@ -963,5 +967,5 @@
   "Northwest: 1 parts"
  ],
  "counties": 36,
- "finishedAt": "2026-10-23T18:45:36.127Z"
+ "finishedAt": "2026-10-24T20:24:13.786Z"
 }
