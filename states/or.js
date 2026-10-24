@@ -142,14 +142,14 @@ async function namesOf(lake) {
 // label has no reach.
 const listed = (names, n) => {
   const one = String(n).replace(/\b(Lake|Reservoir|Pond)s\b/gi, '$1');
-  return names.some(a => sameWater(a, one) || (/\b(river|creek)$/i.test(one) && sameWater(a, one.replace(/^(lower|upper|middle|mid)[\s-]+/i, ''))));
+  return names.some(a => sameWater(a, one) || (/\b(river|creek)$/i.test(one) && sameWater(a, one.replace(/^(lower|upper|middle|mid)[\s-]+(?!fork\b)/i, ''))));
 };
 // "Upper Klamath Lake" is the rules' "Klamath Lake" and "Upper Erma Bell Lake" is in "Erma Bell Lakes", unless the
 // list has the water with its Upper/Middle/Lower itself.
 function withoutReach(names, listNames) {
   const out = [...names];
   for (const n of names) {
-    const m = n.match(/^(?:Upper|Middle|Lower)\s+(.+)$/i);
+    const m = n.match(/^(?:Upper|Middle|Lower)\s+(?!Fork\b)(.+)$/i);
     if (m && !listNames.some(x => listed([n], x))) out.push(m[1]);
   }
   return [...new Set(out)];
