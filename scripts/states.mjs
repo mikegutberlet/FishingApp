@@ -1,5 +1,6 @@
 // Per-state settings for the shared data jobs (scripts/build-state-*.mjs <st>). California's jobs predate these
 // and keep their own scripts (build-ca-*.mjs).
+import { outline as OR_OUTLINE } from '../states/or-outline.js';
 
 const NV = {
   code: 'NV', name: 'Nevada',
@@ -21,10 +22,10 @@ const OR = {
   // The Columbia and the Snake make the north and east lines; the box takes in both rivers.
   bbox: { xmin: -124.75, ymin: 41.99, xmax: -116.45, ymax: 46.3 },
   riverScale: 'small',
-  outline: [[-124.6, 42.0], [-117.03, 42.0], [-117.03, 44.3], [-116.9, 44.5], [-116.46, 45.6], [-116.92, 46.0], [-119.0, 46.0], [-119.3, 45.94],
-    // Midstream down the Columbia, so Gorge towns (Hood River, Cascade Locks) are in and Washington's bank is out.
-    [-119.9, 45.86], [-120.2, 45.75], [-120.74, 45.71], [-120.97, 45.655], [-121.18, 45.625], [-121.4, 45.705], [-121.52, 45.73], [-121.89, 45.685],
-    [-121.95, 45.65], [-122.12, 45.59], [-122.39, 45.575], [-122.67, 45.625], [-122.76, 45.66], [-122.8, 45.9], [-123.1, 46.18], [-123.9, 46.27], [-124.2, 46.27], [-124.2, 45.0], [-124.6, 42.8]],
+  // Brownlee (Snake) and Lake Celilo (Columbia) are shared with Idaho and Washington, and their NHD point is on the
+  // far half; a big water this close to the line stays in the state's list.
+  borderReservoirs: true,
+  outline: OR_OUTLINE, // traced from the Census county lines; shared with the app
   narrative: [
     { year: '1877', text: 'The first salmon hatchery in the Columbia basin opens on the Clackamas River.', source: 'ODFW history' },
     { year: '1975', text: 'The Oregon Fish Commission and the Oregon Game Commission merge into the Oregon Department of Fish and Wildlife.', source: 'ODFW' },
@@ -48,4 +49,15 @@ export function inOutline([x, y], outline) {
     if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) inside = !inside;
   }
   return inside;
+}
+
+// Degrees from a point to the nearest edge of an outline (flat-earth, fine at a few km). Same as states/index.js.
+export function edgeDeg([x, y], outline) {
+  let best = Infinity;
+  for (let i = 0, j = outline.length - 1; i < outline.length; j = i++) {
+    const [ax, ay] = outline[j], [bx, by] = outline[i], dx = bx - ax, dy = by - ay;
+    const t = Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy || 1)));
+    best = Math.min(best, Math.hypot(x - ax - t * dx, y - ay - t * dy));
+  }
+  return best;
 }

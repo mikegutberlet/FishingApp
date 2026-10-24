@@ -10,7 +10,7 @@
 // Only public data; nothing from anyone's phone is involved.
 
 import { writeFile, mkdir, readFile } from 'node:fs/promises';
-import { stateArg, inOutline } from './states.mjs';
+import { stateArg, inOutline, edgeDeg } from './states.mjs';
 
 const STATE = stateArg();
 
@@ -23,6 +23,9 @@ const CA_BBOX = STATE.bbox;
 const report = { startedAt: new Date().toISOString(), steps: {} };
 
 const inCalifornia = pt => inOutline(pt, STATE.outline); // kept the California job's name to stay diffable with it
+// A lake in the state, or a reservoir of 1,000 acres or more within about 2 km of a border river (borderReservoirs).
+// The app's stateAt gives these the state too.
+const lakeInState = (pt, acres) => inCalifornia(pt) || (!!STATE.borderReservoirs && acres >= 1000 && edgeDeg(pt, STATE.outline) < 0.02);
 
 // NHD sometimes takes a query and never answers, which once held a run until the workflow was cancelled with nothing
 // saved. So every request has a time limit (long enough for the big depth downloads), and once the job's time budget
@@ -141,7 +144,7 @@ async function buildLakes(ids) {
     const pid = prop(p, 'PERMANENT_IDENTIFIER');
     if (polys.has(pid)) continue;
     const pt = lakePoint(f.geometry);
-    if (!inCalifornia(pt)) continue;
+    if (!lakeInState(pt, prop(p, 'AREASQKM') * 247.105)) continue;
     polys.set(pid, { pid, gnis: prop(p, 'GNIS_ID') || null, name: prop(p, 'GNIS_NAME'), ftype: prop(p, 'FTYPE'),
       acres: prop(p, 'AREASQKM') * 247.105, elev: prop(p, 'ELEVATION'), lat: round(pt[1]), lon: round(pt[0]) });
   }
@@ -402,7 +405,7 @@ let lakes = null;
 const readOldFile = name => readFile(new URL(name, OUT), 'utf8').then(JSON.parse).catch(() => null);
 const recent = await readOldFile('lakes.json');
 if (recent?.lakes?.length && Date.now() - Date.parse(recent.updatedAt) < 3 * 86400e3 && process.env.GITHUB_EVENT_NAME === 'push') {
-  const kept = recent.lakes.filter(l => inCalifornia([l.lon, l.lat]));
+  const kept = recent.lakes.filter(l => lakeInState([l.lon, l.lat], l.acres));
   report.steps.lakes = { reused: recent.updatedAt, inState: kept.length, outsideOutline: recent.lakes.length - kept.length };
   if (kept.length < recent.lakes.length) await save('lakes.json', { ...recent, lakes: kept });
 } else try { lakes = await buildLakes(ids); } catch (e) { report.steps.lakesError = e.message; console.error('lakes:', e.message); }

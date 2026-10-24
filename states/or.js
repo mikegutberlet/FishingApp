@@ -32,10 +32,7 @@ export async function migrateSavedIds(db) {
 export const searchBy = 'zone';
 // The Columbia and the Snake make the north and east lines; the box takes in both rivers.
 export const bbox = [-124.75, 41.99, -116.45, 46.3];
-export const outline = [[-124.6, 42.0], [-117.03, 42.0], [-117.03, 44.3], [-116.9, 44.5], [-116.46, 45.6], [-116.92, 46.0], [-119.0, 46.0], [-119.3, 45.94],
-  // Midstream down the Columbia, so Gorge towns (Hood River, Cascade Locks) are in and Washington's bank is out.
-  [-119.9, 45.86], [-120.2, 45.75], [-120.74, 45.71], [-120.97, 45.655], [-121.18, 45.625], [-121.4, 45.705], [-121.52, 45.73], [-121.89, 45.685],
-  [-121.95, 45.65], [-122.12, 45.59], [-122.39, 45.575], [-122.67, 45.625], [-122.76, 45.66], [-122.8, 45.9], [-123.1, 46.18], [-123.9, 46.27], [-124.2, 46.27], [-124.2, 45.0], [-124.6, 42.8]];
+export { outline } from './or-outline.js';
 export const plantsNote = 'ODFW schedules the week, not the day, and counts each size class: legal (8 to 12″), trophy (12″+), brood fish and fingerlings. Schedules can change with weather and road access.';
 export const searchHint = 'Detroit, Deschutes River, Diamond…';
 export const stockedHint = 'Hagg, Detroit, Willamette zone…';
@@ -55,6 +52,22 @@ function inRing([x, y], ring) {
 export async function zoneAt(lat, lon) {
   const z = await d.load('zones');
   return z?.zones.find(k => lon >= k.bbox[0] && lon <= k.bbox[2] && lat >= k.bbox[1] && lat <= k.bbox[3] && k.polys.some(([outer]) => inRing([lon, lat], outer)))?.name ?? null;
+}
+// About how many km a point is from a zone (0 inside it), measured to its outline's edges.
+async function kmToZone(lat, lon, name) {
+  const z = (await d.load('zones'))?.zones.filter(k => sameZone(k.name, name)) ?? [];
+  if (!z.length) return 0;
+  const k = Math.cos(lat * Math.PI / 180);
+  let best = Infinity;
+  for (const { polys } of z) for (const [outer] of polys) {
+    if (inRing([lon, lat], outer)) return 0;
+    for (let i = 0, j = outer.length - 1; i < outer.length; j = i++) {
+      const [ax, ay] = outer[j], [bx, by] = outer[i], dx = (bx - ax) * k, dy = by - ay, px = (lon - ax) * k, py = lat - ay;
+      const t = Math.max(0, Math.min(1, (px * dx + py * dy) / (dx * dx + dy * dy || 1)));
+      best = Math.min(best, Math.hypot(px - t * dx, py - t * dy) * 111);
+    }
+  }
+  return best;
 }
 // County a point is in (US Census outlines); some exceptions are for one county's creek of a common name.
 export async function countyAt(lat, lon) {
@@ -163,10 +176,15 @@ export async function regsFor(lake) {
   let zoneKey = Object.keys(r.zones).find(z => sameZone(z, zone ?? '')) ?? null;
   // Outside every zone (not in Oregon) only the Columbia and Snake rules, which name their river, can apply.
   // A rule for one county's water ("Beaver Creek (Nestucca Basin, Tillamook Co.)") applies only in that county.
+  // A Columbia or Snake rule names a water by the river (Eagle Creek and Herman Creek in the Gorge), so it applies
+  // only within about 25 km of that zone, not to a same-named creek in Union or Lane County.
+  const near = {};
+  for (const z of ['Columbia River', 'Snake River']) near[z] = lake.lat == null || await kmToZone(lake.lat, lake.lon, z) <= 25;
   const special = r.waters.filter(w => {
     const counties = w.counties ?? (w.county ? [w.county] : []);
-    return (!counties.length || (county && counties.includes(county))) && (zoneKey ? w.zone === zoneKey || /Columbia|Snake/.test(w.zone) : /Columbia|Snake/.test(w.zone))
-      && [w.name, ...w.aliases].some(n => listed(names, n));
+    const river = /Columbia|Snake/.test(w.zone);
+    return (!counties.length || (county && counties.includes(county))) && (zoneKey ? w.zone === zoneKey || river : river)
+      && (!river || near[/Columbia/.test(w.zone) ? 'Columbia River' : 'Snake River']) && [w.name, ...w.aliases].some(n => listed(names, n));
   });
   // The Columbia and Snake zones are the rivers and their reservoirs, thinner than the zone map can show: a water
   // named in their rules (Brownlee, Hells Canyon) gets that zone's limits unless its own zone's rules name it too.
