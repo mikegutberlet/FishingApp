@@ -175,13 +175,19 @@ for (const w of waters) {
   if (known.has(w.name)) { w.near = known.get(w.name); continue; }
   if (report.places.lookedUp >= 60) break;
   report.places.lookedUp++;
-  await new Promise(res => setTimeout(res, 1100));
-  try {
-    const params = new URLSearchParams({ q: `${q}, Oregon`, format: 'json', limit: '1', countrycodes: 'us', viewbox: '-124.75,46.3,-116.45,41.99', bounded: '1' });
-    const r = await fetch(`https://nominatim.openstreetmap.org/search?${params}`, { headers: { 'User-Agent': 'TackleBox-fishing-app (personal, github.com/mikegutberlet/FishingApp)' }, signal: AbortSignal.timeout(30000) });
-    const hit = r.ok ? (await r.json())[0] : null;
-    if (hit) { w.near = [+(+hit.lat).toFixed(4), +(+hit.lon).toFixed(4)]; report.places.found++; }
-  } catch (e) { report.places.error = e.message; }
+  // OpenStreetMap often has a shorter name: "Charles Metzger County Park" is "Metzger Park".
+  const short = q.replace(/\b(County|State|City) (?=Park)/, '');
+  const tries = [q, short, ...(short !== q && short.split(' ').length > 2 ? [short.split(' ').slice(1).join(' ')] : [])];
+  for (const text of new Set(tries)) {
+    await new Promise(res => setTimeout(res, 1100));
+    try {
+      const params = new URLSearchParams({ q: `${text}, Oregon`, format: 'json', limit: '1', countrycodes: 'us', viewbox: '-124.75,46.3,-116.45,41.99', bounded: '1' });
+      const r = await fetch(`https://nominatim.openstreetmap.org/search?${params}`, { headers: { 'User-Agent': 'TackleBox-fishing-app (personal, github.com/mikegutberlet/FishingApp)' }, signal: AbortSignal.timeout(30000) });
+      const hit = r.ok ? (await r.json())[0] : null;
+      if (hit) { w.near = [+(+hit.lat).toFixed(4), +(+hit.lon).toFixed(4)]; report.places.found++; break; }
+    } catch (e) { report.places.error = e.message; }
+  }
+  if (!w.near) (report.places.notFound ??= []).push(q);
 }
 if (report.kept?.length) { report.regsError = `kept last week's rules for ${report.kept.join(', ')}`; process.exitCode = 1; }
 if (waters.length) {
