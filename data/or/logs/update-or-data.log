@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-24T20:09:42.510Z",
+  "startedAt": "2026-10-24T20:23:34.446Z",
   "schedule": {
     "windows": [
       "2024-10-24..2024-11-23: 16",
@@ -205,18 +205,17 @@
     }
   ],
   "points": {
-    "nhd": 4487,
+    "nhd": 4463,
     "odfwMaps": 756,
     "via": {
-      "none": 51,
-      "odfw": 192,
+      "none": 50,
+      "odfw": 190,
       "osm": 5,
-      "nhd": 19
+      "nhd": 22
     },
     "unmatched": [
       "ROW R NATURE PK-Fmr Cott. Grv. Pd → Row River Nature PK-Fmr Cott. Grv. Pond (Willamette)",
       "PRINEVILLE FISHING PD → Prineville Fishing Pond (Central)",
-      "SALISH PD, W → West Salish Pond (Willamette)",
       "JOHNSONS MILL PD → Johnsons Mill Pond (Southwest)",
       "EXPO PD 1 (ROGUE) → Expo Pond 1 (Rogue) (Southwest)",
       "MCNARY CHANNEL PDS → McNary Channel Ponds (Northeast)",
@@ -237,4 +236,5 @@
       "KINGSLEY RES, UPR → Upper Kingsley Reservoir (Central)",
       "HAINES PD-1 → Haines Pond 1 (Southeast)",
       "MCKENZIE R-1 (below Leaburg Dam) → McKenzie River 1 (Below Leaburg Dam) (Willamette)",
-      "FALL CR (WILLAMETT
+      "FALL CR (WILLAMETTE R) → Fall Creek (Willamette River) (Willamette)",
+  
