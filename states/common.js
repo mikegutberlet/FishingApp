@@ -23,8 +23,10 @@ function namedIn(lake) {
   return locality => !!locality && re.test(locality) && (!TYPE_WORDS.test(locality) || type.test(locality));
 }
 
-const nameWords = s => String(s ?? '').toLowerCase().replace(/\(.*?\)/g, ' ').split(/\s+[–—-]\s+/)[0].match(/[a-z0-9]+/g)
-  ?.filter(w => !/^(lake|lakes|reservoir|res|pond|ponds|the|of)$/.test(w)) ?? [];
+// A place note after a dash is dropped ("Thomas Creek- Carson Range"), one after a comma goes first ("Salmon Falls
+// River, North Fork"), and plural water words are read in the singular ("Three Creeks Lake" is "Three Creek Lake").
+const nameWords = s => String(s ?? '').toLowerCase().replace(/\(.*?\)/g, ' ').split(/\s*[–—-]\s+/)[0].replace(/^(.+?),\s*(.+)$/, '$2 $1').match(/[a-z0-9]+/g)
+  ?.filter(w => !/^(lake|lakes|reservoir|res|pond|ponds|the|of)$/.test(w)).map(w => w.replace(/^(creek|river|spring|slough)s$/, '$1')) ?? [];
 
 export function stateData(dir, code) {
   const cache = {};
@@ -102,13 +104,24 @@ export function stateData(dir, code) {
     // Same name: the same words once lake/reservoir/pond and place notes are dropped ("Timber-Linn Lake" is not
     // "Timber Lake", "Lemolo Forebay Number Two" is not "Lemolo Reservoir").
     const key = nameWords(water.name).join('');
-    const named = key.length >= 3 && near.find(w => nameWords(w.name).join('') === key);
-    if (named) return named;
+    const named = key.length >= 3 ? near.filter(w => nameWords(w.name).join('') === key) : [];
+    // Stocked waters of one name in different places on one point can't be told apart (NDOW pins its Willow Creeks
+    // in three ranges on one spot): link none rather than the wrong one. "Big (Alexander) Creek" is Big Creek.
+    const place = n => n.replace(/\s*\(.*?\)\s*/g, ' ').replace(/\s+/g, ' ').trim();
+    if (named.length > 1 && named[1].distKm - named[0].distKm < 0.01 && place(named[1].name) !== place(named[0].name)) return null;
+    if (named.length) return named[0];
     // Otherwise a stocked water whose name holds every word of this one ("Hagg Lake" is "Henry Hagg Lake") or one
-    // right on top of it: a pond on a big lake's shore isn't the lake.
+    // right on top of it: a pond on a big lake's shore isn't the lake. Right on top doesn't count when the map has the
+    // stocked water's own lake next to it (Lilypad Lake is beside Anthony Lake, not Anthony Lake).
     const words = nameWords(water.name).filter(w => w.length >= 3);
-    return water.kind === 'river' ? null
-      : near.find(w => w.distKm <= 0.3 || (words.length && w.distKm <= radius && words.every(x => nameWords(w.name).includes(x)))) ?? null;
+    if (water.kind === 'river') return null;
+    const byWords = near.find(w => words.length && w.distKm <= radius && words.every(x => nameWords(w.name).includes(x)));
+    if (byWords) return byWords;
+    const close = near.find(w => w.distKm <= 0.3);
+    if (!close) return null;
+    const own = nameWords(close.name).join('');
+    const { lakes } = await statewide();
+    return lakes.some(l => nameWords(l.name).join('') === own && haversineKm(l.lat, l.lon, close.lat, close.lon) <= 2) ? null : close;
   }
 
   // Historical introductions recorded at this water (USGS NAS): nearby records, or records whose locality names it.

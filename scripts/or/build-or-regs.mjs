@@ -77,10 +77,17 @@ function aliases(title) {
   const t = title.replace(/\bIncludes?:/gi, ',').replace(/\s*\((?:[^)]*Co\.?|[^)]*County)\)/i, '').replace(/,\s*(mainstem|and tributaries|tributaries).*$/i, '').replace(/\s+and\s+(its\s+)?tributaries\b.*$/i, '');
   const both = t.match(/^(.+?) and (.+?) (Lake|Reservoir|Pond|Creek|River)s$/i);
   if (both) { out.add(`${both[1]} ${both[3]}`); out.add(`${both[2]} ${both[3]}`); }
+  let head = null;
   for (let p of t.split(/,|;|\s+and\s+|\s+&\s+|\//)) {
     p = p.replace(/^\s*(from|to|between|upstream|downstream)\b.*$/i, '').replace(/\s*\(.*?\)\s*/g, ' ').replace(/\s+(downstream|upstream|above|below|from|within|except|including|to)\b.*$/i, '').replace(/^(the|all)\s+/i, '').trim();
-    if (p.length > 2 && WATERISH.test(p)) out.add(p);
+    // A fork is named with its river: "Willamette River ... Includes: Coast Fork" is the Coast Fork Willamette River,
+    // "Malheur River, North Fork Mouth to Beulah Reservoir" the North Fork Malheur River.
+    const fork = p.match(/^((?:(?:North|South|East|West|Middle|Coast) Fork\s*)+)/i)?.[1]?.trim();
+    if (head && fork && !WATERISH.test(p) && /\b(River|Creek)$/i.test(head)) p = `${fork} ${head}`;
+    if (p.length > 2 && WATERISH.test(p)) { out.add(p); head ??= p; }
   }
+  // "Smith River, North Fork" is the fork alone.
+  if (head && /^[^,]+,\s*(North|South|East|West|Middle|Coast) Fork\b/i.test(t)) out.delete(head);
   // "Lake Billy Chinook" also goes by "Billy Chinook Lake" in some lists.
   for (const a of [...out]) { const m = a.match(/^Lake (.+)$/); if (m) out.add(`${m[1]} Lake`); }
   if (!out.size && t.length > 2) out.add(t.trim());
@@ -151,6 +158,31 @@ for (const zone of Object.keys(ZONES)) {
   if (old?.zones?.[zone]) { zones[zone] = old.zones[zone]; waters.push(...old.waters.filter(w => w.zone === zone)); }
 }
 if (!statewide.length && old?.statewide) statewide = old.statewide;
+
+// Where a heading's place note is ("Rainbow Lake (Charles Metzger County Park)", "Twin Lakes (Wallowa Mountains)",
+// "Crater Lake National Park"), so the app can tell same-named waters apart. OpenStreetMap Nominatim, one request a
+// second as its policy asks; last week's answers are kept.
+const placeOf = title => {
+  const m = title.match(/\(([^)]+)\)/)?.[1];
+  if (m && !/\b(Co\.?|County)$/i.test(m) && !/^Mainstem\b/i.test(m)) return m;
+  return /\bNational Park$/i.test(title) ? title : null;
+};
+const known = new Map((old?.waters ?? []).filter(w => w.near).map(w => [w.name, w.near]));
+report.places = { lookedUp: 0, found: 0 };
+for (const w of waters) {
+  const q = placeOf(w.name);
+  if (!q) continue;
+  if (known.has(w.name)) { w.near = known.get(w.name); continue; }
+  if (report.places.lookedUp >= 60) break;
+  report.places.lookedUp++;
+  await new Promise(res => setTimeout(res, 1100));
+  try {
+    const params = new URLSearchParams({ q: `${q}, Oregon`, format: 'json', limit: '1', countrycodes: 'us', viewbox: '-124.75,46.3,-116.45,41.99', bounded: '1' });
+    const r = await fetch(`https://nominatim.openstreetmap.org/search?${params}`, { headers: { 'User-Agent': 'TackleBox-fishing-app (personal, github.com/mikegutberlet/FishingApp)' }, signal: AbortSignal.timeout(30000) });
+    const hit = r.ok ? (await r.json())[0] : null;
+    if (hit) { w.near = [+(+hit.lat).toFixed(4), +(+hit.lon).toFixed(4)]; report.places.found++; }
+  } catch (e) { report.places.error = e.message; }
+}
 if (report.kept?.length) { report.regsError = `kept last week's rules for ${report.kept.join(', ')}`; process.exitCode = 1; }
 if (waters.length) {
   await writeFile(new URL('regs.json', OUT), JSON.stringify({
