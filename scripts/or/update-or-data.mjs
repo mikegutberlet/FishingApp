@@ -258,17 +258,23 @@ const zoneOk = (w, c, strict = false) => {
   const at = zoneAt(c.lat, c.lon);
   return sameZone(at, w.zone) || (!strict && !!BANKS[at]?.includes(w.zone));
 };
-async function pickPoint(w, maps, nhd) {
+// A placemark whose schedule link is this water's spelling, abbreviated or not (the map's "BENSON LAKE" is the
+// schedule's "BENSON LK"), unless the placemark is named for another water on the schedule: ODFW's Carter Lake
+// placemark links Cleawox Lake's schedule.
+function linksTo(m, w, others) {
+  if (!m.raws.some(r => r === w.raw.toUpperCase() || waterName(r).toLowerCase() === waterName(w.raw).toLowerCase())) return false;
+  const k = kindKey(m.name);
+  return !others.has(k) || others.get(k) === w.id || lookupNames(w.name).names.some(n => kindKey(n) === k);
+}
+async function pickPoint(w, maps, nhd, others) {
   const { names, where } = lookupNames(w.name);
   const keys = new Set(names.map(kindKey).filter(k => k.length >= 5));
   const flowing = isFlowing(w.name);
   const okZone = c => zoneOk(w, c);
   const near = where ? (await geocode(where))?.[0] : null;
-  // 1. ODFW's own map: a placemark whose schedule link is this water's spelling (abbreviated or not: the map's
-  // "BENSON LAKE" is the schedule's "BENSON LK"). That is ODFW saying which water it is, so it stands even just over
-  // a zone line (ponds on the Columbia zone's edge).
-  const spelled = waterName(w.raw).toLowerCase();
-  const byRaw = maps.filter(m => m.raws.some(r => r === w.raw.toUpperCase() || waterName(r).toLowerCase() === spelled));
+  // 1. ODFW's own map: a placemark that links this water's schedule (linksTo). That is ODFW saying which water it
+  // is, so it stands even just over a zone line (ponds on the Columbia zone's edge).
+  const byRaw = maps.filter(m => linksTo(m, w, others));
   if (byRaw.length) { const b = byRaw.find(okZone) ?? byRaw[0]; return { lat: b.lat, lon: b.lon, via: 'odfw', match: 'raw', about: b.about }; }
   // Then the same name in the right zone (Oregon has many Fish Lakes and Devils Lakes).
   const named = maps.filter(m => keys.has(kindKey(m.name)));
@@ -362,14 +368,18 @@ async function buildWaters(rows, reports) {
   for (const [id, w] of old) if (!byWater.has(id)) byWater.set(id, { id, raw: w.raw, name: waterName(w.raw), zone: w.zone, office: w.office, weeks: [] });
   report.points = { nhd: nhd.length, odfwMaps: maps.length, via: {}, unmatched: [] };
   const waters = [];
+  // Each schedule water by its name key, so a placemark named for one water isn't taken for another.
+  const others = new Map([...byWater.values()].map(w => [kindKey(w.name), w.id]));
   for (const w of byWater.values()) {
     const prev = old.get(w.id);
     // Keep last night's ODFW point when it is ODFW's own link for the water or sits in the water's zone; otherwise
     // pick again (early runs, before zones.json, pinned some waters on a same-named water elsewhere). A point from
     // before picks were tagged (no match) is picked again once: some sat on another water in the right zone (Blue
-    // River Reservoir on Fairview's Blue Lake, Cleawox on Carter Lake).
+    // River Reservoir on Fairview's Blue Lake). A link pin is picked again whenever tonight's map links the water,
+    // so it is the same pick each night, and kept when the map didn't load.
     const prevOk = prev?.lat != null && (prev.match === 'raw' || zoneOk(w, prev));
-    const pt = prev?.via === 'odfw' && prev.match && prevOk ? prev : await pickPoint(w, maps, nhd) ?? (prevOk ? prev : null);
+    const keep = prev?.via === 'odfw' && prevOk && (prev.match === 'name' || (prev.match === 'raw' && !maps.some(m => linksTo(m, w, others))));
+    const pt = keep ? prev : await pickPoint(w, maps, nhd, others) ?? (prevOk ? prev : null);
     if (!pt) report.points.unmatched.push(`${w.raw} → ${w.name} (${w.zone})`);
     report.points.via[pt?.via ?? 'none'] = (report.points.via[pt?.via ?? 'none'] ?? 0) + 1;
     const rep = reports.map(x => ({ ...x, lines: (x.items ?? []).filter(t => mentions(t, w.name)) })).find(x => x.lines.length && (sameZone(x.zone, w.zone) || /Columbia/.test(x.zone)));
