@@ -1,5 +1,5 @@
 {
- "startedAt": "2026-10-24T20:23:34.941Z",
+ "startedAt": "2026-10-24T20:25:38.448Z",
  "pages": {
   "license-tag-permit-fees": 1,
   "general-statewide-regulations": 23,
@@ -67,8 +67,15 @@
   "pdf"
  ],
  "places": {
-  "lookedUp": 20,
-  "found": 14
+  "lookedUp": 6,
+  "found": 1,
+  "notFound": [
+   "Coquille Basin",
+   "Sandy River Basin",
+   "Wallowa Hatchery",
+   "Trout Creek Mountains",
+   "Trout Creek Mountains"
+  ]
  },
  "advisoryRows": [
   [
@@ -342,6 +349,4 @@
   "Columbia: Mid-Columbia River, from Ruckel Creek to McNary Dam → Mid-Columbia River (1)",
   "Columbia: Lower Columbia River → Lower Columbia River (1)",
   "Southwest: Applegate Lake → Applegate Lake (2)",
-  "Southwest: Cooper Creek Reservoir → Cooper Creek Reservoir (1)",
-  "Southwest: Emigrant Reservoir → Emigrant Reservoir (1)",
-  "Southwest: Galesville Reservoir → 
+  "Southwest: Cooper Cr
