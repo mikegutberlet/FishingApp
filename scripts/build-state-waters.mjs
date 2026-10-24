@@ -24,10 +24,18 @@ const report = { startedAt: new Date().toISOString(), steps: {} };
 
 const inCalifornia = pt => inOutline(pt, STATE.outline); // kept the California job's name to stay diffable with it
 
+// NHD sometimes takes a query and never answers, which once held a run until the workflow was cancelled with nothing
+// saved. So every request has a time limit (long enough for the big depth downloads), and once the job's time budget
+// is spent no new NHD tile is started: that list fails and last week's file stays, leaving the workflow time to commit.
+const DEADLINE = Date.now() + (+process.env.WATERS_MINUTES || 120) * 60e3;
+const outOfTime = () => Date.now() > DEADLINE;
 async function get(url, tries = 3) {
   for (let i = 1; ; i++) {
     try {
-      const r = await fetch(url, { headers: /lternet\.edu|edirepository\.org/.test(url) ? BROWSER_UA : UA });
+      const r = await fetch(url, {
+        headers: /lternet\.edu|edirepository\.org/.test(url) ? BROWSER_UA : UA,
+        signal: AbortSignal.timeout(url.startsWith(NHD) ? 120e3 : 600e3),
+      });
       if (!r.ok) throw new Error(`${r.status} ${url.slice(0, 200)}`);
       return r;
     } catch (e) {
@@ -87,6 +95,7 @@ async function queryTiled(layerId, where, outFields, offset, tile = 1) {
   const queryTile = async (x, y, size) => {
     const envelope = JSON.stringify({ xmin: x, ymin: y, xmax: x + size, ymax: y + size, spatialReference: { wkid: 4326 } });
     const got = [];
+    if (outOfTime()) throw new Error(`out of time (${report.steps.splitTiles ?? 0} tiles split, ${FAILED.length} skipped)`);
     try {
       for (let page = 0; ; page += 2000) {
         const params = new URLSearchParams({
@@ -99,6 +108,7 @@ async function queryTiled(layerId, where, outFields, offset, tile = 1) {
         if (json.features.length < 2000) break;
       }
     } catch (e) {
+      if (outOfTime()) throw e;
       if (size <= 0.035) {
         failed.push({ layerId, x: round(x), y: round(y), size, error: e.message.slice(0, 80) });
         FAILED.push(failed.at(-1));
