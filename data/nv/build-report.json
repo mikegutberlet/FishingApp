@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-24T19:16:11.700Z",
+  "startedAt": "2026-10-25T00:14:14.084Z",
   "steps": {
     "nhdLayers": [
       {
@@ -60,8 +60,13 @@
       "inState": 350,
       "outsideOutline": 0
     },
-    "splitTiles": 5,
-    "riversError": "out of time (5 tiles split, 0 skipped)"
+    "rivers": {
+      "layer": 6,
+      "segments": 105689,
+      "named": 3995,
+      "kept": 630,
+      "carriedOver": 0
+    }
   },
-  "finishedAt": "2026-10-24T21:16:39.493Z"
+  "finishedAt": "2026-10-25T02:07:33.061Z"
 }
