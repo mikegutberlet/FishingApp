@@ -94,15 +94,19 @@ export function stateData(dir, code) {
     return best.distKm <= limit ? { ...best, updatedAt: r.updatedAt } : null;
   }
 
-  // Statewide lakes and rivers (weekly build from USGS NHD). Rivers become one entry per label point.
+  // Statewide lakes and rivers (weekly build from USGS NHD). Rivers become one entry per label point; a label in a
+  // lake (the Snake through Brownlee) carries the lake's name as inLake. Built once per file the app has loaded.
+  let built = null;
   async function statewide() {
     const [l, r] = await Promise.all([load('lakes'), load('rivers')]);
+    if (built?.l === l && built?.r === r) return built.out;
     const lakes = (l?.lakes ?? []).map(x => ({ ...x, kind: 'lake', state: code }));
     const riverLabels = [];
     for (const river of r?.rivers ?? []) {
-      for (const [lat, lon] of river.points) riverLabels.push({ ...river, kind: 'river', state: code, lat, lon });
+      for (const [lat, lon, inLake] of river.points) riverLabels.push({ ...river, kind: 'river', state: code, lat, lon, ...(inLake && { inLake }) });
     }
-    return { lakes, riverLabels };
+    built = { l, r, out: { lakes, riverLabels } };
+    return built.out;
   }
 
   // Best stocked water for a statewide water: close by, preferring a matching name.
@@ -119,7 +123,10 @@ export function stateData(dir, code) {
     // in three ranges on one spot): link none rather than the wrong one. "Big (Alexander) Creek" is Big Creek, and
     // a lake's spots are one lake ("Lake Tahoe – Cave Rock", "– Sand Harbor").
     const place = n => n.replace(/\s*\(.*?\)\s*/g, ' ').replace(/\s+/g, ' ').trim();
-    if (named.length > 1 && named[1].distKm - named[0].distKm < 0.01 && place(named[1].name) !== place(named[0].name) && !stillWater(named[0].name)) return null;
+    // One of them by this water's whole name is it ("Ruby Lake NWR", not its "– Collection Ditch").
+    if (named.length > 1 && named[1].distKm - named[0].distKm < 0.01 && place(named[1].name) !== place(named[0].name) && !stillWater(named[0].name)) {
+      return named.find(w => place(w.name).toLowerCase() === place(water.name).toLowerCase()) ?? null;
+    }
     if (named.length) return named[0];
     // Otherwise a stocked water whose name holds every word of this one ("Hagg Lake" is "Henry Hagg Lake") or one
     // right on top of it: a pond on a big lake's shore isn't the lake. Right on top doesn't count when the map has the

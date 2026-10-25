@@ -54,9 +54,10 @@ export const uid = () => Date.now().toString(36) + Math.random().toString(36).sl
 export const db = {
   all: store => tx(store, 'readonly', s => s.getAll()),
   get: (store, id) => tx(store, 'readonly', s => s.get(id)),
-  put: (store, obj) => {
+  // touch: false keeps the row's own updatedAt, for changes the app makes on its own (a backup merge goes by it).
+  put: (store, obj, { touch = true } = {}) => {
     if (!obj.id) obj.id = uid();
-    obj.updatedAt = new Date().toISOString();
+    if (touch || !obj.updatedAt) obj.updatedAt = new Date().toISOString();
     return tx(store, 'readwrite', s => s.put(obj)).then(() => obj);
   },
   del: (store, id) => tx(store, 'readwrite', s => s.delete(id)),

@@ -411,10 +411,14 @@ async function buildPlants(rows) {
   // The first runs keyed plants by a lowercase slug (dropped), then by ODFW's raw spelling (converted).
   const tonight = new Set(rows.map(r => `${odfwId(r.raw)}|${r.week}`));
   const idOf = o => /^[\w.:-]*$/.test(o.stockId) ? o.stockId : odfwId(o.stockId);
-  // A window is trusted to drop stockings only when it still lists at least 80% of what last night's file holds for
-  // its weeks, so one short answer from ODFW doesn't empty the app for a day.
+  // A window is trusted to drop stockings only when it lists some of its own and misses no more than 2, or 20%, of
+  // what last night's file holds for its weeks, so one short answer from ODFW doesn't empty the app for a day while a
+  // move and a cancellation in a quiet month (8 stockings) still go.
   const lastNight = ([from, to]) => [...new Set(old.filter(o => o.week >= from && o.week <= to).map(o => `${idOf(o)}|${o.week}`))];
-  const trusted = FETCHED.filter(w => { const was = lastNight(w); return was.filter(k => w[2].has(k)).length >= 0.8 * was.length; });
+  const trusted = FETCHED.filter(w => {
+    const was = lastNight(w), missing = was.filter(k => !w[2].has(k)).length;
+    return !was.length || (w[2].size > 0 && missing <= Math.max(2, 0.2 * was.length));
+  });
   // Only planned weeks (from a week ago on) are dropped; a past stocking stays in the history.
   const since = new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10);
   let moved = 0;

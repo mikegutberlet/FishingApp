@@ -82,6 +82,7 @@ async function layerIds() {
   const find = re => layers.find(l => re.test(l.name))?.id;
   return {
     waterbody: find(/^Waterbody - Large Scale$/i) ?? 12,
+    waterbodySmall: find(/^Waterbody - Small Scale$/i) ?? 10,
     flowline: find(/^Flowline - Large Scale$/i) ?? 6,
     flowlineSmall: find(/^Flowline - Small Scale$/i) ?? 4,
   };
@@ -208,10 +209,19 @@ async function attachElevations(lakes) {
 // A state with dense streams (Oregon) reads the small-scale flowlines: the large-scale query times out on its
 // tiles, and the small-scale layer still has every river and long creek a label needs.
 const riverLayer = ids => STATE.riverScale === 'small' ? ids.flowlineSmall : ids.flowline ?? ids.flowlineSmall;
+// A flowline through a lake (NHD's artificial path) names the waterbody it is in; the small-scale layers link them by
+// COMID, the large-scale ones by permanent id.
+const lakeLink = (ids, layer) => layer === ids.flowlineSmall
+  ? { field: 'WBAREACOMI', layer: ids.waterbodySmall, key: 'COMID', quote: false }
+  : { field: 'WBAREA_PERMANENT_IDENTIFIER', layer: ids.waterbody, key: 'PERMANENT_IDENTIFIER', quote: true };
 async function buildRivers(ids) {
   const layer = riverLayer(ids);
+  // Only ask for the waterbody link when the layer has it, so a renamed field can't fail every tile.
+  const link = lakeLink(ids, layer);
+  const fields = (await getJson(`${NHD}/${layer}?f=json`).catch(() => null))?.fields?.map(f => f.name.toLowerCase()) ?? [];
+  const linked = fields.includes(link.field.toLowerCase());
   const feats = await queryTiled(layer, "GNIS_NAME IS NOT NULL AND (GNIS_NAME LIKE '% River%' OR GNIS_NAME LIKE '% Creek%' OR GNIS_NAME LIKE '% Fork%' OR GNIS_NAME LIKE '% Slough%')",
-    'GNIS_ID,GNIS_NAME,LENGTHKM', '0.002', 0.5);
+    `GNIS_ID,GNIS_NAME,LENGTHKM${linked ? `,${link.field}` : ''}`, '0.002', 0.5);
   report.steps.rivers = { layer, segments: feats.length };
   const groups = new Map();
   for (const f of feats) {
@@ -223,7 +233,8 @@ async function buildRivers(ids) {
     const lines = f.geometry.type === 'LineString' ? [f.geometry.coordinates] : f.geometry.coordinates;
     const segKey = JSON.stringify(lines[0][0]);
     if (g.segs.has(segKey)) continue; // duplicate from overlapping tiles
-    g.segs.set(segKey, lines);
+    const wb = linked ? prop(f.properties, link.field) : null;
+    g.segs.set(segKey, { lines, wb: wb && wb !== -1 && String(wb).trim() ? String(wb).trim() : null });
     g.km += lengthKm ?? 0;
     groups.set(key, g);
   }
@@ -234,29 +245,53 @@ async function buildRivers(ids) {
     // Label points: walk all vertices, dropping one each time ~15 km of distance has accumulated.
     const points = [];
     let acc = 7.5, inside = 0;
-    for (const lines of g.segs.values()) for (const line of lines) {
+    for (const { lines, wb } of g.segs.values()) for (const line of lines) {
       for (let i = 1; i < line.length; i++) {
         const d = distKm(line[i - 1], line[i]), inState = inCalifornia(line[i]);
         acc += d;
         if (inState) inside += d;
-        if (acc >= 15 && inState) { points.push([round(line[i][1]), round(line[i][0])]); acc = 0; }
+        if (acc >= 15 && inState) { points.push([round(line[i][1]), round(line[i][0]), ...(wb ? [wb] : [])]); acc = 0; }
       }
     }
     // A river of the next state that only reaches the line (the Klickitat and White Salmon at the Columbia, Idaho's
     // Salmon at the Snake) gets no label here: its taps would show this state's rules.
     if (inside < Math.min(3, g.km / 4)) continue;
     if (!points.length) {
-      const mid = [...g.segs.values()][0][0];
+      const { lines: [mid], wb } = [...g.segs.values()][0];
       const p = mid[Math.floor(mid.length / 2)];
       if (!inCalifornia(p)) continue;
-      points.push([round(p[1]), round(p[0])]);
+      points.push([round(p[1]), round(p[0]), ...(wb ? [wb] : [])]);
     }
     rivers.push({ id: g.gnis || g.name, gnis: g.gnis, name: g.name, type: isRiver ? 'River' : /Slough/.test(g.name) ? 'Slough' : 'Creek', km: Math.round(g.km), points });
   }
   rivers.sort((a, b) => b.km - a.km);
   report.steps.rivers.named = groups.size;
   report.steps.rivers.kept = rivers.length;
+  await nameLakes(rivers, link);
   return rivers;
+}
+// A label in a lake (the Snake through Brownlee, the Owyhee through Lake Owyhee) keeps the lake's name as a third
+// value, so the app gives it the lake's advisories. The waterbody ids are looked up 100 at a time; without a name
+// (or if the lookup fails) the label is only the river's.
+async function nameLakes(rivers, link) {
+  const ids = [...new Set(rivers.flatMap(r => r.points.map(p => p[2]).filter(Boolean)))];
+  const names = new Map();
+  for (let i = 0; i < ids.length; i += 100) {
+    const batch = ids.slice(i, i + 100);
+    const where = `${link.key} IN (${batch.map(x => link.quote ? `'${x.replace(/'/g, "''")}'` : Number(x)).join(',')})`;
+    try {
+      const json = await getJson(`${NHD}/${link.layer}/query?${new URLSearchParams({ where, outFields: `${link.key},GNIS_NAME`, returnGeometry: 'false', f: 'json' })}`);
+      if (json.error) throw new Error(JSON.stringify(json.error));
+      for (const { attributes: a } of json.features ?? []) if (prop(a, 'GNIS_NAME')) names.set(String(prop(a, link.key)).trim(), prop(a, 'GNIS_NAME'));
+    } catch (e) { report.steps.rivers.lakeNameError = e.message.slice(0, 200); }
+  }
+  let tagged = 0;
+  for (const r of rivers) r.points = r.points.map(([lat, lon, wb]) => {
+    const lake = wb && names.get(wb);
+    if (lake) tagged++;
+    return lake ? [lat, lon, lake] : [lat, lon];
+  });
+  report.steps.rivers.inLakes = { waterbodies: ids.length, named: names.size, labels: tagged };
 }
 
 // LAGOS-US DEPTH (Stachelek et al.): observed max/mean depth for ~17,000 US lakes, published on EDI.

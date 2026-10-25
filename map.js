@@ -1,9 +1,10 @@
 // The map: base layers, overlays, statewide water labels, your lakes and catches, and depth display.
 import { db } from './db.js';
-import { list as stateList, statesIn, forLake, reservoirFor } from './states/index.js';
+import { list as stateList, statesIn, forLake, reservoirFor, stateAt } from './states/index.js';
 import { $, esc, fmtDate, status, M_TO_FT, showView, onShow } from './ui.js';
 import { openWater } from './views/lake.js';
 import { editLake } from './views/lakes.js';
+import { haversineKm } from './data-sources.js';
 
 export const map = L.map('map', { zoomControl: false }).setView([44.5, -89.5], 6);
 L.control.zoom({ position: 'topleft' }).addTo(map);
@@ -113,7 +114,14 @@ function nearestLabeledWater(latlng) {
 $('#btn-locate').onclick = () => locate().then(p => map.setView([p.lat, p.lon], 14)).catch(e => status(e.message));
 $('#btn-add-lake').onclick = () => {
   status('Tap the map where the lake/river is');
-  pickPoint(({ lat, lng }) => editLake({ lat, lon: lng }));
+  // Across the line from a state, on one of its big border reservoirs (Brownlee's Idaho half, Lake Celilo's Washington
+  // half) or a labeled water, the new lake takes that water's state: the outline alone can't tell a lake of unknown
+  // size there from one of the next state's.
+  pickPoint(({ lat, lng }) => {
+    const onBig = l => l.acres >= 1000 && haversineKm(l.lat, l.lon, lat, lng) <= Math.max(3, Math.sqrt(l.acres / 247) * 2);
+    const across = stateAt(lat, lng) ? null : (statewide?.lakes ?? []).find(onBig)?.state ?? nearestLabeledWater(L.latLng(lat, lng))?.state;
+    editLake({ lat, lon: lng, ...(across && { state: across }) });
+  });
 };
 
 export function locate() {

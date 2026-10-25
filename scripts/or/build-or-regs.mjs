@@ -166,10 +166,14 @@ if (!statewide.length && old?.statewide) statewide = old.statewide;
 // "Crater Lake National Park"), so the app can tell same-named waters apart. OpenStreetMap Nominatim, one request a
 // second as its policy asks; last week's answers are kept.
 const placeOf = title => {
-  const m = title.match(/\(([^)]+)\)/)?.[1];
+  const m = title.match(/\(([^)]+)\)/)?.[1]?.replace(/^(.+?),\s*[^,]*\b(?:Co\.?|County)$/i, '$1');
   if (m && !/\b(Co\.?|County)$/i.test(m) && !/^Mainstem\b/i.test(m)) return m;
   return /\bNational Park$/i.test(title) ? title : null;
 };
+// Places OpenStreetMap has no point for, from USGS topo maps: the range's middle, and the hatchery at Enterprise.
+const FIXED = { 'Trout Creek Mountains': [42.2, -118.4], 'Wallowa Hatchery': [45.42, -117.3] };
+// The app places a basin by its river's labels and a lake by the map's lake, so those aren't looked up.
+const lookUp = q => !/\bbasin$/i.test(q) && !/\b(lake|lakes|reservoir|pond)$/i.test(q);
 // A point counts only in or near the rule's zone (within 30 km: "Twin Lakes (Wallowa Mountains)" is a Southeast Zone
 // rule), so "Spring Creek Pond (Maxwell Pond)" in the Willamette Zone doesn't take a Maxwell Pond in Wallowa County.
 let zoneShapes = [];
@@ -194,7 +198,9 @@ report.places = { lookedUp: 0, found: 0 };
 for (const w of waters) {
   const q = placeOf(w.name);
   if (!q) continue;
+  if (FIXED[q]) { w.near = FIXED[q]; continue; }
   if (known.has(w.name) && nearZone(known.get(w.name), w.zone)) { w.near = known.get(w.name); continue; }
+  if (!lookUp(q)) continue;
   if (report.places.lookedUp >= 60) break;
   report.places.lookedUp++;
   // OpenStreetMap often has a shorter name: "Charles Metzger County Park" is "Metzger Park".
