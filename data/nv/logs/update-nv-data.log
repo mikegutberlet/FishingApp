@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-25T04:07:34.519Z",
+  "startedAt": "2026-10-25T04:30:44.487Z",
   "ndow": {
     "waters": 551
   },
@@ -8,9 +8,9 @@
     "nhd": 1503,
     "fishable": 6142,
     "via": {
-      "none": 53,
-      "ndow": 222,
-      "nhd": 274,
+      "none": 54,
+      "ndow": 215,
+      "nhd": 280,
       "osm": 2
     },
     "unmatched": [
@@ -31,6 +31,7 @@
       "USA Parkway Pond (Western, Community Pond)",
       "Mason Valley Hatchery Outponds (Western, Community Pond)",
       "Owyhee Pond #3 (Western, Community Pond)",
+      "Willow Creek- Desatoya Range (Western, Creek or Stream)",
       "Water Canyon Creek (Western, Creek or Stream)",
       "Wash ONeil Creek (Western, Creek or Stream)",
       "V Canal (Western, Creek or Stream)",
@@ -68,7 +69,7 @@
       "Galena Canyon Creek (Eastern, Creek or Stream)",
       "Dawley Canyon (Eastern, Creek or Stream)"
     ],
-    "geocoderCalls": 0
+    "geocoderCalls": 1
   },
   "plants": {
     "total": 1698,
@@ -117,5 +118,4 @@
         "/rise/api/catalog-item/6132 Lake Mohave Davis Dam and Powerplant Daily Water Temperature-DegF Time Series Data",
         "/rise/api/catalog-item/6133 Lake Mohave Davis Dam and Powerplant Daily Lake/Reservoir Elevation-ft Time Series Data",
         "/rise/api/catalog-item/6134 Lake Mohave Davis Dam and Powerplant Daily Lake/Reservoir Storage-af Time Series Data",
-        "/rise/api/catalog-item/6135 Lake Mohave Davis Dam and Powerplant Daily Lake/Reservoir Release - Total-cfs Time Series Data",
-        "/rise/api/catalog-item/133861 Lake Mohave (A
+        "/rise/api/catalog-item/6135 Lake Mohave Davis Dam and Powerplant Daily Lake/Reservoir Release - Total-cfs Time Se
