@@ -212,13 +212,14 @@ function parseName(name) {
   return { names: [...names], where };
 }
 
-// OpenStreetMap has few mountain ranges as places, so a range it can't place has its waters looked for in its
-// counties: "Thomas Creek- Carson Range" is the Thomas Creek in Washoe, Carson City or Douglas County.
+// OpenStreetMap has few of NDOW's mountain ranges as places (and its "Sonoma Range" is a Las Vegas street), so the
+// ranges in NDOW's names have their middle from USGS topo maps: "Thomas Creek- Carson Range" is the Thomas Creek
+// within 40 km of it. A county isn't enough: NDOW's own layer has one Willow Creek in Lander County, at Battle Mountain,
+// not in the Desatoya Range.
 const RANGES = {
-  'Carson Range': ['Washoe', 'Carson City', 'Douglas'], 'Santa Rosa Range': ['Humboldt'], 'Jackson Range': ['Humboldt'],
-  'Desatoya Range': ['Churchill', 'Lander'], 'Sonoma Range': ['Humboldt', 'Pershing'], 'Toiyabe Range': ['Lander', 'Nye'],
-  'Quinn Canyon Range': ['Nye'], 'Monitor Range': ['Nye', 'Eureka'], 'Jarbidge Mountains': ['Elko'], 'Battle Mountain Range': ['Lander'],
-  'Eagan Range': ['White Pine', 'Lincoln', 'Nye'], 'Ruby Mountains': ['Elko'],
+  'Carson Range': [39.25, -119.88], 'Santa Rosa Range': [41.6, -117.6], 'Jackson Range': [41.25, -118.5], 'Desatoya Range': [39.4, -117.8],
+  'Sonoma Range': [40.75, -117.65], 'Toiyabe Range': [39.0, -117.3], 'Quinn Canyon Range': [38.1, -115.7], 'Monitor Range': [38.8, -116.6],
+  'Jarbidge Mountains': [41.85, -115.4], 'Battle Mountain Range': [40.5, -117.15], 'Eagan Range': [39.3, -114.95], 'Ruby Mountains': [40.45, -115.4],
 };
 async function pickPoint(w, sources) {
   const { names, where } = parseName(w.name);
@@ -227,14 +228,12 @@ async function pickPoint(w, sources) {
   const flowing = isFlowing(w), pond = /\bponds?\b/i.test(w.name);
   const county = where && COUNTIES.find(c => c.name.toLowerCase() === where.toLowerCase())?.name;
   const range = where && !county ? RANGES[Object.keys(RANGES).find(r => r.toLowerCase() === where.toLowerCase())] : null;
-  let near = where && !county ? (await geocode(where))?.[0] : null;
-  // A range's point must be in its counties (OpenStreetMap's "Sonoma Range" is a street in Las Vegas).
-  if (near && range && !range.includes(countyAt(near.lat, near.lon))) near = null;
+  const near = range ? { lat: range[0], lon: range[1] } : where && !county ? (await geocode(where))?.[0] : null;
   const lines = list => new Set(list.map(c => c.line ?? `${c.lat},${c.lon}`)).size;
   // A place the name gives that OpenStreetMap answered it doesn't have can't choose between the state's same-named
   // waters: with more than one in the NHD list, better no point than the Thomas Creek by Winnemucca (which NDOW's own
   // map layer also has). A failed request is asked again tomorrow.
-  if (where && !county && !range && !near && Array.isArray(GEO[where])) {
+  if (where && !county && !near && Array.isArray(GEO[where])) {
     const [, list] = sources.find(([via]) => via === 'nhd') ?? [];
     if (lines((list ?? []).filter(c => keys.has(norm(c.name)) && (c.kind === 'stream') === flowing)) > 1) return null;
   }
@@ -247,10 +246,6 @@ async function pickPoint(w, sources) {
       same = same.map(c => ({ ...c, d: km([c.lat, c.lon], [near.lat, near.lon]) })).filter(c => c.d <= 40).sort((a, b) => a.d - b.d);
       // A named spot on a big lake ("Lake Tahoe – Sand Harbor"): use the spot itself.
       if (same[0]?.kind === 'lake' && same[0].acres > 2000 && same[0].d <= 15) return { lat: near.lat, lon: near.lon, via: `${via}+osm` };
-    } else if (range) {
-      same = same.filter(c => range.includes(countyAt(c.lat, c.lon)));
-      // Two of that name in the range's counties: no telling which (NDOW's own layer is asked next).
-      if (lines(same) > 1) same = [];
     } else if (w.region && REGION[w.region]) {
       const inRegion = same.filter(c => regionAt(c.lat, c.lon) === w.region);
       // None in the right region: better no point than the wrong water (OpenStreetMap is asked next).
@@ -264,7 +259,7 @@ async function pickPoint(w, sources) {
   // Nothing by name: ask OpenStreetMap for the water itself.
   for (const q of names.slice(0, 2)) {
     const hits = (await geocode(q, { water: true })) ?? [];
-    const hit = (county ? hits.filter(h => countyAt(h.lat, h.lon) === county) : near ? hits.filter(h => km([h.lat, h.lon], [near.lat, near.lon]) <= 40) : range ? hits.filter(h => range.includes(countyAt(h.lat, h.lon))) : hits.filter(h => !w.region || !REGION[w.region] || regionAt(h.lat, h.lon) === w.region))[0];
+    const hit = (county ? hits.filter(h => countyAt(h.lat, h.lon) === county) : near ? hits.filter(h => km([h.lat, h.lon], [near.lat, near.lon]) <= 40) : hits.filter(h => !w.region || !REGION[w.region] || regionAt(h.lat, h.lon) === w.region))[0];
     if (hit) return { lat: hit.lat, lon: hit.lon, via: 'osm' };
   }
   return null;
