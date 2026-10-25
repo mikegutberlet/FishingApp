@@ -287,11 +287,13 @@ export async function habFor(lake) {
   const out = [];
   for (const a of h?.advisories ?? []) {
     const distKm = a.lat != null && lake.lat != null ? haversineKm(lake.lat, lake.lon, a.lat, a.lon) : null;
-    const counties = countiesOf(a.county), inCounty = !counties.length || !county || counties.includes(county) || along.some(c => counties.includes(c));
+    const counties = countiesOf(a.county), here = !counties.length || !county || counties.includes(county);
+    // The river's other counties count for an advisory that names it, not for one that is only close by.
+    const inCounty = here || along.some(c => counties.includes(c));
     // "Powder River arm" is part of Brownlee, not the Powder River; a fork is only that fork.
     const own = (a.names ?? [a.name.split(/[(,]/)[0].trim()]).filter(n => !/\barm$/i.test(n));
     const byName = own.find(n => listed(names.filter(x => sameFork(x, n)), n));
-    if (byName ? await namedHere(lake, a, byName, counties, inCounty, lakes, inLake) : inCounty && distKm != null && distKm <= reach(lake) && !elsewhere(a)) out.push({ ...a, distKm });
+    if (byName ? await namedHere(lake, a, byName, counties, inCounty, lakes, inLake) : here && distKm != null && distKm <= reach(lake) && !elsewhere(a)) out.push({ ...a, distKm });
   }
   return out;
 }
@@ -324,10 +326,11 @@ async function namedHere(lake, a, n, counties, inCounty, lakes, inLake) {
 
 // OHA splits the Columbia and the Willamette by landmark, so a water on them gets the reach it sits in: below
 // Bonneville Dam, the dam's forebay at Bradford Island up to Ruckel Creek, then on up to McNary Dam; the Willamette
-// below the Sellwood Bridge.
+// below the Sellwood Bridge. The forebay is in Lake Bonneville, so only a river label above the dam stands for it,
+// looking down the reservoir to it (the next label up is 12 km off).
 const REACHES = [
   { re: /^Lower Columbia/i, river: 'Columbia', at: (lat, lon) => lon < -121.945 },
-  { re: /Bradford Island/i, river: 'Columbia', at: (lat, lon) => lon >= -121.945 && lon < -121.915 },
+  { re: /Bradford Island/i, river: 'Columbia', at: (lat, lon) => lon >= -121.945 && lon < -121.915, above: (lat, lon) => lon >= -121.945, spread: [[0, 0], [0, -0.05], [0, -0.1], [0, -0.15]] },
   { re: /^Mid-Columbia/i, river: 'Columbia', at: (lat, lon) => lon >= -121.915 && lon < -119.2975 },
   { re: /^Lower Willamette/i, river: 'Willamette', at: lat => lat >= 45.46 },
 ];
@@ -348,7 +351,8 @@ export async function fishAdviceFor(lake) {
   const spread = lake.kind === 'river' ? [[0, 0], [0.07, 0], [-0.07, 0], [0, 0.1], [0, -0.1]] : [[0, 0]];
   const site = f.advisories.filter(a => {
     const reach = REACHES.find(x => x.re.test(a.area));
-    if (reach) return on[reach.river] && (lake.lat == null || spread.some(([y, x]) => reach.at(lake.lat + y, lake.lon + x)));
+    const near = lake.kind === 'river' && reach?.spread ? reach.spread : spread;
+    if (reach) return on[reach.river] && (lake.lat == null || ((!reach.above || reach.above(lake.lat, lake.lon)) && near.some(([y, x]) => reach.at(lake.lat + y, lake.lon + x))));
     if (/Snake/.test(a.zone) && on.Snake) return true;
     if (zone && !/^(multiple|statewide|columbia|snake)/i.test(a.zone ?? '') && !sameZone(a.zone, zone)) return false;
     // "Powder River arm" is the arm of Brownlee the row names, not the Powder River.
@@ -405,11 +409,12 @@ async function atPlace(lake, rule) {
 }
 
 // The rules for this water: its zone's general limits, the exceptions ODFW lists for it, and the statewide rules.
-// The Columbia and Snake have zones of their own, matched by name as well as by place.
+// The Columbia and Snake have zones of their own, matched by name as well as by place. A river label in a lake
+// (the Snake in Brownlee) gets the lake's rules too, and the zone's limits for lakes.
 export async function regsFor(lake) {
   const r = await d.load('regs');
   if (!r) return null;
-  const [zone, own, county] = await Promise.all([zoneOf(lake), namesOf(lake), lake.lat != null ? countyAt(lake.lat, lake.lon) : null]);
+  const [zone, own, county, inLake] = await Promise.all([zoneOf(lake), namesHere(lake), lake.lat != null ? countyAt(lake.lat, lake.lon) : null, lakeOf(lake)]);
   const names = withoutReach(own, r.waters.flatMap(w => [w.name, ...w.aliases]));
   let zoneKey = Object.keys(r.zones).find(z => sameZone(z, zone ?? '')) ?? null;
   // Outside every zone (not in Oregon) only the Columbia and Snake rules, which name their river, can apply.
@@ -432,11 +437,14 @@ export async function regsFor(lake) {
       && [w.name, ...w.aliases].some(n => listed(names.filter(x => forkOf(x) === (forkOf(n) ?? forkOf(w.name))
         || (tribs(w) && forkOf(n) == null && forkOf(x) != null && !ownHeading(x, w.zone))), n));
   });
-  // A rule placed by a note in its heading ("Round Lake (Collawash River)") is for the water there.
-  for (const w of [...special]) if (placeNote(w.name) && lake.lat != null && !await atPlace(lake, w)) special.splice(special.indexOf(w), 1);
+  // A rule placed by a note in its heading ("Round Lake (Collawash River)") is for the water there. A label's lake
+  // is placed as the lake ("Cottonwood Reservoir (Goose Lake Basin, Lake Co.)" on Cottonwood Creek's label in it).
+  const lakeNames = inLake ? await namesOf({ name: inLake, kind: 'lake', lat: lake.lat, lon: lake.lon }) : [];
+  const as = w => [w.name, ...w.aliases].some(n => listed(lakeNames, n)) ? { name: inLake, kind: 'lake', lat: lake.lat, lon: lake.lon } : lake;
+  for (const w of [...special]) if (placeNote(w.name) && lake.lat != null && !await atPlace(as(w), w)) special.splice(special.indexOf(w), 1);
   // The Columbia and Snake zones are the rivers and their reservoirs, thinner than the zone map can show: a water
   // named in their rules (Brownlee, Hells Canyon) gets that zone's limits unless its own zone's rules name it too.
   const river = special.find(w => /Columbia|Snake/.test(w.zone));
   if (river && !special.some(w => w.zone === zoneKey)) zoneKey = river.zone;
-  return { zone: zoneKey ?? zone, inOregon: !!(zone ?? zoneKey), special, zoneRules: zoneKey ? r.zones[zoneKey] : null, statewide: r.statewide, booklet: r.booklet, updates: r.updates, source: r.source, updatedAt: r.updatedAt };
+  return { zone: zoneKey ?? zone, inOregon: !!(zone ?? zoneKey), inLake, special, zoneRules: zoneKey ? r.zones[zoneKey] : null, statewide: r.statewide, booklet: r.booklet, updates: r.updates, source: r.source, updatedAt: r.updatedAt };
 }

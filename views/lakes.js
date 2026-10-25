@@ -51,7 +51,7 @@ async function renderFindAny(S) {
     $('#aresults').innerHTML = hits.length ? hits.map((w, i) => `<div class="card lake-item" data-i="${i}"><div><b>${esc(w.name)}</b>
         <div class="muted small">${esc(w.type)}${w.acres ? ` · ${w.acres.toLocaleString()} acres` : ''}${w.km ? ` · ${Math.round(w.km * 0.621)} mi` : ''}${w.maxDepthFt ? ` · ${w.maxDepthFt} ft deep` : ''}${w.elevationFt ? ` · ${w.elevationFt.toLocaleString()} ft elev.` : ''}</div></div><span>›</span></div>`).join('')
       : '<div class="card muted">No matches.</div>';
-    $('#aresults').querySelectorAll('.lake-item').forEach(el => el.onclick = () => openWater(hits[+el.dataset.i]));
+    $('#aresults').querySelectorAll('.lake-item').forEach(el => el.onclick = () => openWater(hits[+el.dataset.i], 'conditions', { anyLabel: true }));
   };
   $('#asearch').oninput = draw;
 }

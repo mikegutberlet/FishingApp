@@ -1,5 +1,6 @@
 // One water's page: a saved lake with all its tabs, or a statewide water you can look at before saving it.
 import { db } from '../db.js';
+import { haversineKm } from '../data-sources.js';
 import { forLake } from '../states/index.js';
 import { $, esc, showView } from '../ui.js';
 import { map, refreshMap } from '../map.js';
@@ -18,9 +19,12 @@ import { renderOrBanner } from './tabs/or-safety.js';
 import { renderSafety, renderSafetyBanner } from './tabs/safety.js';
 import { toggleFavorite } from './today.js';
 
-// Opens a statewide water: the saved lake if you already have it, otherwise a read-only page you can save.
-export async function openWater(w, tab = 'conditions') {
-  const saved = (await db.all('lakes')).find(l => l.nhdId === String(w.id));
+// Opens a statewide water: the saved lake if you already have it, otherwise a read-only page you can save. A river
+// has a label every 15 km, and a saved one is the label it was saved from (Brownlee's Snake labels aren't the Snake
+// River saved downstream), except when picked by name from the list.
+export async function openWater(w, tab = 'conditions', { anyLabel = false } = {}) {
+  const near = l => anyLabel || w.kind !== 'river' || l.lat == null || w.lat == null || haversineKm(l.lat, l.lon, w.lat, w.lon) <= 3;
+  const saved = (await db.all('lakes')).find(l => l.nhdId === String(w.id) && near(l));
   if (saved) return openLake(saved.id, tab);
   openLake(await waterRecord(w), tab);
 }

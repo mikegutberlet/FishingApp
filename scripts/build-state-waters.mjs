@@ -208,7 +208,7 @@ async function attachElevations(lakes) {
 // A state with dense streams (Oregon) reads the small-scale flowlines: the large-scale query times out on its
 // tiles, and the small-scale layer still has every river and long creek a label needs.
 const riverLayer = ids => STATE.riverScale === 'small' ? ids.flowlineSmall : ids.flowline ?? ids.flowlineSmall;
-async function buildRivers(ids) {
+async function buildRivers(ids, old) {
   const layer = riverLayer(ids);
   const feats = await queryTiled(layer, "GNIS_NAME IS NOT NULL AND (GNIS_NAME LIKE '% River%' OR GNIS_NAME LIKE '% Creek%' OR GNIS_NAME LIKE '% Fork%' OR GNIS_NAME LIKE '% Slough%')",
     'GNIS_ID,GNIS_NAME,LENGTHKM', '0.002', 0.5);
@@ -256,18 +256,31 @@ async function buildRivers(ids) {
   rivers.sort((a, b) => b.km - a.km);
   report.steps.rivers.named = groups.size;
   report.steps.rivers.kept = rivers.length;
-  if (STATE.riverLakes) await tagLakes(rivers, ids);
+  if (STATE.riverLakes) await tagLakes(rivers, ids, old);
   return rivers;
 }
 // A label in a lake (the Snake through Brownlee, the Owyhee through Lake Owyhee) keeps the lake's name as a third
 // value, so the app gives it the lake's advisories. The named lakes and reservoirs of 50 acres or more are read with
 // their outlines (the small-scale layers have few lake names) and each label is tested against them. If that query
-// fails, the labels are only their rivers'.
-async function tagLakes(rivers, ids) {
+// fails, or skips tiles, a label keeps last week's lake where its point is the same (label points don't move between
+// builds), so a busy NHD night doesn't give Brownlee's labels the river's all-clear for a week.
+async function tagLakes(rivers, ids, old) {
+  const was = new Map((old ?? []).flatMap(r => r.points.filter(p => p[2]).map(([lat, lon, lake]) => [`${r.id}|${lat}|${lon}`, lake])));
+  const keepOld = (r, inSkipped) => r.points.map(([lat, lon, lake]) => {
+    const prev = !lake && inSkipped(lat, lon) && was.get(`${r.id}|${lat}|${lon}`);
+    if (prev) report.steps.rivers.inLakesKept = (report.steps.rivers.inLakesKept ?? 0) + 1;
+    return lake ? [lat, lon, lake] : prev ? [lat, lon, prev] : [lat, lon];
+  });
   let feats;
+  const before = FAILED.length;
   try {
     feats = await queryTiled(ids.waterbody, "GNIS_NAME IS NOT NULL AND FTYPE IN (390,436) AND AREASQKM >= 0.2", 'GNIS_NAME', '0.0005');
-  } catch (e) { report.steps.rivers.inLakesError = e.message.slice(0, 200); return; }
+  } catch (e) {
+    report.steps.rivers.inLakesError = e.message.slice(0, 200);
+    for (const r of rivers) r.points = keepOld(r, () => true);
+    return;
+  }
+  const skipped = FAILED.slice(before);
   const polys = [];
   for (const f of feats) {
     if (!f.geometry || !prop(f.properties, 'GNIS_NAME')) continue;
@@ -283,6 +296,7 @@ async function tagLakes(rivers, ids) {
     if (lake) tagged++;
     return lake ? [lat, lon, lake.name] : [lat, lon];
   });
+  if (skipped.length) for (const r of rivers) r.points = keepOld(r, (lat, lon) => skipped.some(t => lon >= t.x && lon <= t.x + t.size && lat >= t.y && lat <= t.y + t.size));
   report.steps.rivers.inLakes = { lakes: new Set(polys.map(p => p.name)).size, labels: tagged };
 }
 
@@ -461,13 +475,14 @@ if (lakes) {
   await save('lakes.json', { updatedAt: new Date().toISOString(), source: 'USGS National Hydrography Dataset; depths from LAGOS-US DEPTH and Wikidata', lakes });
 }
 try {
-  const rivers = await buildRivers(ids);
-  report.steps.rivers.carriedOver = carryOver(rivers, (await readOldFile('rivers.json'))?.rivers, riverLayer(ids), r => r.points);
+  const old = (await readOldFile('rivers.json'))?.rivers;
+  const rivers = await buildRivers(ids, old);
+  report.steps.rivers.carriedOver = carryOver(rivers, old, riverLayer(ids), r => r.points);
   await save('rivers.json', { updatedAt: new Date().toISOString(), source: 'USGS National Hydrography Dataset', rivers });
 } catch (e) { report.steps.riversError = e.message; console.error('rivers:', e.message); }
 
 // Skipped tiles or a failed list show as a failed step (the workflow carries on and commits what it has).
-if (FAILED.length || report.steps.lakesError || report.steps.riversError) process.exitCode = 1;
+if (FAILED.length || report.steps.lakesError || report.steps.riversError || report.steps.rivers?.inLakesError) process.exitCode = 1;
 report.finishedAt = new Date().toISOString();
 await writeFile(new URL('build-report.json', OUT), JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify(report, null, 2).slice(0, 4000));

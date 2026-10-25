@@ -51,6 +51,7 @@ function regsCard(regs) {
   if (!regs) return `<div class="card"><h3>Fishing regulations</h3><p class="muted small">Regulations haven’t been downloaded yet. See the <a href="https://www.eregulations.com/oregon/fishing" target="_blank" rel="noopener">Oregon fishing regulations ↗</a>.</p></div>`;
   const z = regs.zoneRules;
   return `<div class="card"><h3>Fishing regulations</h3>
+    ${regs.inLake ? `<p class="small">This part of the river is in ${esc(regs.inLake)}: follow ${esc(regs.inLake)}’s rules, and the zone’s lake limits where they differ from streams.</p>` : ''}
     ${regs.special.length ? `<p class="small">Exceptions to the ${esc(regs.zone ?? '')} Zone rules for this water:</p>${regs.special.map(ruleRow).join('')}`
       : !regs.inOregon && !regs.zoneRules ? '<p class="small">This water isn’t in an Oregon angling zone, so Oregon’s rules may not apply: check the state it’s in.</p>'
       : `<p class="small">No exceptions name this water, so the ${regs.zone ? `${esc(regs.zone)} Zone’s` : 'zone’s'} general limits below apply.</p>`}
