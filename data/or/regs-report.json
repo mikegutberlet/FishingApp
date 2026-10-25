@@ -1,5 +1,5 @@
 {
- "startedAt": "2026-10-25T00:14:14.116Z",
+ "startedAt": "2026-10-25T04:07:33.305Z",
  "pages": {
   "license-tag-permit-fees": [
    "# License, Tag & Permit Fees (40p 71r)"
@@ -661,15 +661,8 @@
   "pdf"
  ],
  "places": {
-  "lookedUp": 6,
-  "found": 1,
-  "notFound": [
-   "Coquille Basin",
-   "Sandy River Basin",
-   "Wallowa Hatchery",
-   "Trout Creek Mountains",
-   "Trout Creek Mountains"
-  ]
+  "lookedUp": 0,
+  "found": 0
  },
  "advisoryRows": [
   [
@@ -974,5 +967,5 @@
   "Northwest: 1 parts"
  ],
  "counties": 36,
- "finishedAt": "2026-10-25T00:14:34.960Z"
+ "finishedAt": "2026-10-25T04:07:47.571Z"
 }
