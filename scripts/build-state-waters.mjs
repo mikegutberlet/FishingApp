@@ -262,27 +262,24 @@ async function buildRivers(ids, old) {
 // A label in a lake (the Snake through Brownlee, the Owyhee through Lake Owyhee) keeps the lake's name as a third
 // value, so the app gives it the lake's advisories. The named lakes and reservoirs of 50 acres or more are read with
 // their outlines (the small-scale layers have few lake names) and each label is tested against them. If that query
-// fails, or skips tiles, a label keeps the lake of last week's label of its river nearest it, within 1 km (a split
-// flowline tile moves the points a little), so a busy NHD night doesn't give Brownlee's labels the river's all-clear
-// for a week.
+// fails or skips tiles, a river that had a label in a lake last week keeps last week's labels as they were: a busy
+// NHD night that also splits a flowline tile moves a river's points by kilometres, so they can't be matched up, and
+// the points are only where its labels show. That way Brownlee's labels don't get the river's all-clear for a week.
 async function tagLakes(rivers, ids, old) {
-  const was = new Map((old ?? []).map(r => [String(r.id), r.points]));
-  const lastWeek = (id, lat, lon) => {
-    const near = (was.get(String(id)) ?? []).map(p => ({ p, km: distKm([lon, lat], [p[1], p[0]]) })).filter(x => x.km <= 1).sort((a, b) => a.km - b.km)[0];
-    return near?.p[2] || null;
+  const was = new Map((old ?? []).filter(r => r.points.some(p => p[2])).map(r => [String(r.id), r.points]));
+  const keepOld = () => {
+    for (const r of rivers) if (was.has(String(r.id))) {
+      r.points = was.get(String(r.id));
+      report.steps.rivers.inLakesKept = (report.steps.rivers.inLakesKept ?? 0) + 1;
+    }
   };
-  const keepOld = (r, inSkipped) => r.points.map(([lat, lon, lake]) => {
-    const prev = !lake && inSkipped(lat, lon) && lastWeek(r.id, lat, lon);
-    if (prev) report.steps.rivers.inLakesKept = (report.steps.rivers.inLakesKept ?? 0) + 1;
-    return lake ? [lat, lon, lake] : prev ? [lat, lon, prev] : [lat, lon];
-  });
   let feats;
   const before = FAILED.length;
   try {
     feats = await queryTiled(ids.waterbody, "GNIS_NAME IS NOT NULL AND FTYPE IN (390,436) AND AREASQKM >= 0.2", 'GNIS_NAME', '0.0005');
   } catch (e) {
     report.steps.rivers.inLakesError = e.message.slice(0, 200);
-    for (const r of rivers) r.points = keepOld(r, () => true);
+    keepOld();
     return;
   }
   const skipped = FAILED.slice(before);
@@ -301,7 +298,7 @@ async function tagLakes(rivers, ids, old) {
     if (lake) tagged++;
     return lake ? [lat, lon, lake.name] : [lat, lon];
   });
-  if (skipped.length) for (const r of rivers) r.points = keepOld(r, (lat, lon) => skipped.some(t => lon >= t.x && lon <= t.x + t.size && lat >= t.y && lat <= t.y + t.size));
+  if (skipped.length) keepOld();
   report.steps.rivers.inLakes = { lakes: new Set(polys.map(p => p.name)).size, labels: tagged };
 }
 
