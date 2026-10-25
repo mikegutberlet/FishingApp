@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-24T20:09:43.316Z",
+  "startedAt": "2026-10-25T00:14:14.125Z",
   "steps": {
     "nhdLayers": [
       {
@@ -58,15 +58,15 @@
     "lakes": {
       "reused": "2026-10-23T11:36:59.459Z",
       "inState": 2212,
-      "outsideOutline": 5
+      "outsideOutline": 0
     },
     "rivers": {
       "layer": 4,
       "segments": 51135,
       "named": 11563,
-      "kept": 1182,
+      "kept": 1173,
       "carriedOver": 0
     }
   },
-  "finishedAt": "2026-10-24T20:11:30.192Z"
+  "finishedAt": "2026-10-25T00:19:33.770Z"
 }
