@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-25T04:07:33.965Z",
+  "startedAt": "2026-10-25T05:31:16.379Z",
   "steps": {
     "nhdLayers": [
       {
@@ -60,19 +60,13 @@
       "inState": 350,
       "outsideOutline": 0
     },
-    "splitTiles": 1,
     "rivers": {
       "layer": 6,
-      "segments": 107717,
+      "segments": 105689,
       "named": 3995,
       "kept": 630,
-      "inLakes": {
-        "waterbodies": 74,
-        "named": 11,
-        "labels": 25
-      },
       "carriedOver": 0
     }
   },
-  "finishedAt": "2026-10-25T05:30:06.957Z"
+  "finishedAt": "2026-10-25T05:44:21.202Z"
 }
