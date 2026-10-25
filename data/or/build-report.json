@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-25T04:07:36.770Z",
+  "startedAt": "2026-10-25T05:31:17.233Z",
   "steps": {
     "nhdLayers": [
       {
@@ -66,12 +66,11 @@
       "named": 11563,
       "kept": 1173,
       "inLakes": {
-        "waterbodies": 104,
-        "named": 45,
-        "labels": 70
+        "lakes": 538,
+        "labels": 58
       },
       "carriedOver": 0
     }
   },
-  "finishedAt": "2026-10-25T04:34:29.409Z"
+  "finishedAt": "2026-10-25T05:34:13.230Z"
 }
