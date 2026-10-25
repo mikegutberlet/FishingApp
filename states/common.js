@@ -103,7 +103,7 @@ export function stateData(dir, code) {
     const lakes = (l?.lakes ?? []).map(x => ({ ...x, kind: 'lake', state: code }));
     const riverLabels = [];
     for (const river of r?.rivers ?? []) {
-      for (const [lat, lon, inLake] of river.points) riverLabels.push({ ...river, kind: 'river', state: code, lat, lon, ...(inLake && { inLake }) });
+      for (const [lat, lon, inLake] of river.points) riverLabels.push({ ...river, kind: 'river', state: code, lat, lon, ...(String(inLake ?? '').trim() && { inLake }) });
     }
     built = { l, r, out: { lakes, riverLabels } };
     return built.out;

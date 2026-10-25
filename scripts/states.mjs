@@ -25,6 +25,8 @@ const OR = {
   // Brownlee (Snake) and Lake Celilo (Columbia) are shared with Idaho and Washington, and their NHD point is on the
   // far half; a big water this close to the line stays in the state's list.
   borderReservoirs: true,
+  // River labels name the lake they're in (the app gives a label in Brownlee Brownlee's advisories).
+  riverLakes: true,
   outline: OR_OUTLINE, // traced from the Census county lines; shared with the app
   narrative: [
     { year: '1877', text: 'The first salmon hatchery in the Columbia basin opens on the Clackamas River.', source: 'ODFW history' },
