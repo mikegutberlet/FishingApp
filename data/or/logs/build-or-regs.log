@@ -1,5 +1,5 @@
 {
- "startedAt": "2026-10-25T04:07:33.305Z",
+ "startedAt": "2026-10-23T18:45:30.403Z",
  "pages": {
   "license-tag-permit-fees": 1,
   "general-statewide-regulations": 23,
@@ -66,10 +66,6 @@
   "columbia-river-zone",
   "pdf"
  ],
- "places": {
-  "lookedUp": 0,
-  "found": 0
- },
  "advisoryRows": [
   [
    "",
@@ -344,4 +340,5 @@
   "Southwest: Applegate Lake → Applegate Lake (2)",
   "Southwest: Cooper Creek Reservoir → Cooper Creek Reservoir (1)",
   "Southwest: Emigrant Reservoir → Emigrant Reservoir (1)",
-  "Southwest: Galesville Reservoir → Ga
+  "Southwest: Galesville Reservoir → Galesville Reservoir (1)",
+  "Southwest: Plat I R

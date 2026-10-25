@@ -1,16 +1,16 @@
 {
-  "startedAt": "2026-10-25T04:30:44.487Z",
+  "startedAt": "2026-10-24T16:51:53.606Z",
   "ndow": {
     "waters": 551
   },
   "counties": 17,
   "points": {
-    "nhd": 1503,
+    "nhd": 1515,
     "fishable": 6142,
     "via": {
-      "none": 54,
+      "none": 53,
       "ndow": 215,
-      "nhd": 280,
+      "nhd": 281,
       "osm": 2
     },
     "unmatched": [
@@ -31,10 +31,10 @@
       "USA Parkway Pond (Western, Community Pond)",
       "Mason Valley Hatchery Outponds (Western, Community Pond)",
       "Owyhee Pond #3 (Western, Community Pond)",
-      "Willow Creek- Desatoya Range (Western, Creek or Stream)",
       "Water Canyon Creek (Western, Creek or Stream)",
       "Wash ONeil Creek (Western, Creek or Stream)",
       "V Canal (Western, Creek or Stream)",
+      "Thomas Creek- Sonoma Range (Western, Creek or Stream)",
       "Seeman Pond (Western, Community Pond)",
       "Rocky Creek (Western, Creek or Stream)",
       "North Pond (Western, Community Pond)",
@@ -57,7 +57,6 @@
       "Corcoran Creek (Southern, Creek or Stream)",
       "Laughlin/ Colorado River below Davis Dam (Southern, River)",
       "Belcher Creek (Southern, Creek or Stream)",
-      "Willow Creek- O’Neil Basin Ranch/RD (Eastern, Creek or Stream)",
       "Warm Creek (Eastern, Creek or Stream)",
       "T Creek (Eastern, Creek or Stream)",
       "Seigel Creek (Eastern, Creek or Stream)",
@@ -69,7 +68,7 @@
       "Galena Canyon Creek (Eastern, Creek or Stream)",
       "Dawley Canyon (Eastern, Creek or Stream)"
     ],
-    "geocoderCalls": 1
+    "geocoderCalls": 0
   },
   "plants": {
     "total": 1698,
@@ -106,8 +105,8 @@
         "storage": 6124
       },
       "points": {
-        "elevation": 61,
-        "storage": 61
+        "elevation": 62,
+        "storage": 62
       }
     },
     "Lake Mohave": {
@@ -126,8 +125,8 @@
         "storage": 6134
       },
       "points": {
-        "elevation": 61,
-        "storage": 61
+        "elevation": 62,
+        "storage": 62
       }
     }
   },
@@ -153,5 +152,5 @@
     "Lake Mohave including Placer Cove and Eagle Wash: HAB Watch 2026-06-11 located",
     "Walker Lake: HAB Watch 2026-05-19 located"
   ],
-  "finishedAt": "2026-10-25T04:31:09.503Z"
+  "finishedAt": "2026-10-24T16:52:16.599Z"
 }
