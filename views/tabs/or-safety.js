@@ -31,14 +31,15 @@ export async function renderOrSafety(lake, body) {
   body.innerHTML = '<div class="card muted">Loading rules and advisories…</div>';
   const [hab, habData, regs, eat] = await Promise.all([OR.habFor(lake), OR.habAdvisories(), OR.regsFor(lake), OR.fishAdviceFor(lake)]);
   if (!body.isConnected) return;
-  body.innerHTML = habCard(hab, habData) + regsCard(regs) + eatCard(eat);
+  body.innerHTML = habCard(hab, habData, regs) + regsCard(regs) + eatCard(eat);
 }
 
-function habCard(hab, data) {
+function habCard(hab, data, regs) {
   const portal = data?.portal ?? 'https://www.oregon.gov/oha/ph/healthyenvironments/recreation/harmfulalgaeblooms/pages/blue-greenalgaeadvisories.aspx';
   return `<div class="card"><h3>Toxic algae</h3>
     ${hab.length ? hab.map(a => { const l = OR_HAB[a.level]; return `<div class="banner hab-${a.level}"><b>${l.icon} ${esc(a.advisory)}</b> · ${esc(a.name)}${a.county ? ` <span class="small">(${esc(a.county)} County)</span>` : ''}${a.date ? `<div class="small">Issued ${day(a.date)}</div>` : ''}
         <div class="small">${l.advice}</div>${a.detail ? `<div class="small muted">${esc(a.detail)}</div>` : ''}</div>`; }).join('')
+      : regs && !regs.inOregon ? '<p class="small">This water isn’t in an Oregon angling zone, so OHA’s list may not cover it: check the state it’s in.</p>'
       : data ? '<p class="small">✅ No active toxic algae advisory listed for this water.</p>' : ''}
     <p class="muted small">${data ? `Oregon Health Authority list, refreshed nightly (${fmtDate(data.updatedAt)}). ` : 'Algae advisories haven’t been downloaded yet. '}OHA only samples some waters: avoid scum and keep dogs out of discolored water anywhere. <a href="${esc(portal)}" target="_blank" rel="noopener">OHA advisories ↗</a></p></div>`;
 }

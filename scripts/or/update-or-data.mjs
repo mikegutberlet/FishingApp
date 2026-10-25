@@ -128,8 +128,9 @@ function scheduleRows(html) {
 
 // ODFW keeps 2 years of stockings and the weeks already planned. The print view lists up to 500 rows, so the job
 // asks for a month at a time (half a month when a month is full).
-// Date windows that came back tonight as a real schedule (its header and at least one row), with how many stockings
-// each listed: a planned stocking in one of them that isn't on tonight's schedule was moved or cancelled.
+// Date windows that came back tonight as a real schedule (its header and at least one row), with the stockings each
+// listed for its own weeks (ODFW also lists weeks that started before the window): a planned stocking in one of them
+// that isn't on tonight's schedule was moved or cancelled.
 const FETCHED = [];
 async function scheduleFetch() {
   const log = report.schedule = { windows: [] };
@@ -152,7 +153,7 @@ async function scheduleFetch() {
         whole = a.header && b.header && rows.length > 0;
       }
       for (const r of rows) byKey.set(`${r.week}|${r.raw}`, r);
-      if (whole) FETCHED.push([from, to, new Set(rows.map(r => `${odfwId(r.raw)}|${r.week}`)).size]);
+      if (whole) FETCHED.push([from, to, new Set(rows.filter(r => r.week >= from && r.week <= to).map(r => `${odfwId(r.raw)}|${r.week}`))]);
     } catch (e) { log.windows.push(`${from}..${to}: ${e.message}`); }
     await new Promise(res => setTimeout(res, 700));
   }
@@ -341,10 +342,10 @@ export function mentions(text, name) {
   const base = bare.replace(/^Lake\s+/i, '').replace(/\s+(Lake|Lakes|Reservoir|Pond|Ponds|River|Creek|Canal)$/i, '').trim();
   if (base.length < 4 || /^(north|south|east|west|upper|lower|middle|big|little|clear|mud|fish|blue|lost|long|round)$/i.test(base)) return false;
   // A name ending in its water word wants that word ("Malheur Reservoir" isn't "Malheur Lake"). Same as states/or.js.
-  const own = bare.match(/\s(Lake|Reservoir|Pond|River|Creek|Canal)$/i)?.[1]?.toLowerCase();
+  const own = bare.match(/\s(Lake|Reservoir|Pond|River|Creek|Canal)$/i)?.[1]?.toLowerCase() ?? (/^Lake\s/i.test(bare) ? 'lake' : null);
   const kind = own ? new RegExp(`\\b(${own}|${own}s${own === 'reservoir' ? '|res' : ''})\\b`, 'i')
     : KIND.find(([re]) => re.test(bare))?.[0] ?? /\b(lake|lakes|reservoir|res|pond|ponds|river|rivers|creek|creeks)\b/i;
-  const b = base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const b = base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\s+/g, '[\\s-]?'); // "Yellow Jacket" is also "Yellowjacket"
   // The name, then the kind of water within a few words ("Siltcoos and Tahkenitch lakes"), or "Lake Billy Chinook".
   return new RegExp(`\\b${b}\\b(?:[\\s,]+[\\w'’-]+){0,3}?[\\s,]+${kind.source.replace(/\\b/g, '')}\\b`, 'i').test(text) || (/^Lake /i.test(bare) && new RegExp(`\\blake\\s+${b}\\b`, 'i').test(text));
 }
@@ -380,6 +381,10 @@ async function buildWaters(rows, reports) {
     const prevOk = prev?.lat != null && (prev.match === 'raw' || zoneOk(w, prev));
     const keep = prev?.via === 'odfw' && prevOk && (prev.match === 'name' || (prev.match === 'raw' && !maps.some(m => linksTo(m, w, others))));
     const pt = keep ? prev : await pickPoint(w, maps, nhd, others) ?? (prevOk ? prev : null);
+    // Points the water had before tonight's move, so the app knows a saved lake still on one was saved from the list
+    // (and follows the move) rather than put there by hand.
+    const moved = prev?.lat != null && pt && (pt.lat !== prev.lat || pt.lon !== prev.lon);
+    const was = [...(moved ? [[prev.lat, prev.lon]] : []), ...(prev?.was ?? [])].slice(0, 5);
     if (!pt) report.points.unmatched.push(`${w.raw} → ${w.name} (${w.zone})`);
     report.points.via[pt?.via ?? 'none'] = (report.points.via[pt?.via ?? 'none'] ?? 0) + 1;
     const rep = reports.map(x => ({ ...x, lines: (x.items ?? []).filter(t => mentions(t, w.name)) })).find(x => x.lines.length && (sameZone(x.zone, w.zone) || /Columbia/.test(x.zone)));
@@ -388,7 +393,7 @@ async function buildWaters(rows, reports) {
     waters.push({
       id: w.id, raw: w.raw, name: w.name, type: isFlowing(w.name) ? 'River' : /Pond/.test(w.name) ? 'Pond' : 'Lake', zone: w.zone, office: w.office,
       counties: [w.zone && `${w.zone} Zone`, w.office].filter(Boolean).join(' · '), county: pt ? countyAt(pt.lat, pt.lon) : null,
-      lat: pt?.lat ?? null, lon: pt?.lon ?? null, via: pt?.via ?? null, ...(pt?.match && { match: pt.match }), acres: pt?.acres ?? (pt === prev ? prev?.acres : null) ?? null,
+      lat: pt?.lat ?? null, lon: pt?.lon ?? null, ...(was.length && { was }), via: pt?.via ?? null, ...(pt?.match && { match: pt.match }), acres: pt?.acres ?? (pt === prev ? prev?.acres : null) ?? null,
       about: pt?.about ?? (pt === prev ? prev?.about : null) ?? null,
       report: rep ? rep.lines.join('\n') : null, reportDate: rep?.date ?? null, reportUrl: rep?.url ?? null, url: scheduleLink(w.raw),
       lastYearStocked: years.at(-1) ?? prev?.lastYearStocked ?? null,
@@ -406,10 +411,10 @@ async function buildPlants(rows) {
   // The first runs keyed plants by a lowercase slug (dropped), then by ODFW's raw spelling (converted).
   const tonight = new Set(rows.map(r => `${odfwId(r.raw)}|${r.week}`));
   const idOf = o => /^[\w.:-]*$/.test(o.stockId) ? o.stockId : odfwId(o.stockId);
-  // A window is trusted to drop stockings only when it listed at least half of what last night's file holds for it,
-  // so one short answer from ODFW doesn't empty the app for a day.
-  const lastNight = ([from, to]) => new Set(old.filter(o => o.week >= from && o.week <= to).map(o => `${idOf(o)}|${o.week}`)).size;
-  const trusted = FETCHED.filter(w => w[2] >= lastNight(w) / 2);
+  // A window is trusted to drop stockings only when it still lists at least 80% of what last night's file holds for
+  // its weeks, so one short answer from ODFW doesn't empty the app for a day.
+  const lastNight = ([from, to]) => [...new Set(old.filter(o => o.week >= from && o.week <= to).map(o => `${idOf(o)}|${o.week}`))];
+  const trusted = FETCHED.filter(w => { const was = lastNight(w); return was.filter(k => w[2].has(k)).length >= 0.8 * was.length; });
   // Only planned weeks (from a week ago on) are dropped; a past stocking stays in the history.
   const since = new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10);
   let moved = 0;

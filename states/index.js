@@ -27,13 +27,14 @@ function edgeDeg([x, y], ring) {
   return best;
 }
 
-// The state whose outline holds this point. Just outside every outline (within about 2 km), the state whose box holds
-// it: a point on a border river, or a reservoir shared across the line (Brownlee, Lake Celilo). A smaller lake there
-// (acres known, under 1,000) is across the line and gets none, so a Washington or Idaho lake doesn't get Oregon's rules.
+// The state whose outline holds this point. Just outside every outline, the state whose box holds it: a reservoir
+// shared across the line (Brownlee, Lake Celilo: 1,000 acres or more) within about 2 km, or a point of unknown size
+// within about 500 m (on the border river itself, or a dam's gauge). A smaller lake there, or a lake added by hand
+// farther out, is across the line and gets none, so a Washington or Idaho lake doesn't get Oregon's rules.
 export function stateAt(lat, lon, acres = null) {
+  const reach = acres == null ? 0.005 : acres >= 1000 ? 0.02 : 0;
   return list.find(s => inside([lon, lat], s.outline))
-    ?? (acres != null && acres < 1000 ? null
-      : list.find(s => lon >= s.bbox[0] && lon <= s.bbox[2] && lat >= s.bbox[1] && lat <= s.bbox[3] && edgeDeg([lon, lat], s.outline) < 0.02)) ?? null;
+    ?? (reach ? list.find(s => lon >= s.bbox[0] && lon <= s.bbox[2] && lat >= s.bbox[1] && lat <= s.bbox[3] && edgeDeg([lon, lat], s.outline) < reach) : null) ?? null;
 }
 
 // The state module for a water: the state saved on it (null for a state we have no data for), else where it sits

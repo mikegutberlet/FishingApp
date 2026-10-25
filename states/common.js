@@ -24,9 +24,17 @@ function namedIn(lake) {
 }
 
 // A place note after a dash is dropped ("Thomas Creek- Carson Range"), one after a comma goes first ("Salmon Falls
-// River, North Fork"), and plural water words are read in the singular ("Three Creeks Lake" is "Three Creek Lake").
-const nameWords = s => String(s ?? '').toLowerCase().replace(/\(.*?\)/g, ' ').split(/\s*[–—-]\s+/)[0].replace(/^(.+?),\s*(.+)$/, '$2 $1').match(/[a-z0-9]+/g)
+// River, North Fork"), plural water words are read in the singular ("Three Creeks Lake" is "Three Creek Lake"), and
+// "West Fork Walker River" is the West Walker River.
+const nameWords = s => String(s ?? '').toLowerCase().replace(/\(.*?\)/g, ' ').split(/\s*[–—-]\s+/)[0].replace(/^(.+?),\s*(.+)$/, '$2 $1')
+  .replace(/\b(north|south|east|west|middle)\s+fork\b/g, '$1').match(/[a-z0-9]+/g)
   ?.filter(w => !/^(lake|lakes|reservoir|res|pond|ponds|the|of)$/.test(w)).map(w => w.replace(/^(creek|river|spring|slough)s$/, '$1')) ?? [];
+// Whether a name is a lake, reservoir or pond rather than a stream ("Willow Creek Reservoir" is, "Lake Creek" isn't).
+const stillWater = s => {
+  const n = String(s ?? '').replace(/\s*\(.*?\)\s*/g, ' ').split(/\s*[–—-]\s+/)[0].trim();
+  return /\b(lake|lakes|reservoir|reservoirs|res|pond|ponds)$/i.test(n) || (/^lake\s/i.test(n) && !/\b(creek|river|slough|fork)$/i.test(n));
+};
+const streamName = s => /\b(creek|river|slough|fork)$/i.test(String(s ?? '').replace(/\s*\(.*?\)\s*/g, ' ').split(/\s*[–—-]\s+/)[0].replace(/^(.+?),\s*(.+)$/, '$2 $1').trim());
 
 export function stateData(dir, code) {
   const cache = {};
@@ -104,20 +112,23 @@ export function stateData(dir, code) {
     // Same name: the same words once lake/reservoir/pond and place notes are dropped ("Timber-Linn Lake" is not
     // "Timber Lake", "Lemolo Forebay Number Two" is not "Lemolo Reservoir").
     const key = nameWords(water.name).join('');
-    const named = key.length >= 3 ? near.filter(w => nameWords(w.name).join('') === key) : [];
-    // Stocked waters of one name in different places on one point can't be told apart (NDOW pins its Willow Creeks
-    // in three ranges on one spot): link none rather than the wrong one. "Big (Alexander) Creek" is Big Creek.
+    // A creek isn't the reservoir named for it ("Willow Creek" isn't "Willow Creek Reservoir"), nor a lake the creek.
+    const kindOk = w => water.kind === 'river' ? !stillWater(w.name) : !(stillWater(water.name) && streamName(w.name));
+    const named = key.length >= 3 ? near.filter(w => nameWords(w.name).join('') === key && kindOk(w)) : [];
+    // Stocked streams of one name in different places on one point can't be told apart (NDOW pins its Willow Creeks
+    // in three ranges on one spot): link none rather than the wrong one. "Big (Alexander) Creek" is Big Creek, and
+    // a lake's spots are one lake ("Lake Tahoe – Cave Rock", "– Sand Harbor").
     const place = n => n.replace(/\s*\(.*?\)\s*/g, ' ').replace(/\s+/g, ' ').trim();
-    if (named.length > 1 && named[1].distKm - named[0].distKm < 0.01 && place(named[1].name) !== place(named[0].name)) return null;
+    if (named.length > 1 && named[1].distKm - named[0].distKm < 0.01 && place(named[1].name) !== place(named[0].name) && !stillWater(named[0].name)) return null;
     if (named.length) return named[0];
     // Otherwise a stocked water whose name holds every word of this one ("Hagg Lake" is "Henry Hagg Lake") or one
     // right on top of it: a pond on a big lake's shore isn't the lake. Right on top doesn't count when the map has the
     // stocked water's own lake next to it (Lilypad Lake is beside Anthony Lake, not Anthony Lake).
     const words = nameWords(water.name).filter(w => w.length >= 3);
     if (water.kind === 'river') return null;
-    const byWords = near.find(w => words.length && w.distKm <= radius && words.every(x => nameWords(w.name).includes(x)));
+    const byWords = near.find(w => words.length && w.distKm <= radius && kindOk(w) && words.every(x => nameWords(w.name).includes(x)));
     if (byWords) return byWords;
-    const close = near.find(w => w.distKm <= 0.3);
+    const close = near.find(w => w.distKm <= 0.3 && kindOk(w));
     if (!close) return null;
     const own = nameWords(close.name).join('');
     const { lakes } = await statewide();

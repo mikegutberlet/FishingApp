@@ -233,6 +233,9 @@ async function pickPoint(w, sources) {
       // None in the right region: better no point than the wrong water (OpenStreetMap is asked next).
       same = inRegion;
     }
+    // A place the name gives that can't be found ("Thomas Creek- Carson Range") can't choose between same-named
+    // waters either: better no point than the Thomas Creek by Winnemucca.
+    if (where && !county && !near && new Set(same.map(c => c.line ?? `${c.lat},${c.lon}`)).size > 1) continue;
     if (!same.length) continue;
     // A stream's middle label point; otherwise the biggest lake.
     const best = flowing && !near ? same[Math.floor(same.length / 2)] : same.sort((a, b) => (a.d ?? 0) - (b.d ?? 0) || (b.acres ?? 0) - (a.acres ?? 0))[0];

@@ -99,6 +99,8 @@ async function queryTiled(layerId, where, outFields, offset, tile = 1) {
     const envelope = JSON.stringify({ xmin: x, ymin: y, xmax: x + size, ymax: y + size, spatialReference: { wkid: 4326 } });
     const got = [];
     if (outOfTime()) throw new Error(`out of time (${report.steps.splitTiles ?? 0} tiles split, ${FAILED.length} skipped)`);
+    // One line per tile in the log, so a slow night shows whether NHD answered slowly or the time limit cut it off.
+    const t0 = Date.now(), tag = `tile ${layerId} ${round(x)},${round(y)} ${size}°`;
     try {
       for (let page = 0; ; page += 2000) {
         const params = new URLSearchParams({
@@ -110,7 +112,9 @@ async function queryTiled(layerId, where, outFields, offset, tile = 1) {
         got.push(...json.features);
         if (json.features.length < 2000) break;
       }
+      console.log(`${tag}: ${got.length} features in ${((Date.now() - t0) / 1000).toFixed(1)} s`);
     } catch (e) {
+      console.log(`${tag}: failed after ${((Date.now() - t0) / 1000).toFixed(1)} s (${(e.name === 'TimeoutError' ? 'time limit' : e.message).slice(0, 80)})`);
       if (outOfTime()) throw e;
       if (size <= 0.035) {
         failed.push({ layerId, x: round(x), y: round(y), size, error: e.message.slice(0, 80) });
@@ -229,13 +233,18 @@ async function buildRivers(ids) {
     if (!isRiver && g.km < 15) continue; // keep every river, and creeks/forks/sloughs 15 km or longer
     // Label points: walk all vertices, dropping one each time ~15 km of distance has accumulated.
     const points = [];
-    let acc = 7.5;
+    let acc = 7.5, inside = 0;
     for (const lines of g.segs.values()) for (const line of lines) {
       for (let i = 1; i < line.length; i++) {
-        acc += distKm(line[i - 1], line[i]);
-        if (acc >= 15 && inCalifornia(line[i])) { points.push([round(line[i][1]), round(line[i][0])]); acc = 0; }
+        const d = distKm(line[i - 1], line[i]), inState = inCalifornia(line[i]);
+        acc += d;
+        if (inState) inside += d;
+        if (acc >= 15 && inState) { points.push([round(line[i][1]), round(line[i][0])]); acc = 0; }
       }
     }
+    // A river of the next state that only reaches the line (the Klickitat and White Salmon at the Columbia, Idaho's
+    // Salmon at the Snake) gets no label here: its taps would show this state's rules.
+    if (inside < Math.min(3, g.km / 4)) continue;
     if (!points.length) {
       const mid = [...g.segs.values()][0][0];
       const p = mid[Math.floor(mid.length / 2)];

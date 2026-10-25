@@ -26,8 +26,9 @@ export const waterUrl = id => `${scheduleUrl}?${new URLSearchParams({ field_zone
 
 // Lakes saved before ids were made safe carry ODFW's raw spelling: rewrite them once (at startup).
 // A lake saved from the stocked list took ODFW's map point, and the nightly job moves a point it had on the wrong
-// water (Blue River Reservoir was on Fairview's Blue Lake): follow a move of more than 3 km, unless the lake was
-// renamed or moved by hand (its point is no longer the one it was saved with).
+// water (Blue River Reservoir was on Fairview's Blue Lake): such a lake follows a move of more than 3 km while it
+// still sits on the ODFW point it was saved with (stockPoint) under the name it was saved with (stockName). A lake
+// renamed or moved by hand stays where the user put it.
 export async function migrateSavedIds(db) {
   let stocked = null;
   for (const l of await db.all('lakes')) {
@@ -39,8 +40,26 @@ export async function migrateSavedIds(db) {
     }
     stocked ??= (await d.load('waters'))?.waters ?? [];
     const w = stocked.find(x => x.id === lake.odfwWaterId);
-    const asSaved = lake.stockPoint ? lake.stockPoint[0] === lake.lat && lake.stockPoint[1] === lake.lon : lake.name === w?.name && lake.infoUrl === waterUrl(lake.odfwWaterId);
-    if (w?.lat != null && lake.lat != null && asSaved && haversineKm(lake.lat, lake.lon, w.lat, w.lon) > 3) lake = { ...lake, lat: w.lat, lon: w.lon, stockPoint: [w.lat, w.lon] };
+    if (w?.lat == null || !Number.isFinite(lake.lat)) { if (lake !== l) await db.put('lakes', lake); continue; }
+    const on = p => Array.isArray(p) && p[0] === lake.lat && p[1] === lake.lon;
+    if (!Array.isArray(lake.stockPoint)) {
+      // Saved before the point was kept: it was saved with ODFW's point if it sits on one ODFW has had (the nightly
+      // job lists a water's former points), and was put there by the user otherwise. That is decided once.
+      const at = [[w.lat, w.lon], ...(w.was ?? [])].find(on);
+      // A lake saved from another water's page that linked this one by mistake (the Deschutes Taylor Lake took The
+      // Dalles' TAYLOR LK) loses the link, so the app matches it again.
+      if (!at && haversineKm(lake.lat, lake.lon, w.lat, w.lon) > 20) {
+        const { odfwWaterId, ...rest } = lake;
+        lake = { ...rest, ...(rest.stockingUrl?.startsWith(scheduleUrl) && { stockingUrl: undefined }), ...(rest.infoUrl?.startsWith(scheduleUrl) && { infoUrl: undefined }) };
+        for (const k of ['stockingUrl', 'infoUrl']) if (lake[k] === undefined) delete lake[k];
+        await db.put('lakes', lake);
+        continue;
+      }
+      lake = { ...lake, stockPoint: at ?? [w.lat, w.lon], stockName: lake.stockName ?? w.name };
+    }
+    if (on(lake.stockPoint) && lake.name === (lake.stockName ?? lake.name) && haversineKm(lake.lat, lake.lon, w.lat, w.lon) > 3) {
+      lake = { ...lake, lat: w.lat, lon: w.lon, stockPoint: [w.lat, w.lon], ...(w.county && { county: w.county }) };
+    }
     if (lake !== l) await db.put('lakes', lake);
   }
 }
@@ -112,7 +131,9 @@ function variants(name) {
   return [...out];
 }
 // A swapped name stands only when no other water in the same zone goes by it: "Antelope Lake" in Lake County isn't
-// Jordan Valley's "Antelope Reservoir", and "Miller Reservoir" isn't Miller Lake.
+// Jordan Valley's "Antelope Reservoir", and "Miller Reservoir" isn't Miller Lake. A water of that name within either
+// one's size is the same water (ODFW's Phillips Reservoir point is 3.7 km from the middle of Phillips Lake).
+const sizeKm = l => Math.max(3, Math.sqrt((Number(l.acres) || 0) / 247) * 2);
 async function namesOf(lake) {
   const id = lake.odfwWaterId ?? (lake.lat != null ? (await matchStockedWater(lake))?.id : null);
   const w = await d.load('waters');
@@ -123,13 +144,17 @@ async function namesOf(lake) {
   if (lake.lat == null || all.length === plain.size) return all;
   const [{ lakes }, zone] = await Promise.all([statewide(), zoneOf(lake)]);
   const others = [...lakes, ...(w?.waters ?? []).filter(x => x.lat != null)];
+  // The map's lakes of this one's own name close by are this water: a point anywhere on Detroit Lake is on the same
+  // water as ODFW's Detroit Reservoir point, which sits on the map's Detroit Lake.
+  const mine = lakes.filter(l => plain.has(String(l.name).replace(/\s*\(.*?\)\s*/g, ' ').replace(/\s+/g, ' ').trim()) && haversineKm(l.lat, l.lon, lake.lat, lake.lon) <= Math.max(25, sizeKm(l)));
+  const same = o => haversineKm(o.lat, o.lon, lake.lat, lake.lon) <= Math.max(sizeKm(o), sizeKm(lake)) || mine.some(l => haversineKm(o.lat, o.lon, l.lat, l.lon) <= sizeKm(l));
   const out = [];
   for (const n of all) {
     const key = n.toLowerCase();
     let taken = false;
     if (!plain.has(n)) {
       for (const o of others) {
-        if (String(o.name).replace(/\s*\(.*?\)\s*/g, ' ').trim().toLowerCase() !== key || haversineKm(o.lat, o.lon, lake.lat, lake.lon) <= 3) continue;
+        if (String(o.name).replace(/\s*\(.*?\)\s*/g, ' ').trim().toLowerCase() !== key || same(o)) continue;
         if (!zone || sameZone(await zoneAt(o.lat, o.lon), zone)) { taken = true; break; }
       }
     }
@@ -137,20 +162,31 @@ async function namesOf(lake) {
   }
   return out;
 }
-// A list's name for a water matches one of the water's names, read in the singular ("Tenmile Lakes", "Cottage Grove
-// Reservoirs"). A reach ("Lower Columbia River", "Mid-Columbia River") also matches the whole river, since a map
-// label has no reach.
+// A list's name for a water matches one of the water's names, both read in the singular ("Tenmile Lakes", "Cottage
+// Grove Reservoirs", "Twin Lakes"). A reach ("Lower Columbia River", "Mid-Columbia River") also matches the whole
+// river, since a map label has no reach.
+const singular = s => String(s).replace(/\b(Lake|Reservoir|Pond|Creek|River|Spring|Slough)s\b/gi, '$1');
 const listed = (names, n) => {
-  const one = String(n).replace(/\b(Lake|Reservoir|Pond)s\b/gi, '$1');
-  return names.some(a => sameWater(a, one) || (/\b(river|creek)$/i.test(one) && sameWater(a, one.replace(/^(lower|upper|middle|mid)[\s-]+(?!fork\b)/i, ''))));
+  const one = singular(n);
+  return names.some(a => sameWater(singular(a), one) || (/\b(river|creek)$/i.test(one) && sameWater(singular(a), one.replace(/^(lower|upper|middle|mid)[\s-]+(?!fork\b)/i, ''))));
 };
+// Which fork a river is: "North Fork Santiam River", "Santiam River, North Fork" and "North Santiam River" are the
+// north fork, the Little North Santiam the little north fork, and the Willamette River none. A rule or advisory for
+// one fork is for that fork only, and one for the river isn't for its forks ("Umpqua River" isn't the North Umpqua).
+const forkOf = s => {
+  const n = String(s).replace(/\s*\(.*?\)\s*/g, ' ').trim();
+  const m = n.match(/\b((?:little\s+)?(?:north|south|east|west|middle|coast))\s+fork\b/i) ?? n.match(/^((?:little\s+)?(?:north|south|east|west|middle))\s+\S+.*\b(?:river|creek)$/i);
+  return m ? m[1].toLowerCase().replace(/\s+/g, ' ') : null;
+};
+const sameFork = (a, b) => forkOf(a) === forkOf(b);
 // "Upper Klamath Lake" is the rules' "Klamath Lake" and "Upper Erma Bell Lake" is in "Erma Bell Lakes", unless the
 // list has the water with its Upper/Middle/Lower itself.
 function withoutReach(names, listNames) {
   const out = [...names];
   for (const n of names) {
     const m = n.match(/^(?:Upper|Middle|Lower)\s+(?!Fork\b)(.+)$/i);
-    if (m && !listNames.some(x => listed([n], x))) out.push(m[1]);
+    // Not when only a water word is left: "Upper Lake" isn't every lake.
+    if (m && !/^(lake|lakes|reservoir|reservoirs|pond|ponds|river|creek)$/i.test(m[1]) && !listNames.some(x => listed([n], x))) out.push(m[1]);
   }
   return [...new Set(out)];
 }
@@ -170,11 +206,11 @@ export function mentions(text, name) {
   const bare = String(name ?? '').replace(/\s*\(.*?\)\s*/g, ' ').trim();
   const base = bare.replace(/^Lake\s+/i, '').replace(/\s+(Lake|Lakes|Reservoir|Pond|Ponds|River|Creek|Canal)$/i, '').trim();
   if (base.length < 4 || /^(north|south|east|west|upper|lower|middle|big|little|clear|mud|fish|blue|lost|long|round)$/i.test(base)) return false;
-  // A name ending in its water word wants that word ("Malheur Reservoir" isn't "Malheur Lake").
-  const own = bare.match(/\s(Lake|Reservoir|Pond|River|Creek|Canal)$/i)?.[1]?.toLowerCase();
+  // A name ending in its water word wants that word ("Malheur Reservoir" isn't "Malheur Lake"), as does "Lake X".
+  const own = bare.match(/\s(Lake|Reservoir|Pond|River|Creek|Canal)$/i)?.[1]?.toLowerCase() ?? (/^Lake\s/i.test(bare) ? 'lake' : null);
   const kind = own ? new RegExp(`\\b(${own}|${own}s${own === 'reservoir' ? '|res' : ''})\\b`, 'i')
     : KIND.find(re => re.test(bare)) ?? /\b(lake|lakes|reservoir|res|pond|ponds|river|rivers|creek|creeks)\b/i;
-  const b = base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const b = base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\s+/g, '[\\s-]?'); // "Yellow Jacket" is also "Yellowjacket"
   return new RegExp(`\\b${b}\\b(?:[\\s,]+[\\w'’-]+){0,3}?[\\s,]+${kind.source.replace(/\\b/g, '')}\\b`, 'i').test(text) || (/^Lake /i.test(bare) && new RegExp(`\\blake\\s+${b}\\b`, 'i').test(text));
 }
 
@@ -203,20 +239,46 @@ export async function habAdvisories() {
 }
 
 // Current toxic algae advisories on this water (Oregon Health Authority list). OHA names the water and its county:
-// a name match counts in that county (anywhere in it), a point match only close by and not in another county.
+// a name match is for the map's water of that name in that county, a point match only close by and not in another
+// county.
 export async function habFor(lake) {
   const [h, names, county, { lakes }] = await Promise.all([d.load('hab'), namesOf(lake), lake.lat != null ? countyAt(lake.lat, lake.lon) : null, statewide()]);
   // A point match is for the water OHA named: not when that water is a lake of its own right there (Fairview Lake is
   // next to Blue Lake, not Blue Lake).
   const elsewhere = a => a.lat != null && lakes.some(l => l.name !== lake.name && haversineKm(l.lat, l.lon, a.lat, a.lon) <= 1 && (a.names ?? [a.name]).some(n => listed([l.name], n)));
-  return (h?.advisories ?? []).map(a => ({ ...a, distKm: a.lat != null && lake.lat != null ? haversineKm(lake.lat, lake.lon, a.lat, a.lon) : null }))
-    .filter(a => {
-      const counties = countiesOf(a.county), inCounty = !counties.length || !county || counties.includes(county);
-      // A name match is in OHA's county, and near the advisory's point when it has one (Bull Run's Blue Lake isn't
-      // Fairview's).
-      if ((a.names ?? [a.name.split(/[(,]/)[0].trim()]).some(n => listed(names, n))) return (counties.length && county ? inCounty : true) && (a.distKm == null || a.distKm <= Math.max(10, 2 * reach(lake)));
-      return inCounty && a.distKm != null && a.distKm <= reach(lake) && !elsewhere(a);
-    });
+  const out = [];
+  for (const a of h?.advisories ?? []) {
+    const distKm = a.lat != null && lake.lat != null ? haversineKm(lake.lat, lake.lon, a.lat, a.lon) : null;
+    const counties = countiesOf(a.county), inCounty = !counties.length || !county || counties.includes(county);
+    // "Powder River arm" is part of Brownlee, not the Powder River; a fork is only that fork.
+    const own = (a.names ?? [a.name.split(/[(,]/)[0].trim()]).filter(n => !/\barm$/i.test(n));
+    const byName = own.find(n => listed(names.filter(x => sameFork(x, n)), n));
+    if (byName ? await namedHere(lake, a, byName, counties, inCounty, lakes) : inCounty && distKm != null && distKm <= reach(lake) && !elsewhere(a)) out.push({ ...a, distKm });
+  }
+  return out;
+}
+// Whether an advisory that names this water is for it. The map's waters of that name decide (one per NHD lake: a
+// big reservoir's pieces share one). On one of them, it is that water's advisory when that water is in OHA's county,
+// across a county or state line too (Brownlee and Owyhee are 50 miles long); with several in the county, it is for
+// the one nearest OHA's point (Bull Run's Blue Lake isn't Fairview's). A lake added by hand away from all of them
+// goes by its county.
+async function namedHere(lake, a, n, counties, inCounty, lakes) {
+  if (lake.lat == null) return inCounty;
+  const groups = new Map();
+  for (const l of lakes) {
+    if (!listed(variants(l.name), n)) continue;
+    const k = l.gnis ?? l.id ?? `${l.lat},${l.lon}`;
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push(l);
+  }
+  const all = [...groups.values()], inOha = [];
+  for (const g of all) if (!counties.length || (await Promise.all(g.map(l => countyAt(l.lat, l.lon)))).some(c => counties.includes(c))) inOha.push(g);
+  if (!inOha.length) return inCounty;
+  const from = (g, lat, lon) => Math.min(...g.map(l => haversineKm(l.lat, l.lon, lat, lon)));
+  const nearest = (list, lat, lon) => list.reduce((b, g) => !b || from(g, lat, lon) < from(b, lat, lon) ? g : b, null);
+  const mine = nearest(all, lake.lat, lake.lon);
+  if (from(mine, lake.lat, lake.lon) > Math.max(...mine.map(sizeKm))) return inCounty;
+  return inOha.includes(mine) && (inOha.length === 1 || a.lat == null || mine === nearest(inOha, a.lat, a.lon));
 }
 
 // OHA splits the Columbia and the Willamette by landmark, so a water on them gets the reach it sits in: below
@@ -228,7 +290,6 @@ const REACHES = [
   { re: /^Mid-Columbia/i, river: 'Columbia', at: (lat, lon) => lon >= -121.915 && lon < -119.2975 },
   { re: /^Lower Willamette/i, river: 'Willamette', at: lat => lat >= 45.46 },
 ];
-const forkOf = s => String(s).match(/\b(north|south|east|west|middle|coast)\s+fork\b/i)?.[1]?.toLowerCase() ?? null;
 // Oregon Health Authority advice on eating fish caught here. A row is for its zone's waters (an Antelope Reservoir
 // row isn't for another zone's Antelope Lake) and for the river's fork it names (the Willamette row isn't the Middle
 // Fork's). The Columbia's pools and the Snake's reservoirs get their river's rows.
@@ -246,29 +307,48 @@ export async function fishAdviceFor(lake) {
     if (reach) return on[reach.river] && (lake.lat == null || reach.at(lake.lat, lake.lon));
     if (/Snake/.test(a.zone) && on.Snake) return true;
     if (zone && !/^(multiple|statewide|columbia|snake)/i.test(a.zone ?? '') && !sameZone(a.zone, zone)) return false;
-    return a.names.some(n => listed(names.filter(x => forkOf(x) === forkOf(n)), n));
+    // "Powder River arm" is the arm of Brownlee the row names, not the Powder River.
+    return a.names.some(n => /\barm$/i.test(n) ? names.some(x => x.toLowerCase() === n.toLowerCase()) : listed(names.filter(x => sameFork(x, n)), n));
   });
   return { site, statewide: f.statewide, meal: f.meal, url: f.url, updatedAt: f.updatedAt };
 }
 
-// Whether a water is the one a rule's place note means. The note is a river ("Collawash River", "South Santiam",
-// "Sandy River Basin"): within 10 km of that river's labels. Anything else ("Charles Metzger County Park", "Wallowa
-// Mountains"): within 25 km of the point the weekly job looked up for it. Only asked when the zone has another water
-// of the rule's name; with nothing to measure by, the rule stands.
+// Whether a water is the one a rule's place note means. The zone's waters of the rule's name (lakes, rivers with all
+// their labels, stocked waters; ones within 3 km are one water) are measured to the place: the note's river labels
+// ("Collawash River", "South Santiam", "Sandy River Basin") or the point the weekly job looked up ("Charles Metzger
+// County Park", "Wallowa Mountains"). The rule is for the one nearest it, if that is within 25 km (40 km of a
+// mountain range's middle). With no place to measure by, it stands only when the zone has just one water of that name.
 async function atPlace(lake, rule) {
   const [{ lakes, riverLabels }, w] = await Promise.all([statewide(), d.load('waters')]);
   const name = rule.aliases[0] ?? rule.name.replace(/\s*\(.*?\)\s*/g, ' ').trim();
-  const twins = [...lakes, ...(w?.waters ?? [])].filter(o => o.lat != null && listed([String(o.name).replace(/\s*\(.*?\)\s*/g, ' ').trim()], name));
-  const zones = await Promise.all(twins.map(o => zoneAt(o.lat, o.lon)));
-  const spots = twins.filter((o, i) => sameZone(zones[i], rule.zone)).reduce((a, o) => a.some(p => haversineKm(p.lat, p.lon, o.lat, o.lon) <= 3) ? a : [...a, o], []);
-  if (spots.length < 2) return true;
+  const named = o => o.lat != null && listed([String(o.name).replace(/\s*\(.*?\)\s*/g, ' ').trim()], name);
+  const groups = [];
+  const add = (pts, key) => {
+    const hit = groups.find(g => (key && g.keys.has(key)) || g.pts.some(p => pts.some(q => haversineKm(p[0], p[1], q[0], q[1]) <= 3)));
+    if (hit) { hit.pts.push(...pts); if (key) hit.keys.add(key); } else groups.push({ pts: [...pts], keys: new Set(key ? [key] : []) });
+  };
+  const inZone = async ([lat, lon]) => sameZone(await zoneAt(lat, lon), rule.zone);
+  for (const o of [...lakes, ...(w?.waters ?? [])]) if (named(o) && await inZone([o.lat, o.lon])) add([[o.lat, o.lon]], null);
+  const rivers = new Map();
+  for (const x of riverLabels) if (named(x)) { if (!rivers.has(x.id)) rivers.set(x.id, []); rivers.get(x.id).push([x.lat, x.lon]); }
+  for (const [id, pts] of rivers) if ((await Promise.all(pts.map(inZone))).some(Boolean)) add(pts, `river:${id}`);
   const note = placeNote(rule.name);
-  if (/\b(river|creek|basin|fork|santiam|willamette)\b/i.test(note)) {
+  let place = null;
+  if (/\b(river|creek|fork|santiam|willamette)(\s+basin)?$|\bbasin$/i.test(note)) {
     const river = note.replace(/\s+Basin$/i, '').replace(/^(?!.*\b(?:River|Creek)$)(.+)$/i, '$1 River');
-    const labels = riverLabels.filter(x => sameWater(x.name, river));
-    if (labels.length) return labels.some(x => haversineKm(x.lat, x.lon, lake.lat, lake.lon) <= 10);
+    const labels = riverLabels.filter(x => sameWater(x.name, river) && sameFork(x.name, river));
+    if (labels.length) place = labels.map(x => [x.lat, x.lon]);
   }
-  return rule.near ? haversineKm(rule.near[0], rule.near[1], lake.lat, lake.lon) <= 25 : true;
+  if (!place && rule.near) place = [rule.near];
+  if (!place) return groups.length < 2;
+  // This water: its river, else the one it sits on (a creek's labels are 15 km apart), else a water of its own.
+  const from = (g, lat, lon) => Math.min(...g.pts.map(p => haversineKm(p[0], p[1], lat, lon)));
+  const mine = groups.find(g => lake.kind === 'river' && g.keys.has(`river:${lake.id}`))
+    ?? groups.filter(g => from(g, lake.lat, lake.lon) <= (/river|creek|stream/i.test(`${lake.kind} ${lake.type}`) ? 8 : 3)).sort((a, b) => from(a, lake.lat, lake.lon) - from(b, lake.lat, lake.lon))[0]
+    ?? { pts: [[lake.lat, lake.lon]], keys: new Set() };
+  const toPlace = g => Math.min(...place.map(([lat, lon]) => from(g, lat, lon)));
+  const best = [...groups.filter(g => g !== mine), mine].reduce((b, g) => toPlace(g) < toPlace(b) ? g : b);
+  return best === mine && toPlace(mine) <= (/\b(mountains?|range|hills|wilderness)$/i.test(note) ? 40 : 25);
 }
 
 // The rules for this water: its zone's general limits, the exceptions ODFW lists for it, and the statewide rules.
@@ -282,17 +362,19 @@ export async function regsFor(lake) {
   // Outside every zone (not in Oregon) only the Columbia and Snake rules, which name their river, can apply.
   // A rule for one county's water ("Beaver Creek (Nestucca Basin, Tillamook Co.)") applies only in that county.
   // A Columbia or Snake rule names a water by the river (Eagle Creek and Herman Creek in the Gorge), so it applies
-  // only within about 25 km of that zone, not to a same-named creek in Union or Lane County.
+  // only within about 10 km of that zone, not to a same-named creek in Union or Lane County or up the Clackamas.
   const near = {};
-  for (const z of ['Columbia River', 'Snake River']) near[z] = lake.lat == null || await kmToZone(lake.lat, lake.lon, z) <= 25;
+  for (const z of ['Columbia River', 'Snake River']) near[z] = lake.lat == null || await kmToZone(lake.lat, lake.lon, z) <= 10;
   const special = r.waters.filter(w => {
     const counties = w.counties ?? (w.county ? [w.county] : []);
     const river = /Columbia|Snake/.test(w.zone);
     return (!counties.length || (county && counties.includes(county))) && (zoneKey ? w.zone === zoneKey || river : river)
-      && (!river || near[/Columbia/.test(w.zone) ? 'Columbia River' : 'Snake River']) && [w.name, ...w.aliases].some(n => listed(names, n));
+      && (!river || near[/Columbia/.test(w.zone) ? 'Columbia River' : 'Snake River'])
+      // A fork's rule is for that fork ("Willamette River, Middle Fork" isn't the Willamette), and a name the heading
+      // gives without the fork is still the fork's ("Wilson River" under "Wilson River, Little North Fork").
+      && [w.name, ...w.aliases].some(n => listed(names.filter(x => forkOf(x) === (forkOf(n) ?? forkOf(w.name))), n));
   });
-  // A rule placed by a note in its heading ("Round Lake (Collawash River)") is for the water there when the zone has
-  // more than one water of that name.
+  // A rule placed by a note in its heading ("Round Lake (Collawash River)") is for the water there.
   for (const w of [...special]) if (placeNote(w.name) && lake.lat != null && !await atPlace(lake, w)) special.splice(special.indexOf(w), 1);
   // The Columbia and Snake zones are the rivers and their reservoirs, thinner than the zone map can show: a water
   // named in their rules (Brownlee, Hells Canyon) gets that zone's limits unless its own zone's rules name it too.
