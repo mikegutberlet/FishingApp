@@ -446,5 +446,6 @@ export async function regsFor(lake) {
   // named in their rules (Brownlee, Hells Canyon) gets that zone's limits unless its own zone's rules name it too.
   const river = special.find(w => /Columbia|Snake/.test(w.zone));
   if (river && !special.some(w => w.zone === zoneKey)) zoneKey = river.zone;
-  return { zone: zoneKey ?? zone, inOregon: !!(zone ?? zoneKey), inLake, special, zoneRules: zoneKey ? r.zones[zoneKey] : null, statewide: r.statewide, booklet: r.booklet, updates: r.updates, source: r.source, updatedAt: r.updatedAt };
+  const lakeRow = special.some(w => [w.name, ...w.aliases].some(n => listed(lakeNames, n)));
+  return { zone: zoneKey ?? zone, inOregon: !!(zone ?? zoneKey), inLake, lakeRow, special, zoneRules: zoneKey ? r.zones[zoneKey] : null, statewide: r.statewide, booklet: r.booklet, updates: r.updates, source: r.source, updatedAt: r.updatedAt };
 }

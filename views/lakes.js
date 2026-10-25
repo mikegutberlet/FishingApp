@@ -51,7 +51,7 @@ async function renderFindAny(S) {
     $('#aresults').innerHTML = hits.length ? hits.map((w, i) => `<div class="card lake-item" data-i="${i}"><div><b>${esc(w.name)}</b>
         <div class="muted small">${esc(w.type)}${w.acres ? ` · ${w.acres.toLocaleString()} acres` : ''}${w.km ? ` · ${Math.round(w.km * 0.621)} mi` : ''}${w.maxDepthFt ? ` · ${w.maxDepthFt} ft deep` : ''}${w.elevationFt ? ` · ${w.elevationFt.toLocaleString()} ft elev.` : ''}</div></div><span>›</span></div>`).join('')
       : '<div class="card muted">No matches.</div>';
-    $('#aresults').querySelectorAll('.lake-item').forEach(el => el.onclick = () => openWater(hits[+el.dataset.i], 'conditions', { anyLabel: true }));
+    $('#aresults').querySelectorAll('.lake-item').forEach(el => el.onclick = () => openWater(hits[+el.dataset.i]));
   };
   $('#asearch').oninput = draw;
 }
@@ -96,7 +96,7 @@ export async function addStateWater(stockId, code = 'CA') {
   if (!w) return;
   const lake = await db.put('lakes', {
     name: w.name, type: w.type ?? (/river|creek|fork|section/i.test(w.name) ? 'River' : 'Lake'), state: S.code, county: w.county ?? w.counties,
-    lat: w.lat, lon: w.lon, stockPoint: [w.lat, w.lon], stockName: w.name, [S.stockField]: w.id, stockingUrl: S.waterUrl(w.id), infoUrl: S.waterUrl(w.id),
+    lat: w.lat, lon: w.lon, [S.stockField]: w.id, stockingUrl: S.waterUrl(w.id), infoUrl: S.waterUrl(w.id),
   });
   await refreshMap();
   openLake(lake.id, 'stocking');

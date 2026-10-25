@@ -262,12 +262,17 @@ async function buildRivers(ids, old) {
 // A label in a lake (the Snake through Brownlee, the Owyhee through Lake Owyhee) keeps the lake's name as a third
 // value, so the app gives it the lake's advisories. The named lakes and reservoirs of 50 acres or more are read with
 // their outlines (the small-scale layers have few lake names) and each label is tested against them. If that query
-// fails, or skips tiles, a label keeps last week's lake where its point is the same (label points don't move between
-// builds), so a busy NHD night doesn't give Brownlee's labels the river's all-clear for a week.
+// fails, or skips tiles, a label keeps the lake of last week's label of its river nearest it, within 1 km (a split
+// flowline tile moves the points a little), so a busy NHD night doesn't give Brownlee's labels the river's all-clear
+// for a week.
 async function tagLakes(rivers, ids, old) {
-  const was = new Map((old ?? []).flatMap(r => r.points.filter(p => p[2]).map(([lat, lon, lake]) => [`${r.id}|${lat}|${lon}`, lake])));
+  const was = new Map((old ?? []).map(r => [String(r.id), r.points]));
+  const lastWeek = (id, lat, lon) => {
+    const near = (was.get(String(id)) ?? []).map(p => ({ p, km: distKm([lon, lat], [p[1], p[0]]) })).filter(x => x.km <= 1).sort((a, b) => a.km - b.km)[0];
+    return near?.p[2] || null;
+  };
   const keepOld = (r, inSkipped) => r.points.map(([lat, lon, lake]) => {
-    const prev = !lake && inSkipped(lat, lon) && was.get(`${r.id}|${lat}|${lon}`);
+    const prev = !lake && inSkipped(lat, lon) && lastWeek(r.id, lat, lon);
     if (prev) report.steps.rivers.inLakesKept = (report.steps.rivers.inLakesKept ?? 0) + 1;
     return lake ? [lat, lon, lake] : prev ? [lat, lon, prev] : [lat, lon];
   });
