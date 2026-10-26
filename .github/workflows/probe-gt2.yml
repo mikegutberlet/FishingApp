@@ -1,0 +1,11 @@
+name: Probe Getting there sources (temporary)
+on:
+  push:
+    paths: [scripts/dev/probe-gt2.sh, .github/workflows/probe-gt2.yml]
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash scripts/dev/probe-gt2.sh
