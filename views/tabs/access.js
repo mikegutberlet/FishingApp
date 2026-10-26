@@ -264,6 +264,11 @@ function profileSvg(p) {
 function paintNow(el, ctx) {
   if (!el?.isConnected || !ctx.now) return;
   const now = ctx.now, snow = snowAt(now), s = ctx.s, v = s?.vehicle;
+  if (now.failed?.length >= 3) {
+    el.innerHTML = `<p class="small muted">Couldn’t check snow and wildfires just now (no signal, or the services didn’t answer). <a href="#" data-now-refresh>Try again</a></p>`;
+    el.querySelector('[data-now-refresh]').onclick = e => { e.preventDefault(); ctx.refreshNow?.(); };
+    return;
+  }
   const dirt = v && !['paved', 'road'].includes(v.cls);
   const parts = [];
   if (snow?.level) {
