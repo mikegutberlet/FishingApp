@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-26T18:05:41.666Z",
+  "startedAt": "2026-10-26T18:31:04.580Z",
   "ndow": {
     "waters": 551
   },
@@ -8,9 +8,9 @@
     "nhd": 1515,
     "fishable": 6142,
     "via": {
-      "none": 53,
-      "ndow": 215,
-      "nhd": 281,
+      "none": 54,
+      "ndow": 216,
+      "nhd": 279,
       "osm": 2
     },
     "unmatched": [
@@ -31,10 +31,10 @@
       "USA Parkway Pond (Western, Community Pond)",
       "Mason Valley Hatchery Outponds (Western, Community Pond)",
       "Owyhee Pond #3 (Western, Community Pond)",
+      "Willow Creek- Desatoya Range (Western, Creek or Stream)",
       "Water Canyon Creek (Western, Creek or Stream)",
       "Wash ONeil Creek (Western, Creek or Stream)",
       "V Canal (Western, Creek or Stream)",
-      "Thomas Creek- Sonoma Range (Western, Creek or Stream)",
       "Seeman Pond (Western, Community Pond)",
       "Rocky Creek (Western, Creek or Stream)",
       "North Pond (Western, Community Pond)",
@@ -57,6 +57,7 @@
       "Corcoran Creek (Southern, Creek or Stream)",
       "Laughlin/ Colorado River below Davis Dam (Southern, River)",
       "Belcher Creek (Southern, Creek or Stream)",
+      "Willow Creek- O’Neil Basin Ranch/RD (Eastern, Creek or Stream)",
       "Warm Creek (Eastern, Creek or Stream)",
       "T Creek (Eastern, Creek or Stream)",
       "Seigel Creek (Eastern, Creek or Stream)",
@@ -68,7 +69,7 @@
       "Galena Canyon Creek (Eastern, Creek or Stream)",
       "Dawley Canyon (Eastern, Creek or Stream)"
     ],
-    "geocoderCalls": 0
+    "geocoderCalls": 1
   },
   "plants": {
     "total": 1698,
@@ -117,5 +118,4 @@
         "/rise/api/catalog-item/6132 Lake Mohave Davis Dam and Powerplant Daily Water Temperature-DegF Time Series Data",
         "/rise/api/catalog-item/6133 Lake Mohave Davis Dam and Powerplant Daily Lake/Reservoir Elevation-ft Time Series Data",
         "/rise/api/catalog-item/6134 Lake Mohave Davis Dam and Powerplant Daily Lake/Reservoir Storage-af Time Series Data",
-        "/rise/api/catalog-item/6135 Lake Mohave Davis Dam and Powerplant Daily Lake/Reservoir Release - Total-cfs Time Series Data",
-        "/rise/api/catalog-item/133861 Lake Mohave (Arizona/Ne
+        "/rise/api/catalog-item/6135 Lake Mohave Davis Dam and Powerplant Daily Lake/Reservoir Release - Total-cfs Time Se
