@@ -32,9 +32,9 @@ export async function reportFor(lake) {
 // ---------- Safety: toxic algae (nightly), regulations and fish consumption advisories (weekly) ----------
 // Names in the regulations and on NDOW's pages are written several ways: "Walker River, East Fork",
 // "East Walker River", "South Fork of the Humboldt River", "Mountain View Pond- LY", "Paradise Ponds". These words
-// make those the same.
+// make those the same, and "Mt" and "St" are Mount and Saint.
 const regWords = s => String(s ?? '').toLowerCase().replace(/[’']/g, '').replace(/^(.+?),\s*(.+)$/, '$2 $1').replace(/\s*[–—-]\s+.*$/, '')
-  .replace(/#\s*\d+/g, '').split(/[^a-z0-9]+/).filter(w => w && !/^(the|of|fork|park|community)$/.test(w)).map(w => w === 'ponds' ? 'pond' : w);
+  .replace(/#\s*\d+/g, '').split(/[^a-z0-9]+/).filter(w => w && !/^(the|of|fork|park|community)$/.test(w)).map(w => w === 'ponds' ? 'pond' : w === 'mt' ? 'mount' : w === 'st' ? 'saint' : w);
 const WATER_WORD = /^(lake|reservoir|res|pond|river|creek|wash|slough)$/;
 // Same water: same words, or one is the other plus a place ("Lake Tahoe – Cave Rock"), not plus another water word
 // ("Cold Creek" is not "Cold Creek Reservoir") and not mid-word ("Big Wash" is not "Big Washoe Lake").

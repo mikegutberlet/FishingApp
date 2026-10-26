@@ -10,7 +10,7 @@
 // Only public data; nothing from anyone's phone is involved.
 
 import { writeFile, mkdir, readFile } from 'node:fs/promises';
-import { stateArg, inOutline } from './states.mjs';
+import { stateArg, inOutline, edgeDeg } from './states.mjs';
 
 const STATE = stateArg();
 
@@ -23,11 +23,22 @@ const CA_BBOX = STATE.bbox;
 const report = { startedAt: new Date().toISOString(), steps: {} };
 
 const inCalifornia = pt => inOutline(pt, STATE.outline); // kept the California job's name to stay diffable with it
+// A lake in the state, or a reservoir of 1,000 acres or more within about 2 km of a border river (borderReservoirs).
+// The app's stateAt gives these the state too.
+const lakeInState = (pt, acres) => inCalifornia(pt) || (!!STATE.borderReservoirs && acres >= 1000 && edgeDeg(pt, STATE.outline) < 0.02);
 
+// NHD sometimes takes a query and never answers, which once held a run until the workflow was cancelled with nothing
+// saved. So every request has a time limit (long enough for the big depth downloads), and once the job's time budget
+// is spent no new NHD tile is started: that list fails and last week's file stays, leaving the workflow time to commit.
+const DEADLINE = Date.now() + (+process.env.WATERS_MINUTES || 120) * 60e3;
+const outOfTime = () => Date.now() > DEADLINE;
 async function get(url, tries = 3) {
   for (let i = 1; ; i++) {
     try {
-      const r = await fetch(url, { headers: /lternet\.edu|edirepository\.org/.test(url) ? BROWSER_UA : UA });
+      const r = await fetch(url, {
+        headers: /lternet\.edu|edirepository\.org/.test(url) ? BROWSER_UA : UA,
+        signal: AbortSignal.timeout(url.startsWith(NHD) ? 120e3 : 600e3),
+      });
       if (!r.ok) throw new Error(`${r.status} ${url.slice(0, 200)}`);
       return r;
     } catch (e) {
@@ -71,8 +82,8 @@ async function layerIds() {
   const find = re => layers.find(l => re.test(l.name))?.id;
   return {
     waterbody: find(/^Waterbody - Large Scale$/i) ?? 12,
-    flowline: find(/^Flowline - Large Scale$/i),
-    flowlineSmall: find(/^Flowline - Small Scale$/i),
+    flowline: find(/^Flowline - Large Scale$/i) ?? 6,
+    flowlineSmall: find(/^Flowline - Small Scale$/i) ?? 4,
   };
 }
 
@@ -87,6 +98,9 @@ async function queryTiled(layerId, where, outFields, offset, tile = 1) {
   const queryTile = async (x, y, size) => {
     const envelope = JSON.stringify({ xmin: x, ymin: y, xmax: x + size, ymax: y + size, spatialReference: { wkid: 4326 } });
     const got = [];
+    if (outOfTime()) throw new Error(`out of time (${report.steps.splitTiles ?? 0} tiles split, ${FAILED.length} skipped)`);
+    // One line per tile in the log, so a slow night shows whether NHD answered slowly or the time limit cut it off.
+    const t0 = Date.now(), tag = `tile ${layerId} ${round(x)},${round(y)} ${size}°`;
     try {
       for (let page = 0; ; page += 2000) {
         const params = new URLSearchParams({
@@ -98,7 +112,10 @@ async function queryTiled(layerId, where, outFields, offset, tile = 1) {
         got.push(...json.features);
         if (json.features.length < 2000) break;
       }
+      console.log(`${tag}: ${got.length} features in ${((Date.now() - t0) / 1000).toFixed(1)} s`);
     } catch (e) {
+      console.log(`${tag}: failed after ${((Date.now() - t0) / 1000).toFixed(1)} s (${(e.name === 'TimeoutError' ? 'time limit' : e.message).slice(0, 80)})`);
+      if (outOfTime()) throw e;
       if (size <= 0.035) {
         failed.push({ layerId, x: round(x), y: round(y), size, error: e.message.slice(0, 80) });
         FAILED.push(failed.at(-1));
@@ -131,7 +148,7 @@ async function buildLakes(ids) {
     const pid = prop(p, 'PERMANENT_IDENTIFIER');
     if (polys.has(pid)) continue;
     const pt = lakePoint(f.geometry);
-    if (!inCalifornia(pt)) continue;
+    if (!lakeInState(pt, prop(p, 'AREASQKM') * 247.105)) continue;
     polys.set(pid, { pid, gnis: prop(p, 'GNIS_ID') || null, name: prop(p, 'GNIS_NAME'), ftype: prop(p, 'FTYPE'),
       acres: prop(p, 'AREASQKM') * 247.105, elev: prop(p, 'ELEVATION'), lat: round(pt[1]), lon: round(pt[0]) });
   }
@@ -188,8 +205,11 @@ async function attachElevations(lakes) {
 }
 
 // Rivers: merge every named flowline segment by GNIS id, then place label points every ~15 km along it.
-async function buildRivers(ids) {
-  const layer = ids.flowline ?? ids.flowlineSmall;
+// A state with dense streams (Oregon) reads the small-scale flowlines: the large-scale query times out on its
+// tiles, and the small-scale layer still has every river and long creek a label needs.
+const riverLayer = ids => STATE.riverScale === 'small' ? ids.flowlineSmall : ids.flowline ?? ids.flowlineSmall;
+async function buildRivers(ids, old) {
+  const layer = riverLayer(ids);
   const feats = await queryTiled(layer, "GNIS_NAME IS NOT NULL AND (GNIS_NAME LIKE '% River%' OR GNIS_NAME LIKE '% Creek%' OR GNIS_NAME LIKE '% Fork%' OR GNIS_NAME LIKE '% Slough%')",
     'GNIS_ID,GNIS_NAME,LENGTHKM', '0.002', 0.5);
   report.steps.rivers = { layer, segments: feats.length };
@@ -213,13 +233,18 @@ async function buildRivers(ids) {
     if (!isRiver && g.km < 15) continue; // keep every river, and creeks/forks/sloughs 15 km or longer
     // Label points: walk all vertices, dropping one each time ~15 km of distance has accumulated.
     const points = [];
-    let acc = 7.5;
+    let acc = 7.5, inside = 0;
     for (const lines of g.segs.values()) for (const line of lines) {
       for (let i = 1; i < line.length; i++) {
-        acc += distKm(line[i - 1], line[i]);
-        if (acc >= 15 && inCalifornia(line[i])) { points.push([round(line[i][1]), round(line[i][0])]); acc = 0; }
+        const d = distKm(line[i - 1], line[i]), inState = inCalifornia(line[i]);
+        acc += d;
+        if (inState) inside += d;
+        if (acc >= 15 && inState) { points.push([round(line[i][1]), round(line[i][0])]); acc = 0; }
       }
     }
+    // A river of the next state that only reaches the line (the Klickitat and White Salmon at the Columbia, Idaho's
+    // Salmon at the Snake) gets no label here: its taps would show this state's rules.
+    if (inside < Math.min(3, g.km / 4)) continue;
     if (!points.length) {
       const mid = [...g.segs.values()][0][0];
       const p = mid[Math.floor(mid.length / 2)];
@@ -231,7 +256,50 @@ async function buildRivers(ids) {
   rivers.sort((a, b) => b.km - a.km);
   report.steps.rivers.named = groups.size;
   report.steps.rivers.kept = rivers.length;
+  if (STATE.riverLakes) await tagLakes(rivers, ids, old);
   return rivers;
+}
+// A label in a lake (the Snake through Brownlee, the Owyhee through Lake Owyhee) keeps the lake's name as a third
+// value, so the app gives it the lake's advisories. The named lakes and reservoirs of 50 acres or more are read with
+// their outlines (the small-scale layers have few lake names) and each label is tested against them. If that query
+// fails or skips tiles, a river that had a label in a lake last week keeps last week's labels as they were: a busy
+// NHD night that also splits a flowline tile moves a river's points by kilometres, so they can't be matched up, and
+// the points are only where its labels show. That way Brownlee's labels don't get the river's all-clear for a week.
+async function tagLakes(rivers, ids, old) {
+  const was = new Map((old ?? []).filter(r => r.points.some(p => p[2])).map(r => [String(r.id), r.points]));
+  const keepOld = () => {
+    for (const r of rivers) if (was.has(String(r.id))) {
+      r.points = was.get(String(r.id));
+      report.steps.rivers.inLakesKept = (report.steps.rivers.inLakesKept ?? 0) + 1;
+    }
+  };
+  let feats;
+  const before = FAILED.length;
+  try {
+    feats = await queryTiled(ids.waterbody, "GNIS_NAME IS NOT NULL AND FTYPE IN (390,436) AND AREASQKM >= 0.2", 'GNIS_NAME', '0.0005');
+  } catch (e) {
+    report.steps.rivers.inLakesError = e.message.slice(0, 200);
+    keepOld();
+    return;
+  }
+  const skipped = FAILED.slice(before);
+  const polys = [];
+  for (const f of feats) {
+    if (!f.geometry || !prop(f.properties, 'GNIS_NAME')) continue;
+    const parts = f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates;
+    for (const [outer] of parts) {
+      const xs = outer.map(p => p[0]), ys = outer.map(p => p[1]);
+      polys.push({ name: prop(f.properties, 'GNIS_NAME'), ring: outer, box: [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)] });
+    }
+  }
+  let tagged = 0;
+  for (const r of rivers) r.points = r.points.map(([lat, lon]) => {
+    const lake = polys.find(({ box: [x0, y0, x1, y1], ring }) => lon >= x0 && lon <= x1 && lat >= y0 && lat <= y1 && pointInRing([lon, lat], ring));
+    if (lake) tagged++;
+    return lake ? [lat, lon, lake.name] : [lat, lon];
+  });
+  if (skipped.length) keepOld();
+  report.steps.rivers.inLakes = { lakes: new Set(polys.map(p => p.name)).size, labels: tagged };
 }
 
 // LAGOS-US DEPTH (Stachelek et al.): observed max/mean depth for ~17,000 US lakes, published on EDI.
@@ -378,7 +446,8 @@ function attachDepths(lakes, depths, source) {
 
 await mkdir(OUT, { recursive: true });
 const save = (name, data) => writeFile(new URL(name, OUT), JSON.stringify(data) + '\n');
-let ids = { waterbody: 12 };
+// The service's usual layer ids, for when its layer list doesn't answer.
+let ids = { waterbody: 12, flowline: 6, flowlineSmall: 4 };
 try { ids = await layerIds(); } catch (e) { report.steps.nhdLayersError = e.message; }
 
 // A lake list from the last few days is kept as is, so a code push that re-runs the job only spends its time on the
@@ -388,7 +457,7 @@ let lakes = null;
 const readOldFile = name => readFile(new URL(name, OUT), 'utf8').then(JSON.parse).catch(() => null);
 const recent = await readOldFile('lakes.json');
 if (recent?.lakes?.length && Date.now() - Date.parse(recent.updatedAt) < 3 * 86400e3 && process.env.GITHUB_EVENT_NAME === 'push') {
-  const kept = recent.lakes.filter(l => inCalifornia([l.lon, l.lat]));
+  const kept = recent.lakes.filter(l => lakeInState([l.lon, l.lat], l.acres));
   report.steps.lakes = { reused: recent.updatedAt, inState: kept.length, outsideOutline: recent.lakes.length - kept.length };
   if (kept.length < recent.lakes.length) await save('lakes.json', { ...recent, lakes: kept });
 } else try { lakes = await buildLakes(ids); } catch (e) { report.steps.lakesError = e.message; console.error('lakes:', e.message); }
@@ -408,13 +477,14 @@ if (lakes) {
   await save('lakes.json', { updatedAt: new Date().toISOString(), source: 'USGS National Hydrography Dataset; depths from LAGOS-US DEPTH and Wikidata', lakes });
 }
 try {
-  const rivers = await buildRivers(ids);
-  report.steps.rivers.carriedOver = carryOver(rivers, (await readOldFile('rivers.json'))?.rivers, ids.flowline ?? ids.flowlineSmall, r => r.points);
+  const old = (await readOldFile('rivers.json'))?.rivers;
+  const rivers = await buildRivers(ids, old);
+  report.steps.rivers.carriedOver = carryOver(rivers, old, riverLayer(ids), r => r.points);
   await save('rivers.json', { updatedAt: new Date().toISOString(), source: 'USGS National Hydrography Dataset', rivers });
 } catch (e) { report.steps.riversError = e.message; console.error('rivers:', e.message); }
 
 // Skipped tiles or a failed list show as a failed step (the workflow carries on and commits what it has).
-if (FAILED.length || report.steps.lakesError || report.steps.riversError) process.exitCode = 1;
+if (FAILED.length || report.steps.lakesError || report.steps.riversError || report.steps.rivers?.inLakesError) process.exitCode = 1;
 report.finishedAt = new Date().toISOString();
 await writeFile(new URL('build-report.json', OUT), JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify(report, null, 2).slice(0, 4000));

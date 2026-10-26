@@ -122,13 +122,15 @@ function scheduleRows(html) {
     const num = (re, i) => { const n = parseInt(at(re, i).replace(/[^\d]/g, ''), 10); return Number.isFinite(n) ? n : 0; };
     rows.push({ week, weekEnd, raw: water, zone: zone || null, office: office || null, legals: num(/legal/, 3), trophy: num(/trophy/, 4), brood: num(/brood/, 5), fingerling: num(/finger/, 6), total: num(/total/, 7) });
   }
+  rows.header = !!header;
   return rows;
 }
 
 // ODFW keeps 2 years of stockings and the weeks already planned. The print view lists up to 500 rows, so the job
 // asks for a month at a time (half a month when a month is full).
-// Date windows that came back tonight: a planned stocking in one of them that isn't on tonight's schedule was moved
-// or cancelled.
+// Date windows that came back tonight as a real schedule (its header and at least one row), with the stockings each
+// listed for its own weeks (ODFW also lists weeks that started before the window): a planned stocking in one of them
+// that isn't on tonight's schedule was moved or cancelled.
 const FETCHED = [];
 async function scheduleFetch() {
   const log = report.schedule = { windows: [] };
@@ -144,15 +146,20 @@ async function scheduleFetch() {
   for (let t = start; t < end; t += 31 * 864e5) {
     const from = day(t), to = day(Math.min(end, t + 30 * 864e5));
     try {
-      let rows = await ask(from, to);
-      if (rows.length >= 490) rows = [...await ask(from, day(t + 15 * 864e5)), ...await ask(day(t + 16 * 864e5), to)];
+      let rows = await ask(from, to), whole = rows.header && rows.length > 0;
+      if (rows.length >= 490) {
+        const [a, b] = [await ask(from, day(t + 15 * 864e5)), await ask(day(t + 16 * 864e5), to)];
+        rows = [...a, ...b];
+        whole = a.header && b.header && rows.length > 0;
+      }
       for (const r of rows) byKey.set(`${r.week}|${r.raw}`, r);
-      FETCHED.push([from, to]);
+      if (whole) FETCHED.push([from, to, new Set(rows.filter(r => r.week >= from && r.week <= to).map(r => `${odfwId(r.raw)}|${r.week}`))]);
     } catch (e) { log.windows.push(`${from}..${to}: ${e.message}`); }
     await new Promise(res => setTimeout(res, 700));
   }
-  // The windows didn't work (ODFW changed its filters): take what the plain print view shows.
+  // The windows didn't work (ODFW changed its filters): take what the plain print view shows, and drop nothing.
   if (byKey.size < 100) {
+    FETCHED.length = 0;
     try { for (const r of scheduleRows(await getText(`${ODFW}/fishing/species/trout/stocking-schedule-print`))) byKey.set(`${r.week}|${r.raw}`, r); } catch (e) { log.printError = e.message; }
   }
   log.rows = byKey.size;
@@ -243,19 +250,36 @@ function lookupNames(name) {
   return { names: [...names], where };
 }
 
-const zoneOk = (w, c) => !ZONES.length || sameZone(zoneAt(c.lat, c.lon), w.zone);
-async function pickPoint(w, maps, nhd) {
+// Ponds on the Columbia's and the Snake's banks can sit in those river zones while ODFW schedules them under the land
+// zone next door (Hat Rock and Tatone ponds are Northeast waters in the Columbia River zone). strict leaves that out,
+// so a water's own zone wins when both have a same-named water.
+const BANKS = { 'Columbia River': ['Northwest', 'Willamette', 'Central', 'Northeast'], 'Snake River': ['Northeast', 'Southeast'] };
+const zoneOk = (w, c, strict = false) => {
+  if (!ZONES.length) return true;
+  const at = zoneAt(c.lat, c.lon);
+  return sameZone(at, w.zone) || (!strict && !!BANKS[at]?.includes(w.zone));
+};
+// A placemark whose schedule link is this water's spelling, abbreviated or not (the map's "BENSON LAKE" is the
+// schedule's "BENSON LK"), unless the placemark is named for another water on the schedule: ODFW's Carter Lake
+// placemark links Cleawox Lake's schedule.
+function linksTo(m, w, others) {
+  if (!m.raws.some(r => r === w.raw.toUpperCase() || waterName(r).toLowerCase() === waterName(w.raw).toLowerCase())) return false;
+  const k = kindKey(m.name);
+  return !others.has(k) || others.get(k) === w.id || lookupNames(w.name).names.some(n => kindKey(n) === k);
+}
+async function pickPoint(w, maps, nhd, others) {
   const { names, where } = lookupNames(w.name);
   const keys = new Set(names.map(kindKey).filter(k => k.length >= 5));
   const flowing = isFlowing(w.name);
   const okZone = c => zoneOk(w, c);
   const near = where ? (await geocode(where))?.[0] : null;
-  // 1. ODFW's own map: a placemark whose schedule link is this water's exact spelling. That is ODFW saying which
-  // water it is, so it stands even just over a zone line (ponds on the Columbia zone's edge).
-  const byRaw = maps.filter(m => m.raws.includes(w.raw.toUpperCase()));
+  // 1. ODFW's own map: a placemark that links this water's schedule (linksTo). That is ODFW saying which water it
+  // is, so it stands even just over a zone line (ponds on the Columbia zone's edge).
+  const byRaw = maps.filter(m => linksTo(m, w, others));
   if (byRaw.length) { const b = byRaw.find(okZone) ?? byRaw[0]; return { lat: b.lat, lon: b.lon, via: 'odfw', match: 'raw', about: b.about }; }
   // Then the same name in the right zone (Oregon has many Fish Lakes and Devils Lakes).
-  const mHit = maps.filter(m => keys.has(kindKey(m.name))).find(okZone);
+  const named = maps.filter(m => keys.has(kindKey(m.name)));
+  const mHit = named.find(c => zoneOk(w, c, true)) ?? named.find(okZone);
   if (mHit) return { lat: mHit.lat, lon: mHit.lon, via: 'odfw', match: 'name', about: mHit.about };
   // 2. USGS NHD names, in the right zone (Oregon has many Clear Lakes and Mud Lakes).
   let same = nhd.filter(c => keys.has(kindKey(c.name)) && (c.kind === 'stream') === flowing && okZone(c));
@@ -318,10 +342,10 @@ export function mentions(text, name) {
   const base = bare.replace(/^Lake\s+/i, '').replace(/\s+(Lake|Lakes|Reservoir|Pond|Ponds|River|Creek|Canal)$/i, '').trim();
   if (base.length < 4 || /^(north|south|east|west|upper|lower|middle|big|little|clear|mud|fish|blue|lost|long|round)$/i.test(base)) return false;
   // A name ending in its water word wants that word ("Malheur Reservoir" isn't "Malheur Lake"). Same as states/or.js.
-  const own = bare.match(/\s(Lake|Reservoir|Pond|River|Creek|Canal)$/i)?.[1]?.toLowerCase();
+  const own = bare.match(/\s(Lake|Reservoir|Pond|River|Creek|Canal)$/i)?.[1]?.toLowerCase() ?? (/^Lake\s/i.test(bare) ? 'lake' : null);
   const kind = own ? new RegExp(`\\b(${own}|${own}s${own === 'reservoir' ? '|res' : ''})\\b`, 'i')
     : KIND.find(([re]) => re.test(bare))?.[0] ?? /\b(lake|lakes|reservoir|res|pond|ponds|river|rivers|creek|creeks)\b/i;
-  const b = base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const b = base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\s+/g, '[\\s-]?'); // "Yellow Jacket" is also "Yellowjacket"
   // The name, then the kind of water within a few words ("Siltcoos and Tahkenitch lakes"), or "Lake Billy Chinook".
   return new RegExp(`\\b${b}\\b(?:[\\s,]+[\\w'’-]+){0,3}?[\\s,]+${kind.source.replace(/\\b/g, '')}\\b`, 'i').test(text) || (/^Lake /i.test(bare) && new RegExp(`\\blake\\s+${b}\\b`, 'i').test(text));
 }
@@ -345,12 +369,22 @@ async function buildWaters(rows, reports) {
   for (const [id, w] of old) if (!byWater.has(id)) byWater.set(id, { id, raw: w.raw, name: waterName(w.raw), zone: w.zone, office: w.office, weeks: [] });
   report.points = { nhd: nhd.length, odfwMaps: maps.length, via: {}, unmatched: [] };
   const waters = [];
+  // Each schedule water by its name key, so a placemark named for one water isn't taken for another.
+  const others = new Map([...byWater.values()].map(w => [kindKey(w.name), w.id]));
   for (const w of byWater.values()) {
     const prev = old.get(w.id);
     // Keep last night's ODFW point when it is ODFW's own link for the water or sits in the water's zone; otherwise
-    // pick again (early runs, before zones.json, pinned some waters on a same-named water elsewhere).
+    // pick again (early runs, before zones.json, pinned some waters on a same-named water elsewhere). A point from
+    // before picks were tagged (no match) is picked again once: some sat on another water in the right zone (Blue
+    // River Reservoir on Fairview's Blue Lake). A link pin is picked again whenever tonight's map links the water,
+    // so it is the same pick each night, and kept when the map didn't load.
     const prevOk = prev?.lat != null && (prev.match === 'raw' || zoneOk(w, prev));
-    const pt = prev?.via === 'odfw' && prevOk ? prev : await pickPoint(w, maps, nhd) ?? (prevOk ? prev : null);
+    const keep = prev?.via === 'odfw' && prevOk && (prev.match === 'name' || (prev.match === 'raw' && !maps.some(m => linksTo(m, w, others))));
+    const pt = keep ? prev : await pickPoint(w, maps, nhd, others) ?? (prevOk ? prev : null);
+    // Points the water had before tonight's move, so the app knows a saved lake still on one was saved from the list
+    // (and follows the move) rather than put there by hand.
+    const moved = prev?.lat != null && pt && (pt.lat !== prev.lat || pt.lon !== prev.lon);
+    const was = [...(moved ? [[prev.lat, prev.lon]] : []), ...(prev?.was ?? [])].slice(0, 5);
     if (!pt) report.points.unmatched.push(`${w.raw} → ${w.name} (${w.zone})`);
     report.points.via[pt?.via ?? 'none'] = (report.points.via[pt?.via ?? 'none'] ?? 0) + 1;
     const rep = reports.map(x => ({ ...x, lines: (x.items ?? []).filter(t => mentions(t, w.name)) })).find(x => x.lines.length && (sameZone(x.zone, w.zone) || /Columbia/.test(x.zone)));
@@ -359,7 +393,7 @@ async function buildWaters(rows, reports) {
     waters.push({
       id: w.id, raw: w.raw, name: w.name, type: isFlowing(w.name) ? 'River' : /Pond/.test(w.name) ? 'Pond' : 'Lake', zone: w.zone, office: w.office,
       counties: [w.zone && `${w.zone} Zone`, w.office].filter(Boolean).join(' · '), county: pt ? countyAt(pt.lat, pt.lon) : null,
-      lat: pt?.lat ?? null, lon: pt?.lon ?? null, via: pt?.via ?? null, ...(pt?.match && { match: pt.match }), acres: pt?.acres ?? (pt === prev ? prev?.acres : null) ?? null,
+      lat: pt?.lat ?? null, lon: pt?.lon ?? null, ...(was.length && { was }), via: pt?.via ?? null, ...(pt?.match && { match: pt.match }), acres: pt?.acres ?? (pt === prev ? prev?.acres : null) ?? null,
       about: pt?.about ?? (pt === prev ? prev?.about : null) ?? null,
       report: rep ? rep.lines.join('\n') : null, reportDate: rep?.date ?? null, reportUrl: rep?.url ?? null, url: scheduleLink(w.raw),
       lastYearStocked: years.at(-1) ?? prev?.lastYearStocked ?? null,
@@ -376,12 +410,23 @@ async function buildPlants(rows) {
   const key = p => `${p.stockId}|${p.week}|${p.species}`;
   // The first runs keyed plants by a lowercase slug (dropped), then by ODFW's raw spelling (converted).
   const tonight = new Set(rows.map(r => `${odfwId(r.raw)}|${r.week}`));
+  const idOf = o => /^[\w.:-]*$/.test(o.stockId) ? o.stockId : odfwId(o.stockId);
+  // A window is trusted to drop stockings only when it lists some of its own and misses no more than 2, or 20%, of
+  // what last night's file holds for its weeks, so one short answer from ODFW doesn't empty the app for a day while a
+  // move and a cancellation in a quiet month (8 stockings) still go.
+  const lastNight = ([from, to]) => [...new Set(old.filter(o => o.week >= from && o.week <= to).map(o => `${idOf(o)}|${o.week}`))];
+  const trusted = FETCHED.filter(w => {
+    const was = lastNight(w), missing = was.filter(k => !w[2].has(k)).length;
+    return !was.length || (w[2].size > 0 && missing <= Math.max(2, 0.2 * was.length));
+  });
+  // Only planned weeks (from a week ago on) are dropped; a past stocking stays in the history.
+  const since = new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10);
   let moved = 0;
   for (const o of old) {
     if (/^[a-z0-9-]+$/.test(o.stockId)) continue;
-    const p = /^[\w.:-]*$/.test(o.stockId) ? o : { ...o, stockId: odfwId(o.stockId) };
-    // In a window ODFW answered tonight, a stocking not on tonight's schedule was moved or cancelled.
-    if (!tonight.has(`${p.stockId}|${p.week}`) && FETCHED.some(([from, to]) => p.week >= from && p.week <= to)) { moved++; continue; }
+    const p = idOf(o) === o.stockId ? o : { ...o, stockId: idOf(o) };
+    // In a window ODFW answered tonight, a planned stocking not on tonight's schedule was moved or cancelled.
+    if (p.week >= since && !tonight.has(`${p.stockId}|${p.week}`) && trusted.some(([from, to]) => p.week >= from && p.week <= to)) { moved++; continue; }
     byKey.set(key(p), p);
   }
   let fresh = 0;
@@ -399,7 +444,7 @@ async function buildPlants(rows) {
   // ODFW plans a year ahead and moves weeks as it goes; keep the next 8 weeks, like the other states' schedules.
   const horizon = new Date(Date.now() + 56 * 864e5).toISOString().slice(0, 10);
   for (const [k, p] of byKey) if (p.week > horizon) byKey.delete(k);
-  report.plants = { total: byKey.size, new: fresh, kept: old.length, movedOrCancelled: moved };
+  report.plants = { total: byKey.size, new: fresh, kept: old.length, movedOrCancelled: moved, windowsTrusted: `${trusted.length} of ${FETCHED.length}` };
   return [...byKey.values()].sort((a, b) => b.week.localeCompare(a.week) || a.water.localeCompare(b.water));
 }
 

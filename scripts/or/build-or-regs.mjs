@@ -77,10 +77,20 @@ function aliases(title) {
   const t = title.replace(/\bIncludes?:/gi, ',').replace(/\s*\((?:[^)]*Co\.?|[^)]*County)\)/i, '').replace(/,\s*(mainstem|and tributaries|tributaries).*$/i, '').replace(/\s+and\s+(its\s+)?tributaries\b.*$/i, '');
   const both = t.match(/^(.+?) and (.+?) (Lake|Reservoir|Pond|Creek|River)s$/i);
   if (both) { out.add(`${both[1]} ${both[3]}`); out.add(`${both[2]} ${both[3]}`); }
+  // "Eagle Creek including East and West Forks" also names each fork.
+  const forks = t.match(/^(.+?\b(?:River|Creek))\s+including\s+((?:North|South|East|West|Middle)(?:(?:,\s*|\s+and\s+)(?:North|South|East|West|Middle))*)\s+Forks\b/i);
+  let head = null;
   for (let p of t.split(/,|;|\s+and\s+|\s+&\s+|\//)) {
     p = p.replace(/^\s*(from|to|between|upstream|downstream)\b.*$/i, '').replace(/\s*\(.*?\)\s*/g, ' ').replace(/\s+(downstream|upstream|above|below|from|within|except|including|to)\b.*$/i, '').replace(/^(the|all)\s+/i, '').trim();
-    if (p.length > 2 && WATERISH.test(p)) out.add(p);
+    // A fork is named with its river: "Willamette River ... Includes: Coast Fork" is the Coast Fork Willamette River,
+    // "Malheur River, North Fork Mouth to Beulah Reservoir" the North Fork Malheur River.
+    const fork = p.match(/^((?:(?:Little\s+)?(?:North|South|East|West|Middle|Coast) Fork\s*)+)/i)?.[1]?.trim();
+    if (head && fork && !WATERISH.test(p) && /\b(River|Creek)$/i.test(head)) p = `${fork} ${head}`;
+    if (p.length > 2 && WATERISH.test(p)) { out.add(p); head ??= p; }
   }
+  if (forks) for (const f of forks[2].split(/,\s*|\s+and\s+/)) out.add(`${f} Fork ${forks[1]}`);
+  // "Smith River, North Fork" is the fork alone, as is "Wilson River, Little North Fork".
+  if (head && /^[^,]+,\s*(Little\s+)?(North|South|East|West|Middle|Coast) Fork\b/i.test(t)) out.delete(head);
   // "Lake Billy Chinook" also goes by "Billy Chinook Lake" in some lists.
   for (const a of [...out]) { const m = a.match(/^Lake (.+)$/); if (m) out.add(`${m[1]} Lake`); }
   if (!out.size && t.length > 2) out.add(t.trim());
@@ -151,6 +161,62 @@ for (const zone of Object.keys(ZONES)) {
   if (old?.zones?.[zone]) { zones[zone] = old.zones[zone]; waters.push(...old.waters.filter(w => w.zone === zone)); }
 }
 if (!statewide.length && old?.statewide) statewide = old.statewide;
+
+// Where a heading's place note is ("Rainbow Lake (Charles Metzger County Park)", "Twin Lakes (Wallowa Mountains)",
+// "Crater Lake National Park"), so the app can tell same-named waters apart. OpenStreetMap Nominatim, one request a
+// second as its policy asks; last week's answers are kept.
+const placeOf = title => {
+  const m = title.match(/\(([^)]+)\)/)?.[1]?.replace(/^(.+?),\s*[^,]*\b(?:Co\.?|County)$/i, '$1');
+  if (m && !/\b(Co\.?|County)$/i.test(m) && !/^Mainstem\b/i.test(m)) return m;
+  return /\bNational Park$/i.test(title) ? title : null;
+};
+// Places OpenStreetMap has no point for, from USGS topo maps: the range's middle, and the hatchery at Enterprise.
+const FIXED = { 'Trout Creek Mountains': [42.2, -118.4], 'Wallowa Hatchery': [45.42, -117.3] };
+// The app places a basin by its river's labels and a lake by the map's lake, so those aren't looked up.
+const lookUp = q => !/\bbasin$/i.test(q) && !/\b(lake|lakes|reservoir|pond)$/i.test(q);
+// A point counts only in or near the rule's zone (within 30 km: "Twin Lakes (Wallowa Mountains)" is a Southeast Zone
+// rule), so "Spring Creek Pond (Maxwell Pond)" in the Willamette Zone doesn't take a Maxwell Pond in Wallowa County.
+let zoneShapes = [];
+try { zoneShapes = JSON.parse(await readFile(new URL('zones.json', OUT), 'utf8')).zones; } catch {}
+const inRing = ([x, y], ring) => { let c = false; for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) { const [xi, yi] = ring[i], [xj, yj] = ring[j]; if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) c = !c; } return c; };
+function nearZone([lat, lon], zone) {
+  const z = zoneShapes.filter(k => k.name.toLowerCase() === String(zone).replace(/\s*Zone$/i, '').toLowerCase());
+  if (!z.length) return true;
+  const k = Math.cos(lat * Math.PI / 180);
+  for (const { polys } of z) for (const [outer] of polys) {
+    if (inRing([lon, lat], outer)) return true;
+    for (let i = 0, j = outer.length - 1; i < outer.length; j = i++) {
+      const [ax, ay] = outer[j], [bx, by] = outer[i], dx = (bx - ax) * k, dy = by - ay, px = (lon - ax) * k, py = lat - ay;
+      const t = Math.max(0, Math.min(1, (px * dx + py * dy) / (dx * dx + dy * dy || 1)));
+      if (Math.hypot(px - t * dx, py - t * dy) * 111 <= 30) return true;
+    }
+  }
+  return false;
+}
+const known = new Map((old?.waters ?? []).filter(w => w.near).map(w => [w.name, w.near]));
+report.places = { lookedUp: 0, found: 0 };
+for (const w of waters) {
+  const q = placeOf(w.name);
+  if (!q) continue;
+  if (FIXED[q]) { w.near = FIXED[q]; continue; }
+  if (known.has(w.name) && nearZone(known.get(w.name), w.zone)) { w.near = known.get(w.name); continue; }
+  if (!lookUp(q)) continue;
+  if (report.places.lookedUp >= 60) break;
+  report.places.lookedUp++;
+  // OpenStreetMap often has a shorter name: "Charles Metzger County Park" is "Metzger Park".
+  const short = q.replace(/\b(County|State|City) (?=Park)/, '');
+  const tries = [q, short, ...(short !== q && short.split(' ').length > 2 ? [short.split(' ').slice(1).join(' ')] : [])];
+  for (const text of new Set(tries)) {
+    await new Promise(res => setTimeout(res, 1100));
+    try {
+      const params = new URLSearchParams({ q: `${text}, Oregon`, format: 'json', limit: '5', countrycodes: 'us', viewbox: '-124.75,46.3,-116.45,41.99', bounded: '1' });
+      const r = await fetch(`https://nominatim.openstreetmap.org/search?${params}`, { headers: { 'User-Agent': 'TackleBox-fishing-app (personal, github.com/mikegutberlet/FishingApp)' }, signal: AbortSignal.timeout(30000) });
+      const hit = r.ok ? (await r.json()).find(h => nearZone([+h.lat, +h.lon], w.zone)) : null;
+      if (hit) { w.near = [+(+hit.lat).toFixed(4), +(+hit.lon).toFixed(4)]; report.places.found++; break; }
+    } catch (e) { report.places.error = e.message; }
+  }
+  if (!w.near) (report.places.notFound ??= []).push(q);
+}
 if (report.kept?.length) { report.regsError = `kept last week's rules for ${report.kept.join(', ')}`; process.exitCode = 1; }
 if (waters.length) {
   await writeFile(new URL('regs.json', OUT), JSON.stringify({
