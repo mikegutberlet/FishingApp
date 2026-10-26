@@ -1,11 +1,13 @@
-name: Check access lookups (dev)
+name: Check access lookups
+# Runs the app's Getting there lookup against the live services for a few known waters and prints the result
+# (the services can't be reached from Claude's sandbox). Writes nothing.
 on:
   push:
     paths:
       - scripts/dev/check-access.mjs
       - access-lookup.js
       - access-rules.js
-      - .github/workflows/probe-access.yml
+      - .github/workflows/check-access.yml
 jobs:
   check:
     runs-on: ubuntu-latest

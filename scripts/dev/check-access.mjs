@@ -29,7 +29,7 @@ for (const w of WATERS) {
   console.log('features by source:', JSON.stringify(d.features.reduce((m, f) => (m[f.source.label.split(' ·')[0]] = (m[f.source.label.split(' ·')[0]] ?? 0) + 1, m), {})));
   console.log('VERDICT:', s.vehicle ? `${CLASS_TEXT[s.vehicle.cls].label} via ${s.vehicle.road.name} hike ${fmtMi(s.vehicle.hikeKm)} <${s.vehicle.road.source.url}>` : s.nearestUnknown ? `unknown road ${s.nearestUnknown.name}` : 'no road');
   console.log('hike:', s.hikeTrails.map(x => x.name).join(' | '));
-  console.log('bike:', s.bikeTrails.map(x => x.name).join(' | '), ' no-bike:', s.noBikeTrails.map(x => x.name).join(' | '));
+  console.log('bike:', s.bikeTrails.map(x => `${x.name} <${x.source.url}>`).join(' | '), ' no-bike:', s.noBikeTrails.map(x => x.name).join(' | '));
   console.log('moto:', [...s.motoTrails, ...s.ohvRoads].map(x => x.name).join(' | '), ' streetLegalOnly:', s.streetLegalOnly.map(x => x.name).join(' | '));
   console.log('seasonal:', s.seasonal.map(x => `${x.name} ${JSON.stringify(x.tags.dates)}`).join(' | '));
   console.log('gates:', s.lockedGates.map(x => `${x.tags.access} ${x.source.url}`).join(' | '));

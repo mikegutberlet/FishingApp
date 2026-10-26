@@ -22,13 +22,14 @@ export function distKmToLine(lat, lon, geom) {
 
 // How far the shoreline is likely to be from the water's map point: a lake's radius from its acres (lakes are seldom
 // round, so a little under), a river's point sits on the river.
-export const shoreKm = lake => lake.kind === 'river' || lake.lengthKm ? 0 : Math.sqrt((Number(lake.acres) || 20) * 0.004047 / Math.PI) * 0.9;
+export const shoreKm = lake => lake.kind === 'river' || lake.lengthKm ? 0 : Math.sqrt((Number(lake.acres) || 20) * 0.004047 / Math.PI) * 0.8;
 
 // The radius worth looking in: the shoreline plus 2 km of approach, at most 5 km. A spot picked on the shore of a
 // big lake is checked 2 km around.
 export const searchKm = lake => Math.min(5, shoreKm(lake) + 2);
-// A lake this big has roads at some shores and none at others, so one point in its middle says nothing: check a spot.
-export const isBig = lake => shoreKm(lake) > 3;
+// A lake this big (about 4,000 acres and up) has roads at some shores and none at others, and a long reservoir's
+// shore is nowhere near a circle, so one point in its middle says little: check a spot.
+export const isBig = lake => shoreKm(lake) > 2;
 
 const MI = 0.621371;
 export const fmtMi = km => km < 0.08 ? 'under 0.1 mi' : `${(km * MI).toFixed(km * MI < 1 ? 1 : km * MI < 10 ? 1 : 0)} mi`;
@@ -72,7 +73,8 @@ export function summarize(at, shore, features, { land = null } = {}) {
   // The closest road a car can take, else the closest any motor vehicle can, counting a road as "at the water" when
   // it comes within 400 m of the likely shoreline (a parking spot, a short path down the bank).
   const AT = 0.4;
-  const drivable = roads.filter(r => !['closed', 'unknown'].includes(r.cls));
+  // A freeway passing by is no way in: you can't stop on it.
+  const drivable = roads.filter(r => !['closed', 'unknown'].includes(r.cls) && !r.tags.noStop);
   const byClass = cls => drivable.filter(r => r.cls === cls);
   let vehicle = null;
   for (const cls of ['paved', 'road', 'car', 'highClearance', 'ohvOnly']) {
@@ -91,6 +93,8 @@ export function summarize(at, shore, features, { land = null } = {}) {
   const unknownOnly = !vehicle && roads.some(r => r.cls === 'unknown');
   const nearestUnknown = unknownOnly ? roads.find(r => r.cls === 'unknown') : null;
 
+  // The Pacific Crest Trail is closed to bikes and motor vehicles along its whole length (Forest Service closure order).
+  for (const t of trails) if (/pacific crest|\bpct\b/i.test(t.name ?? '')) Object.assign(t.tags, { bike: 'no', motorcycle: 'no', atv: 'no', pct: true });
   const allows = key => trails.filter(t => t.tags[key] === 'yes' || t.tags[key] === 'seasonal');
   const forbids = key => trails.filter(t => t.tags[key] === 'no');
   const ohvRoads = roads.filter(r => r.cls !== 'closed' && (r.tags.atv === 'yes' || r.tags.atv === 'seasonal' || r.tags.motorcycle === 'yes' || r.tags.motorcycle === 'seasonal'));

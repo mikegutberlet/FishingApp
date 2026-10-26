@@ -268,7 +268,7 @@ function osmFeature(e) {
       kind: 'road', name, ref: t.ref ?? null, paths: [geom],
       tags: {
         car, highClearance: closed ? 'no' : bare ? null : 'yes', atv: closed ? 'no' : ohv(t.atv), motorcycle: closed ? 'no' : ohv(t.motorcycle), foot: t.foot === 'no' ? 'no' : 'yes', bike: t.bicycle === 'no' ? 'no' : 'yes',
-        dates, closed, streetLegalOnly: false, surface: paved ? 'paved' : rough ? 'rough' : t.surface || grade ? 'gravel' : null, maint: null,
+        dates, closed, streetLegalOnly: false, surface: paved ? 'paved' : rough ? 'rough' : t.surface || grade ? 'gravel' : null, maint: null, noStop: /^motorway/.test(hw),
         designation: [hwName(hw), t.surface, t.tracktype, t.smoothness && `smoothness ${t.smoothness}`, t['4wd_only'] === 'yes' && '4WD only', motorAccess && motorAccess !== 'yes' && `access ${motorAccess}`, t.toll === 'yes' && 'toll'].filter(Boolean).join(' · '),
       },
       source: src,

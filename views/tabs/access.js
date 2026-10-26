@@ -104,14 +104,21 @@ function draw(lake, data, el) {
   const wild = (data.land?.parcels ?? []).find(isWilderness);
   const wildNote = wild ? ` The water is in the ${esc(wild.unit || 'a wilderness')}: no bikes or motor vehicles inside wilderness (<a href="${WILDERNESS_URL}" target="_blank" rel="noopener">Wilderness Act ↗</a>, ${srcs(wild)}).` : '';
   const chip = (icon, label, ok, note) => `<div class="gt-chip ${ok === true ? 'ok' : ok === false ? 'no' : ''}"><span>${icon}</span><div><b>${label}</b><div class="muted small">${note}</div></div></div>`;
-  const list = items => uniq(items).map(t => `${named(t)}${t.shoreKm > 0.08 ? ` <span class="muted">(${fmtMi(t.shoreKm)})</span>` : ''} ${srcs(t)}`).slice(0, 4).join(', ');
+  // Named routes first; unnamed ones are counted, not listed ("and 5 unnamed paths").
+const list = items => {
+  const named_ = uniq(items.filter(t => t.name)), unnamed = items.filter(t => !t.name).length;
+  const out = named_.slice(0, 4).map(t => `${named(t)}${t.shoreKm > 0.08 ? ` <span class="muted">(${fmtMi(t.shoreKm)})</span>` : ''} ${srcs(t)}`);
+  if (unnamed && out.length < 4) out.push(`${named_.length ? 'and ' : ''}${unnamed} unnamed ${items[0]?.kind === 'road' ? 'road' : 'path'}${unnamed > 1 ? 's' : ''}`);
+  return out.join(', ');
+};
   const chips = [
     chip(verdict?.icon ?? '🥾', v ? verdict.label : 'No drivable road found', v ? ['paved', 'road', 'car'].includes(v.cls) : null,
       v ? `${esc(v.road.name || 'unnamed road')}: ${verdict.text} ${v.road.tags.maint ? `Forest Service maintenance “${esc(v.road.tags.maint.toLowerCase())}”. ` : ''}${srcs(v.road)}` : s.nearestUnknown ? `${esc(s.nearestUnknown.name || 'A road')} reaches the water, type unknown. ${srcs(s.nearestUnknown)}` : 'Within the area checked.'),
     chip('🥾', walk ? `Hike about ${fmtMi(v.hikeKm)}` : v ? 'No hike needed' : 'Hike-in', walk ? null : v ? true : null,
       s.hikeTrails.length ? `Trails nearby: ${list(s.hikeTrails)}` : walk ? 'No mapped trail from the road: expect cross-country or an unmapped use trail.' : v ? 'The road reaches the shore.' : 'No road or trail reaches the shore in the records checked.'),
-    chip('🚵', wild && !s.bikeTrails.length ? 'No bikes: wilderness' : s.bikeTrails.length ? 'Mountain bike OK on some trails' : s.noBikeTrails.length ? 'Bikes not allowed on nearby trails' : 'Bike access not recorded', wild && !s.bikeTrails.length ? false : s.bikeTrails.length ? true : s.noBikeTrails.length ? false : null,
-      (s.bikeTrails.length ? list(s.bikeTrails) : s.noBikeTrails.length ? `No bikes: ${list(s.noBikeTrails)}` : 'A bike can use any road open to cars.') + wildNote),
+    chip('🚵', wild ? 'No bikes in the wilderness' : s.bikeTrails.length ? 'Mountain bike OK on some trails' : s.noBikeTrails.length ? 'Bikes not allowed on nearby trails' : 'Bike access not recorded', wild ? false : s.bikeTrails.length ? true : s.noBikeTrails.length ? false : null,
+      (s.bikeTrails.length ? `${wild ? 'Outside the wilderness boundary only: ' : ''}${list(s.bikeTrails)}` : s.noBikeTrails.length ? `No bikes: ${list(s.noBikeTrails)}` : 'A bike can use any road open to cars.') + wildNote
+      + (s.trails.some(t => t.tags.pct) ? ' The Pacific Crest Trail is closed to bikes along its whole length.' : '')),
     chip('🏍️', s.motoTrails.length || s.ohvRoads.length ? 'Motorcycle / ATV routes nearby' : s.streetLegalOnly.length ? 'Street-legal vehicles only' : 'No OHV routes recorded', s.motoTrails.length || s.ohvRoads.length ? true : s.streetLegalOnly.length ? false : null,
       (s.motoTrails.length || s.ohvRoads.length ? `${uniq([...s.motoTrails, ...s.ohvRoads]).slice(0, 4).map(t => `${named(t)}${t.tags.atv === 'no' ? ' (motorcycles only)' : ''} ${srcs(t)}`).join(', ')}` : s.streetLegalOnly.length ? `${list(s.streetLegalOnly)}: no green-sticker OHVs on these roads.` : 'Dirt bikes and ATVs need a route designated for them; none is recorded around this water.') + (s.motoTrails.length || s.ohvRoads.length ? '' : wildNote)),
   ];
