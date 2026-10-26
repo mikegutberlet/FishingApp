@@ -8,6 +8,7 @@ import { estimateWeight } from '../weight.js';
 import { activeTrip, openTrip, startTripFlow } from './trips.js';
 import { tackleLabel } from './tackle.js';
 import { showCatchWarnings } from './catch-warnings.js';
+import { openComposer } from '../crew.js';
 
 let editing = null; // the catch being edited, or null for a new one
 
@@ -97,7 +98,7 @@ export async function editCatch(id) {
   editing = c;
   const f = $('#catch-form');
   const local = new Date(Date.parse(c.time) - new Date(c.time).getTimezoneOffset() * 60e3).toISOString().slice(0, 16);
-  const vals = { lakeId: c.lakeId, species: c.species, time: local, length: toLen(c.length), weight: toWt(c.weight), depth: toDepth(c.depth), waterTemp: c.waterTemp,
+  const vals = { lakeId: c.lakeId, species: c.species, time: local, length: toLen(c.length), weight: toWt(c.weight), depth: toDepth(c.depth), waterTemp: c.waterTemp, clarity: c.clarity,
     tackleId: c.tackleId || '', lure: c.lure, technique: c.technique, notes: c.notes, lat: c.lat, lon: c.lon };
   for (const [k, v] of Object.entries(vals)) f[k].value = v ?? '';
   delete f.time.dataset.auto;
@@ -139,6 +140,7 @@ $('#catch-form').onsubmit = async e => {
       photo: base?.photo ?? null,
       moon: moonPhase(new Date(time)).name,
       tackleId: f.tackleId || null,
+      clarity: f.clarity || null,
     };
     if (form.photo.files[0]) record.photo = await shrinkPhoto(form.photo.files[0]).catch(() => (status("Couldn't read that photo"), record.photo));
     record.weightEst = record.weight == null ? estimateWeight(record.species, record.length) : null;
@@ -188,8 +190,9 @@ export async function renderCatchCards(catches, el, lakes) {
       <div class="small">${[c.lure, c.technique, c.depth != null && fmtDepth(c.depth), c.waterTemp != null && `water ${c.waterTemp}°F`].filter(Boolean).map(esc).join(' · ')}</div>
       ${cond ? `<div class="muted small">${Math.round(cond.airTemp)}°F · ${compass(cond.windDir)} ${Math.round(cond.wind)} mph · ${cond.pressureInHg}" ${cond.pressureTrend ?? ''} · ${esc(cond.sky)} · ${esc(c.moon)}</div>` : ''}
       ${c.notes ? `<div class="small" style="white-space:pre-wrap">${esc(c.notes)}</div>` : ''}
-      <a href="#" class="small" data-edit>edit</a> · <a href="#" class="small danger" data-del>delete</a></div>`;
+      <a href="#" class="small" data-edit>edit</a> · <a href="#" class="small" data-share>share</a> · <a href="#" class="small danger" data-del>delete</a></div>`;
     card.querySelector('[data-edit]').onclick = e => { e.preventDefault(); editCatch(c.id); };
+    card.querySelector('[data-share]').onclick = e => { e.preventDefault(); openComposer({ catches: [c.id] }); };
     card.querySelector('[data-trip]')?.addEventListener('click', e => { e.preventDefault(); openTrip(c.tripId); });
     card.querySelector('[data-del]').onclick = async e => {
       e.preventDefault();

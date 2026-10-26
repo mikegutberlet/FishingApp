@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-23T20:43:00.271Z",
+  "startedAt": "2026-10-23T18:45:43.899Z",
   "items": [
     {
       "id": "5e3b0af2e4b0edb47bddad2e",
@@ -184,8 +184,6 @@
     "USGS Topo Map Vector Data (Vector) 1165 Antelope Reservoir OR (published 20241129) GeoPackage [no topic]"
   ],
   "saved": [],
-  "hydrolakes": {
-    "rows": 629
-  },
-  "finishedAt": "2026-10-23T20:43:42.432Z"
+  "hydrolakesError": "terminated",
+  "finishedAt": "2026-10-23T18:46:27.806Z"
 }
