@@ -1,16 +1,18 @@
-name: Probe access sources (dev)
+name: Check access lookups (dev)
 on:
   push:
     paths:
-      - scripts/dev/probe-access.mjs
+      - scripts/dev/check-access.mjs
+      - access-lookup.js
+      - access-rules.js
       - .github/workflows/probe-access.yml
 jobs:
-  probe:
+  check:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: node scripts/dev/probe-access.mjs
+      - run: node --experimental-detect-module scripts/dev/check-access.mjs

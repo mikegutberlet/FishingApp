@@ -24,8 +24,11 @@ export function distKmToLine(lat, lon, geom) {
 // round, so a little under), a river's point sits on the river.
 export const shoreKm = lake => lake.kind === 'river' || lake.lengthKm ? 0 : Math.sqrt((Number(lake.acres) || 20) * 0.004047 / Math.PI) * 0.9;
 
-// The radius worth looking in: the shoreline plus 2 km of approach, at most 6 km.
-export const searchKm = lake => Math.min(6, shoreKm(lake) + 2);
+// The radius worth looking in: the shoreline plus 2 km of approach, at most 5 km. A spot picked on the shore of a
+// big lake is checked 2 km around.
+export const searchKm = lake => Math.min(5, shoreKm(lake) + 2);
+// A lake this big has roads at some shores and none at others, so one point in its middle says nothing: check a spot.
+export const isBig = lake => shoreKm(lake) > 3;
 
 const MI = 0.621371;
 export const fmtMi = km => km < 0.08 ? 'under 0.1 mi' : `${(km * MI).toFixed(km * MI < 1 ? 1 : km * MI < 10 ? 1 : 0)} mi`;
@@ -37,7 +40,7 @@ export const fmtMi = km => km < 0.08 ? 'under 0.1 mi' : `${(km * MI).toFixed(km 
 // Which vehicle can reach a road segment, in order from easiest. null when the record says nothing about it.
 export function roadClass(t) {
   if (t.closed) return 'closed';
-  if (t.car === 'yes' || t.car === 'seasonal') return t.surface === 'paved' ? 'paved' : 'car';
+  if (t.car === 'yes' || t.car === 'seasonal') return t.surface === 'paved' ? 'paved' : t.surface ? 'car' : 'road';
   if (t.highClearance === 'yes' || t.highClearance === 'seasonal') return 'highClearance';
   if (t.car === 'no' && (t.atv || t.motorcycle)) return 'ohvOnly';
   if (t.car === null && t.highClearance === null) return t.surface === 'paved' ? 'paved' : t.surface === 'rough' ? 'highClearance' : 'unknown';
@@ -46,20 +49,22 @@ export function roadClass(t) {
 
 export const CLASS_TEXT = {
   paved: { icon: '🚗', label: 'Paved road', text: 'Any car.' },
+  road: { icon: '🚗', label: 'Road open to cars', text: 'Surface not recorded: could be paved or dirt.' },
   car: { icon: '🚙', label: 'Dirt or gravel road, passenger cars OK', text: 'Graded for passenger cars; expect dust and washboard.' },
   highClearance: { icon: '🛻', label: 'High-clearance vehicle', text: 'Not maintained for passenger cars: truck, SUV or 4WD.' },
   ohvOnly: { icon: '🏍️', label: 'OHV route only', text: 'Open to ATVs or motorcycles, not to full-size vehicles.' },
   unknown: { icon: '🛣️', label: 'Road, surface unknown', text: 'The map records don’t say what it takes to drive it.' },
   closed: { icon: '🚫', label: 'Closed to public motor vehicles', text: 'Gated, private or decommissioned.' },
 };
-const ORDER = ['paved', 'car', 'highClearance', 'ohvOnly', 'unknown', 'closed'];
+const ORDER = ['paved', 'road', 'car', 'highClearance', 'ohvOnly', 'unknown', 'closed'];
 
 // ---------- The summary ----------
 // What it takes to reach this water: the easiest vehicle that gets within reach of the shore, how far you then
-// walk, and what the trails and routes nearby allow. `features` are the normalised records, `lake` gives the point.
-export function summarize(lake, features, { land = null } = {}) {
-  const shore = shoreKm(lake);
-  const withDist = features.map(f => ({ ...f, distKm: f.geom?.length ? distKmToLine(lake.lat, lake.lon, f.geom) : f.lat != null ? distKmToLine(lake.lat, lake.lon, [[f.lat, f.lon]]) : Infinity }))
+// walk, and what the trails and routes nearby allow. `features` are the normalised records (each with `paths`, a
+// list of polylines, or a point), `at` is the point checked and `shore` how far the shoreline likely is from it.
+export function summarize(at, shore, features, { land = null } = {}) {
+  const near = f => f.paths?.length ? Math.min(...f.paths.map(p => distKmToLine(at.lat, at.lon, p))) : f.lat != null ? distKmToLine(at.lat, at.lon, [[f.lat, f.lon]]) : Infinity;
+  const withDist = features.map(f => ({ ...f, distKm: near(f) }))
     .map(f => ({ ...f, shoreKm: Math.max(0, f.distKm - shore) })).sort((a, b) => a.shoreKm - b.shoreKm);
   const roads = withDist.filter(f => f.kind === 'road').map(f => ({ ...f, cls: roadClass(f.tags) }));
   const trails = withDist.filter(f => f.kind === 'trail');
@@ -70,7 +75,7 @@ export function summarize(lake, features, { land = null } = {}) {
   const drivable = roads.filter(r => !['closed', 'unknown'].includes(r.cls));
   const byClass = cls => drivable.filter(r => r.cls === cls);
   let vehicle = null;
-  for (const cls of ['paved', 'car', 'highClearance', 'ohvOnly']) {
+  for (const cls of ['paved', 'road', 'car', 'highClearance', 'ohvOnly']) {
     const at = byClass(cls).find(r => r.shoreKm <= AT);
     if (at) { vehicle = { cls, road: at, hikeKm: 0 }; break; }
   }
@@ -93,7 +98,7 @@ export function summarize(lake, features, { land = null } = {}) {
   const lockedGates = gates.filter(g => g.tags.locked);
 
   return {
-    shoreKm: shore, vehicle, nearestUnknown,
+    at, shoreKm: shore, vehicle, nearestUnknown,
     hikeTrails: allows('foot').slice(0, 6), bikeTrails: allows('bike').slice(0, 6), noBikeTrails: forbids('bike').slice(0, 3),
     motoTrails: [...allows('motorcycle'), ...allows('atv')].filter((t, i, a) => a.indexOf(t) === i).slice(0, 6),
     ohvRoads: ohvRoads.slice(0, 6), streetLegalOnly: streetLegalOnly.slice(0, 4), seasonal: seasonal.slice(0, 6), lockedGates: lockedGates.slice(0, 4),

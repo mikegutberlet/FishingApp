@@ -14,6 +14,7 @@ import { renderLakeCatches } from './tabs/catches.js';
 import { renderNotes } from './tabs/notes.js';
 import { renderCrew } from './tabs/crew.js';
 import { renderInfo } from './tabs/info.js';
+import { renderGettingThere } from './tabs/access.js';
 import { renderStateSafety, renderNvBanner } from './tabs/nv-safety.js';
 import { renderOrBanner } from './tabs/or-safety.js';
 import { renderSafety, renderSafetyBanner } from './tabs/safety.js';
@@ -52,12 +53,13 @@ export const LAKE_TABS = {
   history: { label: 'History', render: renderHistory },
   catches: { label: 'Catches', render: renderLakeCatches },
   notes: { label: 'Notes', render: renderNotes },
+  access: { label: 'Getting there', render: renderGettingThere },
   safety: { label: 'Regs & safety', render: (l, b) => forLake(l)?.code === 'CA' ? renderSafety(l, b) : renderStateSafety(l, b) },
   crew: { label: 'Crew', render: renderCrew },
   info: { label: 'Info', render: renderInfo },
 };
 // Tabs on a water you haven't saved yet (only the ones that work without your own data).
-export const WATER_TABS = ['conditions', 'stocking', 'depth', 'history', 'safety', 'info'];
+export const WATER_TABS = ['conditions', 'stocking', 'depth', 'history', 'access', 'safety', 'info'];
 
 export async function openLake(id, tab = 'conditions') {
   const lake = typeof id === 'object' ? id : await db.get('lakes', id);
