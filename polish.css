@@ -126,3 +126,20 @@ nav button.active .ic { stroke-width: 2.2; }
 .map-actions button .ic { color: var(--accent); }
 .lake-acts button { display: inline-flex; align-items: center; justify-content: center; }
 .lake-acts button .ic { margin-right: 6px; }
+
+/* Log a catch: one-tap species, the less-used fields folded away, Save always in reach. */
+.pick-chips { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; margin: -4px 0 12px; }
+.pick-chips::-webkit-scrollbar { display: none; }
+.pick-chips:empty { display: none; }
+.pick-chips button { flex-shrink: 0; border-radius: 999px; min-height: 34px; padding: 4px 12px; font-size: 14px; white-space: nowrap; }
+.form label.check.released { color: var(--text); font-size: 15px; margin: -2px 0 14px; }
+.form input[type=file]::file-selector-button { border: 0; border-radius: 8px; background: var(--card); color: var(--text); padding: 6px 12px; margin-right: 10px; font: inherit; box-shadow: var(--shadow); }
+details.more { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; }
+details.more > summary .muted { font-weight: 400; }
+details.more > summary { font-weight: 600; list-style: none; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+details.more > summary::-webkit-details-marker { display: none; }
+details.more > summary::before { content: '›'; display: inline-block; transition: transform .15s; color: var(--accent); font-size: 18px; }
+details.more[open] > summary::before { transform: rotate(90deg); }
+details.more[open] > summary { margin-bottom: 10px; }
+.save-bar { position: sticky; bottom: 8px; z-index: 3; box-shadow: 0 4px 14px rgba(15,110,140,.35); }
+body:has(#trip-pill:not(.hidden)) .save-bar { bottom: 56px; } /* clear the trip-in-progress pill */

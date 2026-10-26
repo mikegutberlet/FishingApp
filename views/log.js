@@ -39,10 +39,27 @@ export async function renderCatchForm() {
   $('#btn-start-trip').textContent = trip ? '● Trip in progress: open trip mode' : '▶ Trip mode: one-tap logging with GPS track';
   const catches = (await db.all('catches')).sort((a, b) => b.time.localeCompare(a.time));
   renderCatchCards(catches.slice(0, 20), $('#catch-list'), lakes);
+  renderSpeciesChips(catches);
   $('#lure-list').innerHTML = [...new Set([...tackle.map(tackleLabel), ...catches.map(c => c.lure)].filter(Boolean))].map(l => `<option value="${esc(l)}">`).join('');
   showEstimate();
   showCatchWarnings(form, editing?.id);
 }
+
+// One-tap species: the ones you catch most, or a few common ones before your first catch.
+function renderSpeciesChips(catches) {
+  const n = {};
+  for (const c of catches) if (c.species) n[c.species] = (n[c.species] ?? 0) + 1;
+  const top = Object.keys(n).sort((a, b) => n[b] - n[a]).slice(0, 6);
+  const picks = top.length ? top : ['Rainbow trout', 'Largemouth bass', 'Smallmouth bass', 'Striped bass', 'Channel catfish', 'Crappie'];
+  $('#species-chips').innerHTML = picks.map(s => `<button type="button" data-species="${esc(s)}">${esc(s)}</button>`).join('');
+}
+$('#species-chips').onclick = e => {
+  const s = e.target.closest('[data-species]')?.dataset.species;
+  if (!s) return;
+  const f = $('#catch-form');
+  f.species.value = s;
+  f.species.dispatchEvent(new Event('input', { bubbles: true }));
+};
 
 $('#btn-gps').onclick = () => locate().then(p => { const f = $('#catch-form'); f.lat.value = p.lat.toFixed(6); f.lon.value = p.lon.toFixed(6); }).catch(e => status(e.message));
 $('#btn-start-trip').onclick = async () => { const t = await activeTrip(); t ? openTrip(t.id) : startTripFlow(); };
@@ -88,6 +105,7 @@ function resetForm() {
   form.reset(); form.lakeId.value = lakeId; form.time.value = localNow(); form.time.dataset.auto = '1';
   $('#catch-form-title').textContent = 'Log a catch';
   $('#btn-cancel-edit').classList.add('hidden');
+  $('#more-details').open = false;
 }
 
 // Opens the full form on an existing catch, e.g. to add details to a one-tap trip catch.
@@ -104,6 +122,7 @@ export async function editCatch(id) {
   delete f.time.dataset.auto;
   f.time.dataset.loaded = local; // the field has minute precision; an unchanged field keeps the stored time
   f.released.checked = !!c.released;
+  $('#more-details').open = [c.depth, c.waterTemp, c.clarity, c.technique].some(v => v != null && v !== '');
   $('#catch-form-title').textContent = 'Edit catch';
   $('#btn-cancel-edit').classList.remove('hidden');
   showEstimate();
