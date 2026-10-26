@@ -124,3 +124,8 @@ details table { margin-top: 8px; }
 .gt-season { color: #b7791f; }
 .gt-row > span:first-child { min-width: 0; }
 button[data-gt-map] { margin-top: 10px; }
+.gt-profile { width: 100%; height: 70px; display: block; margin: 4px 0 2px; }
+.gt-profile .fill { fill: rgba(214,158,46,.25); } .gt-profile .line { fill: none; stroke: #d69e2e; stroke-width: 2; vector-effect: non-scaling-stroke; }
+.gt-profile-axis { justify-content: space-between; }
+.gt-note-row { display: flex; gap: 8px; margin-top: 3px; } .gt-note-row > span:first-child { width: 20px; flex: none; }
+.gt-note-photo { width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 6px; }

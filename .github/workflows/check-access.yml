@@ -7,6 +7,7 @@ on:
       - scripts/dev/check-access.mjs
       - access-lookup.js
       - access-rules.js
+      - access-now.js
       - .github/workflows/check-access.yml
 jobs:
   check:

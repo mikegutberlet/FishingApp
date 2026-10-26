@@ -43,7 +43,7 @@ async function renderTimeline(body, limitDays = 30) {
   const items = [
     ...trips.map(t => ({ time: t.start, trip: t })),
     ...catches.filter(c => !inTrip.has(c.tripId)).map(c => ({ time: c.time, c })),
-    ...notes.map(n => ({ time: n.createdAt, n })),
+    ...notes.filter(n => n.kind !== 'access').map(n => ({ time: n.createdAt, n })),
   ].filter(x => typeof x.time === 'string').sort((a, b) => b.time.localeCompare(a.time));
   const days = [...new Set(items.map(x => dayKey(x.time)))];
   const fishIn = t => catches.filter(c => c.tripId === t.id);
