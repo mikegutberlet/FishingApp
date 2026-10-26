@@ -151,11 +151,11 @@ export const FOREST_ALERTS = {
   'klamath': `${R5}/klamath/alerts`, 'lassen': `${R5}/lassen/alerts`, 'los padres': `${R5}/lospadres/alerts`, 'mendocino': `${R5}/mendocino/alerts`,
   'modoc': `${R5}/modoc/alerts`, 'plumas': `${R5}/plumas/alerts`, 'san bernardino': `${R5}/sanbernardino/alerts`, 'sequoia': `${R5}/sequoia/alerts`,
   'shasta-trinity': `${R5}/shasta-trinity/alerts`, 'sierra': `${R5}/sierra/alerts`, 'six rivers': `${R5}/sixrivers/alerts`, 'stanislaus': `${R5}/stanislaus/alerts`,
-  'tahoe': `${R5}/tahoe/alerts`, 'lake tahoe basin': `${R5}/ltbmu/alerts`,
-  'deschutes': `${R6}/deschutes/alerts`, 'fremont-winema': `${R6}/fremont-winema/alerts`, 'malheur': `${R6}/malheur/alerts`, 'mt. hood': `${R6}/mthood/alerts`,
-  'mount hood': `${R6}/mthood/alerts`, 'ochoco': `${R6}/ochoco/alerts`, 'rogue river-siskiyou': `${R6}/rogue-siskiyou/alerts`, 'siuslaw': `${R6}/siuslaw/alerts`,
-  'umatilla': `${R6}/umatilla/alerts`, 'umpqua': `${R6}/umpqua/alerts`, 'wallowa-whitman': `${R6}/wallowa-whitman/alerts`, 'willamette': `${R6}/willamette/alerts`,
-  'columbia river gorge': `${R6}/crgnsa/alerts`, 'humboldt-toiyabe': `${R4}/htnf/alerts`,
+  'tahoe': `${R5}/tahoe/alerts`, 'lake tahoe basin': `${R5}/laketahoebasin/alerts`, 'shasta': `${R5}/shasta-trinity/alerts`, 'trinity': `${R5}/shasta-trinity/alerts`,
+  'deschutes': `${R6}/deschutes/alerts`, 'malheur': `${R6}/malheur/alerts`, 'mt. hood': `${R6}/mthood/alerts`,
+  'mount hood': `${R6}/mthood/alerts`, 'ochoco': `${R6}/ochoco/alerts`, 'rogue river': `${R6}/rogue-siskiyou/alerts`, 'siskiyou': `${R6}/rogue-siskiyou/alerts`, 'siuslaw': `${R6}/siuslaw/alerts`,
+  'umatilla': `${R6}/umatilla/alerts`, 'umpqua': `${R6}/umpqua/alerts`, 'wallowa': `${R6}/wallowa-whitman/alerts`, 'whitman': `${R6}/wallowa-whitman/alerts`, 'fremont': `${R6}/fremont-winema/alerts`, 'winema': `${R6}/fremont-winema/alerts`, 'willamette': `${R6}/willamette/alerts`,
+  'columbia river gorge': `${R6}/columbiarivergorge/alerts`, 'humboldt': `${R4}/humboldt-toiyabe/alerts`, 'toiyabe': `${R4}/humboldt-toiyabe/alerts`,
 };
 export function forestAlerts(name) {
   const n = String(name ?? '').toLowerCase();

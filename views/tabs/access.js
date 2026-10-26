@@ -286,13 +286,13 @@ function paintNow(el, ctx) {
     else parts.push(`<div class="gt-chip ${snow.level === 'none' ? 'ok' : snow.level === 'coming' ? '' : 'no'}"><span>${icon}</span><div><b>${head}</b><div class="small">${say}</div><div class="muted small">${where}.${snow.station && snow.model?.next?.length && snow.weekIn >= 1 ? ` Forecast snowfall this week: ${Math.round(snow.weekIn)} in ${src(snow.model.source)}.` : ''}</div></div></div>`);
   }
   const fires = now.fires ?? [];
-  const forest = (ctx.data?.land?.parcels ?? []).find(p => p.manager === 'USFS');
+  const forest = (ctx.data?.land?.parcels ?? []).find(p => p.manager === 'USFS' && forestAlerts(p.unit));
   const alerts = forest && forestAlerts(forest.unit);
   if (fires.length) {
-    const close = fires.filter(f => !f.rx && (f.inside || f.distKm <= 16));
+    const close = fires.filter(f => !f.rx && (f.inside || (f.distKm <= 16 && (f.contained ?? 0) < 100)));
     const fireLine = f => `<div class="small" style="margin-top:4px"><b>${esc(f.name)}${f.rx ? ' (prescribed burn)' : ''}</b>: ${f.inside ? '<b>the water is inside its perimeter</b>' : `${fmtMi(f.distKm)} away${f.perimeter ? ' (to its edge)' : ''}`}${f.acres ? ` · ${Math.round(f.acres).toLocaleString()} acres` : ''}${f.contained != null ? ` · ${f.contained}% contained` : ''}${f.updated ? ` · updated ${fmtDate(f.updated)}` : ''}
       ${f.inciweb ? `<a href="${esc(f.inciweb)}" target="_blank" rel="noopener">InciWeb ↗</a>` : ''} ${src(f.source)}</div>`;
-    parts.push(`<div class="gt-chip ${close.length ? 'no' : ''}"><span>🔥</span><div><b>${close.some(f => f.inside) ? 'Fire at this water' : close.length ? 'Fire nearby' : fires.every(f => f.rx) ? 'Prescribed burn nearby' : 'Fires in the area'}</b>
+    parts.push(`<div class="gt-chip ${close.length ? 'no' : ''}"><span>🔥</span><div><b>${close.some(f => f.inside) ? 'Fire at this water' : close.length ? 'Fire nearby' : fires.every(f => f.rx) ? 'Prescribed burn nearby' : fires.every(f => f.rx || f.contained >= 100) ? 'Contained fires nearby' : 'Fires in the area'}</b>
       ${fires.map(fireLine).join('')}
       <div class="muted small" style="margin-top:4px">Fires and their burn areas often close roads, trails and whole forest areas, sometimes for months after they’re out.${alerts ? ` <a href="${alerts}" target="_blank" rel="noopener">${esc(forest.unit)} closure orders ↗</a>` : ''}${forLake(ctx.lake)?.code === 'CA' ? `${alerts ? ' ·' : ''} <a href="https://www.fire.ca.gov/incidents" target="_blank" rel="noopener">CAL FIRE incidents ↗</a>` : ''}</div></div></div>`);
   } else if (now.fires) parts.push(`<p class="small muted">🔥 No active fire or prescribed burn reported within 30 miles${alerts ? ` · <a href="${alerts}" target="_blank" rel="noopener">${esc(forest.unit)} alerts and closures ↗</a>` : ''}.</p>`);

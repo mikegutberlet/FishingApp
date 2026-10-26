@@ -190,7 +190,8 @@ export function hikeRoute(s) {
   };
   const link = (i, j) => { const d = Math.hypot(pts[i].x - pts[j].x, pts[i].y - pts[j].y); adj[i].push([j, d]); adj[j].push([i, d]); };
   const walkable = [...s.roads.filter(r => !r.tags.noStop && r.tags.foot !== 'no'), ...s.trails.filter(t => t.tags.foot !== 'no')];
-  const drive = f => f.kind === 'road' && !['closed', 'unknown'].includes(f.cls) && rank(f.cls) <= rank(v.cls);
+  // Any road a car can take counts as a start, and so does anything no rougher than what the verdict picked.
+  const drive = f => f.kind === 'road' && !['closed', 'unknown'].includes(f.cls) && !f.tags.noStop && rank(f.cls) <= Math.max(rank(v.cls), rank('car'));
   const start = new Map(), ends = [];
   for (const f of walkable) {
     for (const path of f.paths ?? []) {
@@ -204,11 +205,12 @@ export function hikeRoute(s) {
       if (f.kind === 'trail') ends.push(prev - path.length + 1, prev);
     }
   }
-  // A trail that ends beside a road, between the road's mapped points, starts there too.
+  // A trail that ends beside a road, between the road's mapped points or across a trailhead car park (car parks
+  // aren't fetched), starts there too.
   const drivePaths = walkable.filter(drive).flatMap(f => f.paths ?? []);
   for (const i of ends) {
     const d = Math.min(...drivePaths.map(p => distKmToLine(pts[i].p[0], pts[i].p[1], p)));
-    if (d <= 0.03 && !start.has(i)) start.set(i, d);
+    if (d <= 0.08 && !start.has(i)) start.set(i, d);
   }
   // Join nearby vertices of different lines (a trail ending at a road, a USFS line beside the OSM one).
   for (let i = 0; i < pts.length; i++) {

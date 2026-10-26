@@ -40,6 +40,17 @@ for (const w of WATERS) {
   console.log('trails:'); for (const r of s.trails.slice(0, 6)) console.log('  ' + line(r));
   const h = d.hike;
   console.log('WALK:', h ? `${h.crow ? 'straight line' : 'route'} ${fmtMi(h.km)} from ${h.start.road} (${h.start.lat},${h.start.lon}) via ${h.trails.map(t => t.name).join(' > ')}${h.stats ? `; ${fmtFt(h.stats.upM)} up ${fmtFt(h.stats.downM)} down, ${fmtMins(h.stats.minIn)} in / ${fmtMins(h.stats.minOut)} out, ${fmtFt(h.stats.minM)}-${fmtFt(h.stats.maxM)}` : h.profileFailed ? '; elevation failed' : ''}` : 'none');
+  if (h?.crow) {
+    // Why no mapped way in: how close each trail near the shore comes to a road you can drive.
+    const { distKmToLine } = await import('../../access-rules.js');
+    const drivable = s.roads.filter(r => !['closed', 'unknown'].includes(r.cls) && !r.tags.noStop);
+    for (const t of s.trails.filter(t => t.shoreKm < 0.3).slice(0, 8)) {
+      const ends = t.paths.flatMap(p => [p[0], p.at(-1)]);
+      const d = Math.min(...ends.flatMap(e => drivable.flatMap(r => r.paths.map(p => distKmToLine(e[0], e[1], p)))));
+      const near = Math.min(...t.paths.flat().flatMap(e => s.trails.filter(o => o !== t).flatMap(o => o.paths.map(p => distKmToLine(e[0], e[1], p)))));
+      console.log(`  trail ${t.name} ${t.source.label}: ${t.paths.length} paths, ${t.paths.flat().length} pts, end->drivable ${(d * 1000).toFixed(0)} m, nearest other trail ${(near * 1000).toFixed(0)} m`);
+    }
+  }
   console.log('masts:', s.masts.map(m => `${fmtMi(m.distKm)} ${m.tags.operator ?? '?'} <${m.source.url}>`).join(' | ') || 'none');
   const t2 = Date.now();
   const n = await lookupNow(d.lat, d.lon, { elevFt: w.spot ? null : w.elevationFt ?? null });
@@ -51,7 +62,10 @@ for (const w of WATERS) {
 
 // Each forest's alerts page the Today card links to: does it exist?
 console.log('\n================ Forest alerts pages');
-for (const [k, u] of Object.entries(FOREST_ALERTS)) {
+const tried = new Set();
+for (const [k, u] of [...Object.entries(FOREST_ALERTS), ...['r06/crgnsa', 'r06/columbiagorge', 'r04/htnf', 'r04/humboldttoiyabe'].map(x => [x, `https://www.fs.usda.gov/${x}/alerts`])]) {
+  if (tried.has(u)) continue;
+  tried.add(u);
   const r = await fetch(u, { method: 'GET', redirect: 'follow' }).catch(e => ({ status: e.message }));
   console.log(`${r.status} ${k} ${u}${r.url && r.url !== u ? ` -> ${r.url}` : ''}`);
 }
