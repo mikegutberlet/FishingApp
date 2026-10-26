@@ -1,7 +1,7 @@
 // One water's page: a saved lake with all its tabs, or a statewide water you can look at before saving it.
 import { db } from '../db.js';
 import { forLake } from '../states/index.js';
-import { $, esc, showView } from '../ui.js';
+import { $, esc, showView, fitTabs, icon } from '../ui.js';
 import { map, refreshMap } from '../map.js';
 import { renderLakeList, editLake } from './lakes.js';
 import { shareLake } from './settings.js';
@@ -61,6 +61,13 @@ export const LAKE_TABS = {
 // Tabs on a water you haven't saved yet (only the ones that work without your own data).
 export const WATER_TABS = ['conditions', 'stocking', 'depth', 'history', 'access', 'safety', 'info'];
 
+// One line under the name: what it is, where, and how big. Inside the h2 so safety banners still land right after the title block.
+const lakeSummary = l => {
+  const bits = [l.type, l.county && `${l.county}${l.state ? ', ' + l.state : ''}`, +l.acres && `${(+l.acres).toLocaleString()} acres`,
+    l.lengthKm && `${Math.round(l.lengthKm * 0.621)} mi`, l.maxDepth && `${l.maxDepth} ft deep`].filter(Boolean);
+  return bits.length ? `<small>${bits.map(esc).join(' · ')}</small>` : '';
+};
+
 export async function openLake(id, tab = 'conditions') {
   const lake = typeof id === 'object' ? id : await db.get('lakes', id);
   if (lake.unsaved) return openUnsaved(lake, tab);
@@ -68,17 +75,19 @@ export async function openLake(id, tab = 'conditions') {
   $('#lake-list').classList.add('hidden');
   const d = $('#lake-detail');
   d.classList.remove('hidden');
-  d.innerHTML = `<button id="back">‹ All waters</button> <button id="edit">Edit</button> <button id="center">Map</button> <button id="share">Share</button> <button id="fav" title="${lake.favorite ? 'On your Today screen' : 'Add to your Today screen'}">${lake.favorite ? '★' : '☆'}</button>
-    <h2>${esc(lake.name)}</h2>
-    <div class="tabs">${Object.entries(LAKE_TABS).map(([k, t]) => `<button data-tab="${k}" class="${k === tab ? 'active' : ''}">${t.label}</button>`).join('')}</div>
+  d.innerHTML = `<div class="lake-bar"><button id="back" class="ghost">‹ All waters</button><button id="fav" title="${lake.favorite ? 'On your Today screen' : 'Add to your Today screen'}">${lake.favorite ? '★' : '☆'}</button></div>
+    <h2 class="lake-name">${esc(lake.name)}${lakeSummary(lake)}</h2>
+    <div class="lake-acts"><button id="edit">${icon('edit')}Edit</button><button id="center">${icon('map')}Map</button><button id="share">${icon('share')}Share</button></div>
+    <div class="lake-tabs"><div class="tabs">${Object.entries(LAKE_TABS).map(([k, t]) => `<button data-tab="${k}" class="${k === tab ? 'active' : ''}">${t.label}</button>`).join('')}</div></div>
     <div id="tab-body"></div>`;
   $('#back', d).onclick = renderLakeList;
   $('#edit').onclick = () => editLake(lake);
   $('#center').onclick = () => { showView('map'); map.setView([lake.lat, lake.lon], 14); };
   $('#share').onclick = () => shareLake(lake);
   $('#fav').onclick = () => toggleFavorite(lake, $('#fav'));
-  $('#share').after(' ', offlineButton(lake));
+  $('#share').after(offlineButton(lake));
   d.querySelectorAll('.tabs button').forEach(b => b.onclick = () => openLake(id, b.dataset.tab));
+  fitTabs($('.tabs', d));
   const body = $('#tab-body');
   if (forLake(lake)?.code === 'CA') renderSafetyBanner(lake, d); else { renderNvBanner(lake, d); renderOrBanner(lake, d); }
   await LAKE_TABS[tab].render(lake, body);
@@ -89,14 +98,16 @@ function openUnsaved(lake, tab) {
   $('#lake-list').classList.add('hidden');
   const d = $('#lake-detail');
   d.classList.remove('hidden');
-  d.innerHTML = `<button id="back">‹ Map</button> <button id="save" class="primary" style="width:auto;padding:8px 12px">＋ Save to my lakes</button>
-    <h2>${esc(lake.name)}</h2><div class="muted small">${esc(lake.type)}${lake.acres ? ` · ${lake.acres.toLocaleString()} acres` : ''}${lake.lengthKm ? ` · ${Math.round(lake.lengthKm * 0.621)} mi` : ''}${lake.maxDepth ? ` · max depth ${lake.maxDepth} ft` : ''}</div>
-    <div class="tabs">${WATER_TABS.map(k => `<button data-tab="${k}" class="${k === tab ? 'active' : ''}">${LAKE_TABS[k].label}</button>`).join('')}</div>
+  d.innerHTML = `<div class="lake-bar"><button id="back" class="ghost">‹ Map</button></div>
+    <h2 class="lake-name">${esc(lake.name)}${lakeSummary(lake)}</h2>
+    <div class="lake-acts"><button id="save" class="primary">${icon('plus')}Save to my lakes</button></div>
+    <div class="lake-tabs"><div class="tabs">${WATER_TABS.map(k => `<button data-tab="${k}" class="${k === tab ? 'active' : ''}">${LAKE_TABS[k].label}</button>`).join('')}</div></div>
     <div id="tab-body"></div>`;
   $('#back', d).onclick = () => showView('map');
   $('#save').onclick = () => saveWater(lake, tab);
-  $('#save').after(' ', offlineButton(lake));
+  $('#save').after(offlineButton(lake));
   d.querySelectorAll('.tabs button').forEach(b => b.onclick = () => openUnsaved(lake, b.dataset.tab));
+  fitTabs($('.tabs', d));
   if (forLake(lake)?.code === 'CA') renderSafetyBanner(lake, d); else { renderNvBanner(lake, d); renderOrBanner(lake, d); }
   LAKE_TABS[tab].render(lake, $('#tab-body'));
 }

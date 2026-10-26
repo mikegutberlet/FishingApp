@@ -1,7 +1,7 @@
 // The Journal view: start a trip, a timeline of trips, catches and notes, personal bests, your tackle box,
 // and adding old catches from photos.
 import { db } from '../db.js';
-import { $, esc, fmtDate, onShow } from '../ui.js';
+import { $, esc, fmtDate, onShow, emptyState, fitTabs } from '../ui.js';
 import { fmtLen } from '../units.js';
 import { activeTrip, openTrip, startTripFlow, newEntry, closeStale } from './trips.js';
 import { editCatch, weightText } from './log.js';
@@ -9,8 +9,9 @@ import { openLake } from './lake.js';
 import { renderBests } from './bests.js';
 import { renderTackle } from './tackle.js';
 import { renderBackfill } from './backfill.js';
+import { renderStats } from './stats.js';
 
-const SECTIONS = { timeline: 'Timeline', bests: 'Bests', tackle: 'Tackle box', photos: 'Photos' };
+const SECTIONS = { timeline: 'Timeline', stats: 'Stats', bests: 'Bests', tackle: 'Tackle box', photos: 'Photos' };
 let section = 'timeline';
 
 export async function renderJournal(which = section) {
@@ -22,8 +23,10 @@ export async function renderJournal(which = section) {
     <div id="j-body"></div>`;
   $('#j-trip', el).onclick = () => trip ? openTrip(trip.id) : startTripFlow();
   el.querySelectorAll('[data-sec]').forEach(b => b.onclick = () => renderJournal(b.dataset.sec));
+  fitTabs($('.tabs', el));
   const body = $('#j-body', el);
   if (section === 'timeline') return renderTimeline(body);
+  if (section === 'stats') { body.innerHTML = '<div id="stats"></div>'; return renderStats(); }
   if (section === 'bests') return renderBests(body);
   if (section === 'tackle') return renderTackle(body);
   renderBackfill(body);
@@ -62,7 +65,7 @@ async function renderTimeline(body, limitDays = 30) {
   };
   body.innerHTML = `<button id="j-new" style="width:100%;margin-bottom:12px">＋ Journal entry for a past day</button>`
     + (days.length ? days.slice(0, limitDays).map(d => `<h2>${fmtDate(d + 'T12:00')}</h2>${items.filter(x => dayKey(x.time) === d).map(card).join('')}`).join('')
-      : '<div class="card muted">Your trips, catches and notes show up here, newest first.</div>')
+      : emptyState('📓', 'Your trips, catches and notes show up here, newest first.', ['🐟 Log a catch', 'log']))
     + (days.length > limitDays ? '<button id="j-more" style="width:100%">Show older</button>' : '');
   $('#j-new', body).onclick = newEntry;
   $('#j-more', body)?.addEventListener('click', () => renderTimeline(body, limitDays + 30));

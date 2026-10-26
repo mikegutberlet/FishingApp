@@ -1,7 +1,7 @@
 // The Lakes view: your saved waters, statewide search, the state stocked-waters finder (CDFW, NDOW, ODFW), and the lake editor.
 import { db } from '../db.js';
 import { STATES, list as stateList, selected, select, stateAt } from '../states/index.js';
-import { $, esc, fmtDate, status, showView, onShow } from '../ui.js';
+import { $, esc, fmtDate, status, showView, onShow, emptyState } from '../ui.js';
 import { refreshMap, locate } from '../map.js';
 import { openLake, openWater } from './lake.js';
 import { showNewPlantBadges } from './new-plants.js';
@@ -16,8 +16,8 @@ export async function renderLakeList() {
   const lakes = (await db.all('lakes')).sort((a, b) => a.name.localeCompare(b.name));
   const S = selected(lakes);
   list.innerHTML = `<h2>Lakes & rivers</h2><label class="state-pick small">State <select id="state-pick">${stateList.map(s => `<option value="${s.code}" ${s === S ? 'selected' : ''}>${s.name}</option>`).join('')}<option value="here">📍 Where I am</option></select></label>
-    <div class="row" style="margin-bottom:12px"><button id="find-any" style="flex:1">🔎 Any ${S.name} water</button><button id="find-waters" style="flex:1">🐟 Stocked waters</button></div>`
-    + (lakes.length ? '' : `<div class="card muted">No waters yet. Find one above, or use “＋ Lake here” on the map.</div>`)
+    <div class="row" style="margin-bottom:12px"><button id="find-any" style="flex:1">🔎 All waters</button><button id="find-waters" style="flex:1">🐟 Stocked waters</button></div>`
+    + (lakes.length ? '' : emptyState('🏞️', `No saved waters yet. Search all ${esc(S.name)} waters or the stocked ones above, or tap “＋ Lake here” on the map.`))
     + lakes.map(l => `<div class="card lake-item" data-id="${l.id}"><div><b>${esc(l.name)}</b> <span data-new-plants="${l.id}"></span><div class="muted small">${esc(l.type)}${l.county ? ' · ' + esc(l.county) : ''}${l.state ? ', ' + esc(l.state) : ''}</div></div><span>›</span></div>`).join('');
   list.querySelectorAll('.lake-item').forEach(el => el.onclick = () => openLake(el.dataset.id));
   $('#find-waters').onclick = () => renderFindWaters(S);

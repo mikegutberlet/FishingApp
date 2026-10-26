@@ -3,7 +3,7 @@
 // sw.js answers tile and data requests from any cache before going to the network.
 import { db } from './db.js';
 import { forLake } from './states/index.js';
-import { $, esc, fmtDate, status, showView, onShow } from './ui.js';
+import { $, esc, fmtDate, status, showView, onShow, icon } from './ui.js';
 import { map, baseLayers } from './map.js';
 
 const PREFIX = 'offline-';
@@ -190,7 +190,7 @@ export async function offlineDialog(lake) {
     const more = left.length ? ` Plus ${left.length.toLocaleString()} tiles the last download didn't finish, about ${Math.max(1, Math.round(left.length * AVG_KB.Satellite / 1024))} MB.` : '';
     $('#off-go', dlg).disabled = tooBig;
     $('#off-est', dlg).innerHTML = p.tooBig ? 'That area is too big to save. Zoom the map in on the part you fish and choose <b>What the map shows now</b>.'
-      : tooBig ? `That's too much at once with the ${left.length.toLocaleString()} tiles the last download didn't finish. Delete this lake under Data → Offline maps and start again, or choose a smaller area.`
+      : tooBig ? `That's too much at once with the ${left.length.toLocaleString()} tiles the last download didn't finish. Delete this lake under the ⚙️ gear → Offline maps and start again, or choose a smaller area.`
       : `About ${p.tiles.toLocaleString()} map tiles, roughly ${Math.max(1, Math.round(p.mb))} MB, zoom ${p.zMin}–${p.zMax}.${p.capped ? ' Big area, so the closest zoom levels are left out.' : ''}${more}`;
   };
   form.onchange = estimate;
@@ -233,7 +233,7 @@ export async function offlineDialog(lake) {
 // A button for the water's page header.
 export function offlineButton(lake) {
   const b = document.createElement('button');
-  b.textContent = '⬇ Offline';
+  b.innerHTML = `${icon('download')}Offline`;
   b.onclick = async () => { b.disabled = true; try { await offlineDialog(lake); } finally { b.disabled = false; } }; // one sheet per tap
   return b;
 }
