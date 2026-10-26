@@ -1,7 +1,7 @@
-lakes: 504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/12/query?where=GNIS_NAME+IS+NOT+NULL+AND+FTYPE+IN+%28390%2C436%29+AND+AREASQKM+%3E%3D+0.008&outFields=PERMANENT_IDENTIFIER%2CGNIS_ID%2C
+lakes: 502 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/12/query?where=GNIS_NAME+IS+NOT+NULL+AND+FTYPE+IN+%28390%2C436%29+AND+AREASQKM+%3E%3D+0.008&outFields=PERMANENT_IDENTIFIER%2CGNIS_ID%2C
 rivers: 504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?where=GNIS_NAME+IS+NOT+NULL+AND+%28GNIS_NAME+LIKE+%27%25+River%25%27+OR+GNIS_NAME+LIKE+%27%25+Creek%25%27+OR+GNIS_NAME+LIKE+%27
 {
-  "startedAt": "2026-10-26T18:05:45.035Z",
+  "startedAt": "2026-10-26T18:50:45.784Z",
   "steps": {
     "nhdLayers": [
       {
@@ -57,8 +57,8 @@ rivers: 504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/q
         "name": "Waterbody - Large Scale"
       }
     ],
-    "lakesError": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/12/query?where=GNIS_NAME+IS+NOT+NULL+AND+FTYPE+IN+%28390%2C436%29+AND+AREASQKM+%3E%3D+0.008&outFields=PERMANENT_IDENTIFIER%2CGNIS_ID%2C",
+    "lakesError": "502 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/12/query?where=GNIS_NAME+IS+NOT+NULL+AND+FTYPE+IN+%28390%2C436%29+AND+AREASQKM+%3E%3D+0.008&outFields=PERMANENT_IDENTIFIER%2CGNIS_ID%2C",
     "riversError": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?where=GNIS_NAME+IS+NOT+NULL+AND+%28GNIS_NAME+LIKE+%27%25+River%25%27+OR+GNIS_NAME+LIKE+%27%25+Creek%25%27+OR+GNIS_NAME+LIKE+%27"
   },
-  "finishedAt": "2026-10-26T18:09:17.039Z"
+  "finishedAt": "2026-10-26T18:55:08.413Z"
 }
