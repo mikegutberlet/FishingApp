@@ -32,6 +32,7 @@
       <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
       <symbol id="i-locate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></symbol>
       <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
       <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
       <symbol id="i-edit" viewBox="0 0 24 24"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></symbol>
       <symbol id="i-share" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/></symbol>
@@ -51,6 +52,12 @@
 
     <section id="view-map" class="view">
       <div id="map"></div>
+      <div class="map-top">
+        <div class="map-search"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg><input id="map-search" type="search" placeholder="Find a lake or river" autocomplete="off" enterkeyhint="search"><button type="button" id="map-search-clear" class="ghost" aria-label="Clear">✕</button></div>
+        <div id="map-results" class="map-results hidden"></div>
+        <div id="map-chips" class="map-chips"><button type="button" data-chip="base">Satellite</button><button type="button" data-chip="stocked">🐟 Stocked</button><button type="button" data-chip="names">Names</button></div>
+      </div>
+      <div id="water-sheet" class="water-sheet hidden"></div>
       <div class="map-actions">
         <button id="btn-locate"><svg class="ic" aria-hidden="true"><use href="#i-locate"/></svg><span>Me</span></button>
         <button id="btn-waypoint"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg><span>Mark</span></button>
