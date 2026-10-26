@@ -8,7 +8,6 @@ header { background: linear-gradient(120deg, var(--brand), var(--brand-2)); box-
 header h1 { font-size: 19px; letter-spacing: .2px; }
 nav { box-shadow: 0 -1px 8px rgba(16,40,52,.06); }
 nav button { position: relative; transition: color .15s; }
-nav button:not(.active) { filter: grayscale(.55); opacity: .8; }
 nav button.active::after { content: ''; position: absolute; top: 0; left: 22%; right: 22%; height: 3px; border-radius: 0 0 3px 3px; background: var(--accent); }
 nav button.active span { font-weight: 600; }
 
@@ -87,3 +86,60 @@ input[type=checkbox], input[type=radio] { accent-color: var(--accent); }
 /* Lakes list header: state picker and the two finders side by side, same height. */
 .state-pick select { padding: 8px 10px; }
 #lake-list .row button { align-self: stretch; }
+
+/* Five tabs in the bottom nav; settings and your data sit behind the gear in the header. */
+header { gap: 10px; }
+header #status { margin-left: auto; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.head-btn { background: none; border: 0; color: #fff; font-size: 20px; min-height: 0; width: 40px; height: 40px; padding: 0; margin-right: -8px; border-radius: 50%; flex-shrink: 0; }
+.head-btn.active { background: rgba(255,255,255,.18); }
+.view-title { font-size: 22px; margin-top: 4px; }
+
+/* Today: one card per favorite water, a sky-colored header, swipe between waters. */
+.today-lake { padding: 0; overflow: hidden; }
+.today-lake .today-grid { padding: 10px 12px 12px; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); }
+.today-lake .today-grid:empty { display: none; }
+.hero { color: #fff; padding: 12px 14px 14px; background: linear-gradient(135deg, #1d7fb3, #39a7d6); }
+.hero.sky-cloud { background: linear-gradient(135deg, #4d6577, #7d95a6); }
+.hero.sky-rain { background: linear-gradient(135deg, #2c3e50, #4c6a85); }
+.hero.sky-night { background: linear-gradient(135deg, #0b1d33, #1f3b63); }
+.hero .today-title { margin-bottom: 4px; font-size: 17px; }
+.hero .today-title > span:last-child { opacity: .8; font-size: 20px; }
+.hero-now { display: flex; align-items: center; gap: 12px; }
+.hero-temp { font-size: 46px; font-weight: 300; line-height: 1; font-variant-numeric: tabular-nums; }
+.hero-sky { font-weight: 600; }
+.hero-wind { font-size: 13px; opacity: .92; }
+.hero .chip { background: rgba(255,255,255,.9); }
+.today-carousel.multi { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin: 0 -16px; padding: 0 16px 4px; scroll-padding: 0 16px; }
+.today-carousel.multi::-webkit-scrollbar { display: none; }
+.today-carousel.multi > .today-lake { flex: 0 0 88%; scroll-snap-align: start; margin-bottom: 8px; }
+.dots-row { display: flex; justify-content: center; gap: 6px; margin: 2px 0 6px; }
+.dots-row i { width: 7px; height: 7px; border-radius: 50%; background: var(--line); }
+.dots-row i.on { background: var(--accent); }
+
+/* Line icons */
+.ic { width: 1.15em; height: 1.15em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vertical-align: -.2em; flex-shrink: 0; }
+button > .ic:first-child { margin-right: 6px; }
+nav button .ic { width: 24px; height: 24px; margin: 0; stroke-width: 1.8; }
+nav button.active .ic { stroke-width: 2.2; }
+.head-btn .ic { width: 22px; height: 22px; margin: 0; }
+.map-actions button { display: flex; align-items: center; justify-content: center; }
+.map-actions button .ic { color: var(--accent); }
+.lake-acts button { display: inline-flex; align-items: center; justify-content: center; }
+.lake-acts button .ic { margin-right: 6px; }
+
+/* Log a catch: one-tap species, the less-used fields folded away, Save always in reach. */
+.pick-chips { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; margin: -4px 0 12px; }
+.pick-chips::-webkit-scrollbar { display: none; }
+.pick-chips:empty { display: none; }
+.pick-chips button { flex-shrink: 0; border-radius: 999px; min-height: 34px; padding: 4px 12px; font-size: 14px; white-space: nowrap; }
+.form label.check.released { color: var(--text); font-size: 15px; margin: -2px 0 14px; }
+.form input[type=file]::file-selector-button { border: 0; border-radius: 8px; background: var(--card); color: var(--text); padding: 6px 12px; margin-right: 10px; font: inherit; box-shadow: var(--shadow); }
+details.more { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; }
+details.more > summary .muted { font-weight: 400; }
+details.more > summary { font-weight: 600; list-style: none; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+details.more > summary::-webkit-details-marker { display: none; }
+details.more > summary::before { content: '›'; display: inline-block; transition: transform .15s; color: var(--accent); font-size: 18px; }
+details.more[open] > summary::before { transform: rotate(90deg); }
+details.more[open] > summary { margin-bottom: 10px; }
+.save-bar { position: sticky; bottom: 8px; z-index: 3; box-shadow: 0 4px 14px rgba(15,110,140,.35); }
+body:has(#trip-pill:not(.hidden)) .save-bar { bottom: 56px; } /* clear the trip-in-progress pill */

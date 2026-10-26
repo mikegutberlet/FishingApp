@@ -39,7 +39,7 @@ It is a PWA: open it once in Safari/Chrome, choose **Add to Home Screen**, and i
 * **Personal bests and life list**: every species you've caught, when and where first, longest and heaviest, overall and per water. A blank weight is estimated from length with standard-weight formulas for the species (shown with ≈).
 * **Tackle box**: your lures and baits with photos; pick one on the catch form and see how many fish each has caught.
 * **From photos**: pick old fish photos and Tackle Box reads the date and GPS on the device, matches the water (yours or any California water), and makes draft catches to confirm.
-* **Units**: inches or cm, pounds or kg, feet or meters (Data view). Records are stored in inches, pounds and feet.
+* **Units**: inches or cm, pounds or kg, feet or meters (⚙️ gear, top right). Records are stored in inches, pounds and feet.
 
 ## Water data and safety
 
@@ -53,9 +53,9 @@ It is a PWA: open it once in Safari/Chrome, choose **Add to Home Screen**, and i
 
 ## Insights, privacy and sharing
 
-* **Days like today** (Stats, and the Today screen): every catch is scored by how much its day resembles today (date in the season, pressure trend, air temp, wind, moon, time of day, same water), and the card says which species, lures, depths, hours and waters produced on the most similar days. Computed on the device.
-* **Stats**: catch rate (fish per hour) from trips, by water and by hour of day; catches by lure color and water clarity (a new optional field on the catch form), with the best color for each clarity; and a **Year in review** page.
-* **App lock** (Data view): a 4–8 digit passcode, plus Face ID / Touch ID / fingerprint through the phone's own authenticator (WebAuthn, no server). Locks on open and after a chosen time in the background. It guards the screens; files that leave the phone should use the encrypted backup.
+* **Days like today** (Journal → Stats, and the Today screen): every catch is scored by how much its day resembles today (date in the season, pressure trend, air temp, wind, moon, time of day, same water), and the card says which species, lures, depths, hours and waters produced on the most similar days. Computed on the device.
+* **Stats** (a section of the Journal): catch rate (fish per hour) from trips, by water and by hour of day; catches by lure color and water clarity (a new optional field on the catch form), with the best color for each clarity; and a **Year in review** page.
+* **App lock** (⚙️ gear, top right): a 4–8 digit passcode, plus Face ID / Touch ID / fingerprint through the phone's own authenticator (WebAuthn, no server). Locks on open and after a chosen time in the background. It guards the screens; files that leave the phone should use the encrypted backup.
 * **Encrypted backup**: the whole backup locked with a password (AES-256-GCM, key from PBKDF2-SHA256 with 600,000 rounds), saved through the share sheet (Save to Files → iCloud Drive, or Drive) or a folder you pick on a computer. Optional reminder when the last backup is older than a week, two weeks or a month. Plain JSON backups still import as before.
 * **Crew sharing**: pick catches or a spot and send them as a file (AirDrop, Messages, email) or a QR code, optionally protected by a passphrase. The QR code holds the whole share in the link's `#` fragment, which browsers never send to the website. Shared photos are redrawn so camera and GPS data are gone, and catches leave out the exact spot unless you tick it. Friends' catches go to a separate Crew list (the water's **Crew** tab and the *Crew* map layer), never into your own stats.
 * **License and report cards**: store your CDFW license and report-card dates; the app reminds you 30 days ahead and can make a calendar file with alerts.
@@ -166,7 +166,7 @@ ODFW writes waters in short form ("HENRY HAGG LK", "SILVER CR RES"); the job spe
 * **iPhone**: open the link in Safari → Share → *Add to Home Screen*.
 * **Android**: open the link in Chrome → ⋮ → *Install app*.
 
-The Data tab shows the right steps for the phone you're on.
+The ⚙️ gear (top right) shows the right steps for the phone you're on.
 
 ## Privacy model
 

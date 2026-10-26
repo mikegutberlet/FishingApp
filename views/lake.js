@@ -1,7 +1,7 @@
 // One water's page: a saved lake with all its tabs, or a statewide water you can look at before saving it.
 import { db } from '../db.js';
 import { forLake } from '../states/index.js';
-import { $, esc, showView, fitTabs } from '../ui.js';
+import { $, esc, showView, fitTabs, icon } from '../ui.js';
 import { map, refreshMap } from '../map.js';
 import { renderLakeList, editLake } from './lakes.js';
 import { shareLake } from './settings.js';
@@ -77,7 +77,7 @@ export async function openLake(id, tab = 'conditions') {
   d.classList.remove('hidden');
   d.innerHTML = `<div class="lake-bar"><button id="back" class="ghost">‹ All waters</button><button id="fav" title="${lake.favorite ? 'On your Today screen' : 'Add to your Today screen'}">${lake.favorite ? '★' : '☆'}</button></div>
     <h2 class="lake-name">${esc(lake.name)}${lakeSummary(lake)}</h2>
-    <div class="lake-acts"><button id="edit">✎ Edit</button><button id="center">🗺 Map</button><button id="share">↗ Share</button></div>
+    <div class="lake-acts"><button id="edit">${icon('edit')}Edit</button><button id="center">${icon('map')}Map</button><button id="share">${icon('share')}Share</button></div>
     <div class="lake-tabs"><div class="tabs">${Object.entries(LAKE_TABS).map(([k, t]) => `<button data-tab="${k}" class="${k === tab ? 'active' : ''}">${t.label}</button>`).join('')}</div></div>
     <div id="tab-body"></div>`;
   $('#back', d).onclick = renderLakeList;
@@ -100,7 +100,7 @@ function openUnsaved(lake, tab) {
   d.classList.remove('hidden');
   d.innerHTML = `<div class="lake-bar"><button id="back" class="ghost">‹ Map</button></div>
     <h2 class="lake-name">${esc(lake.name)}${lakeSummary(lake)}</h2>
-    <div class="lake-acts"><button id="save" class="primary">＋ Save to my lakes</button></div>
+    <div class="lake-acts"><button id="save" class="primary">${icon('plus')}Save to my lakes</button></div>
     <div class="lake-tabs"><div class="tabs">${WATER_TABS.map(k => `<button data-tab="${k}" class="${k === tab ? 'active' : ''}">${LAKE_TABS[k].label}</button>`).join('')}</div></div>
     <div id="tab-body"></div>`;
   $('#back', d).onclick = () => showView('map');
