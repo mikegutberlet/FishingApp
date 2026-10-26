@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-26T18:31:04.580Z",
+  "startedAt": "2026-10-26T19:30:20.538Z",
   "ndow": {
     "waters": 551
   },
@@ -69,7 +69,7 @@
       "Galena Canyon Creek (Eastern, Creek or Stream)",
       "Dawley Canyon (Eastern, Creek or Stream)"
     ],
-    "geocoderCalls": 1
+    "geocoderCalls": 0
   },
   "plants": {
     "total": 1698,
