@@ -39,7 +39,9 @@ export function parseProfile(text, { meters = false, celsius = false } = {}) {
     return out;
   };
   const decimal = l => /[\s:=]/.test(l) && /\d,\d/.test(l) ? pairs(l.replace(/(\d),(\d)/g, '$1.$2')) : null;
-  const parsed = lines.map(l => meters || celsius ? decimal(l) ?? pairs(l) : pairs(l) ?? decimal(l));
+  // In metric or °C, a line that reads both ways with several pairs ("0 22,1 22,2 21") is ambiguous, so it goes back.
+  const metric = l => { const d = decimal(l), p = pairs(l); return d && p && d.length > 1 ? null : d ?? p; };
+  const parsed = lines.map(l => meters || celsius ? metric(l) : pairs(l) ?? decimal(l));
   return { readings: parsed.filter(Boolean).flat().sort((a, b) => a[0] - b[0]), bad: lines.filter((_, i) => !parsed[i]) };
 }
 

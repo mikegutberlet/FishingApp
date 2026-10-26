@@ -29,9 +29,10 @@ export const packId = lake => PREFIX + (lake.nhdId ? `nhd-${lake.nhdId}` : lake.
 
 // The area to save: the lake's size as a circle (lakes are rarely round, so generously) and its USGS survey, widened
 // to take in what you've logged on the water. A logged point counts when it is within ~3 km of that, or within ~3 km
-// of another point that counts, so a stretch of river or an arm you logged along is taken in link by link. A point
-// away from the rest (a catch logged from home, a stray GPS fix) is left out, so it neither shrinks the zoom range
-// nor sends tile requests around a private spot.
+// of another point that counts, so a stretch of river or an arm you logged along is taken in link by link. Depth
+// scans were taken on the water, so a stretch scanned away from the water's label point starts a chain of its own.
+// A point away from the rest (a catch logged from home, a stray GPS fix) is left out, so it neither shrinks the zoom
+// range nor sends tile requests around a private spot.
 async function lakeBounds(lake) {
   const river = lake.kind === 'river' || !!lake.lengthKm;
   const km = river ? 3 : Math.max(0.8, Math.sqrt((lake.acres ?? 40) * 0.004047 / Math.PI) * 2.2);
@@ -41,13 +42,25 @@ async function lakeBounds(lake) {
   const b = L.latLngBounds(core.getSouthWest(), core.getNorthEast());
   const pts = [];
   if (!lake.unsaved) {
-    for (const set of await db.byLake('depthSets', lake.id)) for (let i = 0; i < set.points.length; i += 50) pts.push(set.points[i]);
-    for (const store of ['catches', 'waypoints', 'notes']) for (const r of await db.byLake(store, lake.id)) if (r.lat != null) pts.push([r.lat, r.lon]);
+    for (const set of await db.byLake('depthSets', lake.id)) for (let i = 0; i < set.points.length; i += 50) pts.push([set.points[i]?.[0], set.points[i]?.[1], true]);
+    for (const store of ['catches', 'waypoints', 'notes']) for (const r of await db.byLake(store, lake.id)) if (r.lat != null) pts.push([r.lat, r.lon, false]);
   }
-  const ok = pts.map(p => [+p?.[0], +p?.[1]]).filter(([lat, lon]) => Number.isFinite(lat) && Number.isFinite(lon) && Math.abs(lat) <= 90 && Math.abs(lon) <= 180);
+  // One point per ~100 m spot, so a season of scans over the same water stays a few hundred points.
+  const seen = new Set(), ok = [];
+  for (const [la, lo, sonar] of pts) {
+    const lat = +la, lon = +lo, key = `${lat.toFixed(3)},${lon.toFixed(3)}`;
+    if (!Number.isFinite(lat) || !Number.isFinite(lon) || Math.abs(lat) > 90 || Math.abs(lon) > 180 || seen.has(key)) continue;
+    seen.add(key); ok.push(Object.assign([lat, lon], { sonar }));
+  }
   const kept = ok.filter(p => near.contains(p));
   const far = ok.filter(p => !near.contains(p) && here.distanceTo(p) <= (river ? 25000 : km * 2000 + 5000));
-  for (let i = 0; i < kept.length && far.length; i++) for (let j = far.length - 1; j >= 0; j--) if (L.latLng(kept[i]).distanceTo(far[j]) <= 3000) kept.push(...far.splice(j, 1));
+  const scans = far.filter(p => p.sonar);
+  if (scans.length) {
+    const mid = i => scans.map(p => p[i]).sort((x, y) => x - y)[scans.length >> 1];
+    const scanned = L.latLng(mid(0), mid(1)).toBounds(10000);
+    for (let j = far.length - 1; j >= 0; j--) if (far[j].sonar && scanned.contains(far[j])) kept.push(...far.splice(j, 1));
+  }
+  for (let i = 0; i < kept.length && far.length; i++) { const a = L.latLng(kept[i]); for (let j = far.length - 1; j >= 0; j--) if (a.distanceTo(far[j]) <= 3000) kept.push(...far.splice(j, 1)); }
   for (const p of kept) b.extend(p);
   return b.pad(0.05);
 }
@@ -96,14 +109,14 @@ async function download(cache, urls, onProgress, signal, checkpoint) {
     while (queue.length && !signal.aborted) {
       const url = queue.shift();
       try {
-        const have = !url.startsWith('data/') && await cache.match(url); // tiles don't change; the state data does
+        const old = await cache.match(url), have = !url.startsWith('data/') && old; // tiles don't change; the state data does
         if (!have || have.type === 'opaque') {
           // #offline tells sw.js to pass it straight through instead of keeping a second copy in its own caches.
           const r = await fetch(`${url}#offline`, { mode: 'cors', signal });
           if (!r.ok) throw new Error(r.status);
           const blob = await r.blob();
           await cache.put(url, new Response(blob, { headers: { 'content-type': r.headers.get('content-type') || blob.type, 'content-length': String(blob.size) } }));
-          bytes += blob.size;
+          bytes += blob.size - (+old?.headers.get('content-length') || 0); // a re-fetched data file replaces its old copy
         }
       } catch { /* counted as missing below */ }
       onProgress(++done, urls.length);
@@ -221,7 +234,7 @@ export async function offlineDialog(lake) {
 export function offlineButton(lake) {
   const b = document.createElement('button');
   b.textContent = '⬇ Offline';
-  b.onclick = () => offlineDialog(lake);
+  b.onclick = async () => { b.disabled = true; try { await offlineDialog(lake); } finally { b.disabled = false; } }; // one sheet per tap
   return b;
 }
 

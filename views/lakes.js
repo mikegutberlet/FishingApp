@@ -143,7 +143,8 @@ export function editLake(lake) {
     for (const s of ['catches', 'notes', 'stocking', 'depthSets', 'trips', 'waypoints', 'tempProfiles', 'crew']) for (const r of await db.byLake(s, lake.id)) await db.del(s, r.id);
     for (const ev of await db.all('events')) if (ev.lakeId === lake.id) await db.del('events', ev.id);
     refreshWaypoints();
-    if ('caches' in window) await deletePack(packId(lake));
+    // Two saved copies of one water (a friend's shared file of a lake you have) share its offline map.
+    if ('caches' in window && !(await db.all('lakes')).some(l => l.id !== lake.id && packId(l) === packId(lake))) await deletePack(packId(lake));
     await db.del('lakes', lake.id);
     await refreshMap();
     renderLakeList();
