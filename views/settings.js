@@ -1,4 +1,4 @@
-// The Data view: backup and restore, sharing a lake with friends, install help, storage use.
+// Settings & data (the ⚙️ gear in the header): backup and restore, sharing a lake with friends, install help, storage use.
 import { db, importAll } from '../db.js';
 import { $, status, onShow } from '../ui.js';
 import { refreshMap } from '../map.js';
@@ -15,7 +15,7 @@ export async function shareLake(lake) {
     waypoints: includeNotes ? await db.byLake('waypoints', lake.id) : [] };
   const file = new File([JSON.stringify(pack)], `${lake.name.replace(/[^\w-]+/g, '-')}.tacklebox.json`, { type: 'application/json' });
   if (navigator.canShare?.({ files: [file] })) {
-    try { await navigator.share({ files: [file], title: lake.name, text: `${lake.name} for Tackle Box. Open the app, go to Data → Import.` }); return; }
+    try { await navigator.share({ files: [file], title: lake.name, text: `${lake.name} for Tackle Box. Open the app, go to the ⚙️ gear → Import.` }); return; }
     catch (e) { if (e.name === 'AbortError') return; }
   }
   const a = document.createElement('a');

@@ -1,6 +1,6 @@
-// The Stats view: days like today, patterns across everything you've logged, catch rates from trips, and a year in review.
+// Stats, shown as a section of the Journal: days like today, patterns across everything you've logged, catch rates from trips, and a year in review.
 import { db } from '../db.js';
-import { $, esc, fmtDate, onShow, emptyState } from '../ui.js';
+import { $, esc, fmtDate, emptyState } from '../ui.js';
 import { fmtLen, toDepth, units } from '../units.js';
 import { renderDaysLikeToday } from '../insights.js';
 import { bestsBySpecies } from './bests.js';
@@ -149,4 +149,3 @@ function renderYear(el, { catches, trips, lakeName, tackle }) {
   el.querySelectorAll('[data-trip]').forEach(a => a.onclick = e => { e.preventDefault(); openTrip(a.dataset.trip); });
 }
 
-onShow('stats', renderStats);

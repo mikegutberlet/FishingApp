@@ -24,6 +24,7 @@
   <header>
     <h1>🎣 Tackle Box</h1>
     <span id="status" class="muted"></span>
+    <button id="btn-settings" class="head-btn" data-go="settings" aria-label="Settings and your data" title="Settings and your data">⚙️</button>
   </header>
 
   <main>
@@ -87,12 +88,8 @@
     <section id="view-journal" class="view"><div id="journal"></div></section>
     <section id="view-trip" class="view"><div id="trip"></div></section>
 
-    <section id="view-stats" class="view">
-      <h2>Stats</h2>
-      <div id="stats"></div>
-    </section>
-
     <section id="view-settings" class="view">
+      <h2 class="view-title">Settings &amp; data</h2>
       <h2>Install</h2>
       <div class="card small" id="install-help"></div>
       <h2>Your data</h2>
@@ -146,8 +143,6 @@
     <button data-view="lakes">🏞️<span>Lakes</span></button>
     <button data-view="log">🐟<span>Log</span></button>
     <button data-view="journal">📓<span>Journal</span></button>
-    <button data-view="stats">📊<span>Stats</span></button>
-    <button data-view="settings">⚙️<span>Data</span></button>
   </nav>
 
   <button id="trip-pill" class="hidden"></button>

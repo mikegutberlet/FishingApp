@@ -1,7 +1,7 @@
 // The Journal view: start a trip, a timeline of trips, catches and notes, personal bests, your tackle box,
 // and adding old catches from photos.
 import { db } from '../db.js';
-import { $, esc, fmtDate, onShow, emptyState } from '../ui.js';
+import { $, esc, fmtDate, onShow, emptyState, fitTabs } from '../ui.js';
 import { fmtLen } from '../units.js';
 import { activeTrip, openTrip, startTripFlow, newEntry, closeStale } from './trips.js';
 import { editCatch, weightText } from './log.js';
@@ -9,8 +9,9 @@ import { openLake } from './lake.js';
 import { renderBests } from './bests.js';
 import { renderTackle } from './tackle.js';
 import { renderBackfill } from './backfill.js';
+import { renderStats } from './stats.js';
 
-const SECTIONS = { timeline: 'Timeline', bests: 'Bests', tackle: 'Tackle box', photos: 'Photos' };
+const SECTIONS = { timeline: 'Timeline', stats: 'Stats', bests: 'Bests', tackle: 'Tackle box', photos: 'Photos' };
 let section = 'timeline';
 
 export async function renderJournal(which = section) {
@@ -22,8 +23,10 @@ export async function renderJournal(which = section) {
     <div id="j-body"></div>`;
   $('#j-trip', el).onclick = () => trip ? openTrip(trip.id) : startTripFlow();
   el.querySelectorAll('[data-sec]').forEach(b => b.onclick = () => renderJournal(b.dataset.sec));
+  fitTabs($('.tabs', el));
   const body = $('#j-body', el);
   if (section === 'timeline') return renderTimeline(body);
+  if (section === 'stats') { body.innerHTML = '<div id="stats"></div>'; return renderStats(); }
   if (section === 'bests') return renderBests(body);
   if (section === 'tackle') return renderTackle(body);
   renderBackfill(body);

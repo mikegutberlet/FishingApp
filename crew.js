@@ -142,8 +142,8 @@ export async function checkShareLink() {
   history.replaceState(null, '', location.pathname + location.search);
   // On iPhone the home-screen app keeps its data apart from Safari, and the camera opens links in Safari.
   const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
-  if (!standalone && /iPhone|iPad/.test(navigator.userAgent) && !confirm('Add this share here in Safari?\n\nIf you use Tackle Box from your home screen, tap Cancel to copy the code, then in the app go to Data → Share with your crew → Paste a code.')) {
-    try { await navigator.clipboard.writeText(m[1]); alert('Code copied. Open Tackle Box from your home screen, then Data → Share with your crew → Paste a code.'); }
+  if (!standalone && /iPhone|iPad/.test(navigator.userAgent) && !confirm('Add this share here in Safari?\n\nIf you use Tackle Box from your home screen, tap Cancel to copy the code, then in the app go to the ⚙️ gear → Share with your crew → Paste a code.')) {
+    try { await navigator.clipboard.writeText(m[1]); alert('Code copied. Open Tackle Box from your home screen, then the ⚙️ gear → Share with your crew → Paste a code.'); }
     catch { prompt('Copy this code:', m[1]); }
     return;
   }
@@ -161,7 +161,7 @@ export async function sendPack(pack, how) {
     return showQr(url, pack);
   }
   const file = new File([JSON.stringify(body)], `${(pack.from || 'crew').replace(/[^\w-]+/g, '-')}-share-${new Date().toISOString().slice(0, 10)}.tacklebox.json`, { type: 'application/json' });
-  await saveFile(file, { title: 'Tackle Box share', text: `From ${pack.from}: open Tackle Box, Data → Import, and pick this file.` });
+  await saveFile(file, { title: 'Tackle Box share', text: `From ${pack.from}: open Tackle Box, the ⚙️ gear → Import, and pick this file.` });
 }
 
 let qrLoaded;
@@ -175,7 +175,7 @@ async function showQr(url, pack) {
   sheet.innerHTML = `<div class="qr-sheet-card"><h3>Scan with your friend's phone camera</h3>
     <div class="qr">${qr.createSvgTag({ cellSize: 4, margin: 4, scalable: true })}</div>
     <p class="small">${esc(pack.items.length)} item${pack.items.length > 1 ? 's' : ''} from ${esc(pack.from)}. The whole share is inside the code; no server sees it.
-      Friends with the app on their home screen: in Tackle Box tap <b>Data → Share with your crew → Scan</b>${'BarcodeDetector' in window ? '' : ' (Android), or open the link and copy the code'}.</p>
+      Friends with the app on their home screen: in Tackle Box tap <b>the ⚙️ gear → Share with your crew → Scan</b>${'BarcodeDetector' in window ? '' : ' (Android), or open the link and copy the code'}.</p>
     <div class="row"><button id="qr-copy" style="flex:1">Copy link</button><button id="qr-close" class="primary" style="flex:1">Done</button></div></div>`;
   document.body.append(sheet);
   sheet.querySelector('#qr-close').onclick = () => sheet.remove();

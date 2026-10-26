@@ -37,5 +37,6 @@ export function fitTabs(strip) {
 export function showView(name, { render = true } = {}) {
   document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === `view-${name}`));
   document.querySelectorAll('nav button').forEach(b => b.classList.toggle('active', b.dataset.view === name));
+  document.getElementById('btn-settings')?.classList.toggle('active', name === 'settings');
   if (render) for (const fn of showHandlers[name] ?? []) fn();
 }

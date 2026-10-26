@@ -87,3 +87,10 @@ input[type=checkbox], input[type=radio] { accent-color: var(--accent); }
 /* Lakes list header: state picker and the two finders side by side, same height. */
 .state-pick select { padding: 8px 10px; }
 #lake-list .row button { align-self: stretch; }
+
+/* Five tabs in the bottom nav; settings and your data sit behind the gear in the header. */
+header { gap: 10px; }
+header #status { margin-left: auto; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.head-btn { background: none; border: 0; color: #fff; font-size: 20px; min-height: 0; width: 40px; height: 40px; padding: 0; margin-right: -8px; border-radius: 50%; flex-shrink: 0; }
+.head-btn.active { background: rgba(255,255,255,.18); }
+.view-title { font-size: 22px; margin-top: 4px; }
