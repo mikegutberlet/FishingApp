@@ -94,3 +94,25 @@ header #status { margin-left: auto; text-align: right; overflow: hidden; text-ov
 .head-btn { background: none; border: 0; color: #fff; font-size: 20px; min-height: 0; width: 40px; height: 40px; padding: 0; margin-right: -8px; border-radius: 50%; flex-shrink: 0; }
 .head-btn.active { background: rgba(255,255,255,.18); }
 .view-title { font-size: 22px; margin-top: 4px; }
+
+/* Today: one card per favorite water, a sky-colored header, swipe between waters. */
+.today-lake { padding: 0; overflow: hidden; }
+.today-lake .today-grid { padding: 10px 12px 12px; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); }
+.today-lake .today-grid:empty { display: none; }
+.hero { color: #fff; padding: 12px 14px 14px; background: linear-gradient(135deg, #1d7fb3, #39a7d6); }
+.hero.sky-cloud { background: linear-gradient(135deg, #4d6577, #7d95a6); }
+.hero.sky-rain { background: linear-gradient(135deg, #2c3e50, #4c6a85); }
+.hero.sky-night { background: linear-gradient(135deg, #0b1d33, #1f3b63); }
+.hero .today-title { margin-bottom: 4px; font-size: 17px; }
+.hero .today-title > span:last-child { opacity: .8; font-size: 20px; }
+.hero-now { display: flex; align-items: center; gap: 12px; }
+.hero-temp { font-size: 46px; font-weight: 300; line-height: 1; font-variant-numeric: tabular-nums; }
+.hero-sky { font-weight: 600; }
+.hero-wind { font-size: 13px; opacity: .92; }
+.hero .chip { background: rgba(255,255,255,.9); }
+.today-carousel.multi { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin: 0 -16px; padding: 0 16px 4px; scroll-padding: 0 16px; }
+.today-carousel.multi::-webkit-scrollbar { display: none; }
+.today-carousel.multi > .today-lake { flex: 0 0 88%; scroll-snap-align: start; margin-bottom: 8px; }
+.dots-row { display: flex; justify-content: center; gap: 6px; margin: 2px 0 6px; }
+.dots-row i { width: 7px; height: 7px; border-radius: 50%; background: var(--line); }
+.dots-row i.on { background: var(--accent); }
