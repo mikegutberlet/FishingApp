@@ -1,7 +1,7 @@
 // The Journal view: start a trip, a timeline of trips, catches and notes, personal bests, your tackle box,
 // and adding old catches from photos.
 import { db } from '../db.js';
-import { $, esc, fmtDate, onShow } from '../ui.js';
+import { $, esc, fmtDate, onShow, emptyState } from '../ui.js';
 import { fmtLen } from '../units.js';
 import { activeTrip, openTrip, startTripFlow, newEntry, closeStale } from './trips.js';
 import { editCatch, weightText } from './log.js';
@@ -62,7 +62,7 @@ async function renderTimeline(body, limitDays = 30) {
   };
   body.innerHTML = `<button id="j-new" style="width:100%;margin-bottom:12px">＋ Journal entry for a past day</button>`
     + (days.length ? days.slice(0, limitDays).map(d => `<h2>${fmtDate(d + 'T12:00')}</h2>${items.filter(x => dayKey(x.time) === d).map(card).join('')}`).join('')
-      : '<div class="card muted">Your trips, catches and notes show up here, newest first.</div>')
+      : emptyState('📓', 'Your trips, catches and notes show up here, newest first.', ['🐟 Log a catch', 'log']))
     + (days.length > limitDays ? '<button id="j-more" style="width:100%">Show older</button>' : '');
   $('#j-new', body).onclick = newEntry;
   $('#j-more', body)?.addEventListener('click', () => renderTimeline(body, limitDays + 30));

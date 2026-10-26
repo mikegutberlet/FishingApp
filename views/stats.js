@@ -1,6 +1,6 @@
 // The Stats view: days like today, patterns across everything you've logged, catch rates from trips, and a year in review.
 import { db } from '../db.js';
-import { $, esc, fmtDate, onShow } from '../ui.js';
+import { $, esc, fmtDate, onShow, emptyState } from '../ui.js';
 import { fmtLen, toDepth, units } from '../units.js';
 import { renderDaysLikeToday } from '../insights.js';
 import { bestsBySpecies } from './bests.js';
@@ -60,7 +60,7 @@ const rate = v => `${v.toFixed(2)}/h`;
 export async function renderStats() {
   const el = $('#stats');
   const [catches, lakes, trips, tackleRows] = await Promise.all([db.all('catches'), db.all('lakes'), db.all('trips'), db.all('tackle')]);
-  if (!catches.length) { el.innerHTML = '<div class="card muted">Log some catches to see patterns.</div>'; return; }
+  if (!catches.length) { el.innerHTML = emptyState('📊', 'Log a few catches and your best lures, depths, times and conditions show up here.', ['🐟 Log a catch', 'log']); return; }
   el.innerHTML = `<div class="tabs"><button data-t="patterns" class="${tab === 'patterns' ? 'active' : ''}">Patterns</button><button data-t="year" class="${tab === 'year' ? 'active' : ''}">Year in review</button></div><div id="stats-body"></div>`;
   el.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { tab = b.dataset.t; renderStats(); });
   const body = $('#stats-body');

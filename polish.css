@@ -1,0 +1,89 @@
+/* Look and feel: loaded last, so it refines the base styles without moving anything around. */
+:root { color-scheme: light dark; --shadow: 0 1px 2px rgba(16,40,52,.05), 0 2px 8px rgba(16,40,52,.06); --brand: #0f3b4c; --brand-2: #17607a; }
+@media (prefers-color-scheme: dark) { :root { --shadow: 0 1px 2px rgba(0,0,0,.4); --line: #2a3a45; } }
+body { -webkit-tap-highlight-color: transparent; -webkit-font-smoothing: antialiased; }
+
+/* Header and bottom nav */
+header { background: linear-gradient(120deg, var(--brand), var(--brand-2)); box-shadow: 0 1px 6px rgba(0,0,0,.18); position: relative; z-index: 2; }
+header h1 { font-size: 19px; letter-spacing: .2px; }
+nav { box-shadow: 0 -1px 8px rgba(16,40,52,.06); }
+nav button { position: relative; transition: color .15s; }
+nav button:not(.active) { filter: grayscale(.55); opacity: .8; }
+nav button.active::after { content: ''; position: absolute; top: 0; left: 22%; right: 22%; height: 3px; border-radius: 0 0 3px 3px; background: var(--accent); }
+nav button.active span { font-weight: 600; }
+
+/* Type */
+h2 { font-size: 19px; letter-spacing: -.1px; }
+h3 { font-size: 16px; }
+.stat b, table, .trip-clock, .hour { font-variant-numeric: tabular-nums; }
+
+/* Links: the accent color, never the browser's default blue (unreadable on dark cards). */
+a, a:visited { color: var(--accent); text-underline-offset: 2px; }
+.lock-box a { color: #b7d3dd; }
+
+/* Cards and tiles */
+.card { border-radius: 14px; box-shadow: var(--shadow); padding: 14px; }
+.stat { border-radius: 10px; padding: 10px 12px; }
+.inset { border-radius: 12px; }
+
+/* Buttons: a little rounder, a press state you can feel. */
+button, .file-btn { border-radius: 10px; min-height: 40px; transition: transform .08s, background-color .15s; touch-action: manipulation; }
+button:active:not(:disabled), .file-btn:active { transform: scale(.97); }
+button:disabled { opacity: .55; }
+button.primary { border-radius: 12px; box-shadow: 0 1px 3px rgba(15,110,140,.3); }
+button.ghost { border-color: transparent; background: none; color: var(--accent); padding-left: 4px; font-weight: 500; }
+nav button, .stars button, .pad button { min-height: 0; }
+
+/* Fields: 16px so iPhone Safari doesn't zoom in on tap, and styled everywhere, not only inside forms. */
+input, select, textarea { font-size: 16px; }
+select, input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]), textarea { color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; }
+.form input, .form select, .form textarea { font-size: 16px; padding: 10px; border-radius: 10px; }
+select:not(.form select) { padding: 7px 10px; }
+input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+input[type=checkbox], input[type=radio] { accent-color: var(--accent); }
+
+/* Tab strips: slim pills, the active one filled, an edge fade while more tabs are off to the right. */
+.tabs { gap: 6px; scrollbar-width: none; position: relative; padding: 2px 0; }
+.tabs::-webkit-scrollbar { display: none; }
+.tabs button { border-radius: 999px; padding: 6px 14px; min-height: 36px; font-size: 14px; font-weight: 500; }
+.tabs.more { -webkit-mask-image: linear-gradient(to right, #000 82%, transparent); mask-image: linear-gradient(to right, #000 82%, transparent); }
+
+/* A water's page: back and star, a big name with a one-line summary, actions in one row, tabs that stay put while you scroll. */
+.lake-bar { display: flex; justify-content: space-between; align-items: center; margin: -4px 0 2px; }
+.lake-name { font-size: 24px; line-height: 1.2; margin: 4px 0 10px; }
+.lake-name small { display: block; font-size: 13px; font-weight: 400; color: var(--muted); margin-top: 4px; letter-spacing: 0; }
+.lake-acts { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; margin-bottom: 10px; }
+.lake-acts::-webkit-scrollbar { display: none; }
+.lake-acts button { flex: 1 0 auto; white-space: nowrap; font-size: 14px; padding: 6px 12px; }
+.lake-acts button.primary { width: auto; flex: 2 0 auto; padding: 6px 14px; }
+.lake-tabs { position: sticky; top: -12px; z-index: 5; background: var(--bg); margin: 0 -16px 12px; padding: 8px 16px; }
+.lake-tabs .tabs { margin: 0; }
+#lake-detail .banner { margin-bottom: 10px; }
+
+/* Map: round floating buttons; no +/- on touch phones (pinch to zoom). */
+.map-actions button { border-radius: 999px; border: 0; font-weight: 600; font-size: 14px; padding: 8px 14px; box-shadow: 0 2px 10px rgba(0,0,0,.28); background: var(--card); }
+@media (pointer: coarse) { .leaflet-control-zoom { display: none; } }
+.leaflet-bar a, .leaflet-control-layers { border-radius: 10px !important; }
+.leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar { border: 0; box-shadow: 0 2px 10px rgba(0,0,0,.28); }
+.legend { border-radius: 12px; }
+
+/* Bars: keep the count on one line; the bar gives up the room. */
+.bars .barrow .lbl { width: auto; min-width: 48px; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bars .barrow .fill { min-width: 4px; flex-shrink: 1; }
+.bars .barrow > span:last-child { white-space: nowrap; flex-shrink: 0; }
+
+/* Empty states */
+.empty { text-align: center; padding: 28px 18px; }
+.empty-icon { font-size: 44px; line-height: 1; margin-bottom: 8px; }
+.empty p { margin: 0 auto 14px; max-width: 30em; color: var(--muted); }
+.empty-acts { display: flex; flex-direction: column; gap: 8px; max-width: 300px; margin: 0 auto; }
+.empty-acts button { width: 100%; }
+
+/* Lists you tap through */
+.lake-item { transition: background-color .15s; }
+.lake-item:active { background: var(--bg); }
+.lake-item > span:last-child { color: var(--muted); font-size: 20px; }
+
+/* Lakes list header: state picker and the two finders side by side, same height. */
+.state-pick select { padding: 8px 10px; }
+#lake-list .row button { align-self: stretch; }

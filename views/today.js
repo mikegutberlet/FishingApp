@@ -6,7 +6,7 @@ import { WEATHER_CODES } from '../data-sources.js';
 import { weatherFor, fetchAlerts, alertLevel, localKey, addDays, levelChange } from '../forecast.js';
 import { solunar, dayRating, stars, nextWindow, shortTime } from '../solunar.js';
 import { windOnWater, bankName } from '../wind.js';
-import { $, esc, fmtDate, arrow, showView, onShow } from '../ui.js';
+import { $, esc, fmtDate, arrow, showView, onShow, emptyState } from '../ui.js';
 import { openLake } from './lake.js';
 
 // Slot for the "days like today" insight (workstream E). Register a renderer:
@@ -32,12 +32,12 @@ export async function renderToday() {
   el.innerHTML = `<div class="today-head"><h2>${new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}</h2>
       <button id="go-plan">🗓 Plan a trip</button></div>
     <div id="today-insight" class="card hidden" data-slot="days-like-today"></div>
-    ${!lakes.length ? `<div class="card">Welcome! Find a water under <b>Lakes</b> (or tap one on the map), save it, and star it with ☆ to see it here every day.</div>`
-      : !favs.length || editing ? `<div class="card"><h3>Your favourite waters</h3><p class="muted small">Star the waters you fish most. They show here with today's wind, bite windows, level and plants.</p>
+    ${!lakes.length ? emptyState('🎣', 'Welcome! Find a water you fish, save it, and star it with ☆ to see its wind, bite windows, level and plants here every day.', ['🔎 Find a water', 'lakes'], ['🗺️ Open the map', 'map'])
+      : !favs.length || editing ? `<div class="card"><h3>Your favorite waters</h3><p class="muted small">Star the waters you fish most. They show here with today's wind, bite windows, level and plants.</p>
         ${lakes.map(l => `<div class="fav-row"><span>${esc(l.name)}</span><button data-fav="${esc(l.id)}">${l.favorite ? '★' : '☆'}</button></div>`).join('')}
         <button id="fav-done" class="primary" style="margin-top:8px">Done</button></div>`
       : favs.map(l => `<div class="card today-lake" data-id="${esc(l.id)}"><div class="today-title"><b>${esc(l.name)}</b><span class="today-alert"></span><span class="muted">›</span></div>
-          <div class="grid today-grid"><div class="muted small">Loading…</div></div></div>`).join('') + '<p class="small"><a href="#" id="fav-edit">Change favourites</a></p>'}`;
+          <div class="grid today-grid"><div class="muted small">Loading…</div></div></div>`).join('') + '<p class="small"><a href="#" id="fav-edit">Change favorites</a></p>'}`;
   $('#go-plan').onclick = () => showView('planner');
   el.querySelectorAll('[data-fav]').forEach(b => b.onclick = () => toggleFavorite(lakes.find(l => l.id === b.dataset.fav), b));
   const done = $('#fav-done'), edit = $('#fav-edit');
