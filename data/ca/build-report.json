@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-23T05:08:05.713Z",
+  "startedAt": "2026-10-26T18:05:45.035Z",
   "steps": {
     "nhdLayers": [
       {
@@ -58,5 +58,5 @@
     "lakesError": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/12/query?where=GNIS_NAME+IS+NOT+NULL+AND+FTYPE+IN+%28390%2C436%29+AND+AREASQKM+%3E%3D+0.008&outFields=PERMANENT_IDENTIFIER%2CGNIS_ID%2C",
     "riversError": "504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?where=GNIS_NAME+IS+NOT+NULL+AND+%28GNIS_NAME+LIKE+%27%25+River%25%27+OR+GNIS_NAME+LIKE+%27%25+Creek%25%27+OR+GNIS_NAME+LIKE+%27"
   },
-  "finishedAt": "2026-10-23T05:19:45.373Z"
+  "finishedAt": "2026-10-26T18:09:17.039Z"
 }

@@ -31,14 +31,15 @@ export async function renderOrSafety(lake, body) {
   body.innerHTML = '<div class="card muted">Loading rules and advisories…</div>';
   const [hab, habData, regs, eat] = await Promise.all([OR.habFor(lake), OR.habAdvisories(), OR.regsFor(lake), OR.fishAdviceFor(lake)]);
   if (!body.isConnected) return;
-  body.innerHTML = habCard(hab, habData) + regsCard(regs) + eatCard(eat);
+  body.innerHTML = habCard(hab, habData, regs) + regsCard(regs) + eatCard(eat);
 }
 
-function habCard(hab, data) {
+function habCard(hab, data, regs) {
   const portal = data?.portal ?? 'https://www.oregon.gov/oha/ph/healthyenvironments/recreation/harmfulalgaeblooms/pages/blue-greenalgaeadvisories.aspx';
   return `<div class="card"><h3>Toxic algae</h3>
     ${hab.length ? hab.map(a => { const l = OR_HAB[a.level]; return `<div class="banner hab-${a.level}"><b>${l.icon} ${esc(a.advisory)}</b> · ${esc(a.name)}${a.county ? ` <span class="small">(${esc(a.county)} County)</span>` : ''}${a.date ? `<div class="small">Issued ${day(a.date)}</div>` : ''}
         <div class="small">${l.advice}</div>${a.detail ? `<div class="small muted">${esc(a.detail)}</div>` : ''}</div>`; }).join('')
+      : regs && !regs.inOregon ? '<p class="small">This water isn’t in an Oregon angling zone, so OHA’s list may not cover it: check the state it’s in.</p>'
       : data ? '<p class="small">✅ No active toxic algae advisory listed for this water.</p>' : ''}
     <p class="muted small">${data ? `Oregon Health Authority list, refreshed nightly (${fmtDate(data.updatedAt)}). ` : 'Algae advisories haven’t been downloaded yet. '}OHA only samples some waters: avoid scum and keep dogs out of discolored water anywhere. <a href="${esc(portal)}" target="_blank" rel="noopener">OHA advisories ↗</a></p></div>`;
 }
@@ -50,6 +51,7 @@ function regsCard(regs) {
   if (!regs) return `<div class="card"><h3>Fishing regulations</h3><p class="muted small">Regulations haven’t been downloaded yet. See the <a href="https://www.eregulations.com/oregon/fishing" target="_blank" rel="noopener">Oregon fishing regulations ↗</a>.</p></div>`;
   const z = regs.zoneRules;
   return `<div class="card"><h3>Fishing regulations</h3>
+    ${regs.inLake ? `<p class="small">This part of the river is in ${esc(regs.inLake)}: ${regs.lakeRow ? `follow ${esc(regs.inLake)}’s rules, and` : `no exceptions name ${esc(regs.inLake)}, so`} the zone’s lake limits${regs.lakeRow ? '' : ' apply'} where they differ from streams.</p>` : ''}
     ${regs.special.length ? `<p class="small">Exceptions to the ${esc(regs.zone ?? '')} Zone rules for this water:</p>${regs.special.map(ruleRow).join('')}`
       : !regs.inOregon && !regs.zoneRules ? '<p class="small">This water isn’t in an Oregon angling zone, so Oregon’s rules may not apply: check the state it’s in.</p>'
       : `<p class="small">No exceptions name this water, so the ${regs.zone ? `${esc(regs.zone)} Zone’s` : 'zone’s'} general limits below apply.</p>`}

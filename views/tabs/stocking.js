@@ -57,8 +57,9 @@ async function renderStateStocking(lake, el) {
     const near = await S.nearestWaters(lake.lat, lake.lon);
     if (!el.isConnected) return;
     // A water that isn't stocked can still be in the agency's fishing report (Oregon's Recreation Report).
+    const none = lake.unsaved ? '<div class="card muted">No state stocking found for this water.</div>' : '';
     el.innerHTML = `${near.length ? `<div class="card"><h3>Link to ${S.agency} stocking</h3><p class="small">Pick the matching water to get ${S.name}'s stocking reports automatically.</p>
-      ${near.slice(0, 5).map(w => `<div class="lake-item" style="margin:6px 0"><span>${esc(w.name)} <span class="muted small">${w.distKm.toFixed(1)} km</span></span><button data-link="${esc(w.id)}">Link</button></div>`).join('')}</div>` : ''}<div id="state-report"></div>`;
+      ${near.slice(0, 5).map(w => `<div class="lake-item" style="margin:6px 0"><span>${esc(w.name)} <span class="muted small">${w.distKm.toFixed(1)} km</span></span><button data-link="${esc(w.id)}">Link</button></div>`).join('')}</div>` : none}<div id="state-report"></div>`;
     renderStateReport(lake, el.querySelector('#state-report'));
     el.querySelectorAll('[data-link]').forEach(b => b.onclick = async () => {
       const id = near.find(w => String(w.id) === b.dataset.link).id;

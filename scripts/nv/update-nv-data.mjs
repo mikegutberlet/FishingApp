@@ -212,13 +212,31 @@ function parseName(name) {
   return { names: [...names], where };
 }
 
+// OpenStreetMap has few of NDOW's mountain ranges as places (and its "Sonoma Range" is a Las Vegas street), so the
+// ranges in NDOW's names have their middle from USGS topo maps: "Thomas Creek- Carson Range" is the Thomas Creek
+// within 40 km of it. A county isn't enough: NDOW's own layer has one Willow Creek in Lander County, at Battle Mountain,
+// not in the Desatoya Range.
+const RANGES = {
+  'Carson Range': [39.25, -119.88], 'Santa Rosa Range': [41.6, -117.6], 'Jackson Range': [41.25, -118.5], 'Desatoya Range': [39.4, -117.8],
+  'Sonoma Range': [40.75, -117.65], 'Toiyabe Range': [39.0, -117.3], 'Quinn Canyon Range': [38.1, -115.7], 'Monitor Range': [38.8, -116.6],
+  'Jarbidge Mountains': [41.85, -115.4], 'Battle Mountain Range': [40.5, -117.15], 'Eagan Range': [39.3, -114.95], 'Ruby Mountains': [40.45, -115.4],
+};
 async function pickPoint(w, sources) {
   const { names, where } = parseName(w.name);
   const keys = new Set(names.map(norm).filter(k => k.length >= 3));
   if (!keys.size) return null;
   const flowing = isFlowing(w), pond = /\bponds?\b/i.test(w.name);
   const county = where && COUNTIES.find(c => c.name.toLowerCase() === where.toLowerCase())?.name;
-  const near = where && !county ? (await geocode(where))?.[0] : null;
+  const range = where && !county ? RANGES[Object.keys(RANGES).find(r => r.toLowerCase() === where.toLowerCase())] : null;
+  const near = range ? { lat: range[0], lon: range[1] } : where && !county ? (await geocode(where))?.[0] : null;
+  const lines = list => new Set(list.map(c => c.line ?? `${c.lat},${c.lon}`)).size;
+  // A place the name gives that OpenStreetMap answered it doesn't have can't choose between the state's same-named
+  // waters: with more than one in the NHD list, better no point than the Thomas Creek by Winnemucca (which NDOW's own
+  // map layer also has). A failed request is asked again tomorrow.
+  if (where && !county && !near && Array.isArray(GEO[where])) {
+    const [, list] = sources.find(([via]) => via === 'nhd') ?? [];
+    if (lines((list ?? []).filter(c => keys.has(norm(c.name)) && (c.kind === 'stream') === flowing)) > 1) return null;
+  }
   for (const [via, list] of sources) {
     // A pond isn't the big lake or reservoir of the same name ("Verdi Pond" vs Verdi Lake).
     let same = list.filter(c => keys.has(norm(c.name)) && (c.kind === 'stream') === flowing && inOutline([c.lon, c.lat], NV.outline) && !(pond && c.acres > 200));

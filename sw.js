@@ -41,6 +41,7 @@ const SHELL = [
   'states/index.js',
   'states/nv.js',
   'states/or.js',
+  'states/or-outline.js',
   'units.js',
   'weight.js',
   'exif.js',
