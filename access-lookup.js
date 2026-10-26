@@ -77,7 +77,7 @@ export async function withHike(lake, spot, data) {
     const s = summarize({ lat: data.lat, lon: data.lon }, data.shoreKm, data.features, { land: data.land });
     const r = hikeRoute(s) ?? crowLine(s);
     data.hike = r ? { km: r.km, crow: !!r.crow, coords: r.coords, start: { lat: r.start.lat, lon: r.start.lon, road: r.start.road?.name ?? null },
-      trails: r.trails.map(t => ({ name: t.name, source: t.sources?.[0] ?? t.source })) } : null;
+      trails: wayNames(r.trails) } : null;
     if (data.hike) {
       const { points, at } = samplePath(r.coords, 80);
       try {
@@ -91,6 +91,20 @@ export async function withHike(lake, spot, data) {
   }
   await store(lake, spot, data);
   return data;
+}
+
+// The trails along the walk, for "then X, then Y": the same trail mapped by OSM and the Forest Service ("Winnemucca
+// Trail", "Winnemucca") or split into pieces counts once, and short unnamed links are left out when named ones exist.
+const baseName = n => n?.toLowerCase().replace(/\b(trail|path|tr\.?)\b/g, '').replace(/\s+/g, ' ').trim() || null;
+function wayNames(trails) {
+  const out = [];
+  for (const t of trails) {
+    const b = baseName(t.name);
+    if (b && out.some(o => baseName(o.name) === b)) continue;
+    if (!b && out.at(-1) && !out.at(-1).name) continue;
+    out.push({ name: t.name, source: t.sources?.[0] ?? t.source });
+  }
+  return out.some(o => o.name) ? out.filter(o => o.name) : out.slice(0, 1);
 }
 
 // ---------- ArcGIS REST ----------
