@@ -110,4 +110,21 @@ DESCRIPTION:Catfish plant this week at Laguna Lake
 TRIGGER:-PT12H
 END:VALARM
 END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-01-7406-trout@tackle-box
+DTSTAMP:20261101T000000Z
+DTSTART;VALUE=DATE:20261101
+DTEND;VALUE=DATE:20261108
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Laguna Lake
+DESCRIPTION:CDFW plans to plant Trout at Laguna Lake (Orange County) the we
+ ek of 2026-11-01. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7406
+GEO:33.90827;-117.936
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Laguna Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
 END:VCALENDAR

@@ -110,4 +110,21 @@ DESCRIPTION:Catfish plant this week at Cerritos Lake
 TRIGGER:-PT12H
 END:VALARM
 END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-01-27431-trout@tackle-box
+DTSTAMP:20261101T000000Z
+DTSTART;VALUE=DATE:20261101
+DTEND;VALUE=DATE:20261108
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Cerritos Lake
+DESCRIPTION:CDFW plans to plant Trout at Cerritos Lake (Los Angeles County)
+  the week of 2026-11-01. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=27431
+GEO:33.85159;-118.06026
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Cerritos Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
 END:VCALENDAR

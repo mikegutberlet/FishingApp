@@ -127,4 +127,21 @@ DESCRIPTION:Trout plant this week at El Dorado Park Lakes
 TRIGGER:-PT12H
 END:VALARM
 END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-01-7466-trout@tackle-box
+DTSTAMP:20261101T000000Z
+DTSTART;VALUE=DATE:20261101
+DTEND;VALUE=DATE:20261108
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: El Dorado Park Lakes
+DESCRIPTION:CDFW plans to plant Trout at El Dorado Park Lakes (Los Angeles 
+ County) the week of 2026-11-01. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7466
+GEO:33.82125;-118.08535
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at El Dorado Park Lakes
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
 END:VCALENDAR

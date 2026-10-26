@@ -144,4 +144,21 @@ DESCRIPTION:Catfish plant this week at Hansen Dam Lake
 TRIGGER:-PT12H
 END:VALARM
 END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-01-7115-trout@tackle-box
+DTSTAMP:20261101T000000Z
+DTSTART;VALUE=DATE:20261101
+DTEND;VALUE=DATE:20261108
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Hansen Dam Lake
+DESCRIPTION:CDFW plans to plant Trout at Hansen Dam Lake (Los Angeles Count
+ y) the week of 2026-11-01. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7115
+GEO:34.26632;-118.39257
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Hansen Dam Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
 END:VCALENDAR

@@ -195,4 +195,21 @@ DESCRIPTION:Catfish plant this week at Legg Lakes
 TRIGGER:-PT12H
 END:VALARM
 END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-08-7367-trout@tackle-box
+DTSTAMP:20261108T000000Z
+DTSTART;VALUE=DATE:20261108
+DTEND;VALUE=DATE:20261115
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Legg Lakes
+DESCRIPTION:CDFW plans to plant Trout at Legg Lakes (Los Angeles County) th
+ e week of 2026-11-08. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7367
+GEO:34.03284;-118.06077
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Legg Lakes
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
 END:VCALENDAR

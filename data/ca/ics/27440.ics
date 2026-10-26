@@ -127,4 +127,21 @@ DESCRIPTION:Trout plant this week at Rancho Simi Park Lake
 TRIGGER:-PT12H
 END:VALARM
 END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-01-27440-trout@tackle-box
+DTSTAMP:20261101T000000Z
+DTSTART;VALUE=DATE:20261101
+DTEND;VALUE=DATE:20261108
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Rancho Simi Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Rancho Simi Park Lake (Ventura Cou
+ nty) the week of 2026-11-01. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=27440
+GEO:34.26675;-118.76397
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Rancho Simi Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
 END:VCALENDAR
