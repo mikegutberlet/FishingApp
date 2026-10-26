@@ -1,5 +1,5 @@
 // Caches the app shell so it opens with no signal on the water. Your data is in IndexedDB, not here.
-const CACHE = 'tackle-box-v14';
+const CACHE = 'tackle-box-v15';
 // One file per line. Add new files here and bump CACHE.
 const SHELL = [
   './',
@@ -77,6 +77,9 @@ const SHELL = [
   'views/tabs/stocking.js',
   'views/tabs/safety.js',
   'views/access.js',
+  'views/tabs/access.js',
+  'access-lookup.js',
+  'access-rules.js',
   'views/new-plants.js',
   'views/catch-warnings.js',
   'safety-map.js',
@@ -85,7 +88,7 @@ const SHELL = [
 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())));
 // Drop old app-shell caches, but keep the map tiles you've already viewed and lakes saved for offline (offline.js).
 self.addEventListener('activate', e => e.waitUntil(
-  caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE && k !== 'tiles' && !k.startsWith('offline-')).map(k => caches.delete(k)))).then(() => self.clients.claim())));
+  caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE && k !== 'tiles' && k !== 'tb-access' && !k.startsWith('offline-')).map(k => caches.delete(k)))).then(() => self.clients.claim())));
 
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);

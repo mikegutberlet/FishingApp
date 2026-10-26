@@ -1,5 +1,5 @@
-// Access & facilities near a water (Info tab): boat ramps, piers, parking, campgrounds, marinas, rentals, bait & tackle.
-import * as CA from '../states/ca.js';
+// Access & facilities near a water (Getting there tab): boat ramps, piers, parking, campgrounds, marinas, rentals, bait & tackle.
+import { forLake } from '../states/index.js';
 import { esc, fmtDate, showView } from '../ui.js';
 import { map } from '../map.js';
 
@@ -11,7 +11,10 @@ export const directionsUrl = (lat, lon) => `https://www.google.com/maps/dir/?api
 const mi = km => `${(km * 0.621).toFixed(km < 1.6 ? 1 : 0)} mi`;
 
 export async function renderAccess(lake, el) {
-  const a = await CA.accessFor(lake);
+  // Ramps and facilities are only gathered for states that have an access list (California so far).
+  const S = forLake(lake);
+  if (!S?.accessFor) return;
+  const a = await S.accessFor(lake);
   if (!el.isConnected) return;
   if (!a) { el.innerHTML = '<div class="card"><h3>Access & facilities</h3><p class="muted small">Ramp and facility data hasn’t been downloaded yet.</p></div>'; return; }
   const groups = Object.entries(ACCESS_KINDS).map(([kind, k]) => [k, a.places.filter(p => p.kind === kind)]).filter(([, list]) => list.length);

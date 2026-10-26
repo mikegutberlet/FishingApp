@@ -113,3 +113,14 @@ details summary { cursor: pointer; }
 details table { margin-top: 8px; }
 .form .label { margin-bottom: 10px; font-size: 13px; color: var(--muted); }
 .catch-warn .banner { margin: 4px 0 10px; } .catch-warn .banner div { margin-top: 2px; }
+/* Getting there tab */
+.gt-head { font-weight: 600; margin: 4px 0 10px; }
+.gt-chips { display: grid; grid-template-columns: 1fr; gap: 8px; }
+.gt-chip { display: flex; gap: 10px; align-items: flex-start; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); }
+.gt-chip > span { font-size: 22px; line-height: 26px; }
+.gt-chip.ok { border-color: rgba(47,133,90,.5); } .gt-chip.no { border-color: rgba(197,48,48,.5); }
+.gt-chip b { font-size: 14px; }
+.gt-src { white-space: nowrap; }
+.gt-season { color: #b7791f; }
+.gt-row > span:first-child { min-width: 0; }
+button[data-gt-map] { margin-top: 10px; }
