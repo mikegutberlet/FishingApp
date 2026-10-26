@@ -23,6 +23,7 @@ import './views/planner.js';
 import { initOffline } from './offline.js';
 import { initWaypoints } from './waypoints.js';
 import { initHeatmap } from './heatmap.js';
+import './map-browse.js';
 
 initOffline();
 initWaypoints();

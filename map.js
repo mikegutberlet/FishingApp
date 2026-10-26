@@ -1,11 +1,16 @@
 // The map: base layers, overlays, statewide water labels, your lakes and catches, and depth display.
 import { db } from './db.js';
-import { list as stateList, statesIn, forLake, reservoirFor } from './states/index.js';
+import { list as stateList, statesIn, forLake, reservoirFor, selected } from './states/index.js';
 import { $, esc, fmtDate, status, M_TO_FT, showView, onShow } from './ui.js';
 import { openWater } from './views/lake.js';
 import { editLake } from './views/lakes.js';
 
-export const map = L.map('map', { zoomControl: false }).setView([44.5, -89.5], 6);
+// The map opens where you left it; the first time, on your state.
+const VIEW_KEY = 'tackle-box-map-view';
+const savedView = () => { try { return JSON.parse(localStorage.getItem(VIEW_KEY)); } catch { return null; } };
+export const map = L.map('map', { zoomControl: false });
+{ const v = savedView(); if (v) map.setView([v.lat, v.lon], v.z); else { const b = selected().bbox; map.fitBounds([[b[1], b[0]], [b[3], b[2]]]); } }
+map.on('moveend', () => { try { const c = map.getCenter(); localStorage.setItem(VIEW_KEY, JSON.stringify({ lat: +c.lat.toFixed(4), lon: +c.lng.toFixed(4), z: map.getZoom() })); } catch {} });
 L.control.zoom({ position: 'topleft' }).addTo(map);
 const street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' });
 const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: 'Esri' });
@@ -14,8 +19,8 @@ export const baseLayers = { Satellite: satellite, Streets: street };
 const lakeLayer = L.layerGroup().addTo(map);
 const catchLayer = L.layerGroup().addTo(map);
 export const depthLayer = L.layerGroup().addTo(map);
-const stockedLayer = L.layerGroup();
-const watersLayer = L.layerGroup().addTo(map);
+export const stockedLayer = L.layerGroup();
+export const watersLayer = L.layerGroup().addTo(map);
 // Other modules add their own overlays with layersControl.addOverlay(layer, 'Name').
 export const layersControl = L.control.layers({ Satellite: satellite, Streets: street }, { 'Lake & river names': watersLayer, 'My lakes': lakeLayer, Catches: catchLayer, Depth: depthLayer, 'Stocked waters': stockedLayer }).addTo(map);
 map.on('overlayadd', async e => {
@@ -39,15 +44,20 @@ export const pickPoint = (cb, onCancel = null) => {
   if (cb) leftMap.observe(mapView, { attributes: true, attributeFilter: ['class'] });
   c?.();
 };
+// What a tap on a water does: map-browse.js swaps in its preview sheet; without it, the water's page opens.
+export let onWaterTap = w => openWater(w);
+export const setWaterTap = fn => { onWaterTap = fn; };
 map.on('click', e => {
   if (picking) { const cb = picking; picking = null; cancelPick = null; leftMap.disconnect(); cb(e.latlng); return; }
   const w = nearestLabeledWater(e.latlng);
-  if (w) openWater(w);
+  if (w) onWaterTap(w); else map.fire('tapempty');
 });
 
 // ---------- Statewide labels: every named lake and river in the states we have data for ----------
 // Each state's list loads the first time the map shows part of that state. `statewide` holds every loaded one.
 export let statewide = null;
+// Make sure a state's list is loaded (for search), even when the map isn't looking at it yet.
+export const loadState = S => loadedStates.has(S.code) ? Promise.resolve(loadedStates.get(S.code)) : S.statewide().then(d => { loadedStates.set(S.code, d); const all = [...loadedStates.values()].filter(Boolean); statewide = { lakes: all.flatMap(x => x.lakes), riverLabels: all.flatMap(x => x.riverLabels) }; drawWaterLabels(); return d; });
 let shownWaters = [];
 const loadedStates = new Map();
 function loadStates() {
@@ -101,7 +111,7 @@ function drawWaterLabels() {
     if (!fits(w, map.latLngToContainerPoint([w.lat, w.lon]))) continue;
     shownWaters.push(w);
     const label = L.divIcon({ className: `wlabel ${w.kind}`, html: `<span>${esc(w.name)}</span>`, iconSize: null });
-    L.marker([w.lat, w.lon], { icon: label, keyboard: false }).on('click', () => openWater(w)).addTo(watersLayer);
+    L.marker([w.lat, w.lon], { icon: label, keyboard: false }).on('click', () => onWaterTap(w)).addTo(watersLayer);
   }
 }
 
@@ -117,7 +127,10 @@ function nearestLabeledWater(latlng) {
 }
 
 
-$('#btn-locate').onclick = () => locate().then(p => map.setView([p.lat, p.lon], 14)).catch(e => status(e.message));
+// A blue dot where you are, kept after the Me button so you can see yourself against the water.
+export let here = null;
+const hereLayer = L.layerGroup().addTo(map);
+$('#btn-locate').onclick = () => locate().then(p => { here = p; hereLayer.clearLayers(); L.circleMarker([p.lat, p.lon], { radius: 7, color: '#fff', weight: 2, fillColor: '#1f78c8', fillOpacity: 1 }).addTo(hereLayer); map.setView([p.lat, p.lon], 14); }).catch(e => status(e.message));
 $('#btn-add-lake').onclick = () => {
   status('Tap the map where the lake/river is');
   pickPoint(({ lat, lng }) => editLake({ lat, lon: lng }));
@@ -136,8 +149,7 @@ export async function refreshMap() {
   lakeLayer.clearLayers(); catchLayer.clearLayers();
   for (const lake of await db.all('lakes')) {
     if (!Number.isFinite(lake.lat) || !Number.isFinite(lake.lon)) continue;
-    L.marker([lake.lat, lake.lon], { title: lake.name }).addTo(lakeLayer)
-      .bindPopup(`<b>${esc(lake.name)}</b><br><a href="#" data-open-lake="${lake.id}">Open</a>`);
+    L.marker([lake.lat, lake.lon], { title: lake.name }).addTo(lakeLayer).on('click', () => onWaterTap(lake));
   }
   for (const c of await db.all('catches')) {
     if (c.lat == null) continue;

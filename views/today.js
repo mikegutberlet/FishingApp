@@ -41,7 +41,9 @@ export async function renderToday() {
             <div class="hero-now"><span class="hero-temp">–</span><div><div class="hero-sky">Loading forecast…</div><div class="hero-wind"></div></div></div></div>
           <div class="grid today-grid"></div></div>`).join('')}</div>
         ${favs.length > 1 ? `<div class="dots-row">${favs.map((_, i) => `<i class="${i ? '' : 'on'}"></i>`).join('')}</div>` : ''}
-        <p class="small"><a href="#" id="fav-edit">Change favorites</a></p>`}`;
+        <p class="small"><a href="#" id="fav-edit">Change favorites</a></p>`}
+    <div class="card map-card"><div class="map-card-head"><b>Map</b><span class="muted small">${lakes.length ? 'Your waters · tap to browse' : 'Tap to browse lakes and rivers'}</span><span>›</span></div><div id="today-map"></div></div>`;
+  import('../map-browse.js').then(m => m.mountTodayMap($('#today-map', el))); // dynamic: map-browse pulls in the map, which pulls in this view
   $('#go-plan').onclick = () => showView('planner');
   el.querySelectorAll('[data-fav]').forEach(b => b.onclick = () => toggleFavorite(lakes.find(l => l.id === b.dataset.fav), b));
   const done = $('#fav-done'), edit = $('#fav-edit');
