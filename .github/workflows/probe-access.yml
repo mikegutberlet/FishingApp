@@ -1,0 +1,16 @@
+name: Probe access sources (dev)
+on:
+  push:
+    paths:
+      - scripts/dev/probe-access.mjs
+      - .github/workflows/probe-access.yml
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/dev/probe-access.mjs
