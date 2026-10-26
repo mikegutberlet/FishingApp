@@ -21,10 +21,28 @@
   <script>try { if (JSON.parse(localStorage.getItem('tackle-box-lock'))?.hash) document.documentElement.classList.add('locked'); } catch {}</script>
 </head>
 <body>
+  <!-- Line icons, one stroke style on every phone (paths from Lucide, ISC license, and Feather, MIT). Use with ui.js icon('name'). -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-today" viewBox="0 0 24 24"><path d="M12 2v6M4.9 10.9l1.4 1.4M2 18h2M20 18h2M17.7 12.3l1.4-1.4M22 22H2M16 18a4 4 0 0 0-8 0M8 6l4-4 4 4"/></symbol>
+      <symbol id="i-map" viewBox="0 0 24 24"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14"/></symbol>
+      <symbol id="i-lakes" viewBox="0 0 24 24"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></symbol>
+      <symbol id="i-fish" viewBox="0 0 24 24"><path d="M6.5 12c.94-3.46 4.94-6 8.5-6 3.56 0 6.06 2.54 7 6-.94 3.47-3.44 6-7 6s-7.56-2.53-8.5-6ZM18 12v.5M16 17.93a9.77 9.77 0 0 1 0-11.86M7 10.67C7 8 5.58 5.97 2.73 5.5c-1 1.5-1 5 .23 6.5-1.24 1.5-1.24 5-.23 6.5C5.58 18.03 7 16 7 13.33"/></symbol>
+      <symbol id="i-journal" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></symbol>
+      <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+      <symbol id="i-locate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+      <symbol id="i-edit" viewBox="0 0 24 24"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></symbol>
+      <symbol id="i-share" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/></symbol>
+      <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></symbol>
+      <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+    </defs>
+  </svg>
   <header>
     <h1>🎣 Tackle Box</h1>
     <span id="status" class="muted"></span>
-    <button id="btn-settings" class="head-btn" data-go="settings" aria-label="Settings and your data" title="Settings and your data">⚙️</button>
+    <button id="btn-settings" class="head-btn" data-go="settings" aria-label="Settings and your data" title="Settings and your data"><svg class="ic" aria-hidden="true"><use href="#i-settings"/></svg></button>
   </header>
 
   <main>
@@ -34,9 +52,9 @@
     <section id="view-map" class="view">
       <div id="map"></div>
       <div class="map-actions">
-        <button id="btn-locate">📍 Me</button>
-        <button id="btn-waypoint">📌 Mark</button>
-        <button id="btn-add-lake">＋ Lake here</button>
+        <button id="btn-locate"><svg class="ic" aria-hidden="true"><use href="#i-locate"/></svg><span>Me</span></button>
+        <button id="btn-waypoint"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg><span>Mark</span></button>
+        <button id="btn-add-lake"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg><span>Lake here</span></button>
       </div>
       <div id="depth-legend" class="legend hidden"></div>
     </section>
@@ -138,11 +156,11 @@
   </main>
 
   <nav>
-    <button data-view="today" class="active">🌅<span>Today</span></button>
-    <button data-view="map">🗺️<span>Map</span></button>
-    <button data-view="lakes">🏞️<span>Lakes</span></button>
-    <button data-view="log">🐟<span>Log</span></button>
-    <button data-view="journal">📓<span>Journal</span></button>
+    <button data-view="today" class="active"><svg class="ic" aria-hidden="true"><use href="#i-today"/></svg><span>Today</span></button>
+    <button data-view="map"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg><span>Map</span></button>
+    <button data-view="lakes"><svg class="ic" aria-hidden="true"><use href="#i-lakes"/></svg><span>Lakes</span></button>
+    <button data-view="log"><svg class="ic" aria-hidden="true"><use href="#i-fish"/></svg><span>Log</span></button>
+    <button data-view="journal"><svg class="ic" aria-hidden="true"><use href="#i-journal"/></svg><span>Journal</span></button>
   </nav>
 
   <button id="trip-pill" class="hidden"></button>

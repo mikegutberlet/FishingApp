@@ -3,7 +3,7 @@
 // sw.js answers tile and data requests from any cache before going to the network.
 import { db } from './db.js';
 import { forLake } from './states/index.js';
-import { $, esc, fmtDate, status, showView, onShow } from './ui.js';
+import { $, esc, fmtDate, status, showView, onShow, icon } from './ui.js';
 import { map, baseLayers } from './map.js';
 
 const PREFIX = 'offline-';
@@ -233,7 +233,7 @@ export async function offlineDialog(lake) {
 // A button for the water's page header.
 export function offlineButton(lake) {
   const b = document.createElement('button');
-  b.textContent = '⬇ Offline';
+  b.innerHTML = `${icon('download')}Offline`;
   b.onclick = async () => { b.disabled = true; try { await offlineDialog(lake); } finally { b.disabled = false; } }; // one sheet per tap
   return b;
 }

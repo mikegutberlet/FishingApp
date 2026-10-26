@@ -6,7 +6,7 @@ import { WEATHER_CODES, pressureTrend } from '../data-sources.js';
 import { weatherFor, fetchAlerts, alertLevel, localKey, addDays, levelChange } from '../forecast.js';
 import { solunar, dayRating, stars, nextWindow, shortTime } from '../solunar.js';
 import { windOnWater, bankName } from '../wind.js';
-import { $, esc, fmtDate, arrow, showView, onShow, emptyState } from '../ui.js';
+import { $, esc, fmtDate, arrow, showView, onShow, emptyState, icon } from '../ui.js';
 import { openLake } from './lake.js';
 
 // Slot for the "days like today" insight (workstream E). Register a renderer:
@@ -30,7 +30,7 @@ export async function renderToday() {
   const lakes = (await db.all('lakes')).sort((a, b) => a.name.localeCompare(b.name));
   const favs = lakes.filter(l => l.favorite);
   el.innerHTML = `<div class="today-head"><h2>${new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}</h2>
-      <button id="go-plan">🗓 Plan a trip</button></div>
+      <button id="go-plan">${icon('calendar')}Plan a trip</button></div>
     <div id="today-insight" class="card hidden" data-slot="days-like-today"></div>
     ${!lakes.length ? emptyState('🎣', 'Welcome! Find a water you fish, save it, and star it with ☆ to see its wind, bite windows, level and plants here every day.', ['🔎 Find a water', 'lakes'], ['🗺️ Open the map', 'map'])
       : !favs.length || editing ? `<div class="card"><h3>Your favorite waters</h3><p class="muted small">Star the waters you fish most. They show here with today's wind, bite windows, level and plants.</p>

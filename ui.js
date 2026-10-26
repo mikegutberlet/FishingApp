@@ -7,6 +7,8 @@ export const fmtTime = iso => new Date(iso).toLocaleTimeString(undefined, { hour
 export const status = msg => { $('#status').textContent = msg; if (msg) setTimeout(() => $('#status').textContent === msg && ($('#status').textContent = ''), 4000); };
 export const arrow = deg => `<span class="arrow" style="transform:rotate(${deg + 180}deg)">↑</span>`;
 export const M_TO_FT = 3.28084;
+// A line icon from the sprite at the top of index.html.
+export const icon = name => `<svg class="ic" aria-hidden="true"><use href="#i-${name}"/></svg>`;
 
 export const COMMON_SPECIES = ['Largemouth bass', 'Smallmouth bass', 'Walleye', 'Northern pike', 'Muskellunge', 'Bluegill', 'Black crappie', 'White crappie',
   'Yellow perch', 'Rainbow trout', 'Brown trout', 'Brook trout', 'Lake trout', 'Channel catfish', 'Flathead catfish', 'Striped bass', 'White bass', 'Carp', 'Salmon'];

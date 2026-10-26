@@ -8,7 +8,6 @@ header { background: linear-gradient(120deg, var(--brand), var(--brand-2)); box-
 header h1 { font-size: 19px; letter-spacing: .2px; }
 nav { box-shadow: 0 -1px 8px rgba(16,40,52,.06); }
 nav button { position: relative; transition: color .15s; }
-nav button:not(.active) { filter: grayscale(.55); opacity: .8; }
 nav button.active::after { content: ''; position: absolute; top: 0; left: 22%; right: 22%; height: 3px; border-radius: 0 0 3px 3px; background: var(--accent); }
 nav button.active span { font-weight: 600; }
 
@@ -116,3 +115,14 @@ header #status { margin-left: auto; text-align: right; overflow: hidden; text-ov
 .dots-row { display: flex; justify-content: center; gap: 6px; margin: 2px 0 6px; }
 .dots-row i { width: 7px; height: 7px; border-radius: 50%; background: var(--line); }
 .dots-row i.on { background: var(--accent); }
+
+/* Line icons */
+.ic { width: 1.15em; height: 1.15em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vertical-align: -.2em; flex-shrink: 0; }
+button > .ic:first-child { margin-right: 6px; }
+nav button .ic { width: 24px; height: 24px; margin: 0; stroke-width: 1.8; }
+nav button.active .ic { stroke-width: 2.2; }
+.head-btn .ic { width: 22px; height: 22px; margin: 0; }
+.map-actions button { display: flex; align-items: center; justify-content: center; }
+.map-actions button .ic { color: var(--accent); }
+.lake-acts button { display: inline-flex; align-items: center; justify-content: center; }
+.lake-acts button .ic { margin-right: 6px; }
