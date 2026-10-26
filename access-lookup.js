@@ -15,7 +15,7 @@ const BLM = 'https://gis.blm.gov/arcgis/rest/services/transportation/BLM_Natl_GT
 const PADUS = 'https://services.arcgis.com/v01gqwM5QqNysAAi/ArcGIS/rest/services/Manager_Name_PADUS/FeatureServer/0';
 // The public Overpass server answers in 30–40 s or says it's at capacity (502); the mirrors timed out in testing.
 const OVERPASS = 'https://overpass-api.de/api/interpreter';
-const CACHE = 'tb-access';
+const CACHE = 'tb-access'; // sw.js keeps this cache across app updates
 export const MAX_AGE_DAYS = 90;
 // A lookup where a service didn't answer is tried again the next day.
 export const isFresh = c => !!c && Date.now() - Date.parse(c.fetchedAt) < (c.failed?.length ? 1 : MAX_AGE_DAYS) * 864e5;
