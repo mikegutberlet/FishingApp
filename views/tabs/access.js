@@ -5,12 +5,17 @@ import { forLake } from '../../states/index.js';
 import { esc, fmtDate, showView } from '../../ui.js';
 import { map, layersControl, pickPoint } from '../../map.js';
 import { openLake } from '../lake.js';
-import { lookupAccess, cached, MAX_AGE_DAYS } from '../../access-lookup.js';
-import { summarize, isBig, CLASS_TEXT, MANAGERS, PUB_ACCESS, fmtMi } from '../../access-rules.js';
+import { lookupAccess, cached, isFresh } from '../../access-lookup.js';
+import { summarize, isBig, CLASS_TEXT, MANAGERS, PUB_ACCESS, DESIGNATIONS, WILDERNESS_URL, isWilderness, fmtMi } from '../../access-rules.js';
 import { renderAccess, directionsUrl } from '../access.js';
 
 const SOURCES = ['USFS MVUM', 'USFS roads', 'USFS trails', 'BLM routes', 'PAD-US', 'OpenStreetMap', 'Wikipedia'];
 const src = s => s?.url ? `<a class="gt-src" href="${esc(s.url)}" target="_blank" rel="noopener" title="${esc(s.label)}">source ↗</a>` : '';
+// Every record a fact came from (a Forest Service road is in both the motor-vehicle map and the road inventory).
+const srcs = f => (f.sources ?? [f.source]).map(x => x?.url ? `<a class="gt-src" href="${esc(x.url)}" target="_blank" rel="noopener" title="${esc(x.label)}">${f.sources?.length > 1 ? esc(SHORT[x.label.split(' ·')[0]] ?? 'source') : 'source'} ↗</a>` : '').join(' ');
+const SHORT = { 'USFS Motor Vehicle Use Map': 'MVUM', 'USFS National Forest System roads': 'FS roads', 'USFS National Forest System trails': 'FS trails', 'BLM roads and trails (GTLF)': 'BLM', OpenStreetMap: 'OSM' };
+// One entry per name: a trail or road is often several records (segments).
+const uniq = list => list.filter((f, i) => !f.name || list.findIndex(g => g.name === f.name) === i);
 const named = f => esc(f.name || (f.kind === 'trail' ? 'Unnamed trail' : f.kind === 'gate' ? 'Gate' : 'Unnamed road'));
 const dist = f => f.shoreKm <= 0.08 ? 'at the water' : `${fmtMi(f.shoreKm)} from the water`;
 const WHO = { car: 'cars', highClearance: 'high clearance', atv: 'ATVs', motorcycle: 'motorcycles', foot: 'hiking', bike: 'bikes' };
@@ -22,7 +27,7 @@ const dates = f => {
   return [part, d.note].filter(Boolean).join(' · ');
 };
 const line = f => `<div class="acc gt-row"><span>${named(f)}${f.ref && f.name && !f.name.includes(f.ref) ? ` <span class="muted">${esc(f.ref)}</span>` : ''}${f.tags.designation ? `<br><span class="muted small">${esc(f.tags.designation)}</span>` : ''}${dates(f) ? `<br><span class="small gt-season">⏱ ${esc(dates(f))}</span>` : ''}</span>
-  <span class="nowrap muted small">${dist(f)} · ${src(f.source)}</span></div>`;
+  <span class="nowrap muted small">${dist(f)} · ${srcs(f)}</span></div>`;
 
 // The spot being checked for each water, while the app is open: the water's own point unless you picked one.
 const spots = {};
@@ -64,9 +69,9 @@ export async function renderGettingThere(lake, body) {
     if (big && !spot) { el.innerHTML = `<div class="card"><h3>Getting there</h3><p class="muted small">Pick a ramp above or a spot on the map, and the roads, trails and land records around it are checked.</p></div>`; return; }
     const have = await cached(lake, spot);
     if (!el.isConnected) return;
-    if (!have || Date.now() - Date.parse(have.fetchedAt) > MAX_AGE_DAYS * 864e5) {
+    if (!isFresh(have)) {
       el.innerHTML = `<div class="card"><h3>Getting there</h3><p class="muted small">${navigator.onLine === false ? 'You’re offline and this spot’s roads and trails haven’t been looked up yet. Open this tab once with signal and they’ll be kept on your phone.' : 'Looking up roads, motor-vehicle maps, trails and land records around this water…'}</p></div>`;
-      if (navigator.onLine === false && !have) return;
+      if (navigator.onLine === false) { if (have) draw(lake, have, el); return; }
     }
     try {
       const data = await lookupAccess(lake, { spot, onPartial: d => el.isConnected && draw(lake, d, el) });
@@ -96,26 +101,28 @@ function draw(lake, data, el) {
     : v ? `${verdict.label} to within ${fmtMi(v.hikeKm)}, then on foot.`
     : `A road reaches the water (${fmtMi(s.nearestUnknown.shoreKm)}), but the records don’t say what it takes to drive it.`;
 
+  const wild = (data.land?.parcels ?? []).find(isWilderness);
+  const wildNote = wild ? ` The water is in the ${esc(wild.unit || 'a wilderness')}: no bikes or motor vehicles inside wilderness (<a href="${WILDERNESS_URL}" target="_blank" rel="noopener">Wilderness Act ↗</a>, ${srcs(wild)}).` : '';
   const chip = (icon, label, ok, note) => `<div class="gt-chip ${ok === true ? 'ok' : ok === false ? 'no' : ''}"><span>${icon}</span><div><b>${label}</b><div class="muted small">${note}</div></div></div>`;
-  const list = (items, how) => items.map(t => `${named(t)}${t.shoreKm > 0.08 ? ` <span class="muted">(${fmtMi(t.shoreKm)})</span>` : ''} ${src(t.source)}`).slice(0, 4).join(', ');
+  const list = items => uniq(items).map(t => `${named(t)}${t.shoreKm > 0.08 ? ` <span class="muted">(${fmtMi(t.shoreKm)})</span>` : ''} ${srcs(t)}`).slice(0, 4).join(', ');
   const chips = [
     chip(verdict?.icon ?? '🥾', v ? verdict.label : 'No drivable road found', v ? ['paved', 'road', 'car'].includes(v.cls) : null,
-      v ? `${esc(v.road.name || 'unnamed road')}: ${verdict.text} ${v.road.tags.maint ? `Forest Service maintenance “${esc(v.road.tags.maint.toLowerCase())}”. ` : ''}${src(v.road.source)}` : s.nearestUnknown ? `${esc(s.nearestUnknown.name || 'A road')} reaches the water, type unknown. ${src(s.nearestUnknown.source)}` : 'Within the area checked.'),
+      v ? `${esc(v.road.name || 'unnamed road')}: ${verdict.text} ${v.road.tags.maint ? `Forest Service maintenance “${esc(v.road.tags.maint.toLowerCase())}”. ` : ''}${srcs(v.road)}` : s.nearestUnknown ? `${esc(s.nearestUnknown.name || 'A road')} reaches the water, type unknown. ${srcs(s.nearestUnknown)}` : 'Within the area checked.'),
     chip('🥾', walk ? `Hike about ${fmtMi(v.hikeKm)}` : v ? 'No hike needed' : 'Hike-in', walk ? null : v ? true : null,
       s.hikeTrails.length ? `Trails nearby: ${list(s.hikeTrails)}` : walk ? 'No mapped trail from the road: expect cross-country or an unmapped use trail.' : v ? 'The road reaches the shore.' : 'No road or trail reaches the shore in the records checked.'),
-    chip('🚵', s.bikeTrails.length ? 'Mountain bike OK on some trails' : s.noBikeTrails.length ? 'Bikes not allowed on nearby trails' : 'Bike access not recorded', s.bikeTrails.length ? true : s.noBikeTrails.length ? false : null,
-      s.bikeTrails.length ? list(s.bikeTrails) : s.noBikeTrails.length ? `No bikes: ${list(s.noBikeTrails)}` : 'A bike can use any road open to cars.'),
+    chip('🚵', wild && !s.bikeTrails.length ? 'No bikes: wilderness' : s.bikeTrails.length ? 'Mountain bike OK on some trails' : s.noBikeTrails.length ? 'Bikes not allowed on nearby trails' : 'Bike access not recorded', wild && !s.bikeTrails.length ? false : s.bikeTrails.length ? true : s.noBikeTrails.length ? false : null,
+      (s.bikeTrails.length ? list(s.bikeTrails) : s.noBikeTrails.length ? `No bikes: ${list(s.noBikeTrails)}` : 'A bike can use any road open to cars.') + wildNote),
     chip('🏍️', s.motoTrails.length || s.ohvRoads.length ? 'Motorcycle / ATV routes nearby' : s.streetLegalOnly.length ? 'Street-legal vehicles only' : 'No OHV routes recorded', s.motoTrails.length || s.ohvRoads.length ? true : s.streetLegalOnly.length ? false : null,
-      s.motoTrails.length || s.ohvRoads.length ? `${[...s.motoTrails, ...s.ohvRoads].slice(0, 4).map(t => `${named(t)}${t.tags.atv === 'no' ? ' (motorcycles only)' : ''} ${src(t.source)}`).join(', ')}` : s.streetLegalOnly.length ? `${list(s.streetLegalOnly)}: no green-sticker OHVs on these roads.` : 'Dirt bikes and ATVs need a route designated for them; none is recorded around this water.'),
+      (s.motoTrails.length || s.ohvRoads.length ? `${uniq([...s.motoTrails, ...s.ohvRoads]).slice(0, 4).map(t => `${named(t)}${t.tags.atv === 'no' ? ' (motorcycles only)' : ''} ${srcs(t)}`).join(', ')}` : s.streetLegalOnly.length ? `${list(s.streetLegalOnly)}: no green-sticker OHVs on these roads.` : 'Dirt bikes and ATVs need a route designated for them; none is recorded around this water.') + (s.motoTrails.length || s.ohvRoads.length ? '' : wildNote)),
   ];
-  if (s.seasonal.length) chips.push(chip('⏱', 'Seasonal', null, s.seasonal.slice(0, 3).map(f => `${named(f)}: ${esc(dates(f))} ${src(f.source)}`).join('<br>')));
+  if (s.seasonal.length) chips.push(chip('⏱', 'Seasonal', null, uniq(s.seasonal).slice(0, 3).map(f => `${named(f)}: ${esc(dates(f))} ${srcs(f)}`).join('<br>')));
   if (s.lockedGates.length) chips.push(chip('🔒', 'Locked or private gate on the way', false, s.lockedGates.map(g => `${named(g)}${g.tags.access ? ` (${esc(g.tags.access)})` : ''} ${fmtMi(g.shoreKm)} out ${src(g.source)}`).join('<br>')));
 
   const land = data.land?.parcels?.length ? data.land.parcels : null;
   const landHtml = land ? land.map((p, i) => {
     const m = MANAGERS[p.manager] ?? { name: p.localManager || p.manager || 'Unknown manager', hint: '' };
-    return `<div class="${i ? 'small muted' : ''}" style="margin-top:${i ? 6 : 0}px"><b>${esc(m.name)}</b>${p.unit ? ` · ${esc(p.unit)}` : ''}${p.designation ? ` <span class="muted">(${esc(p.designation)})</span>` : ''}${p.access && PUB_ACCESS[p.access] ? ` · ${PUB_ACCESS[p.access]}` : ''} ${src(p.source)}
-      ${!i && m.hint ? `<div class="small muted">${m.hint}</div>` : ''}</div>`;
+    return `<div class="${i ? 'small muted' : ''}" style="margin-top:${i ? 6 : 0}px"><b>${esc(m.name)}</b>${p.unit ? ` · ${esc(p.unit)}` : ''}${p.designation ? ` <span class="muted">(${esc(DESIGNATIONS[p.designation] ?? p.designation)})</span>` : ''}${p.access && PUB_ACCESS[p.access] ? ` · ${PUB_ACCESS[p.access]}` : ''} ${src(p.source)}
+      ${!i && m.hint ? `<div class="small muted">${m.hint}</div>` : ''}${isWilderness(p) ? `<div class="small muted">Wilderness: on foot or horseback only. Some wildernesses need a permit even for day hikes or have quotas; check the forest’s page.</div>` : ''}</div>`;
   }).join('') : `<p class="muted small">${data.land ? 'No protected or public land is recorded at the shoreline, which usually means private land or a town: look for a public ramp, park or easement in the list below.' : 'Land records didn’t answer.'}</p>`;
 
   const links = [
@@ -166,7 +173,7 @@ let routeLayer = null;
 function showRoutes(lake, s) {
   if (!routeLayer) { routeLayer = L.layerGroup(); layersControl.addOverlay(routeLayer, 'Roads & trails'); }
   routeLayer.clearLayers().addTo(map);
-  const pop = f => `<b>${named(f)}</b><br>${esc([CLASS_TEXT[f.cls]?.label, f.cls ? null : uses(f.tags), f.tags.designation].filter(Boolean).join(' · '))}${dates(f) ? `<br>⏱ ${esc(dates(f))}` : ''}<br><a href="${esc(f.source.url)}" target="_blank" rel="noopener">${esc(f.source.label)} ↗</a>`;
+  const pop = f => `<b>${named(f)}</b><br>${esc([CLASS_TEXT[f.cls]?.label, f.cls ? null : uses(f.tags), f.tags.designation].filter(Boolean).join(' · '))}${dates(f) ? `<br>⏱ ${esc(dates(f))}` : ''}<br>${(f.sources ?? [f.source]).map(x => `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.label)} ↗</a>`).join('<br>')}`;
   for (const r of s.roads) for (const p of r.paths) L.polyline(p, { color: COLORS[r.cls] ?? COLORS.unknown, weight: r.cls === 'paved' ? 4 : 3, opacity: 0.85 }).bindPopup(pop(r)).addTo(routeLayer);
   for (const t of s.trails) for (const p of t.paths) L.polyline(p, { color: t.tags.motorcycle === 'yes' || t.tags.atv === 'yes' ? '#9b2c2c' : t.tags.bike === 'yes' ? '#2f855a' : '#6b46c1', weight: 2, dashArray: '6 5', opacity: 0.9 }).bindPopup(pop(t)).addTo(routeLayer);
   for (const g of s.lockedGates) L.circleMarker([g.lat, g.lon], { radius: 6, color: '#c53030', fillOpacity: 0.9 }).bindPopup(pop(g)).addTo(routeLayer);

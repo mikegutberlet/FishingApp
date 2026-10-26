@@ -2,6 +2,12 @@
 // for a few known waters and prints what the tab would say. The sandbox can't reach the services; Actions can.
 globalThis.location = { origin: 'https://example.invalid' };
 globalThis.caches = { open: async () => ({ match: async () => null, put: async () => {}, delete: async () => {} }) };
+// Behave like a browser: send a browser-style User-Agent and log why a request failed.
+const realFetch = globalThis.fetch;
+globalThis.fetch = async (u, init = {}) => {
+  try { return await realFetch(u, { ...init, headers: { 'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) TackleBox-check', Referer: 'https://mikegutberlet.github.io/FishingApp/', ...(init.headers ?? {}) } }); }
+  catch (e) { console.warn(`fetch ${String(u).slice(0, 80)} failed: ${e.message} ${e.cause?.code ?? ''} ${e.cause?.message ?? ''}`); throw e; }
+};
 const { lookupAccess } = await import('../../access-lookup.js');
 const { summarize, CLASS_TEXT, fmtMi } = await import('../../access-rules.js');
 

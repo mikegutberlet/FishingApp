@@ -76,7 +76,8 @@ export function summarize(at, shore, features, { land = null } = {}) {
   const byClass = cls => drivable.filter(r => r.cls === cls);
   let vehicle = null;
   for (const cls of ['paved', 'road', 'car', 'highClearance', 'ohvOnly']) {
-    const at = byClass(cls).find(r => r.shoreKm <= AT);
+    // At the water, an agency record (with its open dates and maintenance level) beats the OpenStreetMap line.
+    const at = byClass(cls).filter(r => r.shoreKm <= AT).sort((a, b) => (a.source.label === 'OpenStreetMap') - (b.source.label === 'OpenStreetMap'))[0];
     if (at) { vehicle = { cls, road: at, hikeKm: 0 }; break; }
   }
   // Nothing drives to the shore: the easiest road that gets anywhere near, and the walk from it.
@@ -131,3 +132,14 @@ export const MANAGERS = {
   PVT: { name: 'Private', hint: 'Private land: you need the owner’s permission unless a public easement or road reaches the water.' },
 };
 export const PUB_ACCESS = { OA: 'open to the public', RA: 'restricted access (permit, season or area limits)', XA: 'closed to the public', UK: 'public access not recorded' };
+
+// PAD-US designation types (Des_Tp) an angler is likely to meet.
+export const DESIGNATIONS = {
+  NF: 'National Forest', NP: 'National Park', NM: 'National Monument', NRA: 'National Recreation Area', NWR: 'National Wildlife Refuge', NCA: 'National Conservation Area',
+  WA: 'Wilderness', WSA: 'Wilderness Study Area', IRA: 'Inventoried Roadless Area', WSR: 'Wild and Scenic River', PUB: 'Public land', REC: 'Recreation area', RMA: 'Recreation management area',
+  SP: 'State park', SREC: 'State recreation area', SW: 'State wilderness', SWA: 'State wildlife area', SCA: 'State conservation area', SDA: 'State resource management area', SRMA: 'State resource management area', SOTH: 'State land',
+  LP: 'Local park', LREC: 'Local recreation area', LCA: 'Local conservation area', LOTH: 'Local land', ACC: 'Access area', FOTH: 'Federal land', TRIBL: 'Tribal land', MIL: 'Military land', PROC: 'Proclamation boundary',
+};
+// A wilderness designation means no motor vehicles and no bicycles (Wilderness Act, 16 U.S.C. 1133(c)).
+export const WILDERNESS_URL = 'https://www.law.cornell.edu/uscode/text/16/1133';
+export const isWilderness = p => p?.designation === 'WA';

@@ -17,6 +17,8 @@ const PADUS = 'https://services.arcgis.com/v01gqwM5QqNysAAi/ArcGIS/rest/services
 const OVERPASS = 'https://overpass-api.de/api/interpreter';
 const CACHE = 'tb-access';
 export const MAX_AGE_DAYS = 90;
+// A lookup where a service didn't answer is tried again the next day.
+export const isFresh = c => !!c && Date.now() - Date.parse(c.fetchedAt) < (c.failed?.length ? 1 : MAX_AGE_DAYS) * 864e5;
 
 // A lookup is for a water, at its own map point or at a spot on its shore you picked (big lakes, long rivers).
 export const accessKey = (lake, spot = null) => (lake.nhdId ? `nhd-${lake.nhdId}` : String(lake.id)) + (spot ? `@${(+spot.lat).toFixed(3)},${(+spot.lon).toFixed(3)}` : '');
@@ -39,7 +41,7 @@ export async function forget(lake, spot = null) {
 export async function lookupAccess(lake, { spot = null, force = false, onPartial = null } = {}) {
   if (!force) {
     const c = await cached(lake, spot);
-    if (c && Date.now() - Date.parse(c.fetchedAt) < MAX_AGE_DAYS * 864e5) return c;
+    if (isFresh(c)) return c;
   }
   const lat = +(spot?.lat ?? lake.lat), lon = +(spot?.lon ?? lake.lon), shore = spot ? 0 : shoreKm(lake), km = spot ? 2 : searchKm(lake);
   const dLat = km / 110.57, dLon = km / (111.32 * Math.cos(lat * Math.PI / 180));
@@ -140,7 +142,8 @@ async function nfsRoads(bbox) {
 // (prohibited) there. Trails in the basic data set say "N/A" for all of them: not recorded.
 async function nfsTrails(bbox) {
   const layer = `${FS}/EDW_TrailNFSPublish_01/MapServer/0`;
-  const USES = { foot: 'hiker_pedestrian', bike: 'bicycle', motorcycle: 'motorcycle', atv: 'atv', wide: 'fourwd', ebike: 'e_bike_class1' };
+  const USES = { foot: 'hiker_pedestrian', bike: 'bicycle', motorcycle: 'motorcycle', atv: 'atv', wide: 'fourwd' };
+  // Asking for a field the layer doesn't have fails the whole query ("Failed to execute query"), so the list is exact.
   const fields = Object.values(USES).flatMap(u => [`${u}_managed`, `${u}_accpt_disc`, `${u}_restricted`]).join(',');
   const rows = await arc(layer, bbox, `objectid,trail_name,trail_no,trail_type,trail_class,trail_surface,terra_motorized,gis_miles,typical_trail_grade,${fields}`);
   const val = v => v != null && String(v).trim() && !/^n\/?a$/i.test(String(v).trim()) ? String(v).trim() : null;
@@ -226,7 +229,11 @@ async function osm(lat, lon, km) {
       const j = await r.json();
       if (j.remark && !j.elements?.length) throw new Error(j.remark);
       return (j.elements ?? []).map(osmFeature).filter(Boolean);
-    } catch (e) { last = e; if (e.name === 'TimeoutError' || e.name === 'AbortError') break; }
+    } catch (e) {
+      last = e;
+      // Timed out, or the phone has no network: don't wait to try again. A dropped connection (the server is busy) is retried.
+      if (e.name === 'TimeoutError' || e.name === 'AbortError' || globalThis.navigator?.onLine === false) break;
+    }
   }
   throw last ?? new Error('Overpass unreachable');
 }
@@ -312,9 +319,25 @@ function surfaceOf(s) {
   if (/^NAT\b|native|dirt|earth|soil/i.test(s)) return 'dirt';
   return null;
 }
-// The same road from two sources (a Forest Service road in the MVUM and the road inventory, and in OpenStreetMap)
-// is kept once per source: each source adds its own facts, so no merging; only exact repeats are dropped.
+// A Forest Service road is in both the Motor Vehicle Use Map (who may drive it, when) and the road inventory
+// (maintenance level, surface). Records with the same road number become one, keeping both sources and every
+// segment; the MVUM's answer wins where both have one. Other sources are kept as they are (OpenStreetMap's line for
+// the same road adds its own surface and gate facts); only exact repeats are dropped.
 function dedupe(features) {
-  const seen = new Set();
-  return features.filter(f => { if (seen.has(f.source.id)) return false; seen.add(f.source.id); return true; });
+  const seen = new Set(), byRef = new Map(), out = [];
+  for (const f of features) {
+    if (seen.has(f.source.id)) continue;
+    seen.add(f.source.id);
+    const usfs = /^(mvum|nfsr)-/.test(f.source.id) && f.kind === 'road' && f.ref;
+    const prev = usfs && byRef.get(f.ref);
+    if (!prev) { out.push({ ...f, sources: [f.source] }); if (usfs) byRef.set(f.ref, out[out.length - 1]); continue; }
+    const mv = f.source.id.startsWith('mvum-') ? f : null;
+    const keep = v => Object.fromEntries(Object.entries(v).filter(([, x]) => x != null && !(typeof x === 'object' && !Object.keys(x).length)));
+    prev.tags = mv ? { ...prev.tags, ...keep(f.tags) } : { ...f.tags, ...keep(prev.tags), maint: prev.tags.maint ?? f.tags.maint, surface: prev.tags.surface ?? f.tags.surface };
+    if (mv) { prev.source = f.source; prev.name = f.name ?? prev.name; }
+    prev.tags.designation = [...new Set([prev.tags.designation, f.tags.designation].filter(Boolean).flatMap(d => d.split(' · ')))].join(' · ');
+    if (!prev.sources.some(x => x.label === f.source.label)) prev.sources.push(f.source);
+    prev.paths = [...prev.paths, ...f.paths];
+  }
+  return out;
 }
