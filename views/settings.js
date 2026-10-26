@@ -1,7 +1,9 @@
 // The Data view: backup and restore, sharing a lake with friends, install help, storage use.
-import { db, exportAll, importAll } from '../db.js';
+import { db, importAll } from '../db.js';
 import { $, status, onShow } from '../ui.js';
 import { refreshMap } from '../map.js';
+import { backup, openFile } from '../backup.js';
+import { isCrewPack, importCrewPack } from '../crew.js';
 
 // ---------- Sharing with friends ----------
 // A lake pack holds the lake, its depth maps and stocking notes. Catches and notes stay private unless included.
@@ -21,16 +23,12 @@ export async function shareLake(lake) {
 }
 
 // ---------- Backup ----------
-$('#btn-export').onclick = async () => {
-  const data = await exportAll();
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([JSON.stringify(data)], { type: 'application/json' }));
-  a.download = `tackle-box-backup-${new Date().toISOString().slice(0, 10)}.json`;
-  a.click();
-};
+$('#btn-export').onclick = () => backup().catch(err => alert(err.message));
 $('#import-file').onchange = async e => {
   try {
-    const data = JSON.parse(await e.target.files[0].text());
+    const data = await openFile(JSON.parse(await e.target.files[0].text()));
+    e.target.value = '';
+    if (isCrewPack(data)) return await importCrewPack(data);
     const isPack = !data.exportedAt;
     const replace = !isPack && confirm('Replace everything on this device with the backup? (Cancel = merge)');
     const skipped = await importAll(data, { replace });

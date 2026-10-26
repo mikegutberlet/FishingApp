@@ -128,6 +128,7 @@ export function locate() {
 export async function refreshMap() {
   lakeLayer.clearLayers(); catchLayer.clearLayers();
   for (const lake of await db.all('lakes')) {
+    if (!Number.isFinite(lake.lat) || !Number.isFinite(lake.lon)) continue;
     L.marker([lake.lat, lake.lon], { title: lake.name }).addTo(lakeLayer)
       .bindPopup(`<b>${esc(lake.name)}</b><br><a href="#" data-open-lake="${lake.id}">Open</a>`);
   }
