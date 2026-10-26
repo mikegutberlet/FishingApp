@@ -16,6 +16,8 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="forecast.css">
   <link rel="stylesheet" href="maps.css">
+  <link rel="stylesheet" href="privacy.css">
+  <script>try { if (JSON.parse(localStorage.getItem('tackle-box-lock'))?.hash) document.documentElement.classList.add('locked'); } catch {}</script>
 </head>
 <body>
   <header>
@@ -59,6 +61,7 @@
           <label>Depth (<span data-unit="depth">ft</span>) <input name="depth" type="number" step="any" min="0" inputmode="decimal"></label>
           <label>Water temp (°F) <input name="waterTemp" type="number" step="0.5" inputmode="decimal"></label>
         </div>
+        <label>Water clarity <select name="clarity"><option value="">–</option><option>Clear</option><option>Stained</option><option>Murky</option><option>Muddy</option></select></label>
         <label>From your tackle box <select name="tackleId"><option value="">–</option></select></label>
         <label>Lure / bait <input name="lure" list="lure-list"></label>
         <label>Technique <input name="technique" placeholder="jig, drop shot, trolling…"></label>
@@ -99,6 +102,11 @@
         <label class="file-btn">⬆ Import backup or shared lake <input type="file" id="import-file" accept=".json,application/json" hidden></label>
         <p id="storage-info" class="muted small"></p>
       </div>
+      <h2>Privacy and sharing</h2>
+      <div class="card" id="lock-card"></div>
+      <div class="card" id="backup-card"></div>
+      <div class="card" id="crew-card"></div>
+      <div class="card" id="license-card"></div>
       <h2>Units</h2>
       <form class="card form row" id="units-form">
         <label>Length <select name="length"><option value="in">inches</option><option value="cm">cm</option></select></label>
@@ -124,7 +132,8 @@
           <li><b>Plant calendars</b>: if you subscribe, your calendar app fetches that water's public plant feed from this app's site.</li>
           <li><b>Directions</b> links open Google Maps with that spot's location, only when you tap one.</li>
         </ul>
-        <p>Catches, notes, photos, spots and depth data never leave the device.</p>
+        <p>Catches, notes, photos, spots and depth data never leave the device. Sharing with your crew sends only what you pick, directly as a file
+          or inside a QR code's link (the part after <code>#</code>, which browsers never send to a website).</p>
       </div>
     </section>
   </main>

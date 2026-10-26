@@ -12,6 +12,7 @@ import { renderStocking } from './tabs/stocking.js';
 import { renderHistory } from './tabs/history.js';
 import { renderLakeCatches } from './tabs/catches.js';
 import { renderNotes } from './tabs/notes.js';
+import { renderCrew } from './tabs/crew.js';
 import { renderInfo } from './tabs/info.js';
 import { renderStateSafety, renderNvBanner } from './tabs/nv-safety.js';
 import { renderOrBanner } from './tabs/or-safety.js';
@@ -52,6 +53,7 @@ export const LAKE_TABS = {
   catches: { label: 'Catches', render: renderLakeCatches },
   notes: { label: 'Notes', render: renderNotes },
   safety: { label: 'Regs & safety', render: (l, b) => forLake(l)?.code === 'CA' ? renderSafety(l, b) : renderStateSafety(l, b) },
+  crew: { label: 'Crew', render: renderCrew },
   info: { label: 'Info', render: renderInfo },
 };
 // Tabs on a water you haven't saved yet (only the ones that work without your own data).
