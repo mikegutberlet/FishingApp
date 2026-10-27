@@ -124,12 +124,14 @@ export async function renderGettingThere(lake, body) {
   const load = async () => {
     loadNow();
     if (big && !spot) { el.innerHTML = `<div class="card"><h3>Getting there</h3><p class="muted small">Pick a ramp above or a spot on the map, and the roads, trails and land records around it are checked.</p></div>`; return; }
-    const have = await cached(lake, spot) ?? (spot ? null : await archiveAccess(lake)); // nothing kept yet: the repo's archived copy, until a live lookup lands
+    const have = await cached(lake, spot);
+    const archive = have || spot ? null : await archiveAccess(lake); // nothing kept yet: the repo's archived copy shows while the live lookup runs
     if (!el.isConnected) return;
+    if (archive) { last = archive; draw(lake, archive, el, ctx); }
     // A lookup saved before the walk-in profile existed gets one now.
     if (isFresh(have) && !('hike' in have) && navigator.onLine !== false) withHike(lake, spot, have).then(d => { if (el.isConnected) { last = d; draw(lake, d, el, ctx); } });
     if (!isFresh(have)) {
-      el.innerHTML = `<div class="card"><h3>Getting there</h3><p class="muted small">${navigator.onLine === false ? 'You’re offline and this spot’s roads and trails haven’t been looked up yet. Open this tab once with signal and they’ll be kept on your phone.' : 'Looking up roads, motor-vehicle maps, trails and land records around this water…'}</p></div>`;
+      if (!archive) el.innerHTML = `<div class="card"><h3>Getting there</h3><p class="muted small">${navigator.onLine === false ? 'You’re offline and this spot’s roads and trails haven’t been looked up yet. Open this tab once with signal and they’ll be kept on your phone.' : 'Looking up roads, motor-vehicle maps, trails and land records around this water…'}</p></div>`;
       if (navigator.onLine === false) { if (have) { last = have; draw(lake, have, el, ctx); } return; }
     }
     try {

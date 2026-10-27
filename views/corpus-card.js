@@ -23,5 +23,5 @@ export async function renderArchiveCard(lake, el) {
     ${f.notes?.length ? `<div class="small"><b>Notes kept with the water</b>${f.notes.map(n => `<p class="small">📝 ${esc(n.text)} <span class="muted">${esc(n.date ?? '')}${n.by ? `, ${esc(n.by)}` : ''}</span></p>`).join('')}</div>` : ''}
     ${manual.length ? `<p class="small muted">Hand-set facts: ${manual.map(([k, v]) => `${esc(k)} = ${esc(String(v))}`).join(', ')}</p>` : ''}
     <p class="muted small">${f.sources?.length ?? 0} sources · first seen ${esc(f.firstSeen ?? '')} · last checked ${fmtDate(f.checkedAt)}${f.changes?.[0] ? ` · last change: ${esc(f.changes[0].text)} (${esc(f.changes[0].date)})` : ''}<br>
-    <a href="${esc(catalogueUrl(f))}" target="_blank" rel="noopener">Catalogue entry ↗</a> · <a href="${esc(url)}" target="_blank" rel="noopener">JSON ↗</a> · <a href="https://github.com/mikegutberlet/FishingApp/blob/main/docs/corpus/README.md" target="_blank" rel="noopener">About the archive ↗</a></p></div>`;
+    <a href="${esc(catalogueUrl(f))}" target="_blank" rel="noopener">Catalogue ↗</a> · <a href="${esc(url)}" target="_blank" rel="noopener">JSON ↗</a> · <a href="https://github.com/mikegutberlet/FishingApp/blob/main/docs/corpus/README.md" target="_blank" rel="noopener">About the archive ↗</a></p></div>`;
 }

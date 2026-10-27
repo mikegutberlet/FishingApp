@@ -37,20 +37,21 @@ export async function renderCamping(lake, body) {
   body.innerHTML = `<div id="cp"></div>`;
   const el = body.querySelector('#cp');
   const ctx = { filter: 'all' };
-  const have = await cached(lake) ?? await archiveCamping(lake); // nothing kept yet: the repo's archived copy, until a live lookup lands
+  const have = await cached(lake);
+  const archive = have ? null : await archiveCamping(lake); // nothing kept yet: the repo's archived copy shows while the live lookup runs
   if (!el.isConnected) return;
-  if (have) draw(lake, have, el, ctx);
+  if (have ?? archive) draw(lake, have ?? archive, el, ctx);
   if (isFresh(have)) return;
   if (navigator.onLine === false) {
-    if (!have) el.innerHTML = `<div class="card"><h3>Camping</h3><p class="muted small">You’re offline and camping around this water hasn’t been looked up yet. Open this tab once with signal and it’ll be kept on your phone.</p></div>`;
+    if (!have && !archive) el.innerHTML = `<div class="card"><h3>Camping</h3><p class="muted small">You’re offline and camping around this water hasn’t been looked up yet. Open this tab once with signal and it’ll be kept on your phone.</p></div>`;
     return;
   }
-  if (!have) el.innerHTML = `<div class="card"><h3>Camping</h3><p class="muted small">Looking up campgrounds, Forest Service and BLM sites, Recreation.gov and land records around this water…</p></div>`;
+  if (!have && !archive) el.innerHTML = `<div class="card"><h3>Camping</h3><p class="muted small">Looking up campgrounds, Forest Service and BLM sites, Recreation.gov and land records around this water…</p></div>`;
   try {
     const data = await lookupCamping(lake, { force: !!have, onPartial: d => el.isConnected && draw(lake, d, el, ctx) });
     if (el.isConnected) draw(lake, data, el, ctx);
   } catch (e) {
-    if (!el.isConnected || have) return;
+    if (!el.isConnected || have || archive) return;
     el.innerHTML = `<div class="card"><h3>Camping</h3><p class="muted small">Couldn’t reach the campground services (${esc(e.message)}). Try again with better signal.</p><button data-cp-retry>Try again</button></div>`;
     el.querySelector('[data-cp-retry]').onclick = () => renderCamping(lake, body);
   }

@@ -31,7 +31,7 @@
 // CORPUS_ONLY (comma list of st:id to build, e.g. "ca:175,or:ALDER_LK"), CORPUS_DOCS_ONLY=1 (rebuild docs only),
 // CORPUS_NO_LIVE=1 (skip the live lookups: rebuild the parts that come from the repo's own files).
 
-import { readFile, writeFile, mkdir, readdir } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, readdir, unlink } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 
@@ -58,6 +58,8 @@ globalThis.caches = { open: async () => ({ match: async () => null, put: async (
 const realFetch = globalThis.fetch;
 globalThis.fetch = async (u, init = {}) => {
   const url = String(u);
+  // The job never reads the corpus itself: a source that fails stays failed here instead of being filled from the water's own old file.
+  if (/^data\/corpus\//.test(url)) return new Response('', { status: 404 });
   if (/^data\//.test(url)) {
     try { return new Response(await readFile(rootPath(url)), { status: 200, headers: { 'Content-Type': 'application/json' } }); } catch { return new Response('', { status: 404 }); }
   }
@@ -149,7 +151,7 @@ function accessSummary(data) {
   };
 }
 
-const compactSite = s => Object.fromEntries(Object.entries(s).filter(([k, v]) => v != null && v !== false && !['pending'].includes(k)).map(([k, v]) => [k, typeof v === 'string' && v.length > 300 ? `${v.slice(0, 299)}…` : v]));
+const compactSite = s => Object.fromEntries(Object.entries(s).filter(([k, v]) => v != null && k !== 'pending').map(([k, v]) => [k, typeof v === 'string' && v.length > 300 ? `${v.slice(0, 299)}…` : v]));
 
 // What the agency says about the water (NDOW's "pertinent information", ODFW's blurb) and its page.
 function agencyFor(S, w) {
@@ -343,7 +345,7 @@ async function writeDocs(S, files) {
   if (pages.length > 1) for (const [i, pg] of pages.entries()) {
     await writeFile(rootPath(`${DOCS}/${st}-${i + 1}.md`), [`# ${S.name} waters: ${pg[0]} – ${pg.at(-1)}`, '', `Part ${i + 1} of ${pages.length} of the [${S.name} catalogue](${st}.md). ${head}`, '', ...pg.flatMap(c => [`## ${c}`, '', sections[c]])].join('\n'));
   }
-  for (const n of stale) if (!(await readFile(rootPath(`${DOCS}/${n}`), 'utf8')).length) await (await import('node:fs/promises')).unlink(rootPath(`${DOCS}/${n}`));
+  for (const n of stale) if (!(await readFile(rootPath(`${DOCS}/${n}`), 'utf8')).length) await unlink(rootPath(`${DOCS}/${n}`));
 }
 
 async function appendChangelog(runs) {
@@ -373,7 +375,7 @@ for (const code of STATES) {
   console.log(`\n${S.name}: ${waters.length} stocked waters with a point, ${todo.length} due${DOCS_ONLY ? ' (docs only)' : ''}`);
   if (!DOCS_ONLY) {
     for (const w of todo) {
-      if (run.checked >= MAX || runs.reduce((n, r) => n + r.checked, 0) + run.checked >= MAX) break;
+      if (runs.reduce((n, r) => n + r.checked, 0) + run.checked >= MAX) break;
       if (minutesLeft() < (NO_LIVE ? 0.2 : 3)) { console.log(`time budget spent (${MINUTES} min); ${todo.length - run.checked} left for the next run`); break; }
       const file = fileOf(code, w.id), prev = await readJson(file);
       console.log(`${code} ${w.name} (${w.id})${prev ? `, last ${prev.checkedAt.slice(0, 10)}` : ', new'}`);
