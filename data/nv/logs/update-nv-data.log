@@ -1,16 +1,16 @@
 {
-  "startedAt": "2026-10-27T02:03:26.273Z",
+  "startedAt": "2026-10-27T18:52:25.764Z",
   "ndow": {
     "waters": 551
   },
   "counties": 17,
   "points": {
-    "nhd": 1515,
+    "nhd": 1503,
     "fishable": 6142,
     "via": {
       "none": 54,
-      "ndow": 216,
-      "nhd": 279,
+      "ndow": 215,
+      "nhd": 280,
       "osm": 2
     },
     "unmatched": [
@@ -106,8 +106,8 @@
         "storage": 6124
       },
       "points": {
-        "elevation": 61,
-        "storage": 61
+        "elevation": 62,
+        "storage": 62
       }
     },
     "Lake Mohave": {
