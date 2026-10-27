@@ -96,7 +96,7 @@ function draw(lake, data, el, ctx) {
       s.stay && `Stay limit: ${esc(s.stay)}`,
       s.rating && `★ ${s.rating.stars}${s.rating.n ? ` (${s.rating.n} reviews on Recreation.gov)` : ''}`,
       s.restrictions && `<span class="muted">${esc(s.restrictions)}</span>`,
-      s.about && `<span class="muted">${esc(s.about)}</span>`,
+      s.about?.length > 30 && `<span class="muted">${esc(s.about)}</span>`,
     ].filter(Boolean);
     const links = [s.bookUrl && link(s.recgovId ? 'Book on Recreation.gov' : /reservecalifornia/.test(s.bookUrl) ? 'ReserveCalifornia' : 'Reserve', s.bookUrl), s.infoUrl && link(/fs\.usda/.test(s.infoUrl) ? 'Forest Service page' : /blm\.gov/.test(s.infoUrl) ? 'BLM page' : 'Website', s.infoUrl),
       link('Directions', directionsUrl(s.lat, s.lon)), `<a href="#" data-cp-map="${s.lat},${s.lon}">Map</a>`, srcs(s)].filter(Boolean);
