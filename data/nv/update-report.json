@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-26T19:30:20.538Z",
+  "startedAt": "2026-10-27T02:03:26.273Z",
   "ndow": {
     "waters": 551
   },
@@ -106,8 +106,8 @@
         "storage": 6124
       },
       "points": {
-        "elevation": 62,
-        "storage": 62
+        "elevation": 61,
+        "storage": 61
       }
     },
     "Lake Mohave": {
@@ -126,8 +126,8 @@
         "storage": 6134
       },
       "points": {
-        "elevation": 62,
-        "storage": 62
+        "elevation": 61,
+        "storage": 61
       }
     }
   },
@@ -153,5 +153,5 @@
     "Lake Mohave including Placer Cove and Eagle Wash: HAB Watch 2026-06-11 located",
     "Walker Lake: HAB Watch 2026-05-19 located"
   ],
-  "finishedAt": "2026-10-26T19:30:44.022Z"
+  "finishedAt": "2026-10-27T02:03:49.239Z"
 }
