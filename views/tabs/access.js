@@ -45,7 +45,7 @@ const spots = {};
 const spotKey = lake => lake.nhdId ? `nhd-${lake.nhdId}` : String(lake.id);
 
 export async function renderGettingThere(lake, body) {
-  body.innerHTML = `<div id="gt-notes"></div><div id="gt-where"></div><div id="gt-now"></div><div id="gt"></div><div id="gt-routes"></div><div id="gt-gaps"></div><div id="gt-access"></div>`;
+  body.innerHTML = `<div id="gt-notes"></div><div id="gt-where"></div><div id="gt-now"></div><div id="gt"></div><div id="gt-more"></div><div id="gt-routes"></div><div id="gt-gaps"></div><div id="gt-access"></div>`;
   import('../trip-gaps.js').then(m => m.renderTripGaps(lake, body.querySelector('#gt-gaps'))).catch(e => console.warn('trip gaps:', e.message)); // ramps, roads, last gas
   const el = body.querySelector('#gt');
   const S = forLake(lake);
@@ -223,6 +223,8 @@ const list = items => {
     ctx.refreshNow?.();
     try { draw(lake, await lookupAccess(lake, { spot: data.spot, force: true, onPartial: d => el.isConnected && draw(lake, d, el, ctx) }), el, ctx); } catch (err) { el.querySelector('.gt-head').textContent = `Couldn’t refresh: ${err.message}`; }
   };
+  // Permits and quotas, trailheads and parking, and the GPX of it all (views/tabs/access-more.js).
+  if (!dead) import('./access-more.js').then(m => m.renderAccessMore(lake, data, s, el.parentNode?.querySelector('#gt-more'))).catch(e => console.warn('access more:', e.message));
   el.querySelectorAll('[data-gt-map]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); showRoutes(lake, s, hike); }));
   el.querySelector('[data-gt-gpx]')?.addEventListener('click', e => { e.preventDefault(); exportWalkIn(lake, hike); });
 }

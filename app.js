@@ -25,12 +25,14 @@ import { initOffline } from './offline.js';
 import { initWaypoints } from './waypoints.js';
 import { initHeatmap } from './heatmap.js';
 import { initRoutes } from './routes.js';
+import { initAccessPoints } from './access-points.js';
 import './map-browse.js';
 
 initOffline();
 initWaypoints();
 initHeatmap();
 initRoutes();
+initAccessPoints();
 import './insights.js';
 import { initCrew } from './crew.js';
 import './license.js';

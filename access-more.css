@@ -1,0 +1,5 @@
+/* Fish seen near here (views/tabs/fish-seen.js): a strip of iNaturalist photos that scrolls sideways. */
+.fs-strip { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0 2px; scroll-snap-type: x mandatory; }
+.fs-ph { flex: 0 0 104px; scroll-snap-align: start; text-decoration: none; color: inherit; }
+.fs-ph img { width: 104px; height: 104px; object-fit: cover; border-radius: 8px; display: block; background: var(--line); }
+.fs-ph span { display: block; margin-top: 3px; line-height: 1.25; }
