@@ -161,10 +161,12 @@ export async function openDayPlan(lake, date = localKey()) {
       p.offBy && ['🛑', p.storm && p.why === 'storms' ? 'Storms: off the water by' : 'Too rough by', p.offBy],
       p.turn && [walksOut(p) ? '🥾' : '↩️', walksOut(p) ? 'Start walking out by' : `${p.lim.off} by`, p.turn, p.why === 'last light' ? `back at the truck by last light, ${shortTime(dusk)}` : `before the ${p.why}`],
     ].filter(Boolean).sort((a, b) => a[2] - b[2]);
-    out.innerHTML = `${p.tooLate ? `<p class="dw-sum bad"><b>It turns rough within half an hour of when you'd be on the water. Pick another time or day, or fish from shore.</b></p>` : ''}
-      <table class="dw-plan">${rows.map(([i, label, t, note]) => `<tr><td>${i}</td><td>${esc(label)}</td><td><b>${shortTime(t)}</b>${t < Date.now() ? ' <span class="muted small">(past)</span>' : ''}${note ? `<div class="muted small">${esc(note)}</div>` : ''}</td></tr>`).join('')}</table>
+    const hours = safeHours(w, date, lake, f.craft.value)?.hours ?? [], allBad = hours.length && hours.every(x => x.tone === 'bad');
+    out.innerHTML = `${allBad ? `<p class="dw-sum bad"><b>Not a ${esc(p.lim.short.toLowerCase())} day: too rough all day.${f.craft.value === 'shore' ? '' : ' Fish from shore or pick another day.'}</b></p>`
+      : p.tooLate ? `<p class="dw-sum bad"><b>It turns rough within half an hour of when you'd be on the water. Pick another time or day, or fish from shore.</b></p>` : ''}
+      ${allBad ? '' : `<table class="dw-plan">${rows.map(([i, label, t, note]) => `<tr><td>${i}</td><td>${esc(label)}</td><td><b>${shortTime(t)}</b>${t < Date.now() ? ' <span class="muted small">(past)</span>' : ''}${note ? `<div class="muted small">${esc(note)}</div>` : ''}</td></tr>`).join('')}</table>`}
       <p class="muted small">Calendar alarms ring even with the app closed and no signal.</p>`;
-    $('#dw-ics', dlg).disabled = rows.every(r => r[2] < Date.now());
+    $('#dw-ics', dlg).disabled = allBad || rows.every(r => r[2] < Date.now());
   };
   f.oninput = calc;
   f.craft.onchange = () => { setCraft(f.craft.value); calc(); };
