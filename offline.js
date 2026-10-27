@@ -18,7 +18,7 @@ const TOPO_KEY = 'tackle-box-offline-topo';
 export const wantTopo = () => { try { return localStorage.getItem(TOPO_KEY) !== '0'; } catch { return true; } };
 export const setWantTopo = on => { try { localStorage.setItem(TOPO_KEY, on ? '1' : '0'); } catch {} };
 // The data files a lake page reads, by state (each state's jobs write data/<st>/).
-const SHARED_FILES = ['lakes', 'rivers', 'waters', 'plants', 'reservoirs', 'hydrolakes', 'history'];
+const SHARED_FILES = ['lakes', 'rivers', 'waters', 'plants', 'reservoirs', 'hydrolakes', 'history', 'stock-history'];
 const STATE_EXTRAS = { CA: ['hab', 'regs', 'oehha', 'access', 'counties'], NV: ['hab', 'regs', 'advisories', 'counties'],
   OR: ['hab', 'regs', 'advisories', 'counties', 'zones', 'reports'] };
 const stateFiles = S => {
