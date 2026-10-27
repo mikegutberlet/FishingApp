@@ -159,7 +159,7 @@ export async function nearbyPoints(lat, lon, km, { force = false, trailKm = km }
 export const pointsKm = data => Math.min(8, Math.max(3, (data.searchKm ?? 3) + 1, (data.hike?.km ?? 0) + 1.5));
 // No road you can drive comes within the search area (Lake Aloha, Green Lakes): the trailheads are farther out, so
 // look for them (only them) up to 12 km (7.5 miles) away.
-export const trailheadKm = (data, s) => s?.vehicle ? pointsKm(data) : Math.max(12, pointsKm(data));
+export const trailheadKm = (data, s) => s.vehicle ? pointsKm(data) : Math.max(12, pointsKm(data));
 export const cachedPoints = (lat, lon, km, trailKm = km) => cacheGet('points', pointKey(lat, lon, km, trailKm), 30);
 
 // ---------- Fish seen nearby (iNaturalist) ----------

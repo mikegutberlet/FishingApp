@@ -18,7 +18,7 @@ export function renderAccessMore(lake, data, s, el) {
   const r = rulesFor(lake, { lat: data.lat, lon: data.lon, parcels: data.land?.parcels ?? [], state: S?.code ?? null });
   const km = pointsKm(data), trailKm = trailheadKm(data, s);
   let st = slots.get(el);
-  if (!st || st.key !== `${data.lat},${data.lon}`) { st = { key: `${data.lat},${data.lon}`, points: null, error: null, loading: false }; slots.set(el, st); }
+  if (!st || st.key !== `${data.lat},${data.lon},${trailKm}`) { st = { key: `${data.lat},${data.lon},${trailKm}`, points: null, error: null, loading: false }; slots.set(el, st); }
   const paint = () => {
     if (!el.isConnected) return;
     el.innerHTML = rulesCard(lake, r, S) + pointsCard(st, km, trailKm);
