@@ -5,6 +5,8 @@ on:
     paths:
       - scripts/dev/check-topo.mjs
       - .github/workflows/check-topo.yml
+permissions:
+  contents: read
 jobs:
   check:
     runs-on: ubuntu-latest

@@ -8,6 +8,8 @@ on:
       - access-more.js
       - .github/workflows/check-access-more.yml
   workflow_dispatch:
+permissions:
+  contents: read
 jobs:
   check:
     runs-on: ubuntu-latest

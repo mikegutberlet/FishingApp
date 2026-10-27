@@ -181,7 +181,7 @@ export async function fishSeen(lat, lon, km, { force = false } = {}) {
     const data = {
       fetchedAt: new Date().toISOString(), lat, lon, km, total: counts.total_results ?? 0,
       species: (counts.results ?? []).map(r => ({ count: r.count, ...taxonOf(r.taxon) })),
-      recent: (recent.results ?? []).map(o => ({ id: o.id, url: o.uri ?? `https://www.inaturalist.org/observations/${o.id}`, date: o.observed_on ?? null, taxon: taxonOf(o.taxon),
+      recent: (recent.results ?? []).map(o => ({ id: o.id, url: /^https:\/\//.test(o.uri) ? o.uri : `https://www.inaturalist.org/observations/${o.id}`, date: o.observed_on ?? null, taxon: taxonOf(o.taxon),
         photo: o.photos?.[0]?.url?.replace('/square.', '/small.') ?? null, photoBy: o.photos?.[0]?.attribution ?? null, place: o.place_guess ?? null })),
       searchUrl: inatSearchUrl(lat, lon, km),
     };
