@@ -1,5 +1,5 @@
 // Caches the app shell so it opens with no signal on the water. Your data is in IndexedDB, not here.
-const CACHE = 'tackle-box-v38';
+const CACHE = 'tackle-box-v39';
 // One file per line. Add new files here and bump CACHE.
 const SHELL = [
   './',
@@ -110,6 +110,8 @@ const SHELL = [
   'safety-map.js',
   'where.css',
   'views/where.js',
+  'finder.css',
+  'views/finder.js',
   'coords.js',
   'help.js',
   'signal.js',
