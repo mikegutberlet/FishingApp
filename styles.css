@@ -135,7 +135,7 @@ button[data-gt-map] { margin-top: 10px; }
 .cp-site { border-bottom: 1px solid var(--line); padding: 6px 0; }
 .cp-site > summary { display: flex; justify-content: space-between; gap: 8px; font-size: 14px; list-style: none; }
 .cp-site > summary::-webkit-details-marker { display: none; }
-.cp-site > summary > span:first-child { min-width: 0; }
+.cp-site > summary > span:first-child { min-width: 0; } .cp-site > summary > span:last-child { flex-shrink: 0; }
 .cp-icons { font-size: 13px; letter-spacing: 1px; white-space: nowrap; }
 .cp-body { padding: 6px 0 4px 2px; display: grid; gap: 3px; }
 .cp-links, .cp-avail { margin-top: 4px; }

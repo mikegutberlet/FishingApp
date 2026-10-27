@@ -116,7 +116,7 @@ function draw(lake, data, el, ctx) {
     hasFs ? `Forest stay limits are set by each forest’s order (${link('36 CFR 261.58', FS_STAY.url)}); 14 days is typical.` : '',
     hasBlm ? `BLM: ${esc(BLM_STAY.text)} (${link('43 CFR 8365.1-2', BLM_STAY.url)}). ${link('BLM camping', 'https://www.blm.gov/programs/recreation/camping')}` : '',
     land.level === 'wild' ? 'Wilderness: many need a free overnight permit or have quotas, and some require bear canisters; check the forest page before you go.' : '',
-    fire ? `${fire.text} ${fire.links.map(([l, u]) => link(l, u)).join(' · ')}` : '',
+    fire && land.level !== 'no' ? `Campfires: see the fire rules at the top of this tab, and check the forest’s or district’s current restrictions before you light anything.` : '',
   ].filter(Boolean);
   const areaRow = s => `<div class="acc gt-row"><span>${esc(s.name)}${s.fee === 'no' ? ' <span class="muted small">free</span>' : s.price ? ` <span class="muted small">${price(s.price)}</span>` : ''}${s.status ? ` <span class="muted small">· ${STATUS[s.status][0]}</span>` : ''}${s.reservable ? ' <span class="muted small">· reservable</span>' : ''}</span>
     <span class="nowrap muted small">${s.distKm < 0.15 ? 'at the water' : fmtMi(s.distKm)} · <a href="#" data-cp-map="${s.lat},${s.lon}">Map</a> · ${srcs(s)}</span></div>`;
