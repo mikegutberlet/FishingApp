@@ -116,7 +116,7 @@ async function fsSites(bbox) {
       operator: a.operated_by && !/forest service/i.test(a.operated_by) ? `Forest Service · run by ${a.operated_by.toLowerCase()}` : 'Forest Service',
       sites: null, capacity: a.total_capacity || null,
       fee: a.fee_charged === 'Y' ? 'yes' : a.fee_charged === 'N' ? 'no' : null, feeText: plain(a.fee_description, 220),
-      season: plain(a.open_season ?? a.season_description, 120), hours: plain(a.operational_hours, 120),
+      season: seasonText(a.open_season) ?? seasonText(a.season_description), hours: plain(a.operational_hours, 120),
       water: waterOf(a.water_availability), waterText: plain(a.water_availability, 120), toilets: toiletOf(a.restroom_availability), toiletText: plain(a.restroom_availability, 80),
       showers: /shower/i.test(`${a.water_availability} ${a.restroom_availability}`) || null, dump: /dump/i.test(a.water_availability ?? '') || dumps.some(([y, x]) => haversineKm(at[0], at[1], y, x) < 0.8) || null,
       packOut: a.pack_in_out === 'Y', maxLength: +a.max_vehicle_length || null, reservable: recgovId ? true : null, recgovId,
@@ -127,6 +127,8 @@ async function fsSites(bbox) {
     };
   });
 }
+// Some season fields hold a spreadsheet date number ("44694") instead of words: those are dropped.
+const seasonText = v => { const t = plain(v, 120); return t && !/^\d+(\.\d+)?$/.test(t) ? t : null; };
 // The inventory's water and toilet fields are free text ("Handpump drinking water", "No potable water. Adjacent to
 // a lake.", "Water system was damaged in the … Fire"): read them as yes, no or treat-it-yourself.
 export function waterOf(s) {
@@ -203,7 +205,11 @@ export async function weekendAvailability(recgovId, nights = nextWeekend()) {
   const notReleased = list.filter(s => nights.some(d => at(s, d) === 'NYR')).length;
   const firstCome = list.filter(s => nights.some(d => /not reservable|walk.?up|first/i.test(at(s, d) ?? ''))).length;
   const closed = !!list.length && list.every(s => nights.every(d => !at(s, d) || /closed/i.test(at(s, d))));
-  return { nights, total: list.length, all: all.length, some: some.length, notReleased, firstCome, closed, checkedAt: new Date().toISOString() };
+  // Booked up, as opposed to not bookable at all ("Not Available": off season, or held back by the managers).
+  const reserved = list.filter(s => nights.some(d => /^reserved$/i.test(at(s, d) ?? ''))).length;
+  const values = {};
+  for (const s of list) for (const d of nights) { const v = at(s, d) ?? 'none'; values[v] = (values[v] ?? 0) + 1; }
+  return { nights, total: list.length, all: all.length, some: some.length, notReleased, firstCome, closed, reserved, values, checkedAt: new Date().toISOString() };
 }
 // Friday and Saturday nights of this weekend (from Sunday on, the coming one); on a Saturday, just tonight.
 export function nextWeekend(now = new Date()) {
@@ -292,10 +298,12 @@ const yesNo = v => v == null ? null : /^(no|none)$/.test(v) ? 'no' : 'yes';
 function osmCamp(e) {
   const t = e.tags ?? {}, c = e.center ?? e;
   if (c.lat == null) return null;
+  // Scout, church and other organisation camps, and anything mapped as private, aren't open to the public.
+  if (/^(private|no|members)$/.test(t.access ?? '') || /\b(scouts?|ymca|ywca|4-h|church|bible|christian|youth camp|girl scout|boy scout)\b/i.test(t.name ?? '')) return null;
   // A single pitch in the backcountry or an informal spot is a dispersed site; a named camp_site is a campground.
   const backcountry = t.backcountry === 'yes' || t.camp_site === 'basic' || t.informal === 'yes' || t.camp_type === 'wildcamping';
   return {
-    name: title(t.name) || (backcountry ? 'Backcountry campsite' : t.tourism === 'caravan_site' ? 'RV park' : 'Campground'), lat: +c.lat.toFixed(5), lon: +c.lon.toFixed(5), unnamed: !t.name,
+    name: title(t.name) || (backcountry ? 'Backcountry campsite' : t.tourism === 'caravan_site' ? 'Unnamed RV park' : 'Unnamed campground'), lat: +c.lat.toFixed(5), lon: +c.lon.toFixed(5), unnamed: !t.name,
     kind: t.tourism === 'caravan_site' ? 'rv' : t.group_only === 'yes' ? 'group' : backcountry ? 'primitive' : 'developed', operator: t.operator ?? null,
     fee: t.fee ? yesNo(t.fee) : null, feeText: t.charge ?? null, sites: +t.capacity || +t['capacity:pitches'] || null,
     water: t.drinking_water ? yesNo(t.drinking_water) : null, toilets: t.toilets ? (t['toilets:disposal'] === 'flush' ? 'flush' : /pitlatrine|chemical/.test(t['toilets:disposal'] ?? '') ? 'vault' : yesNo(t.toilets)) : null,
@@ -333,11 +341,13 @@ function same(a, b) {
   if (a.recgovId && b.recgovId) return a.recgovId === b.recgovId;
   if (a.recid && b.recid) return a.recid === b.recid;
   if (d < 0.15 && !(a.unnamed && b.unnamed)) return true;
-  if (d > 1.5) return false;
+  if (d > 3) return false;
   const wa = words(a.name), wb = words(b.name);
   if (!wa.length || !wb.length) return d < 0.3;
   const shared = wa.filter(w => wb.includes(w)).length;
-  return shared >= Math.min(wa.length, wb.length);
+  // The same distinctive name up to 3 km apart (agencies and mappers put the point at the gate, the office or the
+  // middle of the loops); one name inside the other only within 1.5 km.
+  return shared === wa.length && shared === wb.length ? true : shared >= Math.min(wa.length, wb.length) && d <= 1.5;
 }
 const keep = o => Object.fromEntries(Object.entries(o).filter(([, v]) => v != null && v !== ''));
 function merge(records, pages) {
@@ -356,7 +366,7 @@ function merge(records, pages) {
   for (const p of pages) {
     const s = out.find(o => (o.recid && o.recid === p.recid) || same(o, p));
     if (s) {
-      Object.assign(s, keep({ status: p.status, recgovId: s.recgovId ?? p.recgovId, infoUrl: s.infoUrl ?? p.infoUrl, feeText: s.feeText ?? p.feeText, reservations: p.reservations, restrictions: s.restrictions ?? p.restrictions, season: s.season ?? p.season, forest: p.forest, accessibility: p.accessibility }));
+      Object.assign(s, keep({ status: p.status, recgovId: s.recgovId ?? p.recgovId, infoUrl: s.infoUrl ?? p.infoUrl, feeText: s.feeText ?? p.feeText, reservations: p.reservations, restrictions: s.restrictions ?? p.restrictions, season: p.season?.includes('–') || !s.season ? p.season : s.season, forest: p.forest, accessibility: p.accessibility }));
       if (!s.sources.some(x => x.url === p.source.url)) s.sources.push(p.source);
     } else if (/camp|cabin|rv/i.test(p.activity ?? '')) {
       out.push({ name: p.name, lat: p.lat, lon: p.lon, kind: /dispersed/i.test(p.activity) ? 'dispersed' : /cabin/i.test(p.activity) ? 'cabin' : /group/i.test(p.activity) ? 'group' : 'developed',

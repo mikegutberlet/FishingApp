@@ -27,8 +27,14 @@ export function dispersedFor(parcel) {
 }
 
 // The rough answer for the water: free camping right around it, nearby on public land, or campgrounds only.
+// One row per manager and answer (the forest itself, not each of its roadless areas and trail corridors), the
+// biggest unit first; wilderness keeps its own row.
 export function dispersedSummary(parcels) {
-  const rows = (parcels ?? []).map(p => ({ ...p, rule: dispersedFor(p) }));
+  const rows = [];
+  for (const p of parcels ?? []) {
+    const rule = dispersedFor(p);
+    if (!rows.some(r => r.manager === p.manager && r.rule.verdict === rule.verdict)) rows.push({ ...p, rule });
+  }
   const yes = rows.filter(r => r.rule.verdict === 'yes'), wild = rows.filter(r => r.rule.verdict === 'wild');
   const level = yes.length ? 'yes' : wild.length ? 'wild' : rows.length ? 'no' : 'unknown';
   return { level, rows, yes, wild };

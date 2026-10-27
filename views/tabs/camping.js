@@ -175,7 +175,8 @@ function availText(a) {
   if (a.notReleased) return `⏳ Sites for ${when} aren’t released for booking yet.`;
   if (a.firstCome) return `First-come, first-served for ${when}: no reservations.`;
   if (a.closed) return `Closed for ${when}.`;
-  return `⛔ Full for ${when}.`;
+  if (a.reserved === a.total) return `⛔ Full for ${when}.`;
+  return `⛔ Nothing can be booked for ${when}${a.reserved ? ` (${a.reserved} of ${a.total} sites reserved; the rest aren’t bookable those nights)` : ': out of season or not offered those nights'}.`;
 }
 
 // ---------- Map ----------
