@@ -115,6 +115,9 @@ const SHELL = [
   'camp-trip.js',
   'camp-cook.js',
   'campsites.js',
+  'crew-plan.js',
+  'views/crew-plan.js',
+  'crew.css',
   'views/camp.js',
 ];
 

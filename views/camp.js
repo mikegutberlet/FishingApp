@@ -50,11 +50,14 @@ export async function renderCampHome() {
   el.innerHTML = `<button id="ct-back">‹ Today</button><h2 class="view-title">⛺ Camp trips</h2>
     <p class="muted small">A few days from one camp: a water for every dawn and dusk, open sites for your nights, one log for the whole trip, and the camp's water, fire and food rules saved for no signal.</p>
     <button id="ct-new" class="primary" style="width:100%">+ Plan a camp trip</button>
+    <div class="row ct-acts"><button id="ct-crew">👥 Crew trips</button><button id="ct-where">🧭 Where should we camp?</button></div>
     <div style="margin-top:12px">${coming.length ? coming.map(card).join('') : trips.length ? '' : emptyState('⛺', 'No camp trips yet. Pick your dates and your camp, and the app lines up where to fish each morning and evening.')}</div>
     ${past.length ? `<details class="ct-past"><summary class="small muted">Past camp trips (${past.length})</summary>${past.map(card).join('')}</details>` : ''}
     <h2>🏕️ Your campsites</h2><div id="ct-sites"></div>`;
   $('#ct-back').onclick = () => showView('today');
   $('#ct-new').onclick = () => editTrip(null);
+  $('#ct-crew').onclick = () => import('./crew-plan.js').then(m => m.openCrewHome());
+  $('#ct-where').onclick = () => import('./crew-plan.js').then(m => m.openWhere());
   el.querySelectorAll('[data-trip]').forEach(c => c.onclick = () => openCampTrip(c.dataset.trip));
   drawCampsites($('#ct-sites'), { onDone: renderCampHome });
 }
@@ -189,13 +192,14 @@ export async function openCampTrip(id, tab = current?.id === id ? current.tab : 
   el.innerHTML = `<div class="lake-bar"><button id="ct-back" class="ghost">‹ Camp trips</button><button id="ct-edit">Edit</button></div>
     <h2>⛺ ${esc(t.name || 'Camp trip')} <small>${datesText(t)} · ${whenText(t)}</small></h2>
     <div class="small">Camp: <b>${esc(t.camp?.name ?? 'not set')}</b>${t.companions ? ` · with ${esc(t.companions)}` : ''}</div>
-    <div class="row ct-acts"><button id="ct-ready" title="Save forecasts, maps and lookups for the trip's waters">📴 Ready for no signal</button>${CT.tripDay(t) >= 1 ? '<button id="ct-session" class="primary">▶ Start a session</button>' : ''}</div>
+    <div class="row ct-acts"><button id="ct-ready" title="Save forecasts, maps and lookups for the trip's waters">📴 Ready for no signal</button><button id="ct-crew-plan">👥 Crew plan</button>${CT.tripDay(t) >= 1 ? '<button id="ct-session" class="primary">▶ Start a session</button>' : ''}</div>
     <div class="lake-tabs"><div class="tabs">${Object.entries(TABS).map(([k, l]) => `<button data-ct-tab="${k}" class="${k === tab ? 'active' : ''}">${l}</button>`).join('')}</div></div>
     <div id="ct-body"><p class="muted small">Loading…</p></div>`;
   $('#ct-back').onclick = renderCampHome;
   $('#ct-edit').onclick = () => editTrip(t);
   $('#ct-ready').onclick = () => import('../ready.js').then(m => m.readyDialog({ pick: t.lakeIds ?? [] }));
   $('#ct-session')?.addEventListener('click', () => startTripFlow());
+  $('#ct-crew-plan').onclick = () => import('./crew-plan.js').then(m => m.planForCampTrip(t));
   el.querySelectorAll('[data-ct-tab]').forEach(b => b.onclick = () => openCampTrip(id, b.dataset.ctTab));
   const body = $('#ct-body');
   const draw = { plan: drawPlan, sites: drawSites, log: drawLog, card: drawCard, fish: drawFish }[tab] ?? drawPlan;

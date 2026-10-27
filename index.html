@@ -21,6 +21,7 @@
   <link rel="stylesheet" href="journal.css">
   <link rel="stylesheet" href="day-plan.css">
   <link rel="stylesheet" href="camp.css">
+  <link rel="stylesheet" href="crew.css">
   <link rel="stylesheet" href="trip-tools.css">
   <script>try { if (JSON.parse(localStorage.getItem('tackle-box-lock'))?.hash) document.documentElement.classList.add('locked'); } catch {}</script>
 </head>
@@ -128,6 +129,7 @@
     <section id="view-trip" class="view"><div id="trip"></div></section>
     <section id="view-catch" class="view"><div id="catch"></div></section>
     <section id="view-camp" class="view"><div id="camp"></div></section>
+    <section id="view-crewplan" class="view"><div id="crewplan"></div></section>
 
     <section id="view-settings" class="view">
       <h2 class="view-title">Settings &amp; data</h2>
@@ -175,6 +177,7 @@
           <li><b>Camping</b> (campgrounds, dispersed camping, land manager): the water's coordinates go to the Forest Service, BLM, Recreation.gov, California State Parks, OpenStreetMap and PAD-US when you open that tab. <b>Camp trips</b> check open sites by sending Recreation.gov only each campground's id and the months of your nights; where you camp never leaves the phone, and drive times are typed by you or estimated on the phone.</li>
           <li><b>Plant calendars</b>: if you subscribe, your calendar app fetches that water's public plant feed from this app's site.</li>
           <li><b>Directions</b> links open Google Maps with that spot's location, only when you tap one.</li>
+          <li><b>Crew trips</b>: a group plan (camp, meet-up, people, gear, license ticks) leaves the phone only when you send it to a friend, as a file or QR code. <i>Where should we camp?</i> ranks camps on the phone from distances you type; nothing is sent.</li>
         </ul>
         <p>Catches, notes, photos, spots and depth data never leave the device. Sharing with your crew sends only what you pick, directly as a file
           or inside a QR code's link (the part after <code>#</code>, which browsers never send to a website).</p>
