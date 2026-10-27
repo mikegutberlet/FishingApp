@@ -105,7 +105,11 @@ Data is refreshed daily by `.github/workflows/update-data.yml` running `scripts/
 * **Tap any water** for current weather and a 10-day forecast, CDFW stocking and upcoming plants, lake level, depth, history and basic facts (size, elevation), all before you save it. *Save to my lakes* adds it to your list for catches and notes.
 * **Lakes → Any California water** searches the whole list by name.
 * **Depth:** max and average depth where a published survey exists, and full depth-contour charts for lakes USGS has surveyed (Calaveras, San Antonio, Whiskeytown and more as they appear), drawn as depth at today's level when the lake has a CDEC gauge.
-* **History tab:** introductions and plantings recorded at that water, back to the 1870s, plus a statewide timeline of how California's waters were stocked.
+* **History tab:** *Stocking by year* for the water, as far back as the records go (tap a year for species and the source), then introductions and plantings recorded at that water back to the 1870s, plus a statewide timeline of how the state's waters were stocked.
+* **Stocking by year** (`scripts/build-stock-history.mjs`, weekly, `data/<st>/stock-history.json`):
+  * Oregon: ODFW's Fish Propagation Annual Reports, 2006 on, with the number of fish released per water and species (the 2003–2005 reports only total each watershed).
+  * Nevada: NDOW's stocking report pages as saved by the Internet Archive, 2003–2021 (date, number, size, species), joined with NDOW's current site. The archive missed some weeks, so older years can be short.
+  * California: CDFW's plant schedule as saved by the Internet Archive, 2007 on (week, water and species; CDFW has never published trout counts), and CDFW's salmon and steelhead hatchery release spreadsheets, 2001 on, with counts. CDFW's full planting database is staff-only.
 
 ### Where the statewide data comes from
 
@@ -126,7 +130,7 @@ Data is refreshed daily by `.github/workflows/update-data.yml` running `scripts/
 
 ### What the records can and can't tell you
 
-* CDFW's digital planting records begin in the 2000s, and the public schedule shows about a year; the app keeps every day it sees, so history grows from October 2025 forward.
+* CDFW's digital planting records begin in the 2000s, and the public schedule shows about a year; the app keeps every day it sees, and the archived copies of the schedule fill in 2007 onward (see *Stocking by year*).
 * Before that, the record is species introductions: the state Fish Commission (founded 1870), the U.S. Fish Commission and private parties moved shad, carp, bass, catfish, brown and brook trout into California waters from 1871 on. Those events, where they were recorded, show on the History tab.
 * Native fish planted inside their native range, such as most rainbow trout plants in Sierra streams, were rarely logged by water before the 1930s and are not in any public database. Miners and settlers did carry trout into fishless high-country lakes from the 1870s; the golden trout transplant of 1876 is the best documented.
 

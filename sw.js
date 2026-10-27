@@ -45,6 +45,8 @@ const SHELL = [
   'wind.js',
   'wind-layer.js',
   'radar.js',
+  'stock-history.js',
+  'name-key.js',
   'states/ca.js',
   'states/common.js',
   'states/index.js',
