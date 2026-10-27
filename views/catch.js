@@ -10,6 +10,7 @@ import { openLake } from './lake.js';
 import { tackleLabel } from './tackle.js';
 import { openComposer } from '../crew.js';
 import { pastConditions } from '../past-weather.js';
+import { isCatchAll } from '../species.js';
 import { fmtSpeed, fmtHeading } from '../troll.js';
 
 let list = [], from = 'journal', pin = null;
@@ -46,6 +47,7 @@ async function draw(id) {
     ${pics.length ? `<div class="c-photos">${pics.map((p, i) => `<img src="${URL.createObjectURL(p)}" alt="" data-i="${i}">`).join('')}</div>
       ${pics.length > 1 ? `<div class="muted small c-swipe">${pics.length} photos · swipe, tap to enlarge</div>` : ''}` : ''}
     <h2 class="c-title">${esc(c.species)}</h2>
+    ${isCatchAll(c.species) ? `<div class="muted small">Which ${esc(c.species.trim().toLowerCase())}? Tap Edit to pick the kind.</div>` : ''}
     <div class="c-size">${[fmtLen(c.length), weightText(c)].filter(Boolean).join(' · ')}${c.released ? ' <span class="pill">Released</span>' : ' <span class="pill">Kept</span>'}</div>
     <div class="muted small">${lake ? `<a href="#" id="c-lake">${esc(lake.name)}</a> · ` : ''}${fmtDate(c.time)} ${when.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}${trip ? ' · <a href="#" id="c-trip">trip</a>' : ''}</div>
     <div class="card c-facts">

@@ -11,7 +11,7 @@ const CATS = [
   ['Kokanee', /kokanee/i],
   ['Steelhead', /steelhead/i],
   ['Salmon', /salmon|chinook|coho|sockeye|\bking\b/i],
-  ['Trout', /\btrout\b|mackinaw/i],
+  ['Trout', /\btrout\b|mackinaw|cutbow|splake|dolly varden/i],
   ['Wiper', /wiper|hybrid/i],
   ['Striped bass', /striped bass|striper/i],
   ['White bass', /^white bass/i],

@@ -15,7 +15,7 @@ const WS = [
   [/walleye/, -5.453, 3.180],         // Murphy et al. 1990
   [/northern pike|pike/, -5.437, 3.096], // Willis 1989
   [/muskellunge|musky|muskie/, -5.991, 3.271],
-  [/rainbow|steelhead/, -4.898, 2.990], // Simpkins & Hubert 1996 (lentic)
+  [/rainbow|steelhead|eagle lake|redband/, -4.898, 2.990], // Simpkins & Hubert 1996 (lentic)
   [/brown trout/, -5.422, 3.194],     // Hyatt & Hubert 2001 (lentic)
   [/brook trout/, -5.186, 3.103],     // Hyatt & Hubert 2000
   [/lake trout|mackinaw/, -5.681, 3.246], // Piccolo et al. 1993

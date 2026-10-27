@@ -8,6 +8,17 @@ const files = {};
 const load = code => files[code] ??= fetch(`data/${code.toLowerCase()}/stock-history.json`).then(r => r.ok ? r.json() : null)
   .catch(() => { setTimeout(() => delete files[code], 30e3); return null; });
 
+// The file's entries by stock id, statewide water id and name key, built once: the finder looks up thousands of waters.
+const indexes = new WeakMap();
+function indexOf(h) {
+  if (!indexes.has(h)) {
+    const by = new Map(), add = (k, w) => (by.get(k) ?? by.set(k, []).get(k)).push(w);
+    for (const w of h.waters) { for (const id of w.ids ?? []) add(`id:${id}`, w); if (w.nhd) add(`nhd:${w.nhd}`, w); if (w.key) add(`key:${w.key}`, w); }
+    indexes.set(h, by);
+  }
+  return indexes.get(h);
+}
+
 // The history entries for this water: by the state's stock id, else the statewide water id, else the same name
 // close by (an entry without a point needs the same name and county).
 export async function stockHistoryFor(lake) {
@@ -15,9 +26,10 @@ export async function stockHistoryFor(lake) {
   const h = S && await load(S.code);
   if (!h) return null;
   const stockId = stockIdOf(lake), nhd = lake.nhdId ? String(lake.nhdId) : null, key = nameKey(lake.name);
-  let hits = h.waters.filter(w => (stockId != null && w.ids?.includes(String(stockId))) || (nhd && w.nhd === nhd));
+  const at = indexOf(h), find = k => at.get(k) ?? [];
+  let hits = [...new Set([...(stockId != null ? find(`id:${stockId}`) : []), ...(nhd ? find(`nhd:${nhd}`) : [])])].sort((a, b) => h.waters.indexOf(a) - h.waters.indexOf(b));
   // An entry whose name fits several waters and couldn't be placed is left out rather than shown on all of them.
-  if (!hits.length && key.length > 2) hits = h.waters.filter(w => w.key === key && !w.ambiguous && (w.lat != null && lake.lat != null
+  if (!hits.length && key.length > 2) hits = find(`key:${key}`).filter(w => !w.ambiguous && (w.lat != null && lake.lat != null
     ? haversineKm(w.lat, w.lon, lake.lat, lake.lon) <= 15
     : !w.county || !lake.county || nameKey(w.county) === nameKey(lake.county)));
   if (!hits.length) return null;

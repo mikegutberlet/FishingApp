@@ -136,6 +136,7 @@ nav button.active .ic { stroke-width: 2.2; }
 .pick-chips { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; margin: -4px 0 12px; }
 .pick-chips::-webkit-scrollbar { display: none; }
 .pick-chips:empty { display: none; }
+.pick-chips > span { flex-shrink: 0; align-self: center; white-space: nowrap; }
 .pick-chips button { flex-shrink: 0; border-radius: 999px; min-height: 34px; padding: 4px 12px; font-size: 14px; white-space: nowrap; }
 .form label.check.released { color: var(--text); font-size: 15px; margin: -2px 0 14px; }
 .form input[type=file]::file-selector-button { border: 0; border-radius: 8px; background: var(--card); color: var(--text); padding: 6px 12px; margin-right: 10px; font: inherit; box-shadow: var(--shadow); }

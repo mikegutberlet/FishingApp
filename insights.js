@@ -6,6 +6,7 @@ import { weatherFor } from './forecast.js';
 import { esc, fmtDate, $ } from './ui.js';
 import { toDepth, units } from './units.js';
 import { tackleLabel } from './views/tackle.js';
+import { fishName } from './species.js';
 
 const SYNODIC = 29.530588853;
 const g = (d, w) => Math.exp(-((d / w) ** 2));
@@ -55,14 +56,14 @@ export function analyze(catches, ref, { tackle = [], minScore = 0.6, max = 40 } 
   for (const r of rows) {
     const key = `${new Date(r.c.time).toDateString()}|${r.c.lakeId}`;
     const d = days.get(key) ?? { time: r.c.time, lakeId: r.c.lakeId, fish: 0, s: 0, species: new Set() };
-    d.fish++; d.s = Math.max(d.s, r.s); d.species.add(r.c.species);
+    d.fish++; d.s = Math.max(d.s, r.s); d.species.add(fishName(r.c.species));
     days.set(key, d);
   }
   const band = c => c.depth == null ? null : `${Math.floor(c.depth / 5) * 5}–${Math.floor(c.depth / 5) * 5 + 5}`;
   const hours = c => { const h = new Date(c.time).getHours(); return `${h}`; };
   return {
     rows, days: [...days.values()].sort((a, b) => b.s - a.s || b.fish - a.fish),
-    species: top(rows, c => c.species), lures: top(rows, c => lure[c.tackleId] ?? c.lure), depths: top(rows, band, 2),
+    species: top(rows, c => fishName(c.species)), lures: top(rows, c => lure[c.tackleId] ?? c.lure), depths: top(rows, band, 2),
     waters: top(rows, c => c.lakeId), hours: top(rows, hours, 2),
   };
 }

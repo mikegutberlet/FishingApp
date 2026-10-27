@@ -4,12 +4,13 @@ import { esc, fmtDate } from '../ui.js';
 import { fmtLen } from '../units.js';
 import { weightText, weightEstimate } from './log.js';
 import { openCatch } from './catch.js';
+import { fishName } from '../species.js';
 
 // Per species: count, first catch, longest, heaviest (logged weight, else the length estimate).
 export function bestsBySpecies(catches) {
   const by = new Map();
   for (const c of [...catches].sort((a, b) => a.time.localeCompare(b.time))) {
-    const key = c.species?.trim();
+    const key = fishName(c.species);
     if (!key) continue;
     const s = by.get(key.toLowerCase()) ?? { species: key, count: 0, first: c, longest: null, heaviest: null };
     s.count++;

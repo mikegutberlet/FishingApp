@@ -4,6 +4,7 @@ import { $, esc, fmtDate, emptyState, status } from '../ui.js';
 import { fmtLen, toDepth, units } from '../units.js';
 import { renderDaysLikeToday } from '../insights.js';
 import { bestsBySpecies } from './bests.js';
+import { fishName, isCatchAll } from '../species.js';
 import { tackleLabel } from './tackle.js';
 import { weightText, weightEstimate } from './log.js';
 import { openCatch } from './catch.js';
@@ -13,6 +14,11 @@ import { openTrip } from './trips.js';
 let tab = 'patterns', year = null;
 
 const count = (arr, key) => Object.entries(arr.reduce((m, c) => { const k = key(c); if (k != null && k !== '') m[k] = (m[k] || 0) + 1; return m; }, {})).sort((a, b) => b[1] - a[1]);
+// Fish logged under a catch-all name ("Trout"): a nudge to pick the kind on each catch's Edit.
+const vagueNote = cs => {
+  const n = cs.filter(c => isCatchAll(c.species)).length;
+  return n ? `${n} fish logged without the kind (just “Trout”, “Bass”…). Open one and tap Edit to pick it.` : '';
+};
 const bars = (title, rows, fmt = v => v, note = '') => {
   if (!rows.length) return '';
   const max = Math.max(...rows.map(r => r[1]));
@@ -100,7 +106,7 @@ function renderPatterns(el, { catches, trips, tackle, lakeName }) {
   el.innerHTML = `<div class="card" id="dlt-card"><div class="muted small">Looking at today's conditions…</div></div>
     <div class="card grid">
       <div class="stat"><b>${catches.length}</b><span>Fish logged</span></div>
-      <div class="stat"><b>${new Set(catches.map(c => c.species)).size}</b><span>Species</span></div>
+      <div class="stat"><b>${new Set(catches.map(c => fishName(c.species))).size}</b><span>Species</span></div>
       <div class="stat"><b>${biggest ? fmtLen(biggest.length) : '–'}</b><span>Longest${biggest ? ' · ' + esc(biggest.species) : ''}</span></div>
       <div class="stat"><b>${Math.round(catches.filter(c => c.released).length / catches.length * 100)}%</b><span>Released</span></div>
       ${all ? `<div class="stat"><b>${rate(all.rate)}</b><span>Fish per hour · ${all.trips} trips</span></div>` : ''}
@@ -109,7 +115,7 @@ function renderPatterns(el, { catches, trips, tackle, lakeName }) {
       ${byWater.map(r => `<tr><td>${esc(r.k)}</td><td>${r.trips}</td><td>${r.h.toFixed(1)}</td><td><b>${r.rate.toFixed(2)}</b></td></tr>`).join('')}</table>
       <p class="muted small">From trips you recorded in trip mode (time on the water and the fish logged during it).</p></div>` : ''}
     ${bars('Catch rate by hour of day', byHour, rate, 'Fish per hour on the water at that hour, across your trips.')}
-    ${bars('By species', count(catches, c => c.species))}
+    ${bars('By species', count(catches, c => fishName(c.species)), v => v, vagueNote(catches))}
     ${bars('By lake', count(catches, c => lakeName[c.lakeId]))}
     ${bars('Best lures', count(catches, c => (c.tackleId && tackle[c.tackleId] ? tackleLabel(tackle[c.tackleId]) : c.lure)))}
     ${bars('By lure color', count(catches, c => lureColor(c, tackle)), v => v, 'From the color in your tackle box, or a color named in the lure.')}
@@ -130,7 +136,7 @@ function renderYear(el, { catches, trips, lakeName, tackle }) {
   const ts = trips.filter(t => inYear(t.start) && t.end);
   const hours = ts.reduce((h, t) => h + tripHours(t), 0), tripFish = cs.filter(c => ts.some(t => t.id === c.tripId)).length;
   const days = new Set(cs.map(c => new Date(c.time).toDateString())).size;
-  const before = new Set(catches.filter(c => new Date(c.time).getFullYear() < year).map(c => c.species?.toLowerCase()));
+  const before = new Set(catches.filter(c => new Date(c.time).getFullYear() < year).map(c => fishName(c.species)?.toLowerCase()));
   const newSpecies = bestsBySpecies(cs).filter(s => !before.has(s.species.toLowerCase()));
   const longest = [...cs].filter(c => c.length).sort((a, b) => b.length - a.length)[0];
   const heaviest = [...cs].map(c => [c, c.weight ?? weightEstimate(c)]).filter(([, w]) => w).sort((a, b) => b[1] - a[1])[0]?.[0];
@@ -144,7 +150,7 @@ function renderYear(el, { catches, trips, lakeName, tackle }) {
       ${years.length > 1 ? `<select id="yr">${years.map(y => `<option ${y === year ? 'selected' : ''}>${y}</option>`).join('')}</select>` : ''}</div>
     <div class="card grid yir">
       <div class="stat"><b>${cs.length}</b><span>Fish</span></div>
-      <div class="stat"><b>${new Set(cs.map(c => c.species)).size}</b><span>Species</span></div>
+      <div class="stat"><b>${new Set(cs.map(c => fishName(c.species))).size}</b><span>Species</span></div>
       <div class="stat"><b>${days}</b><span>Days with a fish</span></div>
       <div class="stat"><b>${ts.length}</b><span>Trips · ${hours.toFixed(0)} h on the water</span></div>
       ${hours >= 1 ? `<div class="stat"><b>${rate(tripFish / hours)}</b><span>Fish per hour on trips</span></div>` : ''}
@@ -160,7 +166,7 @@ function renderYear(el, { catches, trips, lakeName, tackle }) {
       ${newSpecies.length ? `<div>✨ <b>New species</b> ${newSpecies.map(s => esc(s.species)).join(', ')}</div>` : ''}
     </div>
     ${bars('Fish by month', months.filter(([, v]) => v).length ? months : [])}
-    ${bars('Species', count(cs, c => c.species))}
+    ${bars('Species', count(cs, c => fishName(c.species)), v => v, vagueNote(cs))}
     ${photos.length ? `<div class="card"><h3>Photos</h3><div class="photos">${photos.map(c => `<span class="ph" data-catch="${c.id}"><img src="${URL.createObjectURL(c.photo)}" alt="${esc(c.species)}"></span>`).join('')}</div></div>` : ''}`;
   $('#yr')?.addEventListener('change', e => { year = +e.target.value; renderStats(); });
   el.querySelectorAll('[data-catch]').forEach(a => a.onclick = e => { e.preventDefault(); openCatch(a.dataset.catch, [...el.querySelectorAll('[data-catch]')].map(x => x.dataset.catch).filter((x, i, all) => all.indexOf(x) === i)); });
