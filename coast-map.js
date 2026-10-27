@@ -62,7 +62,7 @@ async function drawMpas() {
     const t = mpaType(a.key), color = TAKE_COLOR[t.take] ?? TAKE_COLOR.some;
     const latlngs = a.polys.map(rings => rings.map(ring => ring.map(([x, y]) => [y, x])));
     L.polygon(latlngs, { renderer: canvas, color, weight: 1.5, fillColor: color, fillOpacity: t.take === 'none' ? 0.22 : 0.12 })
-      .bindPopup(`<b>${t.take === 'none' ? '⛔ ' : ''}${esc(a.name)}</b><br>${esc(t.label)}<br><span style="font-size:12px">${esc(t.note)}</span>${a.url ? `<br><a href="${esc(a.url)}" target="_blank" rel="noopener">Rules for this area ↗</a>` : ''}<br><span style="font-size:11px;color:#666">${a.state === 'CA' ? 'CDFW' : 'ODFW'} boundary, not for navigation</span>`)
+      .bindPopup(`<b>${t.take === 'none' ? '⛔ ' : ''}${esc(a.name)}</b><br>${esc(t.label)}<br><span style="font-size:12px">${esc(t.note)}${a.note ? ` ${esc(a.note)}` : ''}</span>${a.ccr ? `<br><span style="font-size:11px;color:#666">Title 14 CCR ${esc(a.ccr.replace(/^Section\s*/i, '§'))}</span>` : ''}${a.url ? `<br><a href="${esc(a.url)}" target="_blank" rel="noopener">Rules for this area ↗</a>` : ''}<br><span style="font-size:11px;color:#666">${a.state === 'CA' ? 'CDFW' : 'ODFW'} boundary, not for navigation</span>`)
       .addTo(mpaLayer);
   }
 }

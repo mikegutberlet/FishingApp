@@ -49,12 +49,13 @@ async function tideStations() {
 // ---------- Spots from OpenStreetMap ----------
 // Named piers, wharves, jetties, breakwaters, fishing spots and beaches within 300 m of the ocean or bay shoreline
 // (OSM's coastline runs around San Francisco Bay and the other bays too). Docks, floats and slips are boating, not fishing.
-const NOT_FISHING = /\b(dock|docks|slip|slips|float|ramp|ferry|runway|light|indicator|gangway|berth|marina|terminal|pumpout|fuel|launch|dinghy|kayak|boathouse|private)\b|^[A-Z]{1,2}[- ]?\d*$|^(pier|dock) ?[A-Z0-9]{1,3}$/i;
+// Navy and port piers are named for the alphabet or by number ("Mike Pier", "Pier 169"), and tour and patrol boats tie up at others.
+const NOT_FISHING = /\b(dock|docks|slip|slips|float|ramp|ferry|runway|light|indicator|gangway|berth|marina|terminal|pumpout|fuel|launch|dinghy|kayak|boathouse|private|patrol|navy|naval|coast guard|uscg|seaplane|cruise|hornblower|small craft|cargo|tanker|fireboat|pilot|tug|research|alpha|bravo|charlie|delta|echo|foxtrot|golf|hotel|india|juliet|kilo|lima|mike|november|oscar|papa|quebec|romeo|sierra|tango|uniform|victor|whiskey|x-ray|yankee|zulu)\b|^[A-Z]{1,2}[- ]?\d*$|^(pier|dock) ?[A-Z0-9]{1,3}$|\bpier \d+$/i;
 export function spotKind(t) {
   const name = t.name ?? '';
   if (/private|no/.test(t.access ?? '')) return null;
   if (t.man_made === 'pier') {
-    if (NOT_FISHING.test(name) && !/fishing/i.test(name) && t.fishing !== 'yes' && t.leisure !== 'fishing') return null;
+    if (NOT_FISHING.test(name) && !/fishing/i.test(name) && t.fishing !== 'yes' && t.leisure !== 'fishing' && t.access !== 'yes') return null;
     if (/jetty|breakwater|groin|groyne/i.test(name)) return 'jetty';
     if (/pier|wharf|fishing/i.test(name) || t.fishing === 'yes' || t.fishing === 'designated' || t.leisure === 'fishing') return 'pier';
     return null;
@@ -137,9 +138,15 @@ function toArea(f, state, idPrefix, defaults = {}) {
   for (const rings of polys) for (const [x, y] of rings[0]) { x1 = Math.min(x1, x); x2 = Math.max(x2, x); y1 = Math.min(y1, y); y2 = Math.max(y2, y); }
   const p = f.properties ?? {};
   const name = pick(p, 'FULLNAME', 'NAME', 'Site_Name', 'SiteName', 'MR_Name', 'Name') ?? defaults.name;
-  const type = pick(p, 'Type', 'TYPE', 'Designation', 'DESIG', 'MPA_Type', 'Site_Type', 'Category', 'Class') ?? defaults.type ?? '';
-  const url = pick(p, 'Hyperlink', 'URL', 'Link', 'Website', 'CCR') ;
+  // ODFW's rows carry a Label (MR, MPA, SPA…) and the take they allow in Descr; CDFW's carry Type and the CCR section.
+  const label = pick(p, 'Label');
+  const type = pick(p, 'Type', 'TYPE', 'Designation', 'DESIG', 'MPA_Type', 'Site_Type', 'Category', 'Class')
+    ?? (label && ({ MR: 'Marine Reserve', MPA: 'Marine Protected Area', SPA: 'Seabird Protection Area' }[label.toUpperCase()] ?? label)) ?? defaults.type ?? '';
+  const url = pick(p, 'Hyperlink', 'URL', 'Link', 'Website');
+  const note = pick(p, 'Descr', 'Description', 'Allowed_Take');
+  const ccr = pick(p, 'CCR');
   return { id: `${idPrefix}${f.id ?? pick(p, 'OBJECTID', 'FID') ?? name}`, name, type, state, url: /^https?:/.test(url ?? '') ? url : null,
+    ...(note && { note }), ...(ccr && { ccr: ccr.replace(/\s+/g, ' ') }),
     bbox: [r5(x1), r5(y1), r5(x2), r5(y2)], polys: polys.map(rings => rings.map(ring => ring.map(([x, y]) => [r5(x), r5(y)]))) };
 }
 

@@ -31,7 +31,8 @@ export function mpaBanner(near) {
     const where = a.inside ? 'You’re inside' : `${(a.edgeKm * 0.621).toFixed(a.edgeKm < 1.6 ? 1 : 0)} mi away:`;
     return `<div class="banner ${a.inside && t.take === 'none' ? 'hab-danger' : t.take === 'none' || a.inside ? 'hab-warning' : 'hab-caution'} small">
       <b>${a.inside && t.take === 'none' ? '⛔ No take here. ' : ''}${esc(where)} ${esc(a.name)}</b><div>${esc(t.label)}. ${esc(t.note)}</div>
-      ${a.url ? `<a href="${esc(a.url)}" target="_blank" rel="noopener">This area’s rules ↗</a>` : ''}</div>`;
+      ${a.note ? `<div>${esc(a.note)}</div>` : ''}${a.ccr ? `<div class="muted">Title 14 CCR ${esc(a.ccr.replace(/^Section\s*/i, '§'))}</div>` : ''}
+      <a href="${esc(a.url ?? (a.state === 'OR' ? OR_LINKS.reserves[1] : CA_LINKS.mpas[1]))}" target="_blank" rel="noopener">${a.url ? 'This area’s rules' : a.state === 'OR' ? 'Oregon Marine Reserves' : 'CDFW MPA rules'} ↗</a></div>`;
   });
   return rows.join('') + `<p class="muted small">Boundaries are drawn from the agencies’ maps and are not for navigation; the regulations’ coordinates are the legal lines.</p>`;
 }

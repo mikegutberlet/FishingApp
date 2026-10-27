@@ -70,6 +70,8 @@ export const MPA_TYPES = {
   SMCA: { label: 'State Marine Conservation Area', take: 'some', note: 'Limited take: only the species and gear that this area allows. Check its rules before you fish.' },
   SMP: { label: 'State Marine Park', take: 'some', note: 'Limited take: no commercial take; recreational take only as this area allows.' },
   SMRMA: { label: 'State Marine Recreational Management Area', take: 'some', note: 'Limited take: check this area’s rules.' },
+  FMR: { label: 'Federal Marine Reserve', take: 'none', note: 'No take: no fishing or collecting of any kind.' },
+  FMCA: { label: 'Federal Marine Conservation Area', take: 'some', note: 'Limited take: only what this area allows. Check its rules before you fish.' },
   SC: { label: 'Special Closure', take: 'some', note: 'Closed to entry or certain activities, often near seabird and marine mammal rookeries.' },
   'Marine Reserve': { label: 'Oregon Marine Reserve', take: 'none', note: 'No take: no fishing, crabbing or collecting of any kind.' },
   'Marine Protected Area': { label: 'Oregon Marine Protected Area', take: 'some', note: 'Limited take: some fishing allowed. Check this area’s rules.' },
@@ -86,6 +88,8 @@ export function mpaKey(type, name = '') {
   if (/\bSMCA\b|conservation area/i.test(s)) return 'SMCA';
   if (/\bSMP\b|state marine park/i.test(s)) return 'SMP';
   if (/special closure/i.test(s)) return 'SC';
+  if (/\bFMR\b|federal marine reserve/i.test(s)) return 'FMR';
+  if (/\bFMCA\b|federal marine conservation/i.test(s)) return 'FMCA';
   if (/seabird/i.test(s)) return 'Seabird Protection Area';
   if (/marine reserve/i.test(s)) return 'Marine Reserve';
   if (/protected area/i.test(s)) return 'Marine Protected Area';
