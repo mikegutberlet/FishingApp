@@ -1,5 +1,6 @@
 // Trip mode: a GPS track while you fish, one-tap Catch / Bite / Lost buttons, and the trip page afterwards
-// (summary, track on a map, journal entry). Tracking only runs while the app is open on screen.
+// (summary, track on a map, journal entry). Tracking only runs while the app is open on screen. Every tap gets its own
+// GPS fix, so it lands on the real spot even after the screen slept; battery saver skips the track and keeps just those.
 import { db } from '../db.js';
 import { haversineKm, moonPhase } from '../data-sources.js';
 import { $, esc, fmtDate, status, showView, onShow, localNow, COMMON_SPECIES } from '../ui.js';
@@ -18,6 +19,7 @@ import { renderDebrief, lastNextTime, nextTimeHtml } from './debrief.js';
 
 const KEY = 'tackle-box-active-trip';
 const SCREEN_KEY = 'tackle-box-keep-screen-on';
+const SAVER_KEY = 'tackle-box-battery-saver';
 let trip = null;          // the active trip record
 let watchId = null, lastFix = null, dirty = 0, flushTimer = null, tick = null, wakeLock = null;
 let miniMap = null, stopReadout = null;
@@ -60,6 +62,7 @@ export async function startTripFlow() {
       <label>Where <select name="lakeId">${lakes.map(l => `<option value="${esc(l.id)}">${esc(l.name)}</option>`).join('')}</select></label>
       <label class="check"><input type="checkbox" name="screen" ${localStorage.getItem(SCREEN_KEY) !== '0' ? 'checked' : ''}> Keep the screen on during the trip</label>
       <div id="trip-next"></div>
+      <label class="check"><input type="checkbox" name="saver" ${localStorage.getItem(SAVER_KEY) === '1' ? 'checked' : ''}> 🔋 Battery saver: no GPS track, the screen can sleep. Each Catch, Bite and Lost still gets its spot.</label>
       <button class="primary big">▶ Start trip</button>
       <a href="#" id="trip-go" class="small">📋 Before you go: license, passes, layers, lures…</a>
       <p class="muted small">Your GPS track is recorded only while Tackle Box is open on screen. iPhones stop location updates as soon as the screen locks or you switch apps,
@@ -84,7 +87,8 @@ export async function startTripFlow() {
     starting = true;
     if (await activeTrip()) return openTrip((await activeTrip()).id);
     localStorage.setItem(SCREEN_KEY, e.target.screen.checked ? '1' : '0');
-    trip = await db.put('trips', { lakeId: e.target.lakeId.value, start: new Date().toISOString(), end: null, track: [], companions: '', rating: null, journal: '', photos: [] });
+    localStorage.setItem(SAVER_KEY, e.target.saver.checked ? '1' : '0');
+    trip = await db.put('trips', { lakeId: e.target.lakeId.value, start: new Date().toISOString(), end: null, track: [], companions: '', rating: null, journal: '', photos: [], saver: e.target.saver.checked });
     localStorage.setItem(KEY, trip.id);
     startTracking();
     openTrip(trip.id);
@@ -100,7 +104,7 @@ export async function resumeTrip() {
 }
 
 function startTracking() {
-  if (watchId == null && navigator.geolocation) {
+  if (watchId == null && navigator.geolocation && !trip?.saver) {
     watchId = navigator.geolocation.watchPosition(onFix, err => { $('#trip-gps') && ($('#trip-gps').textContent = err.code === 1 ? 'Location permission denied: no track' : 'Waiting for GPS…'); },
       { enableHighAccuracy: true, maximumAge: 5000, timeout: 30000 });
   }
@@ -117,7 +121,7 @@ function stopTracking() {
 }
 
 async function keepScreenOn() {
-  if (!trip || localStorage.getItem(SCREEN_KEY) === '0' || wakeLock || document.visibilityState !== 'visible') return;
+  if (!trip || trip.saver || localStorage.getItem(SCREEN_KEY) === '0' || wakeLock || document.visibilityState !== 'visible') return;
   try { wakeLock = await navigator.wakeLock?.request('screen'); wakeLock?.addEventListener('release', () => { wakeLock = null; }); } catch { /* not supported or refused */ }
 }
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') keepScreenOn(); else flush(); });
@@ -145,12 +149,36 @@ async function flush(t = trip) {
   if (next && next !== saved) await db.put('trips', next);
 }
 
-// Where you are now if the GPS fix is fresh, otherwise the water's own position.
+// Where you are now: a GPS fix from the last 2 minutes, otherwise the water's own point until a fresh fix comes in
+// (see pinSpot). posFrom says which: 'gps' or 'water'.
 async function here(t) {
-  if (trip?.id === t.id && lastFix && Date.now() - lastFix.time < 120e3) return { lat: lastFix.lat, lon: lastFix.lon };
+  if (trip?.id === t.id && lastFix && Date.now() - lastFix.time < 120e3) return { lat: lastFix.lat, lon: lastFix.lon, accuracy: Math.round(lastFix.accuracy), posFrom: 'gps' };
   const lake = await db.get('lakes', t.lakeId);
-  return lake ? { lat: lake.lat, lon: lake.lon } : { lat: null, lon: null };
+  return lake ? { lat: lake.lat, lon: lake.lon, accuracy: null, posFrom: 'water' } : { lat: null, lon: null, accuracy: null, posFrom: null };
 }
+
+// The real spot for a tap: unless the track has a sharp fix from the last 15 seconds, ask the GPS once and move the
+// record there. With the screen asleep (or battery saver on) the last fix
+// can be minutes old and far away, so this is what puts each fish where it was caught. A fix that arrives more than
+// 2 minutes after the tap (the phone was put away) is not used: you may have moved. Battery saver has no running
+// track, so there every tap asks.
+const fresh = () => watchId != null && lastFix && Date.now() - lastFix.time < 15e3 && lastFix.accuracy <= 30;
+function pinSpot(store, rec, t) {
+  if (fresh() || !navigator.geolocation) return;
+  const at = Date.parse(rec.time);
+  navigator.geolocation.getCurrentPosition(async p => {
+    const { latitude: lat, longitude: lon, accuracy } = p.coords;
+    if (trip?.id === t.id) lastFix = { lat, lon, accuracy, time: p.timestamp };
+    if (accuracy > 100 || p.timestamp - at > 120e3) return;
+    const saved = await db.get(store, rec.id);
+    if (!saved) return; // the spot it was saved with wasn't fresh, so this one wins even if its accuracy is a bit worse
+    await db.put(store, { ...saved, lat: +lat.toFixed(6), lon: +lon.toFixed(6), accuracy: Math.round(accuracy), posFrom: 'gps' });
+    if (store === 'catches') refreshMap();
+    const el = document.querySelector(`#trip [data-spot="${CSS.escape(saved.id)}"]`); // just the line, so a half-filled size sheet stays
+    if (el) el.textContent = spotText({ ...saved, posFrom: 'gps', accuracy: Math.round(accuracy) });
+  }, () => {}, { enableHighAccuracy: true, maximumAge: 0, timeout: 30e3 });
+}
+const spotText = r => r.posFrom === 'gps' ? `📍±${r.accuracy ?? '?'} m` : r.posFrom !== 'water' ? '' : Date.now() - Date.parse(r.time) < 60e3 ? '📍 finding your spot…' : "📍 water's point (no GPS fix)";
 
 // ---------- The trip pill shown on every other view while a trip runs (styles.css hides it on the trip view) ----------
 async function updatePill() {
@@ -200,34 +228,36 @@ async function renderLive(t) {
   const [lake, catches, events] = await Promise.all([db.get('lakes', t.lakeId), tripCatches(t), tripEvents(t)]);
   const el = $('#trip');
   const bites = events.filter(e => e.kind === 'bite').length, lost = events.filter(e => e.kind === 'lost').length;
+  const spot = r => spotText(r) ? ` <span class="muted small" data-spot="${esc(r.id)}">${spotText(r)}</span>` : '';
   const speed = x => Number.isFinite(x.trollMph) && x.trollMph >= 0.3 ? ` <span class="muted">${speedSummary([x])}</span>` : '';
-  const log = [...catches.map(c => ({ time: c.time, html: `🐟 <b>${esc(c.species)}</b> ${fmtLen(c.length)} ${weightText(c)}${c.released === false ? ' <span class="pill">kept</span>' : ''}${speed(c)}`, catchId: c.id })),
-    ...events.map(e => ({ time: e.time, html: e.kind === 'bite' ? `💥 Bite${speed(e)}` : e.kind === 'lure' ? `🪝 Lost ${esc(e.lure || 'a lure')}` : '💨 Lost fish', eventId: e.id }))].sort((a, b) => b.time.localeCompare(a.time));
+  const log = [...catches.map(c => ({ time: c.time, html: `🐟 <b>${esc(c.species)}</b> ${fmtLen(c.length)} ${weightText(c)}${c.released === false ? ' <span class="pill">kept</span>' : ''}${speed(c)}${spot(c)}`, catchId: c.id })),
+    ...events.map(e => ({ time: e.time, html: `${e.kind === 'bite' ? `💥 Bite${speed(e)}` : e.kind === 'lure' ? `🪝 Lost ${esc(e.lure || 'a lure')}` : '💨 Lost fish'}${spot(e)}`, eventId: e.id }))].sort((a, b) => b.time.localeCompare(a.time));
   const next = await lastNextTime(t.lakeId, t.id);
-  el.innerHTML = `<div class="trip-head"><div><b>${esc(lake?.name ?? 'Trip')}</b><div class="muted small" id="trip-gps">${lastFix ? `GPS ±${Math.round(lastFix.accuracy)} m · ${t.track.length} track points` : 'Waiting for GPS…'}</div></div>
+  el.innerHTML = `<div class="trip-head"><div><b>${esc(lake?.name ?? 'Trip')}</b><div class="muted small" id="trip-gps">${t.saver ? '🔋 Battery saver: no track, a GPS fix on each tap' : lastFix ? `GPS ±${Math.round(lastFix.accuracy)} m · ${t.track.length} track points` : 'Waiting for GPS…'}</div></div>
       <div class="trip-clock" id="trip-clock">${clock(Date.now() - Date.parse(t.start))}</div></div>
     ${next && !sessionStorage.getItem(`tb-next-seen-${t.id}`) ? `<div class="next-wrap">${nextTimeHtml(next)}<a href="#" class="small" id="next-hide">hide</a></div>` : ''}
     <div class="grid trip-stats"><div class="stat"><b>${catches.length}</b><span>Fish</span></div><div class="stat"><b>${bites}</b><span>Bites</span></div><div class="stat"><b>${lost}</b><span>Lost</span></div></div>
     <div id="trip-bag"></div>
-    <div id="troll-panel" class="troll ${trollOn() ? '' : 'hidden'}"></div>
+    <div id="troll-panel" class="troll ${trollOn() && !t.saver ? '' : 'hidden'}"></div>
     <div class="quick">
       <button class="q-catch" id="q-catch">🐟<span>Catch</span></button>
       <button class="q-bite" id="q-bite">💥<span>Bite</span></button>
       <button class="q-lost" id="q-lost">💨<span>Lost</span></button>
     </div>
-    <div class="quick-more"><button id="q-lure">🪝 Lost lure</button><button id="q-troll" class="${trollOn() ? 'on' : ''}" aria-pressed="${trollOn()}">🧭 Troll / drift ${trollOn() ? 'on' : 'off'}</button></div>
+    <div class="quick-more"><button id="q-lure">🪝 Lost lure</button>${t.saver ? '' : `<button id="q-troll" class="${trollOn() ? 'on' : ''}" aria-pressed="${trollOn()}">🧭 Troll / drift ${trollOn() ? 'on' : 'off'}</button>`}</div>
     <div id="quick-sheet"></div>
     <div class="card small">${log.length ? log.map(x => `<div class="row trip-log"><span class="muted">${new Date(x.time).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}</span><span style="flex:1">${x.html}</span>
       ${x.catchId ? `<a href="#" data-edit="${esc(x.catchId)}">details</a>` : `<a href="#" class="danger" data-undo="${esc(x.eventId)}">undo</a>`}</div>`).join('') : '<span class="muted">Tap Catch, Bite or Lost as it happens. Each one is stamped with the time and your GPS spot.</span>'}</div>
     <button id="trip-end" class="danger" style="width:100%">■ End trip</button>
-    <p class="muted small">Tracking runs only while this screen is open${wakeLock ? ' (screen is being kept on)' : ''}. On iPhone it stops when the screen locks.</p>`;
+    <p class="muted small">${t.saver ? 'Battery saver is on: no track, and the screen can sleep. Each tap asks the GPS for your spot.' : `Tracking runs only while this screen is open${wakeLock ? ' (screen is being kept on)' : ''}. On iPhone it stops when the screen locks; each tap still gets a fresh GPS spot.`}
+      <a href="#" id="trip-saver" class="trip-saver">${t.saver ? 'Turn battery saver off' : '🔋 Battery saver'}</a></p>`;
   $('#q-catch').onclick = () => speciesPicker(t, lake);
   $('#q-bite').onclick = () => addEvent(t, 'bite');
   $('#q-lost').onclick = () => addEvent(t, 'lost');
   $('#q-lure').onclick = async () => lostLureSheet(t, $('#quick-sheet'), await here(t), () => renderLive(t));
-  $('#q-troll').onclick = () => { setTroll(!trollOn()); if (trollOn()) resetReadout(); renderLive(t); };
+  if ($('#q-troll')) $('#q-troll').onclick = () => { setTroll(!trollOn()); if (trollOn()) resetReadout(); renderLive(t); };
   $('#next-hide')?.addEventListener('click', e => { e.preventDefault(); sessionStorage.setItem(`tb-next-seen-${t.id}`, '1'); e.target.parentNode.remove(); });
-  stopReadout?.(); stopReadout = trollOn() ? mountReadout($('#troll-panel')) : null;
+  stopReadout?.(); stopReadout = trollOn() && !t.saver ? mountReadout($('#troll-panel')) : null;
   renderBagBar($('#trip-bag'), lake);
   el.querySelectorAll('[data-edit]').forEach(a => a.onclick = e => { e.preventDefault(); editCatch(a.dataset.edit); });
   el.querySelectorAll('[data-undo]').forEach(a => a.onclick = async e => {
@@ -237,12 +267,25 @@ async function renderLive(t) {
     renderLive(t);
   });
   $('#trip-end').onclick = () => endTrip(t);
+  $('#trip-saver').onclick = async e => { e.preventDefault(); await setSaver(t, !t.saver); };
   updatePill();
+}
+
+// Battery saver on or off in the middle of a trip: stops or restarts the track and the screen lock.
+async function setSaver(t, on) {
+  const saved = await db.get('trips', t.id);
+  if (!saved) return;
+  await flush();
+  const next = await db.put('trips', { ...withTrack(saved, trip?.id === t.id ? trip.track : []), saver: on });
+  try { localStorage.setItem(SAVER_KEY, on ? '1' : '0'); } catch {}
+  if (trip?.id === t.id) { stopTracking(); trip = next; startTracking(); }
+  renderLive(next);
 }
 
 async function addEvent(t, kind) {
   navigator.vibrate?.(30);
-  await db.put('events', { tripId: t.id, lakeId: t.lakeId, kind, time: new Date().toISOString(), ...await here(t), ...snapshot() });
+  const ev = await db.put('events', { tripId: t.id, lakeId: t.lakeId, kind, time: new Date().toISOString(), ...await here(t), ...snapshot() });
+  pinSpot('events', ev, t);
   status(kind === 'bite' ? 'Bite logged' : 'Lost fish logged');
   renderLive(t);
 }
@@ -266,6 +309,7 @@ async function quickCatch(t, species) {
   const pos = await here(t);
   const c = await db.put('catches', { lakeId: t.lakeId, tripId: t.id, species, time, length: null, weight: null, depth: null, waterTemp: null,
     lure: '', technique: snapshot().trollMph >= 0.3 ? 'trolling' : '', notes: '', released: true, ...pos, ...snapshot(), photo: null, moon: moonPhase(new Date(time)).name });
+  pinSpot('catches', c, t);
   status(`${species} logged 🎣`);
   refreshMap();
   renderLive(t).then(() => sizeSheet(t, c));

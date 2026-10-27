@@ -3,7 +3,7 @@
 import { db } from '../db.js';
 import { forLake, stockIdOf, reservoirFor } from '../states/index.js';
 import { WEATHER_CODES, pressureTrend } from '../data-sources.js';
-import { weatherFor, fetchAlerts, alertLevel, localKey, addDays, levelChange } from '../forecast.js';
+import { weatherFor, fetchAlerts, alertLevel, localKey, addDays, levelChange, forecastAge } from '../forecast.js';
 import { solunar, dayRating, stars, nextWindow, shortTime } from '../solunar.js';
 import { windOnWater, bankName } from '../wind.js';
 import { $, esc, fmtDate, arrow, showView, onShow, emptyState, icon } from '../ui.js';
@@ -31,7 +31,7 @@ export async function renderToday() {
   const lakes = (await db.all('lakes')).sort((a, b) => a.name.localeCompare(b.name));
   const favs = lakes.filter(l => l.favorite);
   el.innerHTML = `<div class="today-head"><h2>${new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}</h2>
-      <button id="go-plan">${icon('calendar')}Plan a trip</button></div>
+      <div class="row"><button id="go-ready" title="Save forecast, maps and lookups for no signal">📴 Ready</button><button id="go-plan">${icon('calendar')}Plan a trip</button></div></div>
     <div id="today-insight" class="card hidden" data-slot="days-like-today"></div>
     ${!lakes.length ? emptyState('🎣', 'Welcome! Find a water you fish, save it, and star it with ☆ to see its wind, bite windows, level and plants here every day.', ['🔎 Find a water', 'lakes'], ['🗺️ Open the map', 'map'])
       : !favs.length || editing ? `<div class="card"><h3>Your favorite waters</h3><p class="muted small">Star the waters you fish most. They show here with today's wind, bite windows, level and plants.</p>
@@ -46,6 +46,7 @@ export async function renderToday() {
     <div class="card map-card"><div class="map-card-head"><b>Map</b><span class="muted small">${lakes.length ? 'Your waters · tap to browse' : 'Tap to browse lakes and rivers'}</span><span>›</span></div><div id="today-map"></div></div>`;
   import('../map-browse.js').then(m => m.mountTodayMap($('#today-map', el))); // dynamic: map-browse pulls in the map, which pulls in this view
   $('#go-plan').onclick = () => showView('planner');
+  $('#go-ready').onclick = () => import('../ready.js').then(m => m.readyDialog());
   el.querySelectorAll('[data-fav]').forEach(b => b.onclick = () => toggleFavorite(lakes.find(l => l.id === b.dataset.fav), b));
   const done = $('#fav-done'), edit = $('#fav-edit');
   if (done) done.onclick = () => { editing = false; renderToday(); };
@@ -83,7 +84,7 @@ async function fillCard(card, lake) {
     const x = windOnWater(w), c = w.current, trend = pressureTrend(w);
     hero.className = `hero ${skyClass(w)}`;
     hero.querySelector('.hero-temp').textContent = `${Math.round(c.temperature_2m)}°`;
-    hero.querySelector('.hero-sky').textContent = WEATHER_CODES[c.weather_code] ?? '';
+    hero.querySelector('.hero-sky').textContent = (WEATHER_CODES[c.weather_code] ?? '') + (w.saved ? ` · 📴 ${forecastAge(w)}` : '');
     hero.querySelector('.hero-wind').innerHTML = `${arrow(x.from)} ${Math.round(x.speed)} mph${x.gusts >= x.speed + 5 ? `, gusts ${Math.round(x.gusts)}` : ''} · ${x.calm ? 'calm' : `into the ${bankName(x.to)} bank`}`;
     put(1, `<div class="stat"><b>${(c.pressure_msl * 0.02953).toFixed(2)}"</b><span>Pressure${trend ? ` · ${trend.label.toLowerCase()} ${trend.delta > 1 ? '↗' : trend.delta < -1 ? '↘' : '→'}` : ''}</span></div>`);
     putBite(w);

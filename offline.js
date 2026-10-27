@@ -10,10 +10,13 @@ const PREFIX = 'offline-';
 const META = 'offline-meta.json'; // each pack's cache describes itself at this key
 const MAX_TILES = 6000;
 const MIN_ZOOM = 10;
-// Only the satellite map is downloaded: OpenStreetMap's tile policy doesn't allow bulk or offline prefetching.
-// Street tiles you have already looked at stay in sw.js's tile cache.
-const MAX_ZOOM = { Satellite: 17 };
-const AVG_KB = { Satellite: 20 }; // typical tile size, for the estimate before downloading
+// The satellite and USGS topo maps are downloaded: OpenStreetMap's tile policy doesn't allow bulk or offline
+// prefetching, so street tiles you have already looked at just stay in sw.js's tile cache. USGS topo stops at zoom 16.
+const MAX_ZOOM = { Satellite: 17, Topo: 16 };
+const AVG_KB = { Satellite: 20, Topo: 20 }; // typical tile size, for the estimate before downloading
+const TOPO_KEY = 'tackle-box-offline-topo';
+export const wantTopo = () => { try { return localStorage.getItem(TOPO_KEY) !== '0'; } catch { return true; } };
+export const setWantTopo = on => { try { localStorage.setItem(TOPO_KEY, on ? '1' : '0'); } catch {} };
 // The data files a lake page reads, by state (each state's jobs write data/<st>/).
 const SHARED_FILES = ['lakes', 'rivers', 'waters', 'plants', 'reservoirs', 'hydrolakes', 'history'];
 const STATE_EXTRAS = { CA: ['hab', 'regs', 'oehha', 'access', 'counties'], NV: ['hab', 'regs', 'advisories', 'counties'],
@@ -33,7 +36,7 @@ export const packId = lake => PREFIX + (lake.nhdId ? `nhd-${lake.nhdId}` : lake.
 // scans were taken on the water, so a stretch scanned away from the water's label point starts a chain of its own.
 // A point away from the rest (a catch logged from home, a stray GPS fix) is left out, so it neither shrinks the zoom
 // range nor sends tile requests around a private spot.
-async function lakeBounds(lake) {
+export async function lakeBounds(lake) {
   const river = lake.kind === 'river' || !!lake.lengthKm;
   const km = river ? 3 : Math.max(0.8, Math.sqrt((lake.acres ?? 40) * 0.004047 / Math.PI) * 2.2);
   const here = L.latLng(lake.lat, lake.lon), core = here.toBounds(km * 2000);
@@ -74,15 +77,16 @@ function tileRange(b, z) {
 }
 const tilesAt = (b, z) => { const r = tileRange(b, z); return (r.x1 - r.x0 + 1) * (r.y1 - r.y0 + 1); };
 
-// Zoom range and size for a box and set of layers, dropping the closest zooms until it fits under the cap.
+// Zoom range and size for a box and set of layers, dropping the closest zooms until it fits under the cap (per layer).
 export function plan(bounds, layers) {
+  const cap = MAX_TILES * layers.length;
   const count = top => layers.reduce((sum, name) => { let n = 0; for (let z = MIN_ZOOM; z <= Math.min(top, MAX_ZOOM[name]); z++) n += tilesAt(bounds, z); return sum + n; }, 0);
   const full = Math.max(...layers.map(n => MAX_ZOOM[n]));
   let zMax = full;
-  while (zMax > MIN_ZOOM + 2 && count(zMax) > MAX_TILES) zMax--;
+  while (zMax > MIN_ZOOM + 2 && count(zMax) > cap) zMax--;
   const tiles = count(zMax);
   const kb = layers.reduce((sum, name) => { let n = 0; for (let z = MIN_ZOOM; z <= Math.min(zMax, MAX_ZOOM[name]); z++) n += tilesAt(bounds, z); return sum + n * AVG_KB[name]; }, 0);
-  return { zMin: MIN_ZOOM, zMax, tiles, mb: kb / 1024, capped: zMax < full, tooBig: tiles > MAX_TILES };
+  return { zMin: MIN_ZOOM, zMax, tiles, mb: kb / 1024, capped: zMax < full, tooBig: tiles > cap };
 }
 
 // The exact URLs Leaflet will ask for, so the service worker finds them (same subdomain rule as L.TileLayer).
@@ -150,19 +154,94 @@ export async function listPacks() {
 
 export const deletePack = id => caches.delete(id);
 
+// ---------- Planning and saving a pack ----------
+const box = b => L.latLngBounds([b[0], b[1]], [b[2], b[3]]);
+const arr = b => [b.getSouth(), b.getWest(), b.getNorth(), b.getEast()];
+const abs = u => new URL(u, location.href).href;
+const areaTiles = a => tileUrls(box(a.bounds), a.layers ?? ['Satellite'], a.zMin, a.zMax);
+const ROUTE_ZOOM = [12, 16], ROUTE_PAD_M = 600;
+
+// The map along a line (the walk in, a GPX route): boxes about a kilometre long with ~600 m either side, at zoom 12–16,
+// so the trail, its contours and the roads beside it are there however far the line strays from the water.
+export function corridor(coords, layers) {
+  const out = [], push = b => { const sw = b.getSouthWest().toBounds(ROUTE_PAD_M * 2).getSouthWest(), ne = b.getNorthEast().toBounds(ROUTE_PAD_M * 2).getNorthEast();
+    out.push({ bounds: arr(L.latLngBounds(sw, ne)), zMin: ROUTE_ZOOM[0], zMax: ROUTE_ZOOM[1], layers, route: true }); };
+  let cur = null, from = null;
+  for (const c of coords ?? []) {
+    const p = L.latLng(+c[0], +c[1]);
+    if (!Number.isFinite(p.lat) || !Number.isFinite(p.lng)) continue;
+    if (!cur) { cur = L.latLngBounds(p, p); from = p; continue; }
+    cur.extend(p);
+    if (from.distanceTo(p) > 1000) { push(cur); cur = L.latLngBounds(p, p); from = p; }
+  }
+  if (cur) push(cur);
+  return out;
+}
+
+// What a download of `bounds` (plus the lines) would fetch for a water. An earlier area the new one doesn't cover (in
+// extent, zooms and layers) stays on the pack's list, and if an earlier download didn't finish, its missing tiles are
+// fetched too and counted. Line corridors are worked out fresh each time, so they follow the latest walk-in and routes.
+export async function packPlan(lake, { bounds, layers, lines = [], existing }) {
+  const p = plan(bounds, layers);
+  const here = { bounds: arr(bounds), zMin: p.zMin, zMax: p.zMax, layers };
+  const route = lines.flatMap(l => corridor(l, layers));
+  // A pack saved before areas were kept: its box, at the zooms plan() allows for that box.
+  const earlier = (existing?.areas ?? (existing?.bounds ? [{ bounds: existing.bounds, zMin: existing.zMin, zMax: Math.min(existing.zMax, plan(box(existing.bounds), ['Satellite']).zMax) }] : [])).filter(a => !a.route);
+  const kept = earlier.filter(a => !(bounds.contains(box(a.bounds)) && p.zMin <= a.zMin && p.zMax >= a.zMax && (a.layers ?? ['Satellite']).every(n => layers.includes(n))));
+  const own = new Set([...areaTiles(here), ...route.flatMap(areaTiles)]);
+  const held = existing && !existing.complete && await caches.has(existing.id) ? new Set((await (await caches.open(existing.id)).keys()).map(r => r.url)) : null;
+  const left = held ? [...new Set(kept.flatMap(areaTiles))].filter(u => !own.has(u) && !held.has(abs(u))) : [];
+  const routeTiles = new Set(route.flatMap(areaTiles)).size;
+  return { p, here, route, kept, own, left, routeTiles, tooBig: p.tooBig || own.size - routeTiles + left.length > MAX_TILES * layers.length || routeTiles > 4000 };
+}
+
+// Downloads a planned pack into the water's cache and describes it there. The description is written before the first
+// tile and every 250 tiles, so a download cut off by the phone (iOS stops background pages) still shows up in Data.
+// The final check covers every area the pack holds.
+export async function runPack(lake, pl, { existing = null, signal, onProgress = () => {} }) {
+  const id = packId(lake), S = forLake(lake);
+  const surveys = await S?.bathymetryFor(lake).catch(() => []) ?? [];
+  const areas = [...pl.kept, pl.here, ...pl.route];
+  const all = areas.reduce((u, a) => u.extend(box(a.bounds)), box(pl.here.bounds));
+  const data = [...stateFiles(S), ...surveys.map(s => S.bathymetryUrl(s.id))];
+  const urls = [...data, ...new Set(areas.flatMap(areaTiles))];
+  const pack = { id, nhdId: lake.nhdId ?? null, lakeId: lake.unsaved ? null : lake.id, name: lake.name, layers: [...new Set(areas.flatMap(a => a.layers ?? ['Satellite']))], areas,
+    zMin: Math.min(...areas.map(a => a.zMin)), zMax: Math.max(...areas.map(a => a.zMax)), routes: pl.route.length,
+    bounds: arr(all), bytes: existing?.bytes ?? 0, complete: false, savedAt: new Date().toISOString() };
+  const cache = await caches.open(id);
+  const checkpoint = got => writeMeta(cache, Object.assign(pack, { bytes: (existing?.bytes ?? 0) + got, missing: null }));
+  await writeMeta(cache, pack);
+  await download(cache, [...data, ...pl.own, ...pl.left], onProgress, signal, checkpoint);
+  const { bytes, missing } = await survey(cache, urls);
+  Object.assign(pack, { bytes, missing, complete: !missing, savedAt: new Date().toISOString() });
+  await writeMeta(cache, pack);
+  return pack;
+}
+export const readPackFor = lake => readPack(packId(lake));
+
+// The lines to save the map along: the walk in from Getting there (when it has been looked up) and your GPX routes.
+export async function packLines(lake) {
+  const { cached } = await import('./access-lookup.js');
+  const { routesFor } = await import('./routes.js');
+  const walk = (await cached(lake))?.hike?.coords;
+  return [...(walk?.length ? [walk] : []), ...(await routesFor(lake)).map(r => r.points)];
+}
+
 // ---------- "Save for offline" on a water's page ----------
 export async function offlineDialog(lake) {
   if (!('caches' in window)) return alert('This browser can\'t save maps for offline use.');
   const id = packId(lake);
   const existing = await readPack(id);
-  const lakeBox = await lakeBounds(lake);
+  const [lakeBox, lines] = await Promise.all([lakeBounds(lake), packLines(lake).catch(() => [])]);
   const dlg = document.createElement('dialog');
   dlg.className = 'sheet';
   dlg.innerHTML = `<form class="form" method="dialog"><h3>Save ${esc(lake.name)} for offline</h3>
     ${existing ? `<p class="small">Saved ${fmtDate(existing.savedAt)} · ${(existing.bytes / 1e6).toFixed(0)} MB · zoom ${existing.zMin}–${existing.zMax}. Downloading again updates it.</p>` : ''}
     <p class="muted small">Saves the satellite map, the USGS depth chart and this app's ${esc(forLake(lake)?.name ?? 'state')} data for the lake on this phone, so the map, depth and stocking work with no signal. Your catches and depth scans are always on the phone already.</p>
-    <p class="muted small">The satellite map is saved. The street map can't be downloaded in advance (OpenStreetMap doesn't allow it), but street areas you've already looked at stay cached.</p>
+    <p class="muted small">The street map can't be downloaded in advance (OpenStreetMap doesn't allow it), but street areas you've already looked at stay cached.</p>
     <label>Area <select name="area"><option value="lake">The whole lake</option><option value="view">What the map shows now</option></select></label>
+    <label class="check"><input type="checkbox" name="topo" ${wantTopo() ? 'checked' : ''}> Topo map too (contours, trails, forest roads)${lines.length ? `, and along ${lines.length === 1 ? 'the walk in or your route' : `the walk in and ${lines.length - 1} route${lines.length > 2 ? 's' : ''}`}` : ''}</label>
+    <label class="check"><input type="checkbox" name="info" checked> Also the forecast, weather alerts, Getting there and Camping</label>
     <p id="off-est" class="small"></p>
     <progress id="off-progress" max="1" value="0" class="hidden"></progress>
     <div class="row"><button value="cancel" id="off-cancel">Cancel</button><button class="primary" id="off-go" value="go">Download</button></div></form>`;
@@ -171,60 +250,40 @@ export async function offlineDialog(lake) {
   // The map is hidden behind this page, so use the last view it showed (see initOffline), never its current size.
   const view = viewBounds && viewBounds.getNorth() > viewBounds.getSouth() && viewBounds.getEast() > viewBounds.getWest() ? viewBounds : null;
   if (!view) form.area.querySelector('[value=view]').disabled = true;
-  // The pack remembers each area it was asked for. An earlier area this one doesn't cover (in extent and zooms) stays
-  // on the list, and if an earlier download didn't finish, its missing tiles are fetched too and counted in the estimate.
-  const layers = ['Satellite'], box = b => L.latLngBounds([b[0], b[1]], [b[2], b[3]]);
-  const areaTiles = a => tileUrls(box(a.bounds), layers, a.zMin, a.zMax);
-  // A pack saved before areas were kept: its box, at the zooms plan() allows for that box.
-  const earlier = existing?.areas ?? (existing?.bounds ? [{ bounds: existing.bounds, zMin: existing.zMin, zMax: Math.min(existing.zMax, plan(box(existing.bounds), layers).zMax) }] : []);
-  const held = existing && !existing.complete ? new Set((await (await caches.open(id)).keys()).map(r => r.url)) : null;
-  const choice = () => {
-    const bounds = form.area.value === 'view' && view ? view : lakeBox, p = plan(bounds, layers);
-    const kept = earlier.filter(a => !(bounds.contains(box(a.bounds)) && p.zMin <= a.zMin && p.zMax >= a.zMax));
-    const own = new Set(tileUrls(bounds, layers, p.zMin, p.zMax));
-    const left = held ? [...new Set(kept.flatMap(areaTiles))].filter(u => !own.has(u) && !held.has(new URL(u, location.href).href)) : [];
-    return { bounds, p, kept, own, left, tooBig: p.tooBig || own.size + left.length > MAX_TILES };
-  };
-  const estimate = () => {
-    const { p, left, tooBig } = choice();
+  const choice = () => packPlan(lake, { bounds: form.area.value === 'view' && view ? view : lakeBox, layers: form.topo.checked ? ['Satellite', 'Topo'] : ['Satellite'], lines: form.topo.checked ? lines : [], existing });
+  let asked = 0;
+  const estimate = async () => {
+    const n = ++asked, { p, left, tooBig, routeTiles } = await choice();
+    if (n !== asked) return; // a later change is already being worked out
     const more = left.length ? ` Plus ${left.length.toLocaleString()} tiles the last download didn't finish, about ${Math.max(1, Math.round(left.length * AVG_KB.Satellite / 1024))} MB.` : '';
+    const route = routeTiles ? ` Plus ${routeTiles.toLocaleString()} along the way in, about ${Math.max(1, Math.round(routeTiles * AVG_KB.Topo / 1024))} MB.` : '';
     $('#off-go', dlg).disabled = tooBig;
     $('#off-est', dlg).innerHTML = p.tooBig ? 'That area is too big to save. Zoom the map in on the part you fish and choose <b>What the map shows now</b>.'
-      : tooBig ? `That's too much at once with the ${left.length.toLocaleString()} tiles the last download didn't finish. Delete this lake under the ⚙️ gear → Offline maps and start again, or choose a smaller area.`
-      : `About ${p.tiles.toLocaleString()} map tiles, roughly ${Math.max(1, Math.round(p.mb))} MB, zoom ${p.zMin}–${p.zMax}.${p.capped ? ' Big area, so the closest zoom levels are left out.' : ''}${more}`;
+      : tooBig ? `That's too much at once${left.length ? ` with the ${left.length.toLocaleString()} tiles the last download didn't finish. Delete this lake under the ⚙️ gear → Offline maps and start again, or choose a smaller area` : ': choose a smaller area or leave out the topo map'}.`
+      : `About ${p.tiles.toLocaleString()} map tiles, roughly ${Math.max(1, Math.round(p.mb))} MB, zoom ${p.zMin}–${p.zMax}.${p.capped ? ' Big area, so the closest zoom levels are left out.' : ''}${route}${more}`;
   };
-  form.onchange = estimate;
-  estimate();
+  form.onchange = () => { setWantTopo(form.topo.checked); estimate(); };
+  await estimate();
   const abort = new AbortController();
   // Parked by the app lock (lock.js) is not a real close: keep downloading.
   dlg.onclose = () => { if ('parked' in dlg.dataset) return; abort.abort(); dlg.remove(); };
   $('#off-go', dlg).onclick = async e => {
     e.preventDefault();
-    const { bounds, p, kept, own, left } = choice();
-    const S = forLake(lake);
-    const surveys = await S?.bathymetryFor(lake).catch(() => []) ?? [];
+    const pl = await choice(), info = form.info.checked;
     const bar = $('#off-progress', dlg);
     bar.classList.remove('hidden');
     form.querySelectorAll('input, select, #off-go').forEach(el => el.disabled = true);
     $('#off-cancel', dlg).textContent = 'Stop';
-    // The description is written before the first tile and every 250 tiles, so a download cut off by the phone
-    // (iOS stops background pages) still shows up in Data. The final check covers every area the pack holds.
-    const here = { bounds: [bounds.getSouth(), bounds.getWest(), bounds.getNorth(), bounds.getEast()], zMin: p.zMin, zMax: p.zMax };
-    const areas = [...kept, here];
-    const all = areas.reduce((u, a) => u.extend(box(a.bounds)), box(here.bounds));
-    const data = [...stateFiles(S), ...surveys.map(s => S.bathymetryUrl(s.id))];
-    const urls = [...data, ...new Set(areas.flatMap(areaTiles))];
-    const pack = { id, nhdId: lake.nhdId ?? null, lakeId: lake.unsaved ? null : lake.id, name: lake.name, layers, areas,
-      zMin: Math.min(...areas.map(a => a.zMin)), zMax: Math.max(...areas.map(a => a.zMax)),
-      bounds: [all.getSouth(), all.getWest(), all.getNorth(), all.getEast()], bytes: existing?.bytes ?? 0, complete: false, savedAt: new Date().toISOString() };
-    const cache = await caches.open(id);
-    const checkpoint = got => writeMeta(cache, Object.assign(pack, { bytes: (existing?.bytes ?? 0) + got, missing: null }));
-    await writeMeta(cache, pack);
-    await download(cache, [...data, ...own, ...left], (n, total) => { bar.value = n / total; $('#off-est', dlg).textContent = `Downloading ${n.toLocaleString()} of ${total.toLocaleString()}…`; }, abort.signal, checkpoint);
-    const { bytes, missing } = await survey(cache, urls);
-    Object.assign(pack, { bytes, missing, complete: !missing, savedAt: new Date().toISOString() });
-    await writeMeta(cache, pack);
-    status(abort.signal.aborted ? 'Offline download stopped; what finished is saved' : `${lake.name} saved for offline${missing ? ` (${missing} tiles failed; download again to retry)` : ''}`);
+    const say = t => { $('#off-est', dlg).textContent = t; };
+    let infoNote = '';
+    if (info) {
+      say('Saving the forecast, alerts, Getting there and Camping…');
+      const { saveInfo } = await import('./ready.js');
+      const r = await saveInfo(lake, { signal: abort.signal, onStep: say });
+      infoNote = r.failed.length ? ` (couldn't save: ${r.failed.join(', ')})` : '';
+    }
+    const pack = await runPack(lake, pl, { existing, signal: abort.signal, onProgress: (n, total) => { bar.value = n / total; say(`Downloading ${n.toLocaleString()} of ${total.toLocaleString()}…`); } });
+    status(abort.signal.aborted ? 'Offline download stopped; what finished is saved' : `${lake.name} saved for offline${pack.missing ? ` (${pack.missing} tiles failed; download again to retry)` : ''}${infoNote}`);
     if (dlg.open) dlg.close(); else if ('parked' in dlg.dataset) dlg.remove();
   };
   dlg.showModal();
@@ -245,11 +304,12 @@ async function renderPacks() {
   if (!el) return;
   const packs = await listPacks();
   const missing = p => p.missing ?? p.failed; // packs saved before the description tracked what's missing
-  el.innerHTML = packs.length ? packs.map(p => `<div class="lake-item" style="margin:6px 0"><div><b>${esc(p.name)}</b><div class="muted small">${p.unknown ? 'Cut off before it finished; delete it and download again'
-      : `${fmtDate(p.savedAt)} · ${(p.bytes / 1e6).toFixed(0)} MB · zoom ${esc(p.zMin)}–${esc(p.zMax)}${p.complete ? '' : ' · partial, download again to finish'}${missing(p) ? ` · ${esc(missing(p))} tiles missing` : ''}`}</div></div>
+  el.innerHTML = `<button class="primary" id="off-ready" style="width:100%;margin-bottom:8px">📴 Ready for no signal…</button>` + (packs.length ? packs.map(p => `<div class="lake-item" style="margin:6px 0"><div><b>${esc(p.name)}</b><div class="muted small">${p.unknown ? 'Cut off before it finished; delete it and download again'
+      : `${fmtDate(p.savedAt)} · ${(p.bytes / 1e6).toFixed(0)} MB · zoom ${esc(p.zMin)}–${esc(p.zMax)}${p.layers?.includes('Topo') ? ' · topo' : ''}${p.routes ? ' · along the way in' : ''}${p.complete ? '' : ' · partial, download again to finish'}${missing(p) ? ` · ${esc(missing(p))} tiles missing` : ''}`}</div></div>
       <div class="acts">${p.bounds ? `<button data-off-show="${esc(p.id)}">Map</button>` : ''}<button class="danger" data-off-del="${esc(p.id)}">✕</button></div></div>`).join('')
       + `<p class="muted small">${packs.length} saved · ${(packs.reduce((s, p) => s + p.bytes, 0) / 1e6).toFixed(0)} MB. Open a water and tap <b>⬇ Offline</b> to add or update one.</p>`
-    : '<p class="muted small">No lakes saved for offline yet. Open a water and tap <b>⬇ Offline</b> before you head out: the map, depth chart and stocking data will then work with no signal.</p>';
+    : '<p class="muted small">No lakes saved for offline yet. Tap <b>Ready for no signal</b>, or open a water and tap <b>⬇ Offline</b>, before you head out: the map, depth chart, forecast and stocking data will then work with no signal.</p>');
+  $('#off-ready', el).onclick = () => import('./ready.js').then(m => m.readyDialog());
   el.querySelectorAll('[data-off-show]').forEach(b => b.onclick = () => {
     const p = packs.find(x => x.id === b.dataset.offShow);
     outline?.remove();

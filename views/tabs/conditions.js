@@ -2,7 +2,7 @@
 // lake level (CDEC, USGS, Reclamation), USGS gauges with flow vs normal, and Windy.
 import { reservoirFor } from '../../states/index.js';
 import { pressureTrend, fetchUsgsNearby, moonPhase, WEATHER_CODES, compass } from '../../data-sources.js';
-import { weatherFor, fetchAlerts, alertLevel, fetchFlowStats, flowRating, hourIndex, dayIndex, localKey, levelChange } from '../../forecast.js';
+import { weatherFor, fetchAlerts, alertLevel, fetchFlowStats, flowRating, hourIndex, dayIndex, localKey, levelChange, forecastAge } from '../../forecast.js';
 import { solunar, dayRating, stars, windowAt, windowsAround, windowLabel, windowSpan, shortTime } from '../../solunar.js';
 import { windOnWater, windText, windSvg } from '../../wind.js';
 import { $, esc, fmtDate, fmtTime, arrow } from '../../ui.js';
@@ -20,7 +20,8 @@ export async function renderConditions(lake, body) {
     $('#alerts').innerHTML = alerts.sort((a, b) => alertLevel(b) - alertLevel(a)).map(a => `<details class="alert sev-${alertLevel(a)}">
       <summary>⚠️ <b>${esc(a.event)}</b>${a.ends ? ` <span class="small">until ${esc(new Date(a.ends).toLocaleString(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' }))}</span>` : ''}</summary>
       ${a.headline ? `<p class="small"><b>${esc(a.headline)}</b></p>` : ''}<p class="small">${esc(a.description).replace(/\n\n/g, '<br><br>')}</p>
-      ${a.instruction ? `<p class="small">${esc(a.instruction).replace(/\n\n/g, '<br><br>')}</p>` : ''}<p class="muted small">${esc(a.sender)} · National Weather Service</p></details>`).join('');
+      ${a.instruction ? `<p class="small">${esc(a.instruction).replace(/\n\n/g, '<br><br>')}</p>` : ''}<p class="muted small">${esc(a.sender)} · National Weather Service</p></details>`).join('')
+      + (alerts.savedAt ? `<p class="muted small">📴 Alerts as of ${esc(new Date(alerts.savedAt).toLocaleString(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' }))}, saved on this phone. New alerts can't reach you with no signal.</p>` : '');
   }).catch(() => {}); // outside the US, or NWS down: no banner
   // Bite windows are computed on the device, so they show even with no signal.
   const now = Date.now();
@@ -33,7 +34,8 @@ export async function renderConditions(lake, body) {
     if (!body.isConnected) return; // user moved on before the forecast arrived
     const c = w.current, trend = pressureTrend(w), di = dayIndex(w, now), hi = hourIndex(w, now);
     const hours = w.hourly.time.slice(hi, hi + 24).map((t, k) => ({ t, i: hi + k }));
-    $('#wx').innerHTML = `<h3>Now · ${WEATHER_CODES[c.weather_code] ?? ''}</h3>
+    $('#wx').innerHTML = `${w.saved ? `<p class="saved-wx small">📴 <b>Saved forecast</b>, ${esc(forecastAge(w))} (${esc(new Date(w.fetchedAt).toLocaleString(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' }))}). "Now" is the forecast for this hour, not a reading.</p>` : ''}
+      <h3>${w.saved ? 'Forecast for now' : 'Now'} · ${WEATHER_CODES[c.weather_code] ?? ''}</h3>
       <div class="grid">
         <div class="stat"><b>${Math.round(c.temperature_2m)}°F</b><span>Feels ${Math.round(c.apparent_temperature)}°</span></div>
         <div class="stat"><b>${arrow(c.wind_direction_10m)} ${Math.round(c.wind_speed_10m)} mph</b><span>${compass(c.wind_direction_10m)}, gusts ${Math.round(c.wind_gusts_10m)}</span></div>

@@ -1,5 +1,5 @@
 // Caches the app shell so it opens with no signal on the water. Your data is in IndexedDB, not here.
-const CACHE = 'tackle-box-v21';
+const CACHE = 'tackle-box-v22';
 // One file per line. Add new files here and bump CACHE.
 const SHELL = [
   './',
@@ -104,16 +104,18 @@ const SHELL = [
   'report-line.js',
   'views/before-go.js',
   'views/debrief.js',
+  'routes.js',
+  'ready.js',
 ];
 
 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())));
 // Drop old app-shell caches, but keep the map tiles you've already viewed and lakes saved for offline (offline.js).
 self.addEventListener('activate', e => e.waitUntil(
-  caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE && k !== 'tiles' && k !== 'tb-access' && !k.startsWith('offline-')).map(k => caches.delete(k)))).then(() => self.clients.claim())));
+  caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE && k !== 'tiles' && k !== 'tb-access' && k !== 'tb-forecast' && !k.startsWith('offline-')).map(k => caches.delete(k)))).then(() => self.clients.claim())));
 
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
-  const isTile = /tile\.openstreetmap\.org|arcgisonline\.com/.test(url.host);
+  const isTile = /tile\.openstreetmap\.org|arcgisonline\.com|basemap\.nationalmap\.gov/.test(url.host);
   const isShell = url.origin === location.origin;
   if (url.hash === '#offline') return; // offline.js saving a lake: it keeps its own copy
   if (isTile) {
