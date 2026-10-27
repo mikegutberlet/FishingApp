@@ -51,7 +51,7 @@ export async function waterTempNow(lake, w = null, data = null) {
   let air = await airMeans(lake.lat, lake.lon), basis = 'the last 30 days of air temperature';
   if (!air && w?.daily?.temperature_2m_max) {
     const d = w.daily.temperature_2m_max.slice(0, 4).map((hi, i) => (hi + w.daily.temperature_2m_min[i]) / 2).filter(Number.isFinite);
-    if (d.length) { const m = d.reduce((a, b) => a + b, 0) / d.length; air = { m30: m, m7: m }; basis = 'the forecast (no 30-day record on the phone)'; }
+    if (d.length) { const m = d.reduce((a, b) => a + b, 0) / d.length; air = { m30: m, m7: m }; basis = 'the forecast, no 30-day record yet'; }
   }
   if (!air) return null;
   const a = C(0.7 * air.m30 + 0.3 * air.m7);
