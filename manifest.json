@@ -7,8 +7,8 @@
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0f3b4c",
-  "theme_color": "#0f3b4c",
+  "background_color": "#14352e",
+  "theme_color": "#14352e",
   "categories": [
     "sports",
     "travel",
