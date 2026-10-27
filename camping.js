@@ -159,7 +159,7 @@ async function fsPages(bbox) {
       activity: a.markeractivity ?? null, status: /^(open|closed)$/i.test(a.openstatus ?? '') ? a.openstatus.toLowerCase() : null,
       feeText: plain(a.feedescription, 220), reservations: plain(String(a.reservation_info ?? '').replace(/<a [^>]*>[^<]*<\/a>/gi, 'Recreation.gov'), 220),
       recgovId: String(a.reservation_info ?? '').match(/recreation\.gov\/camping\/campgrounds\/(\d+)/)?.[1] ?? null, restrictions: plain(a.restrictions, 300), accessibility: plain(a.accessibility, 160),
-      season: a.open_season_start && !/\d:\d\d/.test(a.open_season_start) ? (!a.open_season_end ? `from ${a.open_season_start}` : a.open_season_end === a.open_season_start ? a.open_season_start : `${a.open_season_start}–${a.open_season_end}`) : null, forest: a.forestname ?? null,
+      season: a.open_season_start && !/\d:\d\d/.test(a.open_season_start) ? (!a.open_season_end ? (/year/i.test(a.open_season_start) ? a.open_season_start : `from ${a.open_season_start}`) : a.open_season_end === a.open_season_start ? a.open_season_start : `${a.open_season_start}–${a.open_season_end}`) : null, forest: a.forestname ?? null,
       source: { label: 'USFS recreation opportunities', url: arcRecord(RECOPP, 'objectid', a.objectid) },
     };
   }).filter(Boolean);
@@ -377,7 +377,7 @@ function merge(records, pages) {
       if (!s.sources.some(x => x.url === p.source.url)) s.sources.push(p.source);
     } else if (/camp|cabin|rv/i.test(p.activity ?? '')) {
       out.push({ name: p.name, lat: p.lat, lon: p.lon, kind: /dispersed/i.test(p.activity) ? 'dispersed' : /cabin/i.test(p.activity) ? 'cabin' : /group/i.test(p.activity) ? 'group' : 'developed',
-        operator: /state (park|rec)/i.test(p.name) ? 'State park' : 'Forest Service', status: p.status, recgovId: p.recgovId, infoUrl: p.infoUrl, feeText: p.feeText, fee: /no fee|free/i.test(p.feeText ?? '') ? 'no' : null, reservations: p.reservations, restrictions: p.restrictions, season: p.season, forest: p.forest, recid: p.recid, sources: [p.source] });
+        operator: 'Forest Service', status: p.status, recgovId: p.recgovId, infoUrl: p.infoUrl, feeText: p.feeText, fee: /no fee|free/i.test(p.feeText ?? '') ? 'no' : null, reservations: p.reservations, restrictions: p.restrictions, season: p.season, forest: p.forest, recid: p.recid, sources: [p.source] });
     }
   }
   for (const s of out) {
@@ -385,6 +385,8 @@ function merge(records, pages) {
     if (/first.come/i.test(s.reservations ?? '')) s.firstCome = true;
     if (/^\W*(no|no reservations?)\W*$/i.test(s.reservations ?? '') && !s.recgovId) { s.firstCome = true; s.reservable = false; }
     if (s.fee == null && /no fee|free|no fees/i.test(s.feeText ?? '')) s.fee = 'no';
+    // A state park the forest lists among its sites is still run by the state.
+    if (s.operator === 'Forest Service' && /\bstate (park|rec)/i.test(s.name)) s.operator = 'State park';
   }
   return out;
 }
