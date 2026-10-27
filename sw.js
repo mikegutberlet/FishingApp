@@ -113,6 +113,11 @@ const SHELL = [
   'views/debrief.js',
   'routes.js',
   'ready.js',
+  'camp.css',
+  'camp-trip.js',
+  'camp-cook.js',
+  'campsites.js',
+  'views/camp.js',
 ];
 
 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())));

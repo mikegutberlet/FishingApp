@@ -35,6 +35,7 @@ import './insights.js';
 import { initCrew } from './crew.js';
 import './license.js';
 import { checkReminders } from './reminders.js';
+import { initCamp } from './views/camp.js';
 
 document.querySelectorAll('nav button').forEach(b => b.onclick = () => showView(b.dataset.view));
 
@@ -53,6 +54,7 @@ navigator.storage?.persist?.(); // ask the browser not to evict our data
 migrateSavedIds(db).catch(e => console.warn('Oregon id migration:', e));
 resumeTrip();
 initCrew();
+initCamp();
 checkReminders();
 if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js');
 // Today is the home screen. The map starts hidden, so frame your lakes the first time it is shown (a hidden map has no size).
