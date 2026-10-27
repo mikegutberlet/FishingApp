@@ -1,5 +1,5 @@
 // Caches the app shell so it opens with no signal on the water. Your data is in IndexedDB, not here.
-const CACHE = 'tackle-box-v31';
+const CACHE = 'tackle-box-v33';
 // One file per line. Add new files here and bump CACHE.
 const SHELL = [
   './',
@@ -152,6 +152,12 @@ const SHELL = [
   'views/tabs/marine.js',
   'views/tabs/ocean-rules.js',
   'welcome.css',
+  'theme.css',
+  'vendor/fonts/barlow-latin-400-normal.woff2',
+  'vendor/fonts/barlow-latin-500-normal.woff2',
+  'vendor/fonts/barlow-latin-600-normal.woff2',
+  'vendor/fonts/barlow-condensed-latin-600-normal.woff2',
+  'vendor/fonts/barlow-condensed-latin-600-italic.woff2',
   'welcome.js',
   'share-water.js',
   'guide.html',
