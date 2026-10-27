@@ -114,8 +114,10 @@ export async function historyFor(lake) {
   const radius = lake.kind === 'river' || /river|creek|stream|slough/i.test(lake.type ?? '') ? 3 : Math.max(1.5, Math.sqrt((lake.acres ?? 50) / 247) * 1.5);
   const key = norm(lake.name);
   const seen = new Set();
+  // Localities normalized once, not once per water (the finder asks about thousands of waters).
+  const named = h.normLocality ??= h.places.map(p => norm(p[4]));
   const local = h.places
-    .filter(([lat, lon, , , locality]) => (key.length > 3 && norm(locality).includes(key)) || haversineKm(lake.lat, lake.lon, lat, lon) <= radius)
+    .filter(([lat, lon], i) => (key.length > 3 && named[i].includes(key)) || haversineKm(lake.lat, lake.lon, lat, lon) <= radius)
     // One line per species per year: NAS often has several records of the same plant at different spots on a lake.
     .filter(([, , year, species]) => !seen.has(`${year}|${species}`) && seen.add(`${year}|${species}`))
     .map(([, , year, species, locality, status]) => ({ year: String(year), text: `${species}${locality ? ` (${locality})` : ''}${status ? ` · ${status.toLowerCase()}` : ''}` }));

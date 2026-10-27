@@ -8,6 +8,7 @@ import { showNewPlantBadges } from './new-plants.js';
 import { activeTrip } from './trips.js';
 import { refreshWaypoints } from '../waypoints.js';
 import { deletePack, packId } from '../offline.js';
+import { renderFinder } from './finder.js';
 
 export async function renderLakeList() {
   $('#lake-detail').classList.add('hidden');
@@ -16,12 +17,14 @@ export async function renderLakeList() {
   const lakes = (await db.all('lakes')).sort((a, b) => a.name.localeCompare(b.name));
   const S = selected(lakes);
   list.innerHTML = `<h2>Lakes & rivers</h2><label class="state-pick small">State <select id="state-pick">${stateList.map(s => `<option value="${s.code}" ${s === S ? 'selected' : ''}>${s.name}</option>`).join('')}<option value="here">📍 Where I am</option></select></label>
+    <button id="find-where" class="primary" style="margin-bottom:8px">🧭 Where should I go?</button>
     <div class="row" style="margin-bottom:12px"><button id="find-any" style="flex:1">🔎 All waters</button><button id="find-waters" style="flex:1">🐟 Stocked waters</button></div>`
     + (lakes.length ? '' : emptyState('🏞️', `No saved waters yet. Search all ${esc(S.name)} waters or the stocked ones above, or tap “＋ Lake here” on the map.`))
     + lakes.map(l => `<div class="card lake-item" data-id="${l.id}"><div><b>${esc(l.name)}</b> <span data-new-plants="${l.id}"></span><div class="muted small">${esc(l.type)}${l.county ? ' · ' + esc(l.county) : ''}${l.state ? ', ' + esc(l.state) : ''}</div></div><span>›</span></div>`).join('');
   list.querySelectorAll('.lake-item').forEach(el => el.onclick = () => openLake(el.dataset.id));
   $('#find-waters').onclick = () => renderFindWaters(S);
   $('#find-any').onclick = () => renderFindAny(S);
+  $('#find-where').onclick = renderFinder;
   $('#state-pick').onchange = async e => {
     if (e.target.value === 'here') {
       try { const p = await locate(); const here = stateAt(p.lat, p.lon); if (here) select(here.code); else status('No state data for where you are yet'); }

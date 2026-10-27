@@ -110,6 +110,8 @@ const SHELL = [
   'safety-map.js',
   'where.css',
   'views/where.js',
+  'finder.css',
+  'views/finder.js',
   'coords.js',
   'help.js',
   'signal.js',
