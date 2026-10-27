@@ -168,8 +168,11 @@ const SHELL = [
 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())));
 // Drop old app-shell caches, but keep the map tiles you've already viewed, lakes saved for offline (offline.js),
 // Getting there answers (access-lookup.js) and the SOS card's numbers (help.js).
-self.addEventListener('activate', e => e.waitUntil(
-  caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE && k !== 'tiles' && k !== 'tb-access' && k !== 'tb-forecast' && k !== 'tb-help' && !k.startsWith('offline-')).map(k => caches.delete(k)))).then(() => self.clients.claim())));
+// Tiles kept before map.js asked for them with CORS are opaque: a CORS request can't use them, and Chrome counts each as
+// ~7 MB of storage. Drop those once; the map fetches them again when next viewed with signal.
+const dropOpaqueTiles = () => caches.open('tiles').then(c => c.keys().then(keys => Promise.all(keys.map(k => c.match(k).then(r => r?.type === 'opaque' && c.delete(k))))));
+self.addEventListener('activate', e => e.waitUntil(dropOpaqueTiles().then(() =>
+  caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE && k !== 'tiles' && k !== 'tb-access' && k !== 'tb-forecast' && k !== 'tb-help' && !k.startsWith('offline-')).map(k => caches.delete(k))))).then(() => self.clients.claim())));
 
 let slowUntil = 0; // weak signal: until then, files with a saved copy don't wait for the network
 self.addEventListener('fetch', e => {
@@ -180,7 +183,7 @@ self.addEventListener('fetch', e => {
   if (url.searchParams.has('tb-ping')) return; // signal.js asking whether there's signal: only the network can answer
   if (isTile) {
     // Map tiles: from a saved offline lake or what you've viewed before, otherwise fetch and keep a copy.
-    e.respondWith(caches.open('tiles').then(async c => (await caches.match(e.request)) || fetch(e.request).then(r => { if (r.ok || r.type === 'opaque') c.put(e.request, r.clone()); return r; })));
+    e.respondWith(caches.open('tiles').then(async c => (await caches.match(e.request)) || fetch(e.request).then(r => { if (r.ok) c.put(e.request, r.clone()); return r; })));
   } else if (isShell) {
     // Network first so updates land, cache as fallback for offline. On one bar of signal the network can hang for a minute,
     // so when there's a saved copy it gets 4 seconds, then the saved copy is used and the network refreshes it in the background.

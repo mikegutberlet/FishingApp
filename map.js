@@ -13,10 +13,12 @@ export const map = L.map('map', { zoomControl: false });
 map.on('moveend', () => { try { const c = map.getCenter(); localStorage.setItem(VIEW_KEY, JSON.stringify({ lat: +c.lat.toFixed(4), lon: +c.lng.toFixed(4), z: map.getZoom() })); } catch {} });
 L.control.zoom({ position: 'topleft' }).addTo(map);
 const BASE_KEY = 'tackle-box-map-base';
-const street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' });
-const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: 'Esri' });
+// crossOrigin: tiles are fetched with CORS (all three servers allow it), so the copies sw.js keeps count at their real size.
+// Without it Chrome counts each kept tile as ~7 MB of the storage allowance, and a full allowance can clear the app's data.
+const street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, crossOrigin: true, attribution: '© OpenStreetMap' });
+const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, crossOrigin: true, attribution: 'Esri' });
 // USGS topo: contours, trails and Forest Service roads. Public domain, and the service allows tiles to be saved offline.
-const topo = L.tileLayer('https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, maxNativeZoom: 16, attribution: 'USGS The National Map' });
+const topo = L.tileLayer('https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, maxNativeZoom: 16, crossOrigin: true, attribution: 'USGS The National Map' });
 try { ({ Topo: topo, Streets: street }[localStorage.getItem(BASE_KEY)] ?? satellite).addTo(map); } catch { satellite.addTo(map); }
 export const baseLayers = { Satellite: satellite, Topo: topo, Streets: street };
 const lakeLayer = L.layerGroup().addTo(map);
@@ -62,21 +64,25 @@ map.on('click', e => {
 // so the app's first load doesn't fetch them). `statewide` holds every loaded one.
 export let statewide = null;
 // Make sure a state's list is loaded (for search), even when the map isn't looking at it yet (or is still loading it).
-export const loadState = S => loadedStates.get(S.code) ? Promise.resolve(loadedStates.get(S.code)) : S.statewide().then(d => { loadedStates.set(S.code, d); const all = [...loadedStates.values()].filter(Boolean); statewide = { lakes: all.flatMap(x => x.lakes), riverLabels: all.flatMap(x => x.riverLabels) }; drawWaterLabels(); return d; });
+// One load per state at a time; a list that came back short (no signal) isn't kept, so the next search or pan tries again.
+export function loadState(S) {
+  if (loadedStates.has(S.code)) return Promise.resolve(loadedStates.get(S.code));
+  if (!loading.has(S.code)) loading.set(S.code, S.statewide().then(d => {
+    loading.delete(S.code);
+    if (!d.lakes.length || !d.riverLabels.length) return d;
+    loadedStates.set(S.code, d);
+    const all = [...loadedStates.values()];
+    statewide = { lakes: all.flatMap(x => x.lakes), riverLabels: all.flatMap(x => x.riverLabels) };
+    drawWaterLabels();
+    return d;
+  }, e => { loading.delete(S.code); throw e; }));
+  return loading.get(S.code);
+}
 let shownWaters = [];
-const loadedStates = new Map();
+const loadedStates = new Map(), loading = new Map();
 function loadStates() {
   if (!map.getContainer().offsetWidth) return; // hidden: wait until the map is on screen (showing it fires moveend)
-  for (const S of statesIn(map.getBounds())) {
-    if (loadedStates.has(S.code)) continue;
-    loadedStates.set(S.code, null);
-    S.statewide().then(d => {
-      loadedStates.set(S.code, d);
-      const all = [...loadedStates.values()].filter(Boolean);
-      statewide = { lakes: all.flatMap(x => x.lakes), riverLabels: all.flatMap(x => x.riverLabels) };
-      drawWaterLabels();
-    });
-  }
+  for (const S of statesIn(map.getBounds())) loadState(S);
 }
 map.whenReady(loadStates);
 map.on('moveend', loadStates);
