@@ -1,5 +1,5 @@
 // Caches the app shell so it opens with no signal on the water. Your data is in IndexedDB, not here.
-const CACHE = 'tackle-box-v34';
+const CACHE = 'tackle-box-v36';
 // One file per line. Add new files here and bump CACHE.
 const SHELL = [
   './',
@@ -187,7 +187,10 @@ self.addEventListener('fetch', e => {
     e.waitUntil(net.catch(() => {}));
     e.respondWith(caches.open(CACHE).then(c => c.match(e.request)).then(saved => saved || caches.match(e.request)).then(saved => !saved ? net
       : Date.now() < slowUntil ? saved
-      : Promise.race([net.catch(() => saved), new Promise(res => setTimeout(() => { slowUntil = Date.now() + 60e3; res(saved); }, 4000))])));
+      : new Promise(res => {
+        const slow = setTimeout(() => { slowUntil = Date.now() + 60e3; res(saved); }, 4000);
+        net.then(r => { clearTimeout(slow); res(r); }, () => { clearTimeout(slow); res(saved); });
+      })));
   }
   // Weather/USGS calls go straight to the network.
 });
