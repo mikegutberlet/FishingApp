@@ -52,7 +52,7 @@ export function groundfishFacts(spot, state) {
     const a = caArea(spot.lat);
     return { area: `${a.name} Groundfish Management Area`, span: `${a.from} to ${a.to}`,
       text: `Rockfish, lingcod and other groundfish seasons and depth limits are set for each area and change during the year. ${spot.kind === 'pier' || spot.kind === 'jetty' || spot.kind === 'beach' || spot.kind === 'surf'
-        ? 'Shore-based anglers (from piers, jetties and the beach) are generally not held to the boat depth limits; check the summary for current shore rules and any species closures.'
+        ? 'Fishing from shore (piers, jetties, rocks and the beach) is exempt from the groundfish seasons and depth limits, but bag and size limits still apply, and quillback, yelloweye, cowcod and bronzespotted rockfish may never be kept.'
         : 'Boat anglers must stay inside the area’s depth limit while it applies.'} Call the CDFW groundfish hotline at ${CA_HOTLINE} before you go.`,
       links: [CA_LINKS.groundfish, CA_LINKS.ocean] };
   }

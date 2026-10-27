@@ -21,6 +21,7 @@
   <link rel="stylesheet" href="journal.css">
   <link rel="stylesheet" href="camp.css">
   <link rel="stylesheet" href="trip-tools.css">
+  <link rel="stylesheet" href="coast.css">
   <script>try { if (JSON.parse(localStorage.getItem('tackle-box-lock'))?.hash) document.documentElement.classList.add('locked'); } catch {}</script>
 </head>
 <body>
@@ -172,6 +173,7 @@
           <li><b>Getting there</b> (roads, trails, land manager, description): the coordinates of the water (or of the spot you pick on its shore) go to the U.S. Forest Service, the Bureau of Land Management, USGS PAD-US (ArcGIS Online), OpenStreetMap's Overpass API, Wikipedia and Open-Meteo (elevations along the walk in), only when you open that tab; the answers are kept on your device for 90 days. Its <b>Today</b> card sends the same coordinates to NRCS SNOTEL and Open-Meteo (snow), the national interagency fire feed (NIFC, on ArcGIS Online) and InciWeb, kept for 3 hours. Your access notes stay on your device unless you share them with your crew.</li>
           <li><b>Camping</b> (campgrounds, dispersed camping, land manager): the water's coordinates go to the Forest Service, BLM, Recreation.gov, California State Parks, OpenStreetMap and PAD-US when you open that tab. <b>Camp trips</b> check open sites by sending Recreation.gov only each campground's id and the months of your nights; where you camp never leaves the phone, and drive times are typed by you or estimated on the phone.</li>
           <li><b>Plant calendars</b>: if you subscribe, your calendar app fetches that water's public plant feed from this app's site.</li>
+          <li><b>Ocean spots</b> (piers, jetties, beaches, marine protected areas and tide stations) come from this app's own site (refreshed weekly from OpenStreetMap, CDFW, ODFW and NOAA). On a pier or beach's page, <b>NOAA Tides &amp; Currents</b> gets only the nearest tide station's id; <b>Open-Meteo Marine</b> (waves, swell, sea temperature) and the <b>National Weather Service</b> (marine zone, Coastal Waters Forecast, advisories) get the spot's coordinates. The answers are kept on your device so tides and the marine forecast work with no signal.</li>
           <li><b>Directions</b> links open Google Maps with that spot's location, only when you tap one.</li>
         </ul>
         <p>Catches, notes, photos, spots and depth data never leave the device. Sharing with your crew sends only what you pick, directly as a file

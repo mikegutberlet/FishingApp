@@ -21,8 +21,12 @@ const load = name => cache[name] ??= fetch(`data/coast/${name}.json`).then(r => 
   .then(j => { if (!j) setTimeout(() => delete cache[name], 30e3); return j; });
 
 // ---------- Spots ----------
+// Each spot comes back as a water: kind 'coast', with its own kind (pier, jetty…) in coastKind.
+let spotList = null;
 export async function coastSpots() {
-  return (await load('spots'))?.spots ?? [];
+  const j = await load('spots');
+  if (!j) return [];
+  return spotList ??= (j.spots ?? []).map(s => ({ ...s, kind: 'coast', coastKind: s.kind, type: COAST_KINDS[s.kind]?.label ?? 'Coast' }));
 }
 export async function nearestSpots(lat, lon, maxKm = 5) {
   return (await coastSpots()).map(s => ({ ...s, distKm: haversineKm(lat, lon, s.lat, s.lon) })).filter(s => s.distKm <= maxKm).sort((a, b) => a.distKm - b.distKm);
@@ -31,7 +35,7 @@ export async function nearestSpots(lat, lon, maxKm = 5) {
 // A lake-store record for a spot, not yet saved. Saved coast waters live with your lakes (kind 'coast'), so catches,
 // notes, trips and offline packs work the same.
 export function coastRecord(s) {
-  return { unsaved: true, nhdId: String(s.id), kind: 'coast', coastKind: s.kind, name: s.name, type: COAST_KINDS[s.kind]?.label ?? 'Coast', state: s.state, lat: s.lat, lon: s.lon,
+  return { unsaved: true, nhdId: String(s.id), kind: 'coast', coastKind: s.coastKind, name: s.name, type: COAST_KINDS[s.coastKind]?.label ?? 'Coast', state: s.state, lat: s.lat, lon: s.lon,
     ...(s.publicPier != null && { publicPier: s.publicPier }) };
 }
 
@@ -131,27 +135,77 @@ export async function marineZone(lat, lon) {
       const r = await fetch(`https://api.weather.gov/zones?type=${type}&point=${(+lat).toFixed(4)},${(+lon).toFixed(4)}`, { headers: { Accept: 'application/geo+json' }, signal: AbortSignal.timeout(15e3) });
       if (!r.ok) continue;
       const f = (await r.json()).features?.[0]?.properties;
-      if (f?.id) return { id: f.id, name: f.name };
+      if (f?.id) return { id: f.id, name: f.name, office: f.cwa?.[0] ?? null };
     }
     return null;
   }, { maxAgeMs: 365 * 864e5 });
   return data;
 }
-// A spot on a pier or the beach sits on land, so its zone is looked up a little offshore (west) when the point itself has none.
+// A spot on a pier or the beach often sits on land, so its zone is looked up a little offshore (west, then around) when the point itself has none.
 export async function marineZoneNear(lat, lon) {
-  for (const dx of [0, -0.03, -0.08]) { const z = await marineZone(lat, lon + dx).catch(() => null); if (z) return z; }
+  for (const [dy, dx] of [[0, 0], [0, -0.03], [-0.025, -0.025], [0.025, -0.025], [-0.03, 0], [0.03, 0], [0, -0.08], [-0.06, -0.06], [0.06, -0.06]]) {
+    const z = await marineZone(lat + dy, lon + dx).catch(() => null);
+    if (z) return z;
+  }
   return null;
 }
 export const zonePageUrl = id => `https://forecast.weather.gov/shmrn.php?mz=${encodeURIComponent(id.toLowerCase())}`;
 
-// The zone's forecast periods: [{ name, text }].
-export async function zoneForecast(id) {
+// The NWS office that writes each zone's Coastal Waters Forecast, by the zone number's first digit (Pacific coast).
+const CWF_OFFICE = { 2: 'PQR', 3: 'MFR', 4: 'EKA', 5: 'MTR', 6: 'LOX', 7: 'SGX' };
+
+// Zones a UGC line names: "PZZ530-531-271615-" or "PZZ655>673-" → ['PZZ530', 'PZZ531'].
+export function ugcZones(line) {
+  const out = [];
+  let prefix = null;
+  for (const tok of line.trim().split('-')) {
+    if (/^\d{6}$/.test(tok)) break;
+    const m = tok.match(/^([A-Z]{3})?(\d{3})(?:>(\d{3}))?$/);
+    if (!m) continue;
+    prefix = m[1] ?? prefix;
+    if (!prefix) continue;
+    for (let n = +m[2]; n <= +(m[3] ?? m[2]); n++) out.push(prefix + String(n).padStart(3, '0'));
+  }
+  return out;
+}
+
+// One zone's part of a Coastal Waters Forecast product: { headlines, synopsis, periods: [{ name, text }] }.
+export function parseCwf(text, zone) {
+  const blocks = text.split(/\n\$\$\s*\n?/);
+  // The synopsis block: a ".Synopsis for …..." header that may wrap over lines, a blank line, then the text.
+  const syn = blocks.find(b => /^\.synopsis/im.test(b));
+  const synopsis = syn ? syn.slice(syn.search(/^\.synopsis/im)).split(/\n\s*\n/).slice(1).join(' ').replace(/\s+/g, ' ').trim() || null : null;
+  for (const b of blocks) {
+    const lines = b.trim().split('\n');
+    const i = lines.findIndex(l => /^[A-Z]{3}\d{3}[->]/.test(l));
+    if (i < 0 || !ugcZones(lines[i]).includes(zone)) continue;
+    const body = lines.slice(i + 1).join('\n');
+    const headlines = [...body.matchAll(/^\.\.\.([^.][\s\S]*?)\.\.\.$/gm)].map(m => m[1].replace(/\s+/g, ' ').trim());
+    const periods = [...body.matchAll(/^\.([A-Z][A-Z .]+?)\.\.\.([\s\S]*?)(?=^\.[A-Z][A-Z .]+?\.\.\.|(?![\s\S]))/gm)]
+      .map(m => ({ name: m[1].trim(), text: m[2].replace(/\s+/g, ' ').trim() }));
+    if (periods.length) return { headlines, synopsis, periods };
+  }
+  return null;
+}
+
+// The zone's latest Coastal Waters Forecast from NWS.
+// Read from the office's latest product, which also carries the advisory headlines; if the zone isn't in it, NWS's
+// per-zone periods instead (a bigger answer, since it comes with the zone's outline).
+export async function zoneForecast(id, office = null) {
+  office ??= CWF_OFFICE[String(id).match(/^PZZ(\d)/)?.[1]];
   return liveOrSaved(`mzfc/${id}`, async () => {
-    const r = await fetch(`https://api.weather.gov/zones/forecast/${encodeURIComponent(id)}/forecast`, { headers: { Accept: 'application/geo+json' }, signal: AbortSignal.timeout(15e3) });
-    if (!r.ok) throw new Error('Marine forecast unavailable');
-    const p = (await r.json()).properties;
-    if (!p?.periods?.length) throw new Error('No marine forecast text');
-    return { updated: p.updated, periods: p.periods.map(x => ({ name: x.name, text: x.detailedForecast })) };
+    const h = { headers: { Accept: 'application/ld+json' }, signal: AbortSignal.timeout(15e3) };
+    if (office) try {
+      const list = await (await fetch(`https://api.weather.gov/products/types/CWF/locations/${office}`, h)).json();
+      const latest = list['@graph']?.[0];
+      const p = latest && await (await fetch(`https://api.weather.gov/products/${encodeURIComponent(latest.id)}`, h)).json();
+      const fc = p && parseCwf(p.productText ?? '', id);
+      if (fc) return { ...fc, issued: p.issuanceTime, office };
+    } catch {}
+    const r = await fetch(`https://api.weather.gov/zones/forecast/${encodeURIComponent(id)}/forecast`, { headers: { Accept: 'application/geo+json' }, signal: AbortSignal.timeout(20e3) });
+    const p = r.ok ? (await r.json()).properties : null;
+    if (!p?.periods?.length) throw new Error('Marine forecast unavailable');
+    return { headlines: [], synopsis: null, periods: p.periods.map(x => ({ name: x.name.toUpperCase(), text: x.detailedForecast })), issued: p.updated, office: office ?? 'NWS' };
   }, { maxAgeMs: 3 * 864e5 });
 }
 
