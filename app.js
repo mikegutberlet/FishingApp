@@ -23,11 +23,13 @@ import './views/planner.js';
 import { initOffline } from './offline.js';
 import { initWaypoints } from './waypoints.js';
 import { initHeatmap } from './heatmap.js';
+import { initRoutes } from './routes.js';
 import './map-browse.js';
 
 initOffline();
 initWaypoints();
 initHeatmap();
+initRoutes();
 import './insights.js';
 import { initCrew } from './crew.js';
 import './license.js';

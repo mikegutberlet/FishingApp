@@ -12,17 +12,21 @@ export const map = L.map('map', { zoomControl: false });
 { const v = savedView(); if (v) map.setView([v.lat, v.lon], v.z); else { const b = selected().bbox; map.fitBounds([[b[1], b[0]], [b[3], b[2]]]); } }
 map.on('moveend', () => { try { const c = map.getCenter(); localStorage.setItem(VIEW_KEY, JSON.stringify({ lat: +c.lat.toFixed(4), lon: +c.lng.toFixed(4), z: map.getZoom() })); } catch {} });
 L.control.zoom({ position: 'topleft' }).addTo(map);
+const BASE_KEY = 'tackle-box-map-base';
 const street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' });
 const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: 'Esri' });
-satellite.addTo(map);
-export const baseLayers = { Satellite: satellite, Streets: street };
+// USGS topo: contours, trails and Forest Service roads. Public domain, and the service allows tiles to be saved offline.
+const topo = L.tileLayer('https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, maxNativeZoom: 16, attribution: 'USGS The National Map' });
+try { ({ Topo: topo, Streets: street }[localStorage.getItem(BASE_KEY)] ?? satellite).addTo(map); } catch { satellite.addTo(map); }
+export const baseLayers = { Satellite: satellite, Topo: topo, Streets: street };
 const lakeLayer = L.layerGroup().addTo(map);
 const catchLayer = L.layerGroup().addTo(map);
 export const depthLayer = L.layerGroup().addTo(map);
 export const stockedLayer = L.layerGroup();
 export const watersLayer = L.layerGroup().addTo(map);
 // Other modules add their own overlays with layersControl.addOverlay(layer, 'Name').
-export const layersControl = L.control.layers({ Satellite: satellite, Streets: street }, { 'Lake & river names': watersLayer, 'My lakes': lakeLayer, Catches: catchLayer, Depth: depthLayer, 'Stocked waters': stockedLayer }).addTo(map);
+map.on('baselayerchange', e => { try { localStorage.setItem(BASE_KEY, e.name); } catch {} });
+export const layersControl = L.control.layers({ Satellite: satellite, Topo: topo, Streets: street }, { 'Lake & river names': watersLayer, 'My lakes': lakeLayer, Catches: catchLayer, Depth: depthLayer, 'Stocked waters': stockedLayer }).addTo(map);
 map.on('overlayadd', async e => {
   if (e.layer !== stockedLayer || stockedLayer.getLayers().length) return;
   const recent = Date.now() - 30 * 864e5;

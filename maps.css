@@ -39,3 +39,12 @@ svg.chart polyline.older { stroke: var(--muted); opacity: .45; }
 .picking .leaflet-marker-pane *, .picking .leaflet-overlay-pane *, .picking .leaflet-shadow-pane * { pointer-events: none !important; }
 /* Leave room for the 📍 / 📌 / ＋ buttons beside the depth legend on a phone. */
 #depth-legend { max-width: calc(100% - 160px); }
+
+/* Ready for no signal (ready.js) and saved forecasts (forecast.js) */
+.rdy-list { max-height: 40vh; overflow-y: auto; margin: 4px 0 8px; }
+.rdy-row { align-items: flex-start; padding: 6px 0; border-bottom: 1px solid var(--line, rgba(127,127,127,.2)); }
+.rdy-row input { margin-top: 3px; }
+.saved-wx { margin: 0 0 8px; padding: 6px 10px; border-radius: 10px; background: rgba(242, 201, 76, .18); }
+.today-head .row { gap: 6px; flex-wrap: nowrap; }
+.rt-import { margin-top: 8px; }
+.trip-saver { font-size: 12px; }

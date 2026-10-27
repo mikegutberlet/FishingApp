@@ -1,0 +1,17 @@
+name: Check topo tiles
+# Probes the topo tile services the offline topo map can use, from a runner (the sandbox can't reach them). Writes nothing.
+on:
+  push:
+    paths:
+      - scripts/dev/check-topo.mjs
+      - .github/workflows/check-topo.yml
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/dev/check-topo.mjs
