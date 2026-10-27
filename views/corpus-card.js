@@ -11,7 +11,7 @@ export async function renderArchiveCard(lake, el) {
   if (!corpusKey(lake)) return;
   const f = await corpusFor(lake);
   if (!el.isConnected) return;
-  if (!f) { el.innerHTML = `<div class="card"><h3>In the archive</h3><p class="muted small">Not in your archive yet: import the pack from your private folder (⚙️ gear → Import), or the nightly job hasn’t reached this water.</p></div>`; return; }
+  if (!f) { el.innerHTML = `<div class="card"><h3>In the archive</h3><p class="muted small">Not in your archive yet: connect your archive server or import its pack (⚙️ gear → Your private archive), or the nightly job hasn’t reached this water.</p></div>`; return; }
   const a = f.access?.summary, rows = [];
   if (a?.verdict) rows.push(`<b>Getting there:</b> ${esc(a.verdict)}${a.road ? ` via ${esc(a.road)}` : ''}${a.hikeMi ? `, then ${esc(a.hikeMi)} on foot` : ''}${a.land?.length ? ` · ${esc(a.land.join(', '))} land` : ''} <span class="muted">(${fmtDate(f.access.fetchedAt)})</span>`);
   if (f.camping) rows.push(`<b>Camping:</b> ${f.camping.sites.length} campground${f.camping.sites.length === 1 ? '' : 's'} within ${fmtMi(f.camping.searchKm)} <span class="muted">(${fmtDate(f.camping.fetchedAt)})</span>`);
