@@ -7,6 +7,7 @@ import { openLake } from '../lake.js';
 import { renderStateReport } from '../state-report.js';
 import { isNew, markPlantsSeen } from '../new-plants.js';
 import { stockHistoryFor } from '../../stock-history.js';
+import { speciesLabel } from '../../species.js';
 
 export async function renderStocking(lake, body) {
   if (lake.unsaved) {
@@ -80,7 +81,8 @@ async function renderStateStocking(lake, el) {
   const maxN = Math.max(1, ...perYear.map(r => r[1]));
   // NDOW reports the day, count and size of each stocking; CDFW only the week and species.
   const when = p => p.week === p.weekEnd ? fmtDate(p.week + 'T12:00') : `week of ${fmtDate(p.week + 'T12:00')}`;
-  const what = p => `${p.count ? `${p.count.toLocaleString()} ` : ''}${esc(p.species)}${p.inches ? ` (${p.inches}″)` : ''}`;
+  // Species in the list's names (species.js); the agency's own wording is kept on the record and shown on a long press.
+  const what = p => `${p.count ? `${p.count.toLocaleString()} ` : ''}<span title="${esc(p.species)}">${esc(speciesLabel(p.species))}</span>${p.inches ? ` (${p.inches}″)` : ''}`;
   const tag = p => isNew(lake, p) && !lake.unsaved ? ' <span class="badge">new</span>' : '';
   const fishPerYear = past.reduce((m, p) => { const y = p.week.slice(0, 4); m[y] = (m[y] || 0) + (p.count || 0); return m; }, {});
   // A calendar feed only where the state publishes one (California's nightly ICS job).

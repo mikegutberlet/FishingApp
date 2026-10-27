@@ -2,6 +2,7 @@
 import { db } from './db.js';
 import { esc, onShow } from './ui.js';
 import { map, layersControl } from './map.js';
+import { fishName } from './species.js';
 
 const SEASONS = { all: 'All year', spring: 'Spring (Mar–May)', summer: 'Summer (Jun–Aug)', fall: 'Fall (Sep–Nov)', winter: 'Winter (Dec–Feb)' };
 const seasonOf = iso => ['winter', 'winter', 'spring', 'spring', 'spring', 'summer', 'summer', 'summer', 'fall', 'fall', 'fall', 'winter'][new Date(iso).getMonth()];
@@ -54,9 +55,9 @@ let control = null, filter = { species: '', season: 'all' };
 async function refresh() {
   if (!map.hasLayer(heat)) return;
   const catches = (await db.all('catches')).filter(c => c.lat != null && c.time);
-  const species = [...new Set(catches.map(c => c.species).filter(Boolean))].sort();
+  const species = [...new Set(catches.map(c => fishName(c.species)).filter(Boolean))].sort();
   if (filter.species && !species.includes(filter.species)) filter.species = ''; // its last catch was deleted
-  const shown = catches.filter(c => (!filter.species || c.species === filter.species) && (filter.season === 'all' || seasonOf(c.time) === filter.season));
+  const shown = catches.filter(c => (!filter.species || fishName(c.species) === filter.species) && (filter.season === 'all' || seasonOf(c.time) === filter.season));
   heat.setPoints(shown.map(c => [c.lat, c.lon]));
   const el = control?.getContainer();
   if (!el) return;

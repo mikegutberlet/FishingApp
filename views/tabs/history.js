@@ -3,8 +3,13 @@
 import { forLake } from '../../states/index.js';
 import { stockHistoryFor, summarize } from '../../stock-history.js';
 import { esc } from '../../ui.js';
+import { speciesName, speciesLabel } from '../../species.js';
 
 const fmt = n => Math.round(n).toLocaleString();
+// A record's lead name in the species list's words: "Kamloops trout (Lake Tahoe) · established" → "Rainbow trout, Kamloops (Lake Tahoe) · established".
+const named = t => { const sp = String(t).split(/ \(| · |: /)[0]; return speciesName(sp) ? speciesLabel(sp).replace(/ \((.+)\)$/, ', $1') + t.slice(sp.length) : t; };
+// A year's species by the list's names, adding up the ways the reports wrote the same fish ("RB", "Rainbow Trout").
+const bySpecies = sp => Object.entries(sp).reduce((m, [s, [f, n]]) => { const c = m[speciesLabel(s)] ??= [null, 0]; if (f != null) c[0] = (c[0] ?? 0) + f; c[1] += n; return m; }, {});
 
 export async function renderHistory(lake, body) {
   body.innerHTML = '<div class="card muted">Loading history…</div>';
@@ -12,7 +17,7 @@ export async function renderHistory(lake, body) {
   if (!S) { body.innerHTML = '<div class="card muted">Stocking history is only available for California, Nevada and Oregon waters.</div>'; return; }
   const [hist, stock] = await Promise.all([S.historyFor(lake), stockHistoryFor(lake)]);
   if (!body.isConnected) return;
-  const item = e => `<div class="hist"><b>${esc(e.year)}</b><div>${esc(e.text)}${e.source ? ` <span class="muted small">(${esc(e.source)})</span>` : ''}</div></div>`;
+  const item = e => `<div class="hist"><b>${esc(e.year)}</b><div>${esc(named(e.text))}${e.source ? ` <span class="muted small">(${esc(e.source)})</span>` : ''}</div></div>`;
   body.innerHTML = `
     ${stock ? stockCard(lake, S, stock) : `<div class="card"><h3>Stocking by year</h3><p class="muted small">No ${esc(S.agency)} stocking records found for this water in the reports and archived schedules.</p></div>`}
     <div class="card"><h3>Recorded at ${esc(lake.name)}</h3>${hist.local.length ? hist.local.map(item).join('') : '<p class="muted small">No historical introduction records for this water.</p>'}</div>
@@ -34,7 +39,7 @@ function stockCard(lake, S, stock) {
   const year = y => {
     if (y.none) return `<div class="barrow stock-none"><span class="lbl">${y.y}</span><span class="muted small">no record</span></div>`;
     const v = s.val(y);
-    const sp = Object.entries(y.sp).sort((a, b) => (b[1][0] ?? 0) - (a[1][0] ?? 0) || b[1][1] - a[1][1]);
+    const sp = Object.entries(bySpecies(y.sp)).sort((a, b) => (b[1][0] ?? 0) - (a[1][0] ?? 0) || b[1][1] - a[1][1]);
     const spText = sp.map(([name, [f, n]]) => `${esc(name)} ${f != null ? fmt(f) : `(${n} plant${n > 1 ? 's' : ''})`}`).join(' · ');
     // A year with plants but no count (California trout) gets a thin bar so it doesn't read as empty.
     const label = v != null ? `${fmt(v)} ${word}` : y.plants ? `${y.plants} plant${y.plants === 1 ? '' : 's'}` : 'stocked';

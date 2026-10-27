@@ -9,6 +9,7 @@ import { $, esc, fmtDate, showView, onShow } from '../ui.js';
 import { openLake } from './lake.js';
 import { dayStripHtml, openDayPlan } from './day-plan.js';
 import { fillReportLines } from '../report-line.js';
+import { speciesLabel } from '../species.js';
 
 const DAY = 864e5;
 let picked = 0; // days from today
@@ -51,7 +52,7 @@ export async function scoreDay(lake, w, date) {
     const plants = (await forLake(lake).plantsFor(stockId)).sort((a, b) => b.week.localeCompare(a.week));
     const during = plants.find(p => p.week <= date && (p.weekEnd ?? p.week) >= date);
     const last = plants.find(p => p.week <= date);
-    if (during) add(1.5, `${during.species} ${during.week <= dayKey(0) ? 'planted' : 'plant planned'} ${during.weekEnd && during.weekEnd !== during.week ? 'week of ' : 'on '}${fmtDate(during.week + 'T12:00').replace(/, \d{4}$/, '')}`);
+    if (during) add(1.5, `${speciesLabel(during.species)} ${during.week <= dayKey(0) ? 'planted' : 'plant planned'} ${during.weekEnd && during.weekEnd !== during.week ? 'week of ' : 'on '}${fmtDate(during.week + 'T12:00').replace(/, \d{4}$/, '')}`);
     else if (last) {
       const ago = Math.round((Date.parse(date) - Date.parse(last.weekEnd ?? last.week)) / DAY);
       if (ago <= 7) add(2, `Planted ${ago} day${ago === 1 ? '' : 's'} earlier`);
