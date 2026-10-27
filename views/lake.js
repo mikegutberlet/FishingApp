@@ -16,6 +16,7 @@ import { renderCrew } from './tabs/crew.js';
 import { renderInfo } from './tabs/info.js';
 import { renderGettingThere } from './tabs/access.js';
 import { renderCamping } from './tabs/camping.js';
+import { renderKnow } from './tabs/know.js';
 import { renderStateSafety, renderNvBanner } from './tabs/nv-safety.js';
 import { renderOrBanner } from './tabs/or-safety.js';
 import { renderSafety, renderSafetyBanner } from './tabs/safety.js';
@@ -49,6 +50,7 @@ export async function saveWater(lake, tab) {
 // Tabs on a saved water, in order. To add one, create views/tabs/<name>.js and add a line here.
 export const LAKE_TABS = {
   conditions: { label: 'Conditions', render: renderConditions },
+  plan: { label: 'Game plan', render: renderKnow },
   depth: { label: 'Depth', render: renderDepth },
   stocking: { label: 'Stocking', render: renderStocking },
   history: { label: 'History', render: renderHistory },
@@ -61,7 +63,7 @@ export const LAKE_TABS = {
   info: { label: 'Info', render: renderInfo },
 };
 // Tabs on a water you haven't saved yet (only the ones that work without your own data).
-export const WATER_TABS = ['conditions', 'stocking', 'depth', 'history', 'access', 'camping', 'safety', 'info'];
+export const WATER_TABS = ['conditions', 'plan', 'stocking', 'depth', 'history', 'access', 'camping', 'safety', 'info'];
 
 // One line under the name: what it is, where, and how big. Inside the h2 so safety banners still land right after the title block.
 const lakeSummary = l => {
