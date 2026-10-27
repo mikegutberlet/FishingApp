@@ -129,3 +129,15 @@ button[data-gt-map] { margin-top: 10px; }
 .gt-profile-axis { justify-content: space-between; }
 .gt-note-row { display: flex; gap: 8px; margin-top: 3px; } .gt-note-row > span:first-child { width: 20px; flex: none; }
 .gt-note-photo { width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 6px; }
+/* Camping tab */
+.cp-filters { display: flex; flex-wrap: wrap; gap: 6px; margin: 2px 0 8px; }
+.cp-filters button.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.cp-site { border-bottom: 1px solid var(--line); padding: 6px 0; }
+.cp-site > summary { display: flex; justify-content: space-between; gap: 8px; font-size: 14px; list-style: none; }
+.cp-site > summary::-webkit-details-marker { display: none; }
+.cp-site > summary > span:first-child { min-width: 0; }
+.cp-icons { font-size: 13px; letter-spacing: 1px; white-space: nowrap; }
+.cp-body { padding: 6px 0 4px 2px; display: grid; gap: 3px; }
+.cp-links, .cp-avail { margin-top: 4px; }
+.cp-ok { color: #2f855a; font-weight: 600; } .cp-no { color: #c53030; font-weight: 600; }
+.cp-tips { margin: 10px 0 6px; padding-left: 18px; } .cp-tips li { margin-bottom: 4px; }
