@@ -1,117 +1,274 @@
-depth: 403 https://pasta.lternet.edu/package/search/eml?defType=edismax&q=title:%22LAGOS-US%20DEPTH%22&fl=packageid,title,pubdate&rows=20
-rivers: 400 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/undefined/query?where=GNIS_NAME+IS+NOT+NULL+AND+%28GNIS_NAME+LIKE+%27%25+River%25%27+OR+GNIS_NAME+LIKE+%27%25+Creek%25%27+OR+GNIS_NAME+
+tile 4 -124.75,41.99 0.5°: 116 features in 49.8 s
+tile 4 -124.75,42.49 0.5°: 235 features in 119.8 s
+tile 4 -124.75,42.99 0.5°: 195 features in 182.3 s
+tile 4 -124.75,43.49 0.5°: 0 features in 0.4 s
+tile 4 -124.75,43.99 0.5°: 0 features in 0.2 s
+tile 4 -124.75,44.49 0.5°: 0 features in 60.3 s
+tile 4 -124.75,44.99 0.5°: 0 features in 40.3 s
+tile 4 -124.75,45.49 0.5°: 0 features in 19.1 s
+tile 4 -124.75,45.99 0.5°: 0 features in 40.9 s
+tile 4 -124.25,41.99 0.5°: 428 features in 0.5 s
+tile 4 -124.25,42.49 0.5°: 570 features in 0.4 s
+tile 4 -124.25,42.99 0.5°: 610 features in 0.4 s
+tile 4 -124.25,43.49 0.5°: 488 features in 0.4 s
+tile 4 -124.25,43.99 0.5°: 430 features in 0.4 s
+tile 4 -124.25,44.49 0.5°: 410 features in 47.2 s
+tile 4 -124.25,44.99 0.5°: 298 features in 2.3 s
+tile 4 -124.25,45.49 0.5°: 229 features in 43.3 s
+tile 4 -124.25,45.99 0.5°: 283 features in 51.9 s
+tile 4 -123.75,41.99 0.5°: 576 features in 13.0 s
+tile 4 -123.75,42.49 0.5°: 564 features in 10.5 s
+tile 4 -123.75,42.99 0.5°: 417 features in 0.5 s
+tile 4 -123.75,43.49 0.5°: 573 features in 0.4 s
+tile 4 -123.75,43.99 0.5°: 435 features in 7.5 s
+tile 4 -123.75,44.49 0.5°: 680 features in 3.6 s
+tile 4 -123.75,44.99 0.5°: 487 features in 0.4 s
+tile 4 -123.75,45.49 0.5°: 464 features in 0.4 s
+tile 4 -123.75,45.99 0.5°: 548 features in 0.4 s
+tile 4 -123.25,41.99 0.5°: 636 features in 0.5 s
+tile 4 -123.25,42.49 0.5°: 513 features in 0.5 s
+tile 4 -123.25,42.99 0.5°: 515 features in 0.4 s
+tile 4 -123.25,43.49 0.5°: 498 features in 0.3 s
+tile 4 -123.25,43.99 0.5°: 459 features in 0.3 s
+tile 4 -123.25,44.49 0.5°: 566 features in 0.3 s
+tile 4 -123.25,44.99 0.5°: 502 features in 1.5 s
+tile 4 -123.25,45.49 0.5°: 499 features in 0.5 s
+tile 4 -123.25,45.99 0.5°: 514 features in 0.4 s
+tile 4 -122.75,41.99 0.5°: 382 features in 0.5 s
+tile 4 -122.75,42.49 0.5°: 515 features in 0.4 s
+tile 4 -122.75,42.99 0.5°: 533 features in 0.8 s
+tile 4 -122.75,43.49 0.5°: 650 features in 0.7 s
+tile 4 -122.75,43.99 0.5°: 526 features in 0.3 s
+tile 4 -122.75,44.49 0.5°: 441 features in 0.3 s
+tile 4 -122.75,44.99 0.5°: 549 features in 0.3 s
+tile 4 -122.75,45.49 0.5°: 494 features in 0.8 s
+tile 4 -122.75,45.99 0.5°: 376 features in 0.4 s
+tile 4 -122.25,41.99 0.5°: 98 features in 0.4 s
+tile 4 -122.25,42.49 0.5°: 170 features in 0.4 s
+tile 4 -122.25,42.99 0.5°: 180 features in 0.6 s
+tile 4 -122.25,43.49 0.5°: 294 features in 0.4 s
+tile 4 -122.25,43.99 0.5°: 405 features in 0.3 s
+tile 4 -122.25,44.49 0.5°: 587 features in 0.4 s
+tile 4 -122.25,44.99 0.5°: 573 features in 0.4 s
+tile 4 -122.25,45.49 0.5°: 433 features in 0.4 s
+tile 4 -122.25,45.99 0.5°: 480 features in 1.8 s
+tile 4 -121.75,41.99 0.5°: 158 features in 0.3 s
+tile 4 -121.75,42.49 0.5°: 173 features in 0.7 s
+tile 4 -121.75,42.99 0.5°: 68 features in 0.3 s
+tile 4 -121.75,43.49 0.5°: 117 features in 0.4 s
+tile 4 -121.75,43.99 0.5°: 112 features in 0.7 s
+tile 4 -121.75,44.49 0.5°: 332 features in 0.5 s
+tile 4 -121.75,44.99 0.5°: 447 features in 0.3 s
+tile 4 -121.75,45.49 0.5°: 384 features in 0.3 s
+tile 4 -121.75,45.99 0.5°: 448 features in 0.5 s
+tile 4 -121.25,41.99 0.5°: 311 features in 0.8 s
+tile 4 -121.25,42.49 0.5°: 357 features in 0.5 s
+tile 4 -121.25,42.99 0.5°: 81 features in 0.6 s
+tile 4 -121.25,43.49 0.5°: 10 features in 0.4 s
+tile 4 -121.25,43.99 0.5°: 123 features in 0.3 s
+tile 4 -121.25,44.49 0.5°: 297 features in 0.5 s
+tile 4 -121.25,44.99 0.5°: 301 features in 0.3 s
+tile 4 -121.25,45.49 0.5°: 213 features in 0.3 s
+tile 4 -121.25,45.99 0.5°: 416 features in 0.4 s
+tile 4 -120.75,41.99 0.5°: 489 features in 0.3 s
+tile 4 -120.75,42.49 0.5°: 224 features in 1.0 s
+tile 4 -120.75,42.99 0.5°: 11 features in 0.2 s
+tile 4 -120.75,43.49 0.5°: 80 features in 0.2 s
+tile 4 -120.75,43.99 0.5°: 394 features in 0.8 s
+tile 4 -120.75,44.49 0.5°: 350 features in 0.5 s
+tile 4 -120.75,44.99 0.5°: 159 features in 0.2 s
+tile 4 -120.75,45.49 0.5°: 194 features in 1.0 s
+tile 4 -120.75,45.99 0.5°: 268 features in 0.5 s
+tile 4 -120.25,41.99 0.5°: 404 features in 0.4 s
+tile 4 -120.25,42.49 0.5°: 58 features in 0.3 s
+tile 4 -120.25,42.99 0.5°: 26 features in 0.6 s
+tile 4 -120.25,43.49 0.5°: 140 features in 0.3 s
+tile 4 -120.25,43.99 0.5°: 433 features in 0.3 s
+tile 4 -120.25,44.49 0.5°: 364 features in 0.3 s
+tile 4 -120.25,44.99 0.5°: 209 features in 0.3 s
+tile 4 -120.25,45.49 0.5°: 116 features in 0.3 s
+tile 4 -120.25,45.99 0.5°: 119 features in 0.4 s
+tile 4 -119.75,41.99 0.5°: 153 features in 0.2 s
+tile 4 -119.75,42.49 0.5°: 68 features in 0.3 s
+tile 4 -119.75,42.99 0.5°: 77 features in 0.3 s
+tile 4 -119.75,43.49 0.5°: 357 features in 1.8 s
+tile 4 -119.75,43.99 0.5°: 521 features in 0.3 s
+tile 4 -119.75,44.49 0.5°: 455 features in 0.3 s
+tile 4 -119.75,44.99 0.5°: 327 features in 0.2 s
+tile 4 -119.75,45.49 0.5°: 54 features in 0.2 s
+tile 4 -119.75,45.99 0.5°: 157 features in 0.3 s
+tile 4 -119.25,41.99 0.5°: 109 features in 0.3 s
+tile 4 -119.25,42.49 0.5°: 134 features in 0.3 s
+tile 4 -119.25,42.99 0.5°: 119 features in 3.5 s
+tile 4 -119.25,43.49 0.5°: 282 features in 1.2 s
+tile 4 -119.25,43.99 0.5°: 474 features in 0.4 s
+tile 4 -119.25,44.49 0.5°: 499 features in 0.4 s
+tile 4 -119.25,44.99 0.5°: 397 features in 0.4 s
+tile 4 -119.25,45.49 0.5°: 79 features in 0.3 s
+tile 4 -119.25,45.99 0.5°: 42 features in 0.4 s
+tile 4 -118.75,41.99 0.5°: 242 features in 0.3 s
+tile 4 -118.75,42.49 0.5°: 253 features in 0.3 s
+tile 4 -118.75,42.99 0.5°: 262 features in 0.3 s
+tile 4 -118.75,43.49 0.5°: 361 features in 0.3 s
+tile 4 -118.75,43.99 0.5°: 421 features in 0.4 s
+tile 4 -118.75,44.49 0.5°: 583 features in 0.4 s
+tile 4 -118.75,44.99 0.5°: 500 features in 0.3 s
+tile 4 -118.75,45.49 0.5°: 262 features in 0.4 s
+tile 4 -118.75,45.99 0.5°: 160 features in 0.3 s
+tile 4 -118.25,41.99 0.5°: 258 features in 0.4 s
+tile 4 -118.25,42.49 0.5°: 117 features in 0.3 s
+tile 4 -118.25,42.99 0.5°: 224 features in 0.3 s
+tile 4 -118.25,43.49 0.5°: 432 features in 0.3 s
+tile 4 -118.25,43.99 0.5°: 437 features in 0.5 s
+tile 4 -118.25,44.49 0.5°: 584 features in 0.3 s
+tile 4 -118.25,44.99 0.5°: 385 features in 0.3 s
+tile 4 -118.25,45.49 0.5°: 350 features in 0.3 s
+tile 4 -118.25,45.99 0.5°: 254 features in 0.3 s
+tile 4 -117.75,41.99 0.5°: 214 features in 0.4 s
+tile 4 -117.75,42.49 0.5°: 284 features in 0.4 s
+tile 4 -117.75,42.99 0.5°: 277 features in 0.3 s
+tile 4 -117.75,43.49 0.5°: 323 features in 0.4 s
+tile 4 -117.75,43.99 0.5°: 369 features in 0.3 s
+tile 4 -117.75,44.49 0.5°: 452 features in 0.4 s
+tile 4 -117.75,44.99 0.5°: 481 features in 0.4 s
+tile 4 -117.75,45.49 0.5°: 257 features in 0.3 s
+tile 4 -117.75,45.99 0.5°: 399 features in 0.4 s
+tile 4 -117.25,41.99 0.5°: 303 features in 0.5 s
+tile 4 -117.25,42.49 0.5°: 495 features in 0.4 s
+tile 4 -117.25,42.99 0.5°: 310 features in 0.3 s
+tile 4 -117.25,43.49 0.5°: 349 features in 0.4 s
+tile 4 -117.25,43.99 0.5°: 424 features in 0.3 s
+tile 4 -117.25,44.49 0.5°: 497 features in 0.3 s
+tile 4 -117.25,44.99 0.5°: 513 features in 0.3 s
+tile 4 -117.25,45.49 0.5°: 472 features in 0.3 s
+tile 4 -117.25,45.99 0.5°: 463 features in 0.4 s
+tile 4 -116.75,41.99 0.5°: 253 features in 0.3 s
+tile 4 -116.75,42.49 0.5°: 500 features in 0.3 s
+tile 4 -116.75,42.99 0.5°: 255 features in 0.3 s
+tile 4 -116.75,43.49 0.5°: 351 features in 0.3 s
+tile 4 -116.75,43.99 0.5°: 401 features in 0.3 s
+tile 4 -116.75,44.49 0.5°: 466 features in 0.3 s
+tile 4 -116.75,44.99 0.5°: 703 features in 0.4 s
+tile 4 -116.75,45.49 0.5°: 729 features in 0.3 s
+tile 4 -116.75,45.99 0.5°: 396 features in 0.4 s
+tile 12 -124.75,41.99 1°: 3 features in 1.4 s
+tile 12 -124.75,42.99 1°: 17 features in 2.4 s
+tile 12 -124.75,43.99 1°: 7 features in 3.3 s
+tile 12 -124.75,44.99 1°: 3 features in 1.6 s
+tile 12 -124.75,45.99 1°: 7 features in 4.2 s
+tile 12 -123.75,41.99 1°: 6 features in 2.7 s
+tile 12 -123.75,42.99 1°: 7 features in 1.5 s
+tile 12 -123.75,43.99 1°: 11 features in 3.8 s
+tile 12 -123.75,44.99 1°: 21 features in 7.2 s
+tile 12 -123.75,45.99 1°: 10 features in 4.0 s
+tile 12 -122.75,41.99 1°: 21 features in 4.1 s
+tile 12 -122.75,42.99 1°: 33 features in 3.2 s
+tile 12 -122.75,43.99 1°: 25 features in 5.2 s
+tile 12 -122.75,44.99 1°: 32 features in 9.9 s
+tile 12 -122.75,45.99 1°: 28 features in 3.7 s
+tile 12 -121.75,41.99 1°: 52 features in 1.6 s
+tile 12 -121.75,42.99 1°: 11 features in 17.2 s
+tile 12 -121.75,43.99 1°: 14 features in 24.7 s
+tile 12 -121.75,44.99 1°: 11 features in 1.1 s
+tile 12 -121.75,45.99 1°: 15 features in 2.8 s
+tile 12 -120.75,41.99 1°: 39 features in 2.6 s
+tile 12 -120.75,42.99 1°: 12 features in 2.1 s
+tile 12 -120.75,43.99 1°: 5 features in 3.7 s
+tile 12 -120.75,44.99 1°: 5 features in 0.7 s
+tile 12 -120.75,45.99 1°: 9 features in 3.1 s
+tile 12 -119.75,41.99 1°: 48 features in 1.7 s
+tile 12 -119.75,42.99 1°: 15 features in 3.6 s
+tile 12 -119.75,43.99 1°: 1 features in 2.8 s
+tile 12 -119.75,44.99 1°: 7 features in 62.1 s
+tile 12 -119.75,45.99 1°: 24 features in 5.8 s
+tile 12 -118.75,41.99 1°: 8 features in 31.0 s
+tile 12 -118.75,42.99 1°: 19 features in 2.3 s
+tile 12 -118.75,43.99 1°: 4 features in 3.1 s
+tile 12 -118.75,44.99 1°: 6 features in 10.4 s
+tile 12 -118.75,45.99 1°: 5 features in 2.2 s
+tile 12 -117.75,41.99 1°: 13 features in 2.8 s
+tile 12 -117.75,42.99 1°: 6 features in 3.0 s
+tile 12 -117.75,43.99 1°: 14 features in 25.4 s
+tile 12 -117.75,44.99 1°: 8 features in 2.9 s
+tile 12 -117.75,45.99 1°: 3 features in 3.1 s
+tile 12 -116.75,41.99 1°: 20 features in 1.9 s
+tile 12 -116.75,42.99 1°: 6 features in 1.2 s
+tile 12 -116.75,43.99 1°: 17 features in 1.2 s
+tile 12 -116.75,44.99 1°: 12 features in 2.5 s
+tile 12 -116.75,45.99 1°: 4 features in 0.8 s
 {
-  "startedAt": "2026-10-26T18:05:41.934Z",
+  "startedAt": "2026-10-27T02:03:25.941Z",
   "steps": {
-    "nhdLayersError": "502 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/layers?f=json",
-    "splitTiles": 30,
-    "failedTiles": [
+    "nhdLayers": [
       {
-        "layerId": 12,
-        "x": -120.5,
-        "y": 45.77125,
-        "size": 0.03125,
-        "error": "502 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/12/query?wh"
+        "id": 0,
+        "name": "Point"
       },
       {
-        "x": -124.75,
-        "y": 41.99,
-        "size": 0.03125,
-        "error": "400 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/undefined/q"
+        "id": 1,
+        "name": "Point Event"
       },
       {
-        "x": -124.71875,
-        "y": 41.99,
-        "size": 0.03125,
-        "error": "400 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/undefined/q"
+        "id": 2,
+        "name": "Line - Large Scale "
       },
       {
-        "x": -124.75,
-        "y": 42.02125,
-        "size": 0.03125,
-        "error": "400 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/undefined/q"
+        "id": 3,
+        "name": "Flow Direction"
       },
       {
-        "x": -124.71875,
-        "y": 42.02125,
-        "size": 0.03125,
-        "error": "400 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/undefined/q"
+        "id": 4,
+        "name": "Flowline - Small Scale"
       },
       {
-        "x": -124.6875,
-        "y": 41.99,
-        "size": 0.03125,
-        "error": "400 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/undefined/q"
+        "id": 5,
+        "name": "Flowline - Small Scale (HI, PR, VI, Pacific Territories)"
       },
       {
-        "x": -124.65625,
-        "y": 41.99,
-        "size": 0.03125,
-        "error": "400 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/undefined/q"
+        "id": 6,
+        "name": "Flowline - Large Scale"
       },
       {
-        "x": -124.6875,
-        "y": 42.02125,
-        "size": 0.03125,
-        "error": "400 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/undefined/q"
+        "id": 7,
+        "name": "Area - Small Scale"
+      },
+      {
+        "id": 8,
+        "name": "Area - Small Scale (HI, PR, VI, Pacific Territories)"
+      },
+      {
+        "id": 9,
+        "name": "Area - Large Scale"
+      },
+      {
+        "id": 10,
+        "name": "Waterbody - Small Scale"
+      },
+      {
+        "id": 11,
+        "name": "Waterbody - Small Scale (HI, PR, VI, Pacific Territories)"
+      },
+      {
+        "id": 12,
+        "name": "Waterbody - Large Scale"
       }
     ],
     "lakes": {
-      "features": 3337,
-      "polygons": 2317,
-      "inState": 2242,
+      "reused": "2026-10-26T20:00:29.469Z",
+      "inState": 2225,
+      "outsideOutline": 17
+    },
+    "rivers": {
+      "layer": 4,
+      "segments": 51135,
+      "named": 11563,
+      "kept": 1173,
+      "inLakes": {
+        "lakes": 538,
+        "labels": 58
+      },
       "carriedOver": 0
-    },
-    "elevations": {
-      "nhdKept": 428,
-      "fromDem": 1814,
-      "missing": 0
-    },
-    "depthProbe": "403 https://pasta.lternet.edu/package/eml/edi/1043?filter=newest",
-    "depth": {
-      "package": "edi.1043.1",
-      "pastaError": "403 https://pasta.lternet.edu/package/data/eml/edi/1043/1",
-      "portalUrls": [],
-      "portalResponse": " <!DOCTYPE html> <html lang=\"en\"> <head> <title>Data Portal - Login | Environmental Data Initiative (EDI) </title> <meta charset=\"UTF-8\"/> <meta content=\"width=device-width, initial-scale=1, maximum-scale=1\" name=\"viewport\"> <link rel=\"shortcut icon\" href=\"./images/favicon.ico\" type=\"image/x-icon\"/>",
-      "matchedWikidata": 11,
-      "unmatchedWikidata": [
-        "Sparks Lake 44.015669444,-121.745311111 1ft nearest Sparks Lake 0.1km",
-        "Devils Lake 44.98241,-123.99213 21ft nearest Devils Lake 0.1km",
-        "Hole-in-the-Ground 43.4029,-121.198 492ft nearest Morehouse Lake 15.7km",
-        "Washington Park 45.510661,-122.716869 260ft nearest City of Portland Reservoir Number 3 1.5km",
-        "Diamond Lake 43.16,-122.151666666 52ft nearest Diamond Lake 0.0km",
-        "Crater Lake 42.943611111,-122.106666666 1148ft nearest Crater Lake 0.1km"
-      ],
-      "lakesWithDepth": 11
-    },
-    "depthPackageError": "No depth table found via portal",
-    "depthError": "403 https://pasta.lternet.edu/package/search/eml?defType=edismax&q=title:%22LAGOS-US%20DEPTH%22&fl=packageid,title,pubdate&rows=20",
-    "wikidata": {
-      "rows": 17,
-      "sample": [
-        {
-          "lat": 43.718888888,
-          "lon": -122.040833333,
-          "maxFt": 427,
-          "meanFt": null,
-          "name": "Waldo Lake"
-        },
-        {
-          "lat": 43.4756,
-          "lon": -121.992,
-          "maxFt": 125,
-          "meanFt": null,
-          "name": "Crescent Lake"
-        },
-        {
-          "lat": 42.054722222,
-          "lon": -123.114444444,
-          "maxFt": 226,
-          "meanFt": null,
-          "name": "Applegate Lake"
-        },
-        {
-          "lat": 42.943611111,
-          "lon": -122.106666666,
-          "maxFt": 1949,
-          "meanFt
+    }
+  },
+  "finishedAt": "2026-10-27T02:20:47.930Z"
+}
