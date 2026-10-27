@@ -6,6 +6,7 @@ import { refreshMap } from '../map.js';
 import { backup, openFile } from '../backup.js';
 import { exportCatchesCsv } from '../catch-csv.js';
 import { isCrewPack, importCrewPack } from '../crew.js';
+import { isPrivateCorpus, importPrivateCorpus } from '../private-corpus.js';
 
 // ---------- Sharing with friends ----------
 // A lake pack holds the lake, its depth maps and stocking notes. Catches and notes stay private unless included.
@@ -33,6 +34,7 @@ $('#import-file').onchange = async e => {
     const data = await openFile(JSON.parse(await e.target.files[0].text()));
     e.target.value = '';
     if (isCrewPack(data)) return await importCrewPack(data);
+    if (isPrivateCorpus(data)) return await importPrivateCorpus(data);
     const isPack = !data.exportedAt;
     const replace = !isPack && confirm('Replace everything on this device with the backup? (Cancel = merge)');
     const skipped = await importAll(data, { replace });
