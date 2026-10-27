@@ -19,6 +19,8 @@
 @keyframes shake { 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
 
 #reminders { position: fixed; z-index: 1500; top: calc(var(--head-h) + 6px); left: 8px; right: 8px; display: flex; flex-direction: column; gap: 6px; }
+/* The views move down under the banners instead of hiding behind them (reminders.js sets --rem-h). */
+main { top: calc(var(--head-h) + var(--rem-h, 0px)); }
 .reminder { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 10px; background: #fff4d6; color: #4a3500; border: 1px solid #e8c45c; box-shadow: 0 2px 8px rgba(0,0,0,.15); font-size: 13px; }
 .reminder.bad { background: #fde2df; color: #5c0f0a; border-color: #e58b82; }
 .reminder span { flex: 1; }

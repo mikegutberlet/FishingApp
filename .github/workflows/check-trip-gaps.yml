@@ -1,0 +1,21 @@
+name: Check trip gaps sources
+# Runs the trip-gap lookups (roads in, last gas/ice/bait) against the live sources from a runner, since Claude's
+# sandbox can't reach them; check-trip-gaps.mjs probes the agency pages the ramp and booklet tables came from.
+# Writes nothing.
+on:
+  push:
+    paths:
+      - scripts/dev/check-trip-gaps*.mjs
+      - roads.js
+      - supplies.js
+      - .github/workflows/check-trip-gaps.yml
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --experimental-detect-module scripts/dev/check-trip-gaps-live.mjs

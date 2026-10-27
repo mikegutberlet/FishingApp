@@ -12,6 +12,11 @@ import { lookupNow } from './access-now.js';
 import { lookupCamping } from './camping.js';
 import { lakeBounds, packPlan, runPack, readPackFor, packLines, wantTopo, setWantTopo } from './offline.js';
 import { activeTrip } from './views/trips.js';
+import { lookupSupplies } from './supplies.js';
+import { roadsNear } from './roads.js';
+import { backupCardHtml, wireBackupCard } from './backup-prompt.js';
+import { bookletHtml, wireBooklets, isSaved, BOOKLET_HELP } from './regs-booklet.js';
+import { forLake } from './states/index.js';
 import { airQuality } from './boat-weather.js';
 
 const READY_KEY = 'tackle-box-ready'; // { [lake id]: { at: ISO, failed: [part names] } }, this phone only
@@ -35,6 +40,9 @@ export async function saveInfo(lake, { signal, onStep = () => {} } = {}) {
   else await part('Getting there', async () => (await lookupAccess(lake)).failed.length < 6);
   await part('snow and fires', async () => (await lookupNow(+lake.lat, +lake.lon, { elevFt: lake.elevationFt ?? null })).failed.length < 3);
   await part('Camping', async () => (await lookupCamping(lake)).failed.length < 6);
+  await part('gas, ice and bait', async () => !(await lookupSupplies(lake, { force: true })).stale);
+  // Caltrans roads (California and waters within reach of it). They change by the hour; the saved copy shows its age.
+  if (+lake.lat < 43) await part('roads in', async () => !(await roadsNear(lake)).stale);
   // Ocean spots: a week of tides, waves and swell, the zone's marine forecast, and the MPA lines (kept by the app's cache).
   if (isCoast(lake)) {
     await part('tides', async () => { const st = await nearestTideStation(lake.lat, lake.lon); return !!st && !(await tidesFor(st.id)).savedAt; });
@@ -66,7 +74,7 @@ export async function readyDialog({ pick = null } = {}) {
   const dlg = document.createElement('dialog');
   dlg.className = 'sheet';
   dlg.innerHTML = `<form class="form" method="dialog"><h3>📴 Ready for no signal</h3>
-    <p class="muted small">Do this at home on Wi-Fi. For each water you tick, the phone keeps the forecast (it shows how old it is), weather alerts, Getting there with the walk in, snow and fires, Camping, and the map with the state's regs, stocking and depth data.</p>
+    <p class="muted small">Do this at home on Wi-Fi. For each water you tick, the phone keeps the forecast (it shows how old it is), weather alerts, Getting there with the walk in, snow and fires, Camping, the roads in, the last gas, ice and bait, and the map with the state's regs, stocking and depth data.</p>
     <div class="rdy-list">${lakes.map(l => { const r = log[l.id], p = packs.get(l.id); return `<label class="check rdy-row"><input type="checkbox" name="lake" value="${esc(l.id)}" ${pre.has(l.id) ? 'checked' : ''}>
       <span><b>${esc(l.name)}</b>${l.favorite ? ' ★' : ''}<br><span class="muted small">${r ? `Ready ${ago(r.at)}${r.failed?.length ? ` · missed ${esc(r.failed.join(', '))}` : ''}` : 'Not made ready yet'}${p ? ` · map ${(p.bytes / 1e6).toFixed(0)} MB${p.complete ? '' : ', partial'}` : ''}</span></span></label>`; }).join('')}</div>
     <label class="check"><input type="checkbox" name="map" checked> Maps (satellite, regs, stocking and depth data)</label>
@@ -124,6 +132,14 @@ export async function readyDialog({ pick = null } = {}) {
     msg.innerHTML = (abort.signal.aborted ? '<b>Stopped.</b> What finished is saved.<br>' : '<b>Ready.</b> ')
       + results.map(r => `${r.info.failed.length ? '⚠️' : '✅'} <b>${esc(r.lake.name)}</b>${r.map && !r.map.tooBig ? ` · map ${(r.map.bytes / 1e6).toFixed(0)} MB` : ''}${r.info.failed.length ? `<br><span class="muted">Not saved: ${esc(r.info.failed.join(', '))}. Try again with better signal.</span>` : ''}${r.info.skipped.length ? `<br><span class="muted">${esc(r.info.skipped.join(', '))}</span>` : ''}`).join('<br>');
     for (const r of results) { const row = form.querySelector(`[name=lake][value="${CSS.escape(r.lake.id)}"]`)?.closest('.rdy-row')?.querySelector('.muted'); if (row && !abort.signal.aborted) row.textContent = r.info.failed.length ? `Ready just now · missed ${r.info.failed.join(', ')}` : 'Ready just now'; }
+    // Before days away: a backup, and the regs booklets for the states you're heading to.
+    const codes = [...new Set(results.map(r => forLake(r.lake)?.code).filter(Boolean))].filter(c => !isSaved(c));
+    const extra = document.createElement('div');
+    extra.className = 'rdy-extra';
+    extra.innerHTML = `${backupCardHtml(null)}${codes.length ? `<div class="tg-booklets"><b>📕 Regs booklet</b>${codes.map(c => bookletHtml(c, esc)).join('')}<p class="muted small">${esc(BOOKLET_HELP)}</p></div>` : ''}`;
+    msg.after(extra);
+    wireBackupCard(extra, null, () => extra.querySelector('.tg-backup')?.remove());
+    wireBooklets(extra);
     $('#rdy-cancel', dlg).textContent = 'Done';
     status(abort.signal.aborted ? 'Stopped; what finished is saved' : 'Ready for no signal');
   };

@@ -35,6 +35,7 @@ export async function renderToday() {
       <div class="row"><button id="go-ready" title="Save forecast, maps and lookups for no signal">📴 Ready</button><button id="go-plan">${icon('calendar')}Plan a trip</button></div></div>
     <div id="today-where"></div>
     <div id="today-insight" class="card hidden" data-slot="days-like-today"></div>
+    <div id="today-backup" class="card hidden"></div>
     <div id="today-camp" class="card hidden"></div>
     ${!lakes.length ? emptyState('🎣', 'Welcome! Find a water you fish, save it, and star it with ☆ to see its wind, bite windows, level and plants here every day.', ['🔎 Find a water', 'lakes'], ['🗺️ Open the map', 'map'])
       : !favs.length || editing ? `<div class="card"><h3>Your favorite waters</h3><p class="muted small">Star the waters you fish most. They show here with today's wind, bite windows, level and plants.</p>
@@ -50,6 +51,7 @@ export async function renderToday() {
   import('../map-browse.js').then(m => m.mountTodayMap($('#today-map', el))); // dynamic: map-browse pulls in the map, which pulls in this view
   import('./where.js').then(m => m.renderWhereCard($('#today-where', el))); // dynamic too: where.js pulls in the map
   import('./camp.js').then(m => m.todayCamp($('#today-camp', el))).catch(() => {}); // the camp trip you're on, or the next one
+  import('../backup-prompt.js').then(m => m.todayBackup($('#today-backup', el))).catch(() => {}); // back up before a multi-day trip
   $('#go-plan').onclick = () => showView('planner');
   $('#go-ready').onclick = () => import('../ready.js').then(m => m.readyDialog());
   el.querySelectorAll('[data-fav]').forEach(b => b.onclick = () => toggleFavorite(lakes.find(l => l.id === b.dataset.fav), b));
