@@ -204,7 +204,7 @@ function readHash() {
   try { return decodeURIComponent(hi[1]).replace(/[<>]/g, '').trim().slice(0, 40); } catch { return ''; }
 }
 
-const openedShare = /^#(water|crew)=/.test(location.hash); // a friend's water or share: let it show; the welcome waits for the next start
+const openedShare = /^#(water|crew|go)=/.test(location.hash); // a friend's water or share, or a home-screen shortcut (SOS!): let it show; the welcome waits for the next start
 const invitedBy = readHash();
 addEventListener('hashchange', readHash);
 if (!openedShare) setTimeout(() => maybeWelcome(invitedBy || ''), 300); // after app.js has drawn Today

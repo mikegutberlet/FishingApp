@@ -21,7 +21,8 @@ async function draw() {
   if (q.length < 2) { results.innerHTML = ''; results.classList.add('hidden'); return; }
   // Every state, not just the one picked under Lakes: a search for Crater Lake should find Oregon's too.
   await Promise.all(Object.values(STATES).map(loadState));
-  if (search.value.trim().toLowerCase() !== q || !statewide) return;
+  if (search.value.trim().toLowerCase() !== q) return;
+  if (!statewide) { hits = []; results.textContent = 'The water lists didn’t download. Check your signal and try again.'; results.classList.remove('hidden'); return; }
   const c = map.getCenter(), from = { lat: c.lat, lon: c.lng };
   const rivers = [...new Map(statewide.riverLabels.map(r => [r.id, r])).values()];
   const coast = await coastSpots();

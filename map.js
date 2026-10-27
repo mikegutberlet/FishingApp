@@ -73,7 +73,7 @@ export function loadState(S) {
     statewide = { lakes: all.flatMap(x => x.lakes), riverLabels: all.flatMap(x => x.riverLabels) };
     drawWaterLabels();
     return d;
-  }));
+  }, e => { loading.delete(S.code); throw e; }));
   return loading.get(S.code);
 }
 let shownWaters = [];
