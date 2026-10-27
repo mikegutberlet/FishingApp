@@ -34,7 +34,7 @@ export function licenseFacts(spot, state) {
   const out = [];
   if (state === 'CA') {
     if (spot.kind === 'pier') out.push({ icon: '🎣', tone: 'good', title: 'No license needed on a public pier',
-      text: 'In California nobody needs a fishing license to fish from a public pier in ocean or bay waters (a publicly owned pier open to everyone). Size, bag limits and seasons still apply, and you may use no more than two rods and lines (or two nets or traps) at a time. A private or members-only pier does not count, and neither do jetties, breakwaters, rocks or the beach.' });
+      text: 'In California nobody needs a fishing license to fish from a public pier in ocean or bay waters (a publicly owned pier open to everyone). Size, bag limits, seasons and report cards (such as the spiny lobster card) still apply, and you may use no more than two rods and lines (or two nets or traps) at a time. A private or members-only pier does not count, and neither do jetties, breakwaters, rocks or the beach.' });
     else out.push({ icon: '🪪', tone: '', title: 'California license needed (16 and over)',
       text: `From ${spot.kind === 'jetty' ? 'a jetty or breakwater' : spot.kind === 'harbor' ? 'a harbor shore or boat' : 'the beach, rocks or a boat'} you need a California sport fishing license if you are 16 or older. Only public piers are exempt. The two Free Fishing Days each year are the exception.` });
     if (spot.lat < ARGUELLO && spot.kind !== 'pier') out.push({ icon: '🌊', tone: '', title: 'Ocean Enhancement Validation',
