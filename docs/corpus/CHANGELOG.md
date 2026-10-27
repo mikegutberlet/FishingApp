@@ -2,6 +2,113 @@
 
 One entry per run of `scripts/build-corpus.mjs`, newest first: how many waters were checked and what changed. A water's own `changes` list in its JSON file has the same lines.
 
+## 2026-10-27 23:22 UTC
+
+Checked 102 waters in 148 min: CA 102 (102 new, 0 changed, 0 unchanged) · NV 0 (0 new, 0 changed, 0 unchanged) · OR 0 (0 new, 0 changed, 0 unchanged).
+
+- CA CDFW water #15685: added to the corpus
+- CA Pinecrest Lake: added to the corpus
+- CA Lyons Reservoir: added to the corpus
+- CA Oak Grove Park Lake: added to the corpus
+- CA CDFW water #28288: added to the corpus
+- CA Hidden Valley Pond: added to the corpus
+- CA Temescal Lake: added to the corpus
+- CA Lakeshore Park Pond: added to the corpus
+- CA CDFW water #17903: added to the corpus
+- CA Manzanita Lake: added to the corpus
+- CA Corrine Lake: added to the corpus
+- CA Portal Forebay: added to the corpus
+- CA Ward Lake: added to the corpus
+- CA Sandy Wool Lake: added to the corpus
+- CA Pleasant Valley Reservoir: added to the corpus
+- CA Rock Creek Lake: added to the corpus
+- CA Bishop Creek, Intake II: added to the corpus
+- CA Balch Park Lake Lower: added to the corpus
+- CA Murry Park Pond: added to the corpus
+- CA CDFW water #7084: added to the corpus
+- CA Gregory Lake: added to the corpus
+- CA Green Valley Lake: added to the corpus
+- CA CDFW water #7147: added to the corpus
+- CA Glen Helen Park Lake: added to the corpus
+- CA Jenks Lake: added to the corpus
+- CA Cucamonga Guasti Park Lake: added to the corpus
+- CA Yucaipa Lake: added to the corpus
+- CA Brite Valley Reservoir: added to the corpus
+- CA River Walk Lake: added to the corpus
+- CA Atascadero Lake: added to the corpus
+- CA Rancho Simi Park Lake: added to the corpus
+- CA Jackson Lake: added to the corpus
+- CA La Mirada Lake: added to the corpus
+- CA El Dorado Park Lakes: added to the corpus
+- CA Belvedere Lake: added to the corpus
+- CA Cerritos Lake: added to the corpus
+- CA Kenneth Hahn Lake: added to the corpus
+- CA Lincoln Park Lake: added to the corpus
+- CA Reseda Park Lake: added to the corpus
+- CA Downey Wilderness Park Lake: added to the corpus
+- CA CDFW water #7372: added to the corpus
+- CA Laguna Lake: added to the corpus
+- CA CDFW water #7408: added to the corpus
+- CA CDFW water #7423: added to the corpus
+- CA Eisenhower Park Lake: added to the corpus
+- CA Huntington Park Lake: added to the corpus
+- CA Centennial Lake: added to the corpus
+- CA Greer Park Lake: added to the corpus
+- CA Ralph Clark Regional Park Lake: added to the corpus
+- CA CDFW water #7874: added to the corpus
+- CA Chollas Park Lake: added to the corpus
+- CA Doane Pond: added to the corpus
+- CA CDFW water #2532: added to the corpus
+- CA Mammoth Pool Lake: added to the corpus
+- CA CDFW water #12210: added to the corpus
+- CA CDFW water #12451: added to the corpus
+- CA CDFW water #13165: added to the corpus
+- CA CDFW water #1958: added to the corpus
+- CA CDFW water #13500: added to the corpus
+- CA Halsey Forebay: added to the corpus
+- CA Lumsden Pond: added to the corpus
+- CA Lake Tabeaud: added to the corpus
+- CA CDFW water #7083: added to the corpus
+- CA Sly Creek Reservoir: added to the corpus
+- CA CDFW water #9337: added to the corpus
+- CA CDFW water #9328: added to the corpus
+- CA Howe Community Park Lake: added to the corpus
+- CA CDFW water #9332: added to the corpus
+- CA MacArthur Park Lake: added to the corpus
+- CA CDFW water #28387: added to the corpus
+- CA Lake Chabot: added to the corpus
+- CA CDFW water #4425: added to the corpus
+- CA Broodfish Waters: added to the corpus
+- CA CDFW water #7914: added to the corpus
+- CA CDFW water #6325: added to the corpus
+- CA Little Lake: added to the corpus
+- CA Cave Lake: added to the corpus
+- CA Baum Lake: added to the corpus
+- CA Bass Lake: added to the corpus
+- CA CDFW water #207: added to the corpus
+- CA Orr Lake: added to the corpus
+- CA Reservoir &quot;F&quot;: added to the corpus
+- CA Buckhorn Reservoir: added to the corpus
+- CA Shasta Lake: added to the corpus
+- CA Whiskeytown Lake: added to the corpus
+- CA McCumber Reservoir: added to the corpus
+- CA Ruth Reservoir: added to the corpus
+- CA Reservoir &quot;C&quot;: added to the corpus
+- CA Blue Lake Upper: added to the corpus
+- CA Lake Almanor: added to the corpus
+- CA Silver Lake: added to the corpus
+- CA Frenchman Reservoir: added to the corpus
+- CA Paradise Reservoir: added to the corpus
+- CA CDFW water #1743: added to the corpus
+- CA Harry L Englebright Lake: added to the corpus
+- CA Scotts Flat Reservoir: added to the corpus
+- CA Rollins Reservoir: added to the corpus
+- CA Mather Lake: added to the corpus
+- CA CDFW water #3827: added to the corpus
+- CA CDFW water #3844: added to the corpus
+- CA Tulloch Lake: added to the corpus
+- CA CDFW water #3982: added to the corpus
+
 ## 2026-10-27 20:35 UTC
 
 Checked 100 waters in 149 min: CA 100 (100 new, 0 changed, 0 unchanged) · NV 0 (0 new, 0 changed, 0 unchanged) · OR 0 (0 new, 0 changed, 0 unchanged).
