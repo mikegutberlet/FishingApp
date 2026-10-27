@@ -40,6 +40,16 @@ const seasonNow = f => {
 const line = f => `<div class="acc gt-row"><span>${named(f)}${f.ref && f.name && !f.name.includes(f.ref) ? ` <span class="muted">${esc(f.ref)}</span>` : ''}${f.tags.designation ? `<br><span class="muted small">${esc(f.tags.designation)}</span>` : ''}${dates(f) ? `<br><span class="small gt-season">⏱ ${esc(dates(f))}${seasonNow(f) ? ` · ${seasonNow(f)}` : ''}</span>` : ''}</span>
   <span class="nowrap muted small">${dist(f)} · ${srcs(f)}</span></div>`;
 
+// "Ramp, 2.1 mi NE" of the water's map point, for a ramp or pier with no name.
+const COMPASS = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+const offset = (lake, p) => [(p.lon - lake.lon) * 111 * Math.cos(lake.lat * Math.PI / 180), (p.lat - lake.lat) * 111];
+const kmFrom = (lake, p) => Math.hypot(...offset(lake, p));
+function placeLabel(p, km, lake) {
+  const [dx, dy] = offset(lake, p);
+  const dir = COMPASS[Math.round(((Math.atan2(dx, dy) * 180 / Math.PI) + 360) % 360 / 45) % 8];
+  return `${p.kind === 'pier' ? 'Pier' : 'Ramp'}, ${km < 0.3 ? 'near the map point' : `${fmtMi(km)} ${dir}`}`;
+}
+
 // The spot being checked for each water, while the app is open: the water's own point unless you picked one.
 const spots = {};
 const spotKey = lake => lake.nhdId ? `nhd-${lake.nhdId}` : String(lake.id);
@@ -71,20 +81,22 @@ export async function renderGettingThere(lake, body) {
   await paintNotes();
   const big = isBig(lake), river = lake.kind === 'river' || !!lake.lengthKm;
   // Ramps and launches we know of make good spots to check (California's OpenStreetMap list; a big lake's shore).
-  const ramps = S?.accessFor ? ((await S.accessFor(lake))?.places ?? []).filter(p => p.kind === 'ramp' || p.kind === 'pier').slice(0, 8) : [];
+  // Nearest first; an unnamed one is told apart by where it sits ("Ramp, 2.1 mi NE").
+  const ramps = S?.accessFor ? ((await S.accessFor(lake))?.places ?? []).filter(p => p.kind === 'ramp' || p.kind === 'pier')
+    .map(p => { const km = kmFrom(lake, p); return { ...p, km, label: p.name || placeLabel(p, km, lake) }; }).sort((a, b) => a.km - b.km).slice(0, 8) : [];
   if (!body.isConnected) return;
   let spot = spots[spotKey(lake)] ?? null;
-  if (big && !spot && ramps.length) spot = spots[spotKey(lake)] = { lat: ramps[0].lat, lon: ramps[0].lon, label: ramps[0].name || 'nearest ramp' };
+  if (big && !spot && ramps.length) spot = spots[spotKey(lake)] = { lat: ramps[0].lat, lon: ramps[0].lon, label: ramps[0].label };
 
   const where = body.querySelector('#gt-where');
   const chooser = () => {
     where.innerHTML = `<div class="card small gt-where"><b>Checking:</b> ${spot ? `${esc(spot.label || `${spot.lat.toFixed(4)}, ${spot.lon.toFixed(4)}`)} <a href="#" data-gt-spot="">(use the water’s point)</a>` : big ? 'nowhere yet' : river ? 'this stretch, at the water’s map point' : 'the water’s map point'}
       ${big || river ? `<div class="muted" style="margin-top:4px">${big ? 'A lake this size has roads on some shores and none on others, so pick where you’d go.' : 'A river is reached in many places: pick the stretch you mean.'}</div>` : ''}
-      <div style="margin-top:6px">${ramps.map((r, i) => `<a href="#" data-gt-spot="${i}">${esc(r.name || `Unnamed ${r.kind}`)}</a>`).join(' · ')}${ramps.length ? ' · ' : ''}<a href="#" data-gt-pick>Pick a spot on the map</a></div></div>`;
+      <div style="margin-top:6px">${ramps.map((r, i) => `<a href="#" data-gt-spot="${i}">${esc(r.label)}</a>`).join(' · ')}${ramps.length ? ' · ' : ''}<a href="#" data-gt-pick>Pick a spot on the map</a></div></div>`;
     where.querySelectorAll('[data-gt-spot]').forEach(a => a.onclick = e => {
       e.preventDefault();
       const r = ramps[a.dataset.gtSpot];
-      spots[spotKey(lake)] = spot = r ? { lat: r.lat, lon: r.lon, label: r.name || `Unnamed ${r.kind}` } : null;
+      spots[spotKey(lake)] = spot = r ? { lat: r.lat, lon: r.lon, label: r.label } : null;
       if (!spot) delete spots[spotKey(lake)];
       chooser(); load();
     });
