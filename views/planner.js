@@ -92,7 +92,7 @@ export async function renderPlanner() {
   $('#plan-list').innerHTML = rows.map((r, n) => r.error
     ? `<div class="card plan-item" data-id="${esc(r.lake.id)}"><b>${esc(r.lake.name)}</b><div class="muted small">Forecast unavailable (offline?)</div></div>`
     : `<div class="card plan-item" data-id="${esc(r.lake.id)}">
-      <div class="plan-head"><span class="rank">${n + 1}</span><div style="flex:1"><b>${esc(r.lake.name)}</b>${r.lake.favorite ? ' ★' : ''}<div class="muted small">${esc(r.summary)}</div>${r.age ? `<div class="small saved-wx">📴 Saved forecast, ${esc(r.age)}</div>` : ''}</div>
+      <div class="plan-head"><span class="rank">${n + 1}</span><div style="flex:1"><b>${esc(r.lake.name)}</b>${r.lake.favorite ? ' ★' : ''}<div class="muted small">${esc(r.summary)}</div>${r.age ? `<div class="small saved-wx">📴 Forecast ${esc(r.age)}</div>` : ''}</div>
         <div class="score"><b>${r.score.toFixed(1)}</b><div class="meter"><i style="width:${r.score * 10}%"></i></div></div></div>
       ${r.best ? `<div class="small">Best time: <b>${windowSpan(r.best)}</b>, ${windowLabel(r.best).toLowerCase()}</div>` : ''}
       <div class="chips">${r.reasons.map(x => `<span class="chip ${x.tone}">${esc(x.text)}</span>`).join('')}</div>

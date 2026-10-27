@@ -20,7 +20,7 @@ async function draw() {
       const icon = L.divIcon({ className: 'wind-pin', iconSize: null,
         html: `<span${w.saved ? ' class="wind-saved"' : ''}><i style="transform:rotate(${x.to}deg)">↑</i>${Math.round(x.speed)}${w.saved ? ' 📴' : ''}</span>` });
       L.marker([lake.lat, lake.lon], { icon, keyboard: false, zIndexOffset: 500 })
-        .bindPopup(`<b>${esc(lake.name)}</b><br>${x.calm ? 'Calm' : `${Math.round(x.speed)} mph, gusts ${Math.round(x.gusts)}<br>Blowing into the ${bankName(x.to)} bank`}${w.saved ? `<br>📴 Saved forecast, ${esc(forecastAge(w))}` : ''}<br><a href="#" data-open-lake="${esc(lake.id)}">Open</a>`)
+        .bindPopup(`<b>${esc(lake.name)}</b><br>${x.calm ? 'Calm' : `${Math.round(x.speed)} mph, gusts ${Math.round(x.gusts)}<br>Blowing into the ${bankName(x.to)} bank`}${w.saved ? `<br>📴 Forecast ${esc(forecastAge(w))}` : ''}<br><a href="#" data-open-lake="${esc(lake.id)}">Open</a>`)
         .addTo(windLayer);
     }).catch(() => {});
   }
