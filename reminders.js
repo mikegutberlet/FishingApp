@@ -8,6 +8,19 @@ const SNOOZE = 'tackle-box-snooze';
 const snoozes = () => { try { return JSON.parse(localStorage.getItem(SNOOZE)) ?? {}; } catch { return {}; } };
 const snooze = (key, days) => localStorage.setItem(SNOOZE, JSON.stringify({ ...snoozes(), [key]: Date.now() + days * 864e5 }));
 
+// Make room under the header for the banners, so they never cover a view's top buttons; the map hears a resize.
+let watcher = null;
+function setRoom(el) {
+  watcher?.disconnect(); watcher = null;
+  const apply = () => {
+    const h = el?.isConnected ? Math.ceil(el.getBoundingClientRect().height) + 12 : 0;
+    document.documentElement.style.setProperty('--rem-h', `${h}px`);
+    window.dispatchEvent(new Event('resize'));
+  };
+  apply();
+  if (el && window.ResizeObserver) { watcher = new ResizeObserver(apply); watcher.observe(el); }
+}
+
 export async function checkReminders() {
   const s = snoozes(), items = [];
   if (!(s.backup > Date.now()) && await backupDue()) {
@@ -19,13 +32,15 @@ export async function checkReminders() {
     if (!(s[key] > Date.now())) items.push({ key, days: x.days < 0 ? 1 : 3, cls: x.days < 0 ? 'bad' : '', text: dueText(x), action: 'Open', run: () => { showView('settings'); document.getElementById('license-card')?.scrollIntoView(); } });
   }
   document.querySelector('#reminders')?.remove();
+  setRoom(null);
   if (!items.length) return;
   const el = document.createElement('div');
   el.id = 'reminders';
   el.innerHTML = items.map((it, i) => `<div class="reminder ${it.cls}"><span>${it.key === 'backup' ? '💾' : '🪪'} ${esc(it.text)}</span>
     <button data-go="${i}">${esc(it.action)}</button><button data-later="${i}" class="muted">Later</button></div>`).join('');
   document.body.append(el);
-  const done = (i, row) => { snooze(items[i].key, items[i].days); row.remove(); if (!el.children.length) el.remove(); };
+  setRoom(el);
+  const done = (i, row) => { snooze(items[i].key, items[i].days); row.remove(); if (!el.children.length) { el.remove(); setRoom(null); } else setRoom(el); };
   el.querySelectorAll('[data-go]').forEach(b => b.onclick = () => { const i = +b.dataset.go; items[i].run(); done(i, b.parentElement); });
   el.querySelectorAll('[data-later]').forEach(b => b.onclick = () => done(+b.dataset.later, b.parentElement));
 }
