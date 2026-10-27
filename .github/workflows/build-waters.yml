@@ -23,6 +23,11 @@ jobs:
     timeout-minutes: 150
     steps:
       - uses: actions/checkout@v4
+        with:
+          # On main, the branch as it is when the job starts, not the commit that queued the run: a run that waited
+          # behind another run of this workflow then builds on that run's data commit instead of conflicting with it.
+          # Branch runs keep their own commit, since they only upload their data and the branch may be gone by then.
+          ref: ${{ github.ref_name == 'main' && github.ref || '' }}
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -48,7 +53,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
           git commit -m "Update statewide water list"
-          for i in 1 2 3; do if git pull --rebase origin "${GITHUB_REF_NAME}" && git push; then exit 0; fi; sleep 10; done
+          # A failed rebase is undone before the next try. A conflict means this job's data was committed by hand while it ran:
+          # the push fails so that fix stays, and the next run builds on it.
+          for i in 1 2 3; do if git pull --rebase origin "${GITHUB_REF_NAME}" && git push; then exit 0; fi; git rebase --abort 2>/dev/null || true; sleep 10; done
           echo "push failed"; exit 1
       - name: Keep this branch run's data
         if: github.ref_name != 'main'

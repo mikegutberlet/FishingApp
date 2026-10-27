@@ -22,6 +22,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # On main, the branch as it is when the job starts, not the commit that queued the run: a run that waited
+          # behind another run of this workflow then builds on that run's data commit instead of conflicting with it.
+          # Branch runs keep their own commit, since they only upload their data and the branch may be gone by then.
+          ref: ${{ github.ref_name == 'main' && github.ref || '' }}
       - uses: actions/setup-node@v4
         with:
           node-version: 22
