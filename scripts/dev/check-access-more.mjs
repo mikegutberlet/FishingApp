@@ -46,11 +46,11 @@ for (const w of WATERS) {
     console.log('PERMITS:', r.permits.map(p => `${p.name} [${p.id}] season=${JSON.stringify(M.permitSeason(p))}`).join(' | ') || 'none');
     console.log('PASSES:', r.passes.join(' | ') || 'none');
     console.log('BOAT:', r.boatHere ? 'here: ' : 'state: ', r.boat);
-    const km = M.pointsKm(d);
+    const km = M.pointsKm(d), trailKm = M.trailheadKm(d, s);
     const t2 = Date.now();
-    const pts = await M.nearbyPoints(d.lat, d.lon, km, { force: true }).catch(e => ({ error: e.message, points: [] }));
-    console.log(`POINTS (${Date.now() - t2}ms, ${km.toFixed(1)} km, hike ${d.hike?.km?.toFixed(1) ?? '-'} km${pts.error ? `, error ${pts.error}` : ''}): ${pts.points.length}`);
-    for (const p of pts.points.slice(0, 8)) console.log(`  ${p.kind} ${p.name ?? '-'} ${p.km}km [${p.facts.join('; ')}] <${p.source.url}>`);
+    const pts = await M.nearbyPoints(d.lat, d.lon, km, { force: true, trailKm }).catch(e => ({ error: e.message, points: [] }));
+    console.log(`POINTS (${Date.now() - t2}ms, ${km.toFixed(1)} km, trailheads ${trailKm.toFixed(1)} km, vehicle ${s.vehicle?.cls ?? 'none'}, hike ${d.hike?.km?.toFixed(1) ?? '-'} km${pts.error ? `, error ${pts.error}` : ''}): ${pts.points.length}`);
+    for (const p of [...pts.points.filter(p => p.kind === 'trailhead').slice(0, 6), ...pts.points.filter(p => p.kind !== 'trailhead').slice(0, 4)]) console.log(`  ${p.kind} ${p.name ?? '-'} ${p.km}km [${p.facts.join('; ')}] <${p.source.url}>`);
     const g = M.accessGpxParts(w, s, d.hike, pts.points, CLASS_TEXT);
     console.log(`GPX: ${g.tracks.length} tracks, ${g.wpts.length} waypoints; first: ${g.tracks.slice(0, 3).map(x => `${x.name} (${x.points.length} pts)`).join(', ')}`);
   } catch (e) { console.log('lookup failed', e.message); }
