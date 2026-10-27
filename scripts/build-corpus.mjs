@@ -19,7 +19,7 @@
 //     rules:    state-specific: the special regulations that name the water and where they came from
 //     advisories: { algae: [...], eating: [...] }           what was in force when the file was built
 //     sources:  [{ label, url, fetchedAt }]                  every source touched for this file
-//     notes:    [{ date, by, text }]                         HAND-KEPT: the job never changes this list
+//     notes:    [{ date, by, text, source }]                 HAND-KEPT: the job never changes this list (scripts/add-notes.mjs)
 //     manual:   { ... }                                       HAND-KEPT: values here override the job's facts in the app
 //     changes:  [{ date, text }]                             what the job saw change, newest first (last 50)
 //   }
@@ -285,6 +285,8 @@ const stable = f => JSON.stringify({ ...f, checkedAt: null, updatedAt: null, sou
 const slug = f => `${f.name} ${f.id}`.toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-');
 const num = n => n == null ? null : (+n).toLocaleString('en-US');
 const link = (t, u) => u ? `[${t}](${u})` : t;
+// Where a hand note came from: the book and page, or the web page and the day it was read.
+const noteSource = s => [s.url ? link(s.title ?? new URL(s.url).hostname, s.url) : s.title && `*${s.title}*`, s.author, s.page && `p. ${s.page}`, s.read && s.url && `read ${s.read}`].filter(Boolean).join(', ');
 function waterSection(S, f) {
   const a = f.access?.summary, lines = [];
   lines.push(`### ${f.name} (${f.id})`);
@@ -314,7 +316,7 @@ function waterSection(S, f) {
   }
   if (f.advisories.algae.length) lines.push(`- **Toxic algae** (${f.checkedAt.slice(0, 10)}): ${f.advisories.algae.map(a => `${a.advisory ?? a.level}${a.date ? ` since ${a.date}` : ''}`).join('; ')}`);
   if (f.advisories.eating.length) lines.push(`- **Eating the fish**: ${f.advisories.eating.map(a => link(a.name, a.url)).join('; ')}`);
-  for (const n of f.notes) lines.push(`- 📝 **Note** (${n.date}${n.by ? `, ${n.by}` : ''}): ${n.text}`);
+  for (const n of f.notes) lines.push(`- 📝 **Note** (${n.date}${n.by ? `, ${n.by}` : ''}): ${n.text}${n.source ? ` (${noteSource(n.source)})` : ''}`);
   lines.push(`- ${f.sources.length} sources · first seen ${f.firstSeen} · last checked ${f.checkedAt.slice(0, 10)}`);
   return lines.join('\n');
 }
@@ -377,10 +379,11 @@ for (const code of STATES) {
     for (const w of todo) {
       if (runs.reduce((n, r) => n + r.checked, 0) + run.checked >= MAX) break;
       if (minutesLeft() < (NO_LIVE ? 0.2 : 3)) { console.log(`time budget spent (${MINUTES} min); ${todo.length - run.checked} left for the next run`); break; }
-      const file = fileOf(code, w.id), prev = await readJson(file);
+      // A file the job hasn't built yet holds only hand notes (scripts/add-notes.mjs): build it as new and keep them.
+      const file = fileOf(code, w.id), raw = await readJson(file), prev = raw?.checkedAt ? raw : null;
       console.log(`${code} ${w.name} (${w.id})${prev ? `, last ${prev.checkedAt.slice(0, 10)}` : ', new'}`);
       let next;
-      try { next = await buildWater(S, w, prev, { live: !NO_LIVE }); } catch (e) { console.warn(`  failed: ${e.stack ?? e.message}`); continue; }
+      try { next = await buildWater(S, w, raw, { live: !NO_LIVE }); } catch (e) { console.warn(`  failed: ${e.stack ?? e.message}`); continue; }
       const ch = diffFiles(prev, next);
       if (ch.length) { next.changes = [...ch.map(text => ({ date: today, text })), ...(prev?.changes ?? [])].slice(0, 50); next.updatedAt = next.checkedAt; run.changes.push([w.name, ch]); }
       else if (prev && stable(prev) === stable(next)) { next.updatedAt = prev.updatedAt; }
@@ -397,7 +400,7 @@ for (const code of STATES) {
   runs.push(run);
   // The index and the catalogue cover every file in the folder, not just this run's.
   const files = [];
-  if (existsSync(rootPath(dir))) for (const name of await readdir(rootPath(dir))) if (name.endsWith('.json') && name !== 'index.json') { const f = await readJson(`${dir}/${name}`); if (f) files.push(f); }
+  if (existsSync(rootPath(dir))) for (const name of await readdir(rootPath(dir))) if (name.endsWith('.json') && name !== 'index.json') { const f = await readJson(`${dir}/${name}`); if (f?.checkedAt) files.push(f); }
   const byId = new Map(waters.map(w => [String(w.id), w]));
   await writeJson(`${dir}/index.json`, {
     updatedAt: new Date().toISOString(), count: files.length, stocked: waters.length,

@@ -21,7 +21,7 @@ Every section records where it came from and when it was fetched; `sources` list
 | `introductions` | Historical fish introductions recorded at the water | USGS NAS (`data/<st>/history.json`) |
 | `rules` | The special regulations that name the water | Title 14 CCR / NDOW / ODFW booklets (`data/<st>/regs.json`) |
 | `advisories` | Toxic algae and fish-eating advisories in force when the file was built | state portals (`data/<st>/hab.json`, `oehha.json`, `advisories.json`) |
-| `notes` | **Hand-kept.** Anything worth remembering that no service records | you |
+| `notes` | **Hand-kept.** Anything worth remembering that no service records, each with the book, page or web page it came from | you, your books, sites and blogs |
 | `manual` | **Hand-kept.** Values that override the job's facts in the app (`{"maxDepthFt": 70}`) | you |
 | `changes` | What the job saw change on each visit, newest first | the job |
 
@@ -34,6 +34,7 @@ The live sections keep the same shape the app stores on the phone (`access-looku
 Rules the job follows:
 
 - **It never touches `notes` or `manual`.** Add a note by editing the water's JSON file (or ask Claude to): `{"date": "2026-10-27", "by": "Goobs", "text": "Gate at the dam is locked after Labor Day; park at the pullout and walk 10 min."}`. It shows up on the catalogue page and in the app's Info tab on the next run.
+- **Notes from books, sites and blogs** go in with `scripts/add-notes.mjs`, which files each one on the right water with its source (`{"title": "…", "author": "…", "page": "112"}` for a book, `{"title": "…", "url": "https://…"}` for a web page) and shows it with the note in the app and the catalogue. This repo is public, so the sources themselves are kept privately, never here: a note is a short fact in our own words (at most 400 characters), not a copied passage. A water the job hasn't reached yet gets a file holding only its notes; the app shows them right away, and the catalogue lists the water once the job has built the rest on its next visit. `node scripts/add-notes.mjs --find "convict"` lists the ids to use.
 - **It keeps the last good copy.** When a live service doesn't answer, the previous `access` or `camping` section stays and the file says which sources failed.
 - **It cites everything.** Each road, trail, campground and parcel keeps the URL of the record it came from; each stocking year keeps the document it was read from.
 
