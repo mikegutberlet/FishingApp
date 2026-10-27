@@ -197,14 +197,21 @@ ODFW writes waters in short form ("HENRY HAGG LK", "SILVER CR RES"); the job spe
 ## Sharing with friends
 
 * Everyone installs the same link. Each person's catches, notes and spots stay on their own phone. There are no shared accounts.
-* **Share a lake**: open a lake → *Share*. It sends a small file through Messages, AirDrop, email and so on, containing the lake, your Deeper depth maps and (if you choose) your notes, pinned spots and waypoints. Catches are never included. Your friend opens the app → Data → *Import backup or shared lake*.
+* **Invite a friend**: ⚙️ gear → *Invite a friend* sends the app's link (or shows a QR code). If you set your name, the link ends in `#hi=<name>` so the welcome says who sent it; nothing else goes with it.
+* **Share a water**: open a lake, river or pier → *Share*:
+  * *Send a link* / *QR code*: opens the same water in your friend's app. The link carries only the water's public facts (name, place, size, state ids) after `#water=`. A water you added by hand asks first, since its location could be your own spot.
+  * *Send with my depth maps*: a small file with the lake, your Deeper depth maps and (if you choose) your notes, pinned spots and waypoints. Catches are never included. Your friend opens the app → ⚙️ gear → *Import backup or shared lake*.
+  * *Send catches or spots*: the crew share (⚙️ gear → *Share with your crew*), as a file, QR code or texted link.
+* On iPhone a link opens in Safari, which keeps its data apart from the home-screen app, so the app offers to copy it; then ⚙️ gear → *Invite a friend* → *Open a link a friend sent*.
+* **Friend guide**: [`guide.html`](https://mikegutberlet.github.io/FishingApp/guide.html) covers install, privacy, first steps, sharing and moving to a new phone.
 
 ## Installing on iPhone and Android
 
-* **iPhone**: open the link in Safari → Share → *Add to Home Screen*.
-* **Android**: open the link in Chrome → ⋮ → *Install app*.
+* **iPhone**: open the link in Safari → Share (under ⋯ on newer Safari) → *Add to Home Screen*. Install before logging: the home-screen app has its own storage, and Safari can clear site data after 7 days unused.
+* **Android**: open the link in Chrome → *Install* (the app shows its own button when Chrome offers it) or ⋮ → *Install app*.
+* Links opened inside Instagram, Facebook or the Google app can't install; the app says to open them in Safari or Chrome.
 
-The ⚙️ gear (top right) shows the right steps for the phone you're on.
+A first-run welcome (once, for new people) walks through what the app is, what stays on the phone, the install steps for that phone, and a name for sharing. ⚙️ gear → *Install* shows the steps again. Long-press the home-screen icon on Android for shortcuts: Log a catch, Map, SOS card (`#go=log|map|sos`).
 
 ## Privacy model
 
@@ -262,3 +269,6 @@ Reverse-engineering other apps isn't needed: the public sources above cover cond
 * `scripts/or/build-or-regs.mjs`: weekly regulations, fish advisories and angling zones
 * `scripts/build-state-waters.mjs`, `build-state-history.mjs`, `build-state-bathymetry.mjs` with `scripts/states.mjs`: the California jobs, for any other state (`node scripts/build-state-waters.mjs nv`)
 * `sw.js`, `manifest.json`: offline + install
+* `welcome.js`, `welcome.css`: first-run welcome, install steps, invite a friend, app shortcuts
+* `share-water.js`: the Share sheet on a water and `#water=` links
+* `guide.html`: getting started guide for friends

@@ -125,7 +125,7 @@ async function renderPlanForm(body, { lakeId = null, edit = false } = {}) {
     <label>Who's with you <input name="who" value="${esc(old?.who ?? '')}" placeholder="Just me / Dave and Sam"></label>
     <label>Vehicle <input name="vehicle" value="${esc(old?.vehicle ?? pr.vehicle ?? '')}" placeholder="White Tacoma, plate 8ABC123"></label>
     <label>Where you'll park <input name="truckNote" value="${esc(old?.truckNote ?? '')}" placeholder="Pullout past the bridge"></label>
-    <label class="check"><input type="checkbox" name="withTruck" ${old?.truck || (!old && truckSpot()) ? 'checked' : ''}> Add the truck's map spot <span class="muted small" id="wh-truck-src"></span></label>
+    <label class="check"><input type="checkbox" name="withTruck" ${old?.truck || (!old && truckSpot()) ? 'checked' : ''}> <span>Add the truck's map spot <span class="muted small" id="wh-truck-src"></span></span></label>
     <div class="row"><label>Leaving <input type="datetime-local" name="leave" required value="${localInput(start)}"></label>
       <label>Back by <input type="datetime-local" name="backBy" required value="${localInput(back)}"></label></div>
     <label>Call for help if there's no word <select name="grace">${[30, 60, 120, 180].map(m => opt(m, old?.grace ?? pr.grace, `${graceText(m)} after that`)).join('')}</select></label>

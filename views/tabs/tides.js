@@ -1,7 +1,7 @@
 // Tides tab (ocean waters): the nearest NOAA tide station's highs and lows, a two-day curve with "now", what the
 // tide is doing for fishing, and a week of highs and lows. Saved on the phone, so it works with no signal.
 import { nearestTideStation, tidesFor, tideAt, tideRead, tidePageUrl } from '../../coast.js';
-import { esc } from '../../ui.js';
+import { esc, noSignal } from '../../ui.js';
 
 const hm = t => new Date(t).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
 const day = t => new Date(t).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
@@ -20,7 +20,7 @@ export async function renderTides(lake, body) {
     if (!body.isConnected) return;
     el.innerHTML = tideHtml(ev, st, savedAt);
   } catch (e) {
-    el.innerHTML = `<h3>Tides</h3><p class="muted small">Couldn’t get tides for ${esc(st.name)} (${esc(e.message)}). Open this tab once with signal and they’ll be kept on your phone for the week.</p>
+    el.innerHTML = `<h3>Tides</h3><p class="muted small">${noSignal(e) ? `No signal for the tides at ${esc(st.name)}.` : `Couldn’t get tides for ${esc(st.name)} (${esc(e.message)}).`} Open this tab once with signal and they’ll be kept on your phone for the week.</p>
       <p class="small"><a href="${tidePageUrl(st.id)}" target="_blank" rel="noopener">NOAA tide predictions ↗</a></p>`;
   }
 }

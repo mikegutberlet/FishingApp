@@ -1,11 +1,19 @@
 {
+  "id": "./",
   "name": "Tackle Box",
   "short_name": "Tackle Box",
-  "description": "Private fishing log, lake conditions and depth maps. Data stays on your device.",
+  "description": "Private fishing app: lake conditions, stocking, depth maps and your catch log. No account; your data stays on your phone.",
   "start_url": "./",
+  "scope": "./",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#0f3b4c",
   "theme_color": "#0f3b4c",
+  "categories": [
+    "sports",
+    "travel",
+    "weather"
+  ],
   "icons": [
     {
       "src": "icons/icon-192.png",
@@ -27,6 +35,40 @@
       "src": "icon.svg",
       "sizes": "any",
       "type": "image/svg+xml"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Log a catch",
+      "short_name": "Log",
+      "url": "./#go=log",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Map",
+      "url": "./#go=map",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "SOS card",
+      "short_name": "SOS",
+      "url": "./#go=sos",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ]
 }
