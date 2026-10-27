@@ -19,6 +19,27 @@ const WATERS = [
   { name: 'Detroit Lake', lat: 44.72, lon: -122.18, acres: 3580, note: 'OR, Willamette NF + state park' },
   { name: 'Shasta Lake', lat: 40.75, lon: -122.32, acres: 29740, note: 'CA, big, boat-in camps' },
 ];
+// Probe: why Recreation.gov's search returns nothing near some waters, and which ids the forest inventory carries.
+const RG = 'https://www.recreation.gov/api/search';
+for (const [label, q] of [
+  ['caples as app', 'lat=38.7090&lng=-120.0410&radius=11&size=60&fq=entity_type:campground'],
+  ['caples no fq', 'lat=38.7090&lng=-120.0410&radius=11&size=60'],
+  ['caples q=silver lake', 'q=silver%20lake&size=10'],
+  ['caples fq+exact', 'lat=38.7090&lng=-120.0410&radius=11&size=60&fq=entity_type:campground&exact=false'],
+  ['shasta as app', 'lat=40.7500&lng=-122.3200&radius=14&size=60&fq=entity_type:campground'],
+]) {
+  try {
+    const r = await fetch(`${RG}?${q}`); const j = await r.json();
+    console.log(`PROBE ${label}: ${r.status} total=${j.total ?? j.size} n=${j.results?.length}`, JSON.stringify((j.results ?? []).slice(0, 12).map(x => [x.name, x.entity_id, x.entity_type, x.latitude, x.longitude, x.reservable])));
+    if (label === 'caples q=silver lake') console.log('PROBE keys', Object.keys(j), JSON.stringify(j.results?.[0] ?? {}).slice(0, 1500));
+  } catch (e) { console.log(`PROBE ${label} failed ${e.message}`); }
+}
+try {
+  const u = 'https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_InfraRecreationSites_01/MapServer/0/query?' + new URLSearchParams({ where: "site_name like '%BAILEY COVE%' or site_name like '%SILVER LAKE%' or site_name like '%CAPLES%'", outFields: 'site_name,site_subtype,rec1stop_url,nrrs_id,operated_by,latitude,longitude', returnGeometry: 'false', f: 'json' });
+  const j = await (await fetch(u)).json();
+  console.log('PROBE INFRA', JSON.stringify(j.features?.map(f => f.attributes)));
+} catch (e) { console.log('PROBE INFRA failed', e.message); }
+
 console.log('next weekend:', nextWeekend());
 for (const w of WATERS) {
   const t = Date.now();

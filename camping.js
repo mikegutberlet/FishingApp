@@ -113,7 +113,7 @@ async function fsSites(bbox) {
     const recgovId = String(a.rec1stop_url ?? '').match(/campgrounds\/(\d+)/)?.[1] ?? (a.nrrs_id && /^\d+$/.test(a.nrrs_id) ? a.nrrs_id : null);
     return {
       name: title(a.public_site_name || a.site_name), lat: at[0], lon: at[1], kind: kind === 'developed' && scale && scale <= 2 ? 'primitive' : kind, scale,
-      operator: a.operated_by && !/forest service/i.test(a.operated_by) ? `Forest Service · run by ${a.operated_by.toLowerCase()}` : 'Forest Service',
+      operator: a.operated_by && !/forest service/i.test(a.operated_by) ? `Forest Service · run by ${a.operated_by.split(',')[0].trim().toLowerCase()}` : 'Forest Service',
       sites: null, capacity: a.total_capacity || null,
       fee: a.fee_charged === 'Y' ? 'yes' : a.fee_charged === 'N' ? 'no' : null, feeText: plain(a.fee_description, 220),
       season: seasonText(a.open_season) ?? seasonText(a.season_description), hours: plain(a.operational_hours, 120),
@@ -159,7 +159,7 @@ async function fsPages(bbox) {
       activity: a.markeractivity ?? null, status: /^(open|closed)$/i.test(a.openstatus ?? '') ? a.openstatus.toLowerCase() : null,
       feeText: plain(a.feedescription, 220), reservations: plain(String(a.reservation_info ?? '').replace(/<a [^>]*>[^<]*<\/a>/gi, 'Recreation.gov'), 220),
       recgovId: String(a.reservation_info ?? '').match(/recreation\.gov\/camping\/campgrounds\/(\d+)/)?.[1] ?? null, restrictions: plain(a.restrictions, 300), accessibility: plain(a.accessibility, 160),
-      season: a.open_season_start && a.open_season_end && !/\d:\d\d/.test(a.open_season_start) ? `${a.open_season_start}–${a.open_season_end}` : null, forest: a.forestname ?? null,
+      season: a.open_season_start && !/\d:\d\d/.test(a.open_season_start) ? (a.open_season_end && a.open_season_end !== a.open_season_start ? `${a.open_season_start}–${a.open_season_end}` : a.open_season_start) : null, forest: a.forestname ?? null,
       source: { label: 'USFS recreation opportunities', url: arcRecord(RECOPP, 'objectid', a.objectid) },
     };
   }).filter(Boolean);
