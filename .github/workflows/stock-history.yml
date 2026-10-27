@@ -1,0 +1,66 @@
+name: Build stocking history
+
+# Years of stocking per water (scripts/build-stock-history.mjs): ODFW annual reports, archived NDOW and CDFW
+# schedules, CDFW salmon and steelhead releases, merged with each state's current plants.json.
+on:
+  schedule:
+    - cron: '17 13 * * 1' # weekly, Monday morning
+  workflow_dispatch:
+  push:
+    paths:
+      - scripts/build-stock-history.mjs
+      - scripts/stock-history/**
+      - name-key.js
+      - .github/workflows/stock-history.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # On main, the branch as it is when the job starts (see oregon-weekly.yml).
+          ref: ${{ github.ref_name == 'main' && github.ref || '' }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Tools (pdftotext for ODFW reports, xlsx for CDFW release files)
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+          npm i --no-save --silent xlsx@0.18.5
+      - name: Stocking history
+        continue-on-error: true
+        run: |
+          for st in or nv ca; do
+            mkdir -p data/$st/logs
+            node scripts/build-stock-history.mjs $st 2>&1 | tee data/$st/logs/build-stock-history.log
+          done
+      - name: Commit changes
+        run: |
+          git add data/*/stock-history.json data/*/stock-archive.json data/*/logs/build-stock-history.log
+          if git diff --cached --quiet; then echo "No data changes"; exit 0; fi
+          # Only main keeps data commits; a branch run shows what changed and keeps its data as an artifact.
+          if [ "$GITHUB_REF_NAME" != main ]; then git diff --cached --stat; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update stocking history"
+          for i in 1 2 3; do if git pull --rebase origin "${GITHUB_REF_NAME}" && git push; then exit 0; fi; git rebase --abort 2>/dev/null || true; sleep 10; done
+          echo "push failed"; exit 1
+      - name: Keep this branch run's data
+        if: github.ref_name != 'main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: stock-history
+          path: |
+            data/*/stock-history.json
+            data/*/logs/build-stock-history.log
+          if-no-files-found: ignore
+          retention-days: 7

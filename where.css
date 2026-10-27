@@ -1,0 +1,49 @@
+/* Someone knows where I am: plan and check in, back to the truck, SOS card (views/where.js). Classes start with wh-. */
+.wh-sos-btn { width: auto; padding: 0 9px; height: 30px; border-radius: 15px; font: 700 12px/1 system-ui, sans-serif; letter-spacing: .5px;
+  background: #c62f25; color: #fff; margin-right: 0; }
+.wh-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+.wh-tabs button { flex: 1; padding: 9px 4px; border-radius: 10px; font-size: 13px; white-space: nowrap; }
+.wh-tabs button.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.wh-pre { white-space: pre-wrap; word-break: break-word; font: 13px/1.4 ui-monospace, Menlo, monospace; background: var(--bg); padding: 8px; border-radius: 8px; margin: 8px 0; }
+.wh-steps { padding-left: 20px; margin: 8px 0; }
+.wh-steps li { margin-bottom: 12px; font-size: 14px; }
+.wh-steps .row { margin-top: 6px; }
+a.wh-btn { display: inline-flex; align-items: center; justify-content: center; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); color: var(--text); text-decoration: none; font-weight: 600; }
+a.wh-btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.wh-active { border-width: 2px; border-color: var(--accent); }
+.wh-active.warn { border-color: #e0a100; }
+.wh-active.bad { border-color: var(--danger); }
+.wh-active-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.wh-due { margin: 8px 0; }
+.wh-checkin { display: flex; gap: 8px; margin-top: 8px; }
+.wh-checkin button { flex: 1; padding: 14px 8px; font-size: 16px; font-weight: 700; }
+.wh-late button { padding: 4px 10px; margin-left: 4px; }
+.wh-links { display: flex; gap: 8px; margin-bottom: 12px; }
+.wh-links button { flex: 1; padding: 9px 4px; font-size: 13px; white-space: nowrap; }
+.wh-today { display: flex; align-items: center; gap: 10px; border-left: 4px solid var(--accent); }
+.wh-today > div { flex: 1; min-width: 0; }
+.wh-truck { text-align: center; }
+.wh-compass { position: relative; width: 150px; height: 150px; margin: 4px auto 8px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; }
+.wh-arrow { font-size: 72px; line-height: 1; color: var(--accent); transition: transform .3s ease-out; }
+.wh-north { position: absolute; inset: 0; font: 700 13px/1 system-ui, sans-serif; color: var(--danger); text-align: center; padding-top: 6px; transition: transform .3s ease-out; }
+.wh-dist { font-size: 22px; }
+.wh-map { height: 240px; border-radius: 12px; overflow: hidden; margin-bottom: 12px; border: 1px solid var(--line); }
+.wh-truck-pin { font-size: 24px; line-height: 28px; text-align: center; }
+.wh-warn { color: #a35b00; font-weight: 600; }
+@media (prefers-color-scheme: dark) { .wh-warn { color: #f2b14a; } }
+.wh-big { padding: 14px; font-size: 16px; width: 100%; }
+.wh-park { display: block; width: 100%; text-align: left; margin-top: 6px; }
+.wh-sos { border: 2px solid var(--danger); }
+.wh-sos-calls { display: flex; gap: 8px; }
+.wh-sos-calls .wh-btn { flex: 1; padding: 16px 8px; font-size: 18px; }
+.wh-911 { background: var(--danger) !important; color: #fff !important; border-color: var(--danger) !important; }
+.wh-coords { width: 100%; border-collapse: collapse; margin-top: 6px; }
+.wh-coords th { text-align: left; font-weight: 400; color: var(--muted); font-size: 12px; padding: 4px 6px 4px 0; vertical-align: top; width: 38%; }
+.wh-coords td { padding: 4px 0; font: 14px/1.3 ui-monospace, Menlo, monospace; word-break: break-word; }
+.wh-coords td:last-child { width: 36px; text-align: right; }
+.wh-coords button { min-height: 0; padding: 2px 8px; }
+.wh-help-row { display: flex; gap: 8px; margin-bottom: 10px; font-size: 14px; }
+.wh-tel { font-weight: 700; white-space: nowrap; }
+#plan-banner { position: fixed; z-index: 1501; top: calc(var(--head-h) + 6px); left: 8px; right: 8px; }
+body:has(#plan-banner) #reminders { top: calc(var(--head-h) + 62px); }
+.locked #plan-banner { visibility: hidden; }

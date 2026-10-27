@@ -8,6 +8,7 @@ import { solunar, dayRating, stars, nextWindow, shortTime } from '../solunar.js'
 import { windOnWater, bankName } from '../wind.js';
 import { $, esc, fmtDate, arrow, showView, onShow, emptyState, icon } from '../ui.js';
 import { openLake } from './lake.js';
+import { dayStripHtml } from './day-plan.js';
 import { fillReportLines } from '../report-line.js';
 
 // Slot for the "days like today" insight (workstream E). Register a renderer:
@@ -32,6 +33,7 @@ export async function renderToday() {
   const favs = lakes.filter(l => l.favorite);
   el.innerHTML = `<div class="today-head"><h2>${new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}</h2>
       <div class="row"><button id="go-ready" title="Save forecast, maps and lookups for no signal">📴 Ready</button><button id="go-plan">${icon('calendar')}Plan a trip</button></div></div>
+    <div id="today-where"></div>
     <div id="today-insight" class="card hidden" data-slot="days-like-today"></div>
     <div id="today-backup" class="card hidden"></div>
     <div id="today-camp" class="card hidden"></div>
@@ -42,11 +44,12 @@ export async function renderToday() {
       : `<div class="today-carousel${favs.length > 1 ? ' multi' : ''}">${favs.map(l => `<div class="card today-lake" data-id="${esc(l.id)}">
           <div class="hero sky-clear"><div class="today-title"><b>${esc(l.name)}</b><span class="today-alert"></span><span>›</span></div>
             <div class="hero-now"><span class="hero-temp">–</span><div><div class="hero-sky">Loading forecast…</div><div class="hero-wind"></div></div></div></div>
-          <div class="grid today-grid"></div><div data-report-for="${esc(l.id)}"></div></div>`).join('')}</div>
+          <div class="grid today-grid"></div><div class="kw-today small" data-plan-for="${esc(l.id)}"></div><div data-report-for="${esc(l.id)}"></div></div>`).join('')}</div>
         ${favs.length > 1 ? `<div class="dots-row">${favs.map((_, i) => `<i class="${i ? '' : 'on'}"></i>`).join('')}</div>` : ''}
         <p class="small"><a href="#" id="fav-edit">Change favorites</a></p>`}
     <div class="card map-card"><div class="map-card-head"><b>Map</b><span class="muted small">${lakes.length ? 'Your waters · tap to browse' : 'Tap to browse lakes and rivers'}</span><span>›</span></div><div id="today-map"></div></div>`;
   import('../map-browse.js').then(m => m.mountTodayMap($('#today-map', el))); // dynamic: map-browse pulls in the map, which pulls in this view
+  import('./where.js').then(m => m.renderWhereCard($('#today-where', el))); // dynamic too: where.js pulls in the map
   import('./camp.js').then(m => m.todayCamp($('#today-camp', el))).catch(() => {}); // the camp trip you're on, or the next one
   import('../backup-prompt.js').then(m => m.todayBackup($('#today-backup', el))).catch(() => {}); // back up before a multi-day trip
   $('#go-plan').onclick = () => showView('planner');
@@ -56,6 +59,7 @@ export async function renderToday() {
   if (done) done.onclick = () => { editing = false; renderToday(); };
   if (edit) edit.onclick = e => { e.preventDefault(); editing = true; renderToday(); };
   if (!editing) fillReportLines(el, favs);
+  if (!editing) import('../game-plan.js').then(m => m.fillPlanLines(el, favs)).catch(() => {}); // "what to throw" line per water
   if (!editing) el.querySelectorAll('.today-lake').forEach(card => {
     card.onclick = () => openLake(card.dataset.id);
     fillCard(card, favs.find(l => l.id === card.dataset.id));
@@ -92,6 +96,7 @@ async function fillCard(card, lake) {
     hero.querySelector('.hero-wind').innerHTML = `${arrow(x.from)} ${Math.round(x.speed)} mph${x.gusts >= x.speed + 5 ? `, gusts ${Math.round(x.gusts)}` : ''} · ${x.calm ? 'calm' : `into the ${bankName(x.to)} bank`}`;
     put(1, `<div class="stat"><b>${(c.pressure_msl * 0.02953).toFixed(2)}"</b><span>Pressure${trend ? ` · ${trend.label.toLowerCase()} ${trend.delta > 1 ? '↗' : trend.delta < -1 ? '↘' : '→'}` : ''}</span></div>`);
     putBite(w);
+    grid.insertAdjacentHTML('afterend', dayStripHtml(w, localKey(), lake, { orTomorrow: true })); // your craft's safe hours today
   }).catch(() => { hero.className = 'hero sky-cloud'; hero.querySelector('.hero-sky').textContent = 'Forecast unavailable (offline?)'; });
   reservoirFor(lake).then(res => {
     const ch = levelChange(res?.elevation, 7, 4);

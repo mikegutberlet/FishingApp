@@ -1,0 +1,37 @@
+/* Weather call for your boat and your day: safe-hours strip, Your day card, day plan sheet, trip watch banners. */
+.dw-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.dw-head h3 { margin: 0; }
+.dw-craft { font: inherit; font-size: 14px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--text); max-width: 100%; }
+.dw-days { margin: 10px 0 6px; }
+.dw-sum { margin: 6px 0; }
+.dw-sum.good b, .dw-mini .dw-sum.good { color: #0d7a3c; } .dw-sum.warn b, .dw-mini .dw-sum.warn { color: #8a6100; } .dw-sum.bad b, .dw-mini .dw-sum.bad { color: #b3261e; }
+.dw-strip { display: flex; gap: 2px; margin: 6px 0; }
+.dw-h { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 40px; border-radius: 4px; font-size: 11px; line-height: 1.1; padding-bottom: 3px; position: relative; }
+.dw-h i { font-style: normal; position: absolute; top: 3px; font-size: 10px; opacity: .8; }
+.dw-h.good { background: #2fbf71; color: #04361a; } .dw-h.warn { background: #f2b632; color: #4a3300; } .dw-h.bad { background: #e0574b; color: #fff; }
+.dw-strip.compact .dw-h { height: 8px; padding: 0; border-radius: 2px; }
+.dw-storm { margin: 6px 0; color: #b3261e; }
+.dw-lines { list-style: none; padding: 0; margin: 8px 0; }
+.dw-line { display: flex; gap: 8px; padding: 4px 0; border-top: 1px solid var(--line); font-size: 14px; }
+.dw-line:first-child { border-top: 0; }
+.dw-line.warn { color: #8a6100; } .dw-line.bad { color: #b3261e; font-weight: 600; }
+.dw-plan-btn { width: 100%; margin-top: 6px; }
+.dw-mini { margin-top: 8px; font-size: 13px; }
+.dw-mini .dw-sum { display: block; font-weight: 600; margin: 0 0 2px; }
+.dw-mini .dw-storm { display: block; margin: 2px 0 0; }
+.dw-plan-link { margin-top: 8px; width: 100%; }
+table.dw-plan { width: 100%; margin: 8px 0; }
+table.dw-plan td { padding: 6px 4px; vertical-align: top; }
+table.dw-plan td:first-child { width: 24px; }
+table.dw-plan td:last-child { text-align: right; }
+.dw-banner { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; margin-bottom: 10px; border-radius: 12px; font-size: 16px; }
+.dw-banner span { font-size: 22px; line-height: 1; }
+.dw-banner.bad { background: #b3261e; color: #fff; animation: dw-pulse 1.6s ease-in-out 3; }
+.dw-banner.warn { background: #f2b632; color: #2b1d00; }
+@keyframes dw-pulse { 50% { box-shadow: 0 0 0 6px rgba(179, 38, 30, .35); } }
+.dw-watch { background: var(--card); border-radius: 12px; padding: 8px 10px; margin-bottom: 10px; }
+.dw-watch-head { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--muted); }
+@media (prefers-color-scheme: dark) {
+  .dw-sum.good b, .dw-mini .dw-sum.good { color: #5ad38f; } .dw-sum.warn b, .dw-mini .dw-sum.warn, .dw-line.warn { color: #f2c35a; }
+  .dw-sum.bad b, .dw-mini .dw-sum.bad, .dw-storm, .dw-line.bad { color: #ff8a80; }
+}

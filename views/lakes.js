@@ -140,7 +140,7 @@ export function editLake(lake) {
   if (del) del.onclick = async () => {
     if ((await activeTrip())?.lakeId === lake.id) return alert('End your trip on this water first.');
     if (!confirm(`Delete ${lake.name} and all its catches, notes, trips, stocking, depth data, waypoints, routes, temperature profiles and offline map?`)) return;
-    for (const s of ['catches', 'notes', 'stocking', 'depthSets', 'trips', 'waypoints', 'routes', 'tempProfiles', 'crew']) for (const r of await db.byLake(s, lake.id)) await db.del(s, r.id);
+    for (const s of ['catches', 'notes', 'stocking', 'depthSets', 'trips', 'waypoints', 'routes', 'tempProfiles', 'crew', 'iceLogs']) for (const r of await db.byLake(s, lake.id)) await db.del(s, r.id);
     for (const ev of await db.all('events')) if (ev.lakeId === lake.id) await db.del('events', ev.id);
     refreshWaypoints();
     // Two saved copies of one water (a friend's shared file of a lake you have) share its offline map.

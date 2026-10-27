@@ -2,6 +2,7 @@
 // gone: the forecast (kept with its age, see forecast.js), weather alerts, Getting there with the walk in, snow and
 // fires, Camping, and the offline map pack (satellite + USGS topo, along the walk in and your GPX routes, plus the
 // state's regs, stocking and depth data). Each part is the same lookup the water's page makes; nothing new is sent.
+import { isCoast, nearestTideStation, tidesFor, marineFor, marineZoneNear, zoneForecast, mpas } from './coast.js';
 import { db } from './db.js';
 import { $, esc, status, showView } from './ui.js';
 import { weatherFor, fetchAlerts } from './forecast.js';
@@ -16,6 +17,7 @@ import { roadsNear } from './roads.js';
 import { backupCardHtml, wireBackupCard } from './backup-prompt.js';
 import { bookletHtml, wireBooklets, isSaved, BOOKLET_HELP } from './regs-booklet.js';
 import { forLake } from './states/index.js';
+import { airQuality } from './boat-weather.js';
 
 const READY_KEY = 'tackle-box-ready'; // { [lake id]: { at: ISO, failed: [part names] } }, this phone only
 const readyLog = () => { try { return JSON.parse(localStorage.getItem(READY_KEY)) ?? {}; } catch { return {}; } };
@@ -32,6 +34,7 @@ export async function saveInfo(lake, { signal, onStep = () => {} } = {}) {
   };
   await part('forecast', async () => !(await weatherFor(lake.lat, lake.lon)).saved);
   await part('weather alerts', async () => !(await fetchAlerts(lake.lat, lake.lon)).savedAt);
+  await part('air quality', async () => !(await airQuality(lake.lat, lake.lon)).saved);
   // A big lake's roads depend on which shore you go to, so Getting there needs a spot picked on its tab first.
   if (isBig(lake)) skipped.push('Getting there (pick a spot on its tab with signal)');
   else await part('Getting there', async () => (await lookupAccess(lake)).failed.length < 6);
@@ -40,6 +43,13 @@ export async function saveInfo(lake, { signal, onStep = () => {} } = {}) {
   await part('gas, ice and bait', async () => !(await lookupSupplies(lake, { force: true })).stale);
   // Caltrans roads (California and waters within reach of it). They change by the hour; the saved copy shows its age.
   if (+lake.lat < 43) await part('roads in', async () => !(await roadsNear(lake)).stale);
+  // Ocean spots: a week of tides, waves and swell, the zone's marine forecast, and the MPA lines (kept by the app's cache).
+  if (isCoast(lake)) {
+    await part('tides', async () => { const st = await nearestTideStation(lake.lat, lake.lon); return !!st && !(await tidesFor(st.id)).savedAt; });
+    await part('waves', async () => !(await marineFor(lake.lat, lake.lon)).savedAt);
+    await part('marine forecast', async () => { const z = await marineZoneNear(lake.lat, lake.lon); return !!z && !(await zoneForecast(z.id, z.office)).savedAt; });
+    await part('marine protected areas', async () => (await mpas()).length > 0);
+  }
   return { saved, failed, skipped };
 }
 

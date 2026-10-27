@@ -30,6 +30,10 @@ It is a PWA: open it once in Safari/Chrome, choose **Add to Home Screen**, and i
 * **Wind on the water:** which bank the wind is blowing into, with the next big shift; map layer *Wind on my lakes* puts a wind arrow on each saved water.
 * **Flow vs normal:** for USGS stream gauges, today's flow as a percent of the median for this date over the gauge's record, with a fishable / high / blown-out read on rivers.
 * **Today (home screen):** your starred waters at a glance: weather, wind and which bank it's blowing into, the next bite window, 7-day level change, and new or upcoming CDFW plants, with NWS alerts flagged. Star a water with ☆ on its page.
+* **Your day (weather call for your craft):** pick shore, float tube, kayak or small boat once. Each water gets a green / amber / red strip of safe hours ("Float tube: good till 11, off by 1") with storm timing ("Thunderstorms 1–5 pm: off the water by noon"), on Conditions, Today and Plan a trip. The Conditions card adds the trip-day lines: dawn and tonight's low, rain, smoke (Open-Meteo air quality), water temperature with a PFD reminder, and last light with when to start walking out.
+* **Day plan:** wake, leave-by, on the water (first light, a bite window or your own time), wind up and turnaround, worked back from your typed drive time (kept with the water, never sent anywhere) and the walk from Getting there, as calendar alarms (.ics).
+* **Weather-turning watch:** on the trip screen, the next 2 hours for your craft and a loud banner when gusts, storms, rain or a new NWS warning are coming ("Gusts 22 mph by 12:15. Head for the ramp."). It refreshes every 5 minutes while the screen is open; iPhones run nothing in the background.
+* **River rising line:** each USGS gauge shows the change over the last hour ("Up 0.6 ft in the last hour: rising fast"), with a banner on rivers when it jumps.
 * **Plan a trip:** pick a day in the next 10 and your saved waters are ranked 0–10 by wind, rain, temperature, pressure trend, solunar rating, days since the last plant and lake-level trend, with the reasons and the best time to be on the water.
 
 ## Logging and journal
@@ -101,7 +105,11 @@ Data is refreshed daily by `.github/workflows/update-data.yml` running `scripts/
 * **Tap any water** for current weather and a 10-day forecast, CDFW stocking and upcoming plants, lake level, depth, history and basic facts (size, elevation), all before you save it. *Save to my lakes* adds it to your list for catches and notes.
 * **Lakes → Any California water** searches the whole list by name.
 * **Depth:** max and average depth where a published survey exists, and full depth-contour charts for lakes USGS has surveyed (Calaveras, San Antonio, Whiskeytown and more as they appear), drawn as depth at today's level when the lake has a CDEC gauge.
-* **History tab:** introductions and plantings recorded at that water, back to the 1870s, plus a statewide timeline of how California's waters were stocked.
+* **History tab:** *Stocking by year* for the water, as far back as the records go (tap a year for species and the source), then introductions and plantings recorded at that water back to the 1870s, plus a statewide timeline of how the state's waters were stocked.
+* **Stocking by year** (`scripts/build-stock-history.mjs`, weekly, `data/<st>/stock-history.json`):
+  * Oregon: ODFW's Fish Propagation Annual Reports, 2006 on, with the number of fish released per water and species (the 2003–2005 reports only total each watershed).
+  * Nevada: NDOW's stocking report pages as saved by the Internet Archive, 2003–2021 (date, number, size, species), joined with NDOW's current site. The archive missed some weeks, so older years can be short.
+  * California: CDFW's plant schedule as saved by the Internet Archive, 2007 on (week, water and species; CDFW has never published trout counts), and CDFW's salmon and steelhead hatchery release spreadsheets, 2001 on, with counts. CDFW's full planting database is staff-only.
 
 ### Where the statewide data comes from
 
@@ -122,7 +130,7 @@ Data is refreshed daily by `.github/workflows/update-data.yml` running `scripts/
 
 ### What the records can and can't tell you
 
-* CDFW's digital planting records begin in the 2000s, and the public schedule shows about a year; the app keeps every day it sees, so history grows from October 2025 forward.
+* CDFW's digital planting records begin in the 2000s, and the public schedule shows about a year; the app keeps every day it sees, and the archived copies of the schedule fill in 2007 onward (see *Stocking by year*).
 * Before that, the record is species introductions: the state Fish Commission (founded 1870), the U.S. Fish Commission and private parties moved shad, carp, bass, catfish, brown and brook trout into California waters from 1871 on. Those events, where they were recorded, show on the History tab.
 * Native fish planted inside their native range, such as most rainbow trout plants in Sierra streams, were rarely logged by water before the 1930s and are not in any public database. Miners and settlers did carry trout into fishless high-country lakes from the 1870s; the golden trout transplant of 1876 is the best documented.
 

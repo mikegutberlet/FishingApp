@@ -20,6 +20,7 @@ import './wind-layer.js';
 import { addSafetyLayers } from './safety-map.js';
 import './views/today.js';
 import './views/planner.js';
+import './views/where.js';
 import { initOffline } from './offline.js';
 import { initWaypoints } from './waypoints.js';
 import { initHeatmap } from './heatmap.js';
@@ -35,6 +36,7 @@ import { initCrew } from './crew.js';
 import './license.js';
 import { checkReminders } from './reminders.js';
 import { initCamp } from './views/camp.js';
+import { initCoastMap } from './coast-map.js';
 
 document.querySelectorAll('nav button').forEach(b => b.onclick = () => showView(b.dataset.view));
 
@@ -54,6 +56,7 @@ migrateSavedIds(db).catch(e => console.warn('Oregon id migration:', e));
 resumeTrip();
 initCrew();
 initCamp();
+initCoastMap();
 checkReminders();
 if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js');
 // Today is the home screen. The map starts hidden, so frame your lakes the first time it is shown (a hidden map has no size).

@@ -22,7 +22,8 @@ export async function refreshWaypoints() {
 function popup(w) {
   const el = document.createElement('div');
   el.innerHTML = `<b>${kind(w)[0]} ${esc(w.name || kind(w)[1])}</b><div class="muted small">${esc(kind(w)[1])} · ${fmtDate(w.createdAt)}</div>${w.note ? `<div style="white-space:pre-wrap">${esc(w.note)}</div>` : ''}
-    <div class="muted small">${w.lat.toFixed(5)}, ${w.lon.toFixed(5)}</div><a href="#" data-a="edit">Edit</a> · <a href="#" data-a="del">Delete</a>`;
+    <div class="muted small">${w.lat.toFixed(5)}, ${w.lon.toFixed(5)}</div><a href="#" data-a="spot">Spot page</a> · <a href="#" data-a="edit">Edit</a> · <a href="#" data-a="del">Delete</a>`;
+  el.querySelector('[data-a=spot]').onclick = e => { e.preventDefault(); map.closePopup(); import('./spot-book.js').then(m => m.openSpot(w.id)); };
   el.querySelector('[data-a=edit]').onclick = e => { e.preventDefault(); map.closePopup(); editWaypoint(w); };
   el.querySelector('[data-a=del]').onclick = async e => { e.preventDefault(); if (!confirm('Delete this waypoint?')) return; await db.del('waypoints', w.id); map.closePopup(); refreshWaypoints(); };
   return el;
