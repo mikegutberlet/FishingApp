@@ -74,22 +74,30 @@ async function overpassBand(s, n) {
 (nwr["man_made"="pier"]["name"](around.c:300);nwr["man_made"~"^(breakwater|groyne)$"]["name"](around.c:300);nwr["leisure"="fishing"](around.c:400);
  nwr["natural"="beach"]["name"](around.c:300);nwr["sport"="surfing"](${box}););out center tags;`;
   let last;
-  for (const url of ['https://overpass-api.de/api/interpreter', 'https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter']) {
+  // Mirrors time out from GitHub's runners, so only the main server, waiting longer each time it's busy (502/504).
+  for (const [i, url] of Array(4).fill('https://overpass-api.de/api/interpreter').entries()) {
     try {
       const r = await fetch(url, { method: 'POST', headers: UA, body: new URLSearchParams({ data: q }), signal: AbortSignal.timeout(400e3) });
       if (!r.ok) throw new Error(`${r.status}`);
       const j = await r.json();
       if (j.remark && /error|timed out|runtime/i.test(j.remark)) throw new Error(j.remark);
       return j.elements;
-    } catch (e) { last = e; console.error(`  band ${s}–${n} ${url}: ${e.message}`); await sleep(30e3); }
+    } catch (e) { last = e; console.error(`  band ${s}–${n} try ${i + 1}: ${e.message}`); await sleep(30e3 * (i + 1)); }
   }
   throw last;
 }
 
+// A band Overpass can't answer keeps last week's spots for that band, so one busy hour doesn't drop a stretch of coast.
 async function spots() {
-  const all = [];
+  const all = [], prev = (await previous('spots.json'))?.spots ?? [];
   for (let s = 32.5; s < 46.3; s += 1) {
-    const els = await overpassBand(s, Math.min(46.3, s + 1));
+    let els;
+    try { els = await overpassBand(s, Math.min(46.3, s + 1)); } catch (e) {
+      const kept = prev.filter(p => p.lat >= s && p.lat < s + 1);
+      console.error(`band ${s}–${s + 1} failed (${e.message}); keeping ${kept.length} spots from the last run`);
+      all.push(...kept);
+      continue;
+    }
     let kept = 0;
     for (const e of els) {
       const t = e.tags ?? {}, lat = e.lat ?? e.center?.lat, lon = e.lon ?? e.center?.lon;
