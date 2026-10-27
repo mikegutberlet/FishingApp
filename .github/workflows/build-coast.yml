@@ -1,0 +1,59 @@
+name: Build ocean spots, tide stations and MPAs
+
+on:
+  schedule:
+    - cron: '47 13 * * 2' # weekly, Tuesday morning
+  workflow_dispatch:
+  push:
+    paths:
+      - scripts/build-coast.mjs
+      - .github/workflows/build-coast.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # On main, the branch as it is when the job starts, not the commit that queued the run: a run that waited
+          # behind another run of this workflow then builds on that run's data commit instead of conflicting with it.
+          ref: ${{ github.ref_name == 'main' && github.ref || '' }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Ocean data
+        run: |
+          mkdir -p data/coast/logs
+          node scripts/build-coast.mjs 2>&1 | tee data/coast/logs/build-coast.log
+          exit ${PIPESTATUS[0]}
+      - name: Commit changes
+        run: |
+          git add data/coast/
+          if git diff --cached --quiet; then echo "No data changes"; exit 0; fi
+          # Only main keeps data commits. A commit on a PR branch would conflict with main's next run,
+          # so a branch run shows what changed here and keeps its data as an artifact instead.
+          if [ "$GITHUB_REF_NAME" != main ]; then git diff --cached --stat; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update ocean spots, tide stations and MPAs"
+          # A failed rebase is undone before the next try. A conflict means this job's data was committed by hand while it ran:
+          # the push fails so that fix stays, and the next run builds on it.
+          for i in 1 2 3; do if git pull --rebase origin "${GITHUB_REF_NAME}" && git push; then exit 0; fi; git rebase --abort 2>/dev/null || true; sleep 10; done
+          echo "push failed"; exit 1
+      - name: Keep this branch run's data
+        if: github.ref_name != 'main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: data
+          path: |
+            data/coast/
+          if-no-files-found: ignore
+          retention-days: 7

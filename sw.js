@@ -1,5 +1,5 @@
 // Caches the app shell so it opens with no signal on the water. Your data is in IndexedDB, not here.
-const CACHE = 'tackle-box-v24';
+const CACHE = 'tackle-box-v25';
 // One file per line. Add new files here and bump CACHE.
 const SHELL = [
   './',
@@ -9,6 +9,7 @@ const SHELL = [
   'privacy.css',
   'polish.css',
   'journal.css',
+  'day-plan.css',
   'trip-tools.css',
   'manifest.json',
   'icon.svg',
@@ -36,10 +37,16 @@ const SHELL = [
   'db.js',
   'data-sources.js',
   'forecast.js',
+  'boat-weather.js',
+  'ics.js',
+  'sun.js',
+  'views/day-plan.js',
   'solunar.js',
   'wind.js',
   'wind-layer.js',
   'radar.js',
+  'stock-history.js',
+  'name-key.js',
   'states/ca.js',
   'states/common.js',
   'states/index.js',
@@ -99,8 +106,6 @@ const SHELL = [
   'where.css',
   'views/where.js',
   'coords.js',
-  'sun.js',
-  'ics.js',
   'help.js',
   'signal.js',
   'bag.js',
@@ -117,7 +122,17 @@ const SHELL = [
   'camp-trip.js',
   'camp-cook.js',
   'campsites.js',
+  'crew-plan.js',
+  'views/crew-plan.js',
+  'crew.css',
   'views/camp.js',
+  'coast.css',
+  'coast.js',
+  'coast-map.js',
+  'ocean-rules.js',
+  'views/tabs/tides.js',
+  'views/tabs/marine.js',
+  'views/tabs/ocean-rules.js',
 ];
 
 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())));

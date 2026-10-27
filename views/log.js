@@ -212,7 +212,7 @@ $('#catch-form').photo.onchange = e => {
   pendingPhotos = pendingPhotos.then(() => job, () => job);
 };
 
-$('#btn-gps').onclick = () => locate().then(p => { const f = $('#catch-form'); f.lat.value = p.lat.toFixed(6); f.lon.value = p.lon.toFixed(6); }).catch(e => status(e.message));
+$('#btn-gps').onclick = () => locate().then(p => { const f = $('#catch-form'); f.lat.value = p.lat.toFixed(6); f.lon.value = p.lon.toFixed(6); showCatchWarnings(f, editing?.id); }).catch(e => status(e.message));
 $('#btn-start-trip').onclick = async () => { const t = await activeTrip(); t ? openTrip(t.id) : startTripFlow(); };
 $('#btn-cancel-edit').onclick = () => { resetForm(); renderCatchForm(); };
 $('#catch-form').tackleId.onchange = async e => {
@@ -229,7 +229,7 @@ $('#catch-form').species.addEventListener('input', showEstimate);
 $('#catch-form').time.addEventListener('input', e => delete e.target.dataset.auto);
 $('#catch-form').length.addEventListener('input', showEstimate);
 // Regulation warnings follow the water, species, size, date and Released box.
-const WARN_FIELDS = ['lakeId', 'species', 'length', 'time', 'released'];
+const WARN_FIELDS = ['lakeId', 'species', 'length', 'time', 'released', 'lat', 'lon'];
 for (const type of ['input', 'change']) $('#catch-form').addEventListener(type, e => WARN_FIELDS.includes(e.target.name) && showCatchWarnings(e.currentTarget, editing?.id));
 
 // Current weather, wind, pressure and sky at a spot, or null when offline.

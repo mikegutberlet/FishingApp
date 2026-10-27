@@ -7,6 +7,7 @@ import { weatherFor, localKey, addDays, levelChange, forecastAge } from '../fore
 import { solunar, dayRating, stars, windowSpan, windowLabel } from '../solunar.js';
 import { $, esc, fmtDate, showView, onShow } from '../ui.js';
 import { openLake } from './lake.js';
+import { dayStripHtml, openDayPlan } from './day-plan.js';
 import { fillReportLines } from '../report-line.js';
 
 const DAY = 864e5;
@@ -85,7 +86,7 @@ export async function renderPlanner() {
   if (!lakes.length) { $('#plan-list').innerHTML = '<div class="card">Save some waters first (Lakes → pick your state → Any water), then come back to rank them.</div>'; return; }
   const date = days[picked].key;
   const rows = (await Promise.all(lakes.map(async lake => {
-    try { const w = await weatherFor(lake.lat, lake.lon); return { lake, age: forecastAge(w), ...(await scoreDay(lake, w, date)) }; } catch { return { lake, error: true }; }
+    try { const w = await weatherFor(lake.lat, lake.lon); return { lake, w, age: forecastAge(w), ...(await scoreDay(lake, w, date)) }; } catch { return { lake, error: true }; }
   }))).filter(r => r.error || r.score != null);
   if (!el.isConnected || date !== days[picked].key) return;
   rows.sort((a, b) => (b.score ?? -1) - (a.score ?? -1));
@@ -98,8 +99,10 @@ export async function renderPlanner() {
       ${r.best ? `<div class="small">Best time: <b>${windowSpan(r.best)}</b>, ${windowLabel(r.best).toLowerCase()}</div>` : ''}
       <div class="chips">${r.reasons.map(x => `<span class="chip ${x.tone}">${esc(x.text)}</span>`).join('')}</div>
       <div data-report-for="${esc(r.lake.id)}"></div>
-      <a href="#" class="small" data-go-check="${esc(r.lake.id)}">📋 Before you go</a></div>`).join('');
+      <a href="#" class="small" data-go-check="${esc(r.lake.id)}">📋 Before you go</a>
+      ${dayStripHtml(r.w, date, r.lake)}<button type="button" class="dw-plan-link" data-plan="${esc(r.lake.id)}">⏰ Plan this day</button></div>`).join('');
   $('#plan-list').querySelectorAll('.plan-item').forEach(c => c.onclick = () => openLake(c.dataset.id));
+  $('#plan-list').querySelectorAll('[data-plan]').forEach(b => b.onclick = e => { e.stopPropagation(); openDayPlan(rows.find(r => r.lake.id === b.dataset.plan).lake, date); });
   $('#plan-list').querySelectorAll('[data-go-check]').forEach(a => a.onclick = e => {
     e.preventDefault(); e.stopPropagation();
     import('./before-go.js').then(m => m.openChecklist(a.dataset.goCheck, date, { from: 'planner' }));

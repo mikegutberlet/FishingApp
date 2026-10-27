@@ -11,6 +11,7 @@ import { fmtLen, fromLen, units } from '../units.js';
 import { estimateWeight } from '../weight.js';
 import { noteFix } from '../signal.js';
 import { openWhere } from './where.js';
+import { tripWatch } from './day-plan.js';
 import { forLake } from '../states/index.js';
 import { isRiver } from '../states/common.js';
 import { renderBagBar } from '../bag.js';
@@ -238,6 +239,7 @@ async function renderLive(t) {
   const next = await lastNextTime(t.lakeId, t.id);
   el.innerHTML = `<div class="trip-head"><div><b>${esc(lake?.name ?? 'Trip')}</b><div class="muted small" id="trip-gps">${t.saver ? '🔋 Battery saver: no track, a GPS fix on each tap' : lastFix ? `GPS ±${Math.round(lastFix.accuracy)} m · ${t.track.length} track points` : 'Waiting for GPS…'}</div></div>
       <div class="trip-clock" id="trip-clock">${clock(Date.now() - Date.parse(t.start))}</div></div>
+    <div id="trip-wx"></div>
     ${next && !sessionStorage.getItem(`tb-next-seen-${t.id}`) ? `<div class="next-wrap">${nextTimeHtml(next)}<a href="#" class="small" id="next-hide">hide</a></div>` : ''}
     <div class="grid trip-stats"><div class="stat"><b>${catches.length}</b><span>Fish</span></div><div class="stat"><b>${bites}</b><span>Bites</span></div><div class="stat"><b>${lost}</b><span>Lost</span></div></div>
     <div id="trip-bag"></div>
@@ -272,6 +274,7 @@ async function renderLive(t) {
   });
   $('#trip-end').onclick = () => endTrip(t);
   el.querySelectorAll('[data-wh-open]').forEach(b => b.onclick = () => openWhere(b.dataset.whOpen));
+  if (lake) tripWatch(t, lake, $('#trip-wx'));
   $('#trip-saver').onclick = async e => { e.preventDefault(); await setSaver(t, !t.saver); };
   updatePill();
 }
