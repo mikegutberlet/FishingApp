@@ -16,7 +16,7 @@ export async function renderCrew(lake, body) {
           <div class="small">${[r.lure, r.technique, r.depth != null && fmtDepth(r.depth), r.clarity && `${r.clarity} water`].filter(Boolean).map(esc).join(' · ')}</div>
           ${r.notes ? `<div class="small" style="white-space:pre-wrap">${esc(r.notes)}</div>` : ''}
           <a href="#" class="small danger" data-del="${esc(r.id)}">remove</a></div></div>`
-      : `<div class="card"><b>📍 ${esc(r.name || r.type || 'Spot')}</b> <span class="muted small">from ${esc(r.from)} · <a href="#" data-spot="${esc(r.id)}">show on map</a> · <a href="#" class="danger" data-del="${esc(r.id)}">remove</a></span>
+      : `<div class="card"><b>${r.kind === 'campsite' ? '🏕️' : '📍'} ${esc(r.name || r.type || 'Spot')}</b> <span class="muted small">from ${esc(r.from)} · <a href="#" data-spot="${esc(r.id)}">show on map</a> · <a href="#" class="danger" data-del="${esc(r.id)}">remove</a></span>
           ${r.text ? `<div class="small" style="white-space:pre-wrap">${esc(r.text)}</div>` : ''}</div>`).join('')
     : '<div class="card muted">Nothing from your crew here yet. When a friend shares catches, a spot or access notes with you, they show up on this tab.</div>'}
     <button id="crew-share-here" style="width:100%">👥 Share your catches or a spot from here</button>`;

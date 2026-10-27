@@ -74,11 +74,12 @@ export async function scoreDay(lake, w, date) {
 export async function renderPlanner() {
   const el = $('#planner');
   const days = Array.from({ length: 10 }, (_, k) => ({ k, key: dayKey(k), label: k === 0 ? 'Today' : k === 1 ? 'Tomorrow' : dayLabel(dayKey(k)) }));
-  el.innerHTML = `<button id="plan-back">‹ Today</button><h2>Plan a trip</h2>
+  el.innerHTML = `<div class="lake-bar"><button id="plan-back">‹ Today</button><button id="plan-camp">⛺ Camp trip</button></div><h2>Plan a trip</h2>
     <div class="tabs day-pick">${days.map(d => `<button data-k="${d.k}" class="${d.k === picked ? 'active' : ''}">${d.label}</button>`).join('')}</div>
     <div id="plan-list" class="muted">Ranking your waters…</div>
     <p class="muted small">Scores mix the Open-Meteo forecast, bite windows, state stocking (CDFW, NDOW) and lake levels. 5 is an ordinary day. Forecasts past 5 days are rough.</p>`;
   $('#plan-back').onclick = () => showView('today');
+  $('#plan-camp').onclick = () => import('./camp.js').then(m => m.renderCampHome());
   el.querySelectorAll('.day-pick button').forEach(b => b.onclick = () => { picked = +b.dataset.k; renderPlanner(); });
   const lakes = await db.all('lakes');
   if (!lakes.length) { $('#plan-list').innerHTML = '<div class="card">Save some waters first (Lakes → pick your state → Any water), then come back to rank them.</div>'; return; }
