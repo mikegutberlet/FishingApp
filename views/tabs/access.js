@@ -45,7 +45,8 @@ const spots = {};
 const spotKey = lake => lake.nhdId ? `nhd-${lake.nhdId}` : String(lake.id);
 
 export async function renderGettingThere(lake, body) {
-  body.innerHTML = `<div id="gt-notes"></div><div id="gt-where"></div><div id="gt-now"></div><div id="gt"></div><div id="gt-routes"></div><div id="gt-access"></div>`;
+  body.innerHTML = `<div id="gt-notes"></div><div id="gt-where"></div><div id="gt-now"></div><div id="gt"></div><div id="gt-routes"></div><div id="gt-gaps"></div><div id="gt-access"></div>`;
+  import('../trip-gaps.js').then(m => m.renderTripGaps(lake, body.querySelector('#gt-gaps'))).catch(e => console.warn('trip gaps:', e.message)); // ramps, roads, last gas
   const el = body.querySelector('#gt');
   const S = forLake(lake);
   // What the main card and the Today card share: your and your crew's notes, today's conditions, the route summary.

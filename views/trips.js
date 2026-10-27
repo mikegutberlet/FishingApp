@@ -244,6 +244,7 @@ async function renderLive(t) {
       <button class="q-bite" id="q-bite">💥<span>Bite</span></button>
       <button class="q-lost" id="q-lost">💨<span>Lost</span></button>
     </div>
+    <button id="q-hands" class="hf-open-btn">🙌 Hands-free: big buttons${'webkitSpeechRecognition' in window || 'SpeechRecognition' in window ? ' and voice' : ''}</button>
     <div class="quick-more"><button id="q-lure">🪝 Lost lure</button>${t.saver ? '' : `<button id="q-troll" class="${trollOn() ? 'on' : ''}" aria-pressed="${trollOn()}">🧭 Troll / drift ${trollOn() ? 'on' : 'off'}</button>`}</div>
     <div id="quick-sheet"></div>
     <div class="card small">${log.length ? log.map(x => `<div class="row trip-log"><span class="muted">${new Date(x.time).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}</span><span style="flex:1">${x.html}</span>
@@ -254,6 +255,11 @@ async function renderLive(t) {
   $('#q-catch').onclick = () => speciesPicker(t, lake);
   $('#q-bite').onclick = () => addEvent(t, 'bite');
   $('#q-lost').onclick = () => addEvent(t, 'lost');
+  $('#q-hands').onclick = async () => {
+    const { openHandsFree } = await import('../handsfree.js');
+    openHandsFree(t, { species: await recentSpecies(lake), catch: (sp, length) => quickCatch(t, sp, { length, sheet: false }), event: kind => addEvent(t, kind, { quiet: true }),
+      undo: r => db.del(r.species ? 'catches' : 'events', r.id).then(() => refreshMap()), done: () => renderLive(t) });
+  };
   $('#q-lure').onclick = async () => lostLureSheet(t, $('#quick-sheet'), await here(t), () => renderLive(t));
   if ($('#q-troll')) $('#q-troll').onclick = () => { setTroll(!trollOn()); if (trollOn()) resetReadout(); renderLive(t); };
   $('#next-hide')?.addEventListener('click', e => { e.preventDefault(); sessionStorage.setItem(`tb-next-seen-${t.id}`, '1'); e.target.parentNode.remove(); });
@@ -282,12 +288,15 @@ async function setSaver(t, on) {
   renderLive(next);
 }
 
-async function addEvent(t, kind) {
+// quiet: from the hands-free screen, which says so itself and repaints this page when it closes.
+async function addEvent(t, kind, { quiet = false } = {}) {
   navigator.vibrate?.(30);
   const ev = await db.put('events', { tripId: t.id, lakeId: t.lakeId, kind, time: new Date().toISOString(), ...await here(t), ...snapshot() });
   pinSpot('events', ev, t);
+  if (quiet) return ev;
   status(kind === 'bite' ? 'Bite logged' : 'Lost fish logged');
   renderLive(t);
+  return ev;
 }
 
 async function speciesPicker(t, lake) {
@@ -303,19 +312,20 @@ async function speciesPicker(t, lake) {
 }
 
 // One tap saves the catch right away; the size sheet that follows is optional.
-async function quickCatch(t, species) {
+// length (inches) and sheet: false come from the hands-free screen, which has no room for the size sheet.
+async function quickCatch(t, species, { length = null, sheet = true } = {}) {
   navigator.vibrate?.(30);
   const time = new Date().toISOString();
   const pos = await here(t);
-  const c = await db.put('catches', { lakeId: t.lakeId, tripId: t.id, species, time, length: null, weight: null, depth: null, waterTemp: null,
+  const c = await db.put('catches', { lakeId: t.lakeId, tripId: t.id, species, time, length, weightEst: length ? estimateWeight(species, length) : null, weight: null, depth: null, waterTemp: null,
     lure: '', technique: snapshot().trollMph >= 0.3 ? 'trolling' : '', notes: '', released: true, ...pos, ...snapshot(), photo: null, moon: moonPhase(new Date(time)).name });
   pinSpot('catches', c, t);
-  status(`${species} logged 🎣`);
   refreshMap();
-  renderLive(t).then(() => sizeSheet(t, c));
+  if (sheet) { status(`${species} logged 🎣`); renderLive(t).then(() => sizeSheet(t, c)); }
   // Weather snapshot in the background, so a slow signal never holds up the button. It's fetched for the water, never your spot.
   const lake = await db.get('lakes', t.lakeId);
   if (lake) snapshotConditions(lake.lat, lake.lon).then(async cond => { if (cond) { const saved = await db.get('catches', c.id); if (saved) await db.put('catches', { ...saved, conditions: cond }); } });
+  return c;
 }
 
 async function sizeSheet(t, c) {

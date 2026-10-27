@@ -1,0 +1,33 @@
+/* Trip gaps (ramps at today's level, roads in, last gas/ice/bait, regs booklet, backup prompt) and hands-free logging. */
+.tg-card h3 { margin: 0 0 6px; }
+.tg-list { list-style: none; padding: 0; margin: 4px 0 10px; }
+.tg-list li { padding: 6px 0; border-top: 1px solid var(--line, rgba(127, 127, 127, .2)); }
+.tg-list li:first-child { border-top: 0; }
+.tg-no b { color: var(--danger); }
+.tg-form { margin-top: 8px; }
+.tg-booklet { display: flex; flex-direction: column; gap: 2px; margin: 6px 0 10px; }
+.tg-backup p { margin: 6px 0; }
+.tg-backup .row { flex-wrap: wrap; gap: 8px; }
+.rdy-extra { margin: 10px 0; display: flex; flex-direction: column; gap: 10px; }
+.rdy-extra > div { border: 1px solid var(--line, rgba(127, 127, 127, .3)); border-radius: 12px; padding: 10px; }
+
+.hf-open-btn { width: 100%; min-height: 52px; font-weight: 700; border-radius: 12px; margin: -2px 0 10px; }
+body.hf-open { overflow: hidden; }
+.hf-screen { position: fixed; inset: 0; z-index: 2000; background: var(--bg, #0b1720); display: flex; flex-direction: column; gap: 10px;
+  padding: max(10px, env(safe-area-inset-top)) 10px max(10px, env(safe-area-inset-bottom)); touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+.hf-top { display: flex; gap: 10px; }
+.hf-top button { flex: 1; min-height: 52px; font-size: 18px; font-weight: 700; border-radius: 12px; }
+.hf-mic.on { background: #e5484d; color: #fff; border-color: #e5484d; }
+.hf-species { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
+.hf-species button { flex: 0 0 auto; min-height: 48px; padding: 0 16px; border-radius: 24px; font-weight: 600; }
+.hf-species button.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.hf-fish { flex: 3; min-height: 0; border-radius: 20px; background: #2fbf71; color: #04161d; border: 0; font-size: 72px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.hf-fish span { font-size: 34px; font-weight: 800; letter-spacing: .05em; }
+.hf-fish small { font-size: 18px; font-weight: 600; opacity: .8; }
+.hf-row { flex: 1.4; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; min-height: 0; }
+.hf-row button { border-radius: 20px; font-size: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-width: 3px; }
+.hf-row button span { font-size: 22px; font-weight: 800; }
+.hf-bite { background: #f2d028; color: #2b2400; border-color: #f2d028; }
+.hf-lost { background: var(--card); color: var(--danger); border-color: var(--danger); }
+.hf-msg { min-height: 52px; font-size: 18px; display: flex; align-items: center; justify-content: center; gap: 12px; text-align: center; }
+.hf-msg .hf-undo { min-height: 48px; padding: 0 20px; font-size: 18px; font-weight: 700; border-radius: 12px; }
