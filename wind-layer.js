@@ -1,7 +1,7 @@
 // "Wind on my lakes" map overlay: an arrow on each saved water pointing the way the wind blows, with its speed.
 import { map, layersControl } from './map.js';
 import { db } from './db.js';
-import { weatherFor } from './forecast.js';
+import { weatherFor, forecastAge } from './forecast.js';
 import { windOnWater, bankName } from './wind.js';
 import { esc, onShow } from './ui.js';
 
@@ -18,9 +18,9 @@ async function draw() {
       if (gen !== drawn || !map.hasLayer(windLayer)) return;
       const x = windOnWater(w);
       const icon = L.divIcon({ className: 'wind-pin', iconSize: null,
-        html: `<span><i style="transform:rotate(${x.to}deg)">↑</i>${Math.round(x.speed)}</span>` });
+        html: `<span${w.saved ? ' class="wind-saved"' : ''}><i style="transform:rotate(${x.to}deg)">↑</i>${Math.round(x.speed)}${w.saved ? ' 📴' : ''}</span>` });
       L.marker([lake.lat, lake.lon], { icon, keyboard: false, zIndexOffset: 500 })
-        .bindPopup(`<b>${esc(lake.name)}</b><br>${x.calm ? 'Calm' : `${Math.round(x.speed)} mph, gusts ${Math.round(x.gusts)}<br>Blowing into the ${bankName(x.to)} bank`}<br><a href="#" data-open-lake="${esc(lake.id)}">Open</a>`)
+        .bindPopup(`<b>${esc(lake.name)}</b><br>${x.calm ? 'Calm' : `${Math.round(x.speed)} mph, gusts ${Math.round(x.gusts)}<br>Blowing into the ${bankName(x.to)} bank`}${w.saved ? `<br>📴 Saved forecast, ${esc(forecastAge(w))}` : ''}<br><a href="#" data-open-lake="${esc(lake.id)}">Open</a>`)
         .addTo(windLayer);
     }).catch(() => {});
   }

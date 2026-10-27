@@ -3,7 +3,7 @@
 import { db } from '../db.js';
 import { forLake, stockIdOf, reservoirFor } from '../states/index.js';
 import { WEATHER_CODES } from '../data-sources.js';
-import { weatherFor, localKey, addDays, levelChange } from '../forecast.js';
+import { weatherFor, localKey, addDays, levelChange, forecastAge } from '../forecast.js';
 import { solunar, dayRating, stars, windowSpan, windowLabel } from '../solunar.js';
 import { $, esc, fmtDate, showView, onShow } from '../ui.js';
 import { openLake } from './lake.js';
@@ -83,7 +83,7 @@ export async function renderPlanner() {
   if (!lakes.length) { $('#plan-list').innerHTML = '<div class="card">Save some waters first (Lakes → pick your state → Any water), then come back to rank them.</div>'; return; }
   const date = days[picked].key;
   const rows = (await Promise.all(lakes.map(async lake => {
-    try { return { lake, ...(await scoreDay(lake, await weatherFor(lake.lat, lake.lon), date)) }; } catch { return { lake, error: true }; }
+    try { const w = await weatherFor(lake.lat, lake.lon); return { lake, age: forecastAge(w), ...(await scoreDay(lake, w, date)) }; } catch { return { lake, error: true }; }
   }))).filter(r => r.error || r.score != null);
   if (!el.isConnected || date !== days[picked].key) return;
   rows.sort((a, b) => (b.score ?? -1) - (a.score ?? -1));
@@ -91,7 +91,7 @@ export async function renderPlanner() {
   $('#plan-list').innerHTML = rows.map((r, n) => r.error
     ? `<div class="card plan-item" data-id="${esc(r.lake.id)}"><b>${esc(r.lake.name)}</b><div class="muted small">Forecast unavailable (offline?)</div></div>`
     : `<div class="card plan-item" data-id="${esc(r.lake.id)}">
-      <div class="plan-head"><span class="rank">${n + 1}</span><div style="flex:1"><b>${esc(r.lake.name)}</b>${r.lake.favorite ? ' ★' : ''}<div class="muted small">${esc(r.summary)}</div></div>
+      <div class="plan-head"><span class="rank">${n + 1}</span><div style="flex:1"><b>${esc(r.lake.name)}</b>${r.lake.favorite ? ' ★' : ''}<div class="muted small">${esc(r.summary)}</div>${r.age ? `<div class="small saved-wx">📴 Saved forecast, ${esc(r.age)}</div>` : ''}</div>
         <div class="score"><b>${r.score.toFixed(1)}</b><div class="meter"><i style="width:${r.score * 10}%"></i></div></div></div>
       ${r.best ? `<div class="small">Best time: <b>${windowSpan(r.best)}</b>, ${windowLabel(r.best).toLowerCase()}</div>` : ''}
       <div class="chips">${r.reasons.map(x => `<span class="chip ${x.tone}">${esc(x.text)}</span>`).join('')}</div></div>`).join('');
