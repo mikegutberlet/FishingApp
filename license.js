@@ -3,6 +3,7 @@
 import { db } from './db.js';
 import { $, esc, fmtDate, status, onShow } from './ui.js';
 import { saveFile } from './backup.js';
+import { icsFile } from './ics.js';
 
 // California defaults. A sport license runs 365 days from purchase; report cards are due by January 31 after the
 // card year, even if you fished nothing (spiny lobster: April 30).
@@ -25,14 +26,8 @@ export async function licensesDue() {
 export const dueText = ({ r, days }) => `${label(r)} ${KINDS[r.kind]?.what ?? 'due'} ${days < 0 ? `${-days} day${days < -1 ? 's' : ''} ago` : days === 0 ? 'today' : `in ${days} day${days > 1 ? 's' : ''}`}`;
 
 // A calendar file with alerts two weeks and one day before. Your calendar app imports it; this app never sees it again.
-function ics(r) {
-  const d = r.date.replace(/-/g, ''), next = new Date(Date.parse(r.date + 'T12:00') + 864e5).toISOString().slice(0, 10).replace(/-/g, '');
-  const text = `${label(r)} ${KINDS[r.kind]?.what ?? 'due'}`;
-  const alarm = t => `BEGIN:VALARM\r\nACTION:DISPLAY\r\nDESCRIPTION:${text}\r\nTRIGGER:${t}\r\nEND:VALARM`;
-  return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Tackle Box//License reminder//EN', 'BEGIN:VEVENT', `UID:${r.id}@tackle-box`,
-    `DTSTAMP:${new Date().toISOString().replace(/[-:]|\.\d+/g, '')}`, `DTSTART;VALUE=DATE:${d}`, `DTEND;VALUE=DATE:${next}`, `SUMMARY:${text.replace(/[,;]/g, '\\$&')}`,
-    'DESCRIPTION:California report cards can be reported at wildlife.ca.gov/Licensing.', alarm('-P14D'), alarm('-P1D'), 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
-}
+const icsEvent = r => ({ uid: r.id, allDay: true, start: r.date, summary: `${label(r)} ${KINDS[r.kind]?.what ?? 'due'}`,
+  description: 'California report cards can be reported at wildlife.ca.gov/Licensing.', alarms: [14 * 1440, 1440] });
 
 export async function renderLicenseCard(edit = null) {
   const el = $('#license-card');
@@ -77,7 +72,7 @@ export async function renderLicenseCard(edit = null) {
     ev.preventDefault();
     const r = rows.find(x => x.id === a.dataset.cal);
     if (!r.date) return alert('Add a date first.');
-    saveFile(new File([ics(r)], `${label(r).replace(/\W+/g, '-')}.ics`, { type: 'text/calendar' }), { title: label(r) });
+    saveFile(icsFile(`${label(r).replace(/\W+/g, '-')}.ics`, [icsEvent(r)], 'License reminder'), { title: label(r) });
   });
 }
 

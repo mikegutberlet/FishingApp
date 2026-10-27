@@ -31,6 +31,7 @@ export async function renderToday() {
   const favs = lakes.filter(l => l.favorite);
   el.innerHTML = `<div class="today-head"><h2>${new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}</h2>
       <button id="go-plan">${icon('calendar')}Plan a trip</button></div>
+    <div id="today-where"></div>
     <div id="today-insight" class="card hidden" data-slot="days-like-today"></div>
     ${!lakes.length ? emptyState('🎣', 'Welcome! Find a water you fish, save it, and star it with ☆ to see its wind, bite windows, level and plants here every day.', ['🔎 Find a water', 'lakes'], ['🗺️ Open the map', 'map'])
       : !favs.length || editing ? `<div class="card"><h3>Your favorite waters</h3><p class="muted small">Star the waters you fish most. They show here with today's wind, bite windows, level and plants.</p>
@@ -43,7 +44,8 @@ export async function renderToday() {
         ${favs.length > 1 ? `<div class="dots-row">${favs.map((_, i) => `<i class="${i ? '' : 'on'}"></i>`).join('')}</div>` : ''}
         <p class="small"><a href="#" id="fav-edit">Change favorites</a></p>`}
     <div class="card map-card"><div class="map-card-head"><b>Map</b><span class="muted small">${lakes.length ? 'Your waters · tap to browse' : 'Tap to browse lakes and rivers'}</span><span>›</span></div><div id="today-map"></div></div>`;
-  import('../map-browse.js').then(m => m.mountTodayMap($('#today-map', el))); // dynamic: map-browse pulls in the map, which pulls in this view
+  import('../map-browse.js').then(m => m.mountTodayMap($('#today-map', el)));
+  import('./where.js').then(m => m.renderWhereCard($('#today-where', el))); // dynamic: map-browse pulls in the map, which pulls in this view
   $('#go-plan').onclick = () => showView('planner');
   el.querySelectorAll('[data-fav]').forEach(b => b.onclick = () => toggleFavorite(lakes.find(l => l.id === b.dataset.fav), b));
   const done = $('#fav-done'), edit = $('#fav-edit');

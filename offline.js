@@ -16,8 +16,8 @@ const MAX_ZOOM = { Satellite: 17 };
 const AVG_KB = { Satellite: 20 }; // typical tile size, for the estimate before downloading
 // The data files a lake page reads, by state (each state's jobs write data/<st>/).
 const SHARED_FILES = ['lakes', 'rivers', 'waters', 'plants', 'reservoirs', 'hydrolakes', 'history'];
-const STATE_EXTRAS = { CA: ['hab', 'regs', 'oehha', 'access', 'counties'], NV: ['hab', 'regs', 'advisories', 'counties'],
-  OR: ['hab', 'regs', 'advisories', 'counties', 'zones', 'reports'] };
+const STATE_EXTRAS = { CA: ['hab', 'regs', 'oehha', 'access', 'counties', 'help'], NV: ['hab', 'regs', 'advisories', 'counties', 'help'],
+  OR: ['hab', 'regs', 'advisories', 'counties', 'zones', 'reports', 'help'] };
 const stateFiles = S => {
   if (!S) return [];
   const dir = `data/${S.code.toLowerCase()}`;

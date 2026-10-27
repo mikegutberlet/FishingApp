@@ -8,6 +8,8 @@ import { openViewer } from './catch.js';
 import { renderCatchCards, snapshotConditions, shrinkPhoto, editCatch, weightText } from './log.js';
 import { fmtLen, fromLen, units } from '../units.js';
 import { estimateWeight } from '../weight.js';
+import { noteFix } from '../signal.js';
+import { openWhere } from './where.js';
 
 const KEY = 'tackle-box-active-trip';
 const SCREEN_KEY = 'tackle-box-keep-screen-on';
@@ -114,6 +116,7 @@ function onFix(p) {
   if (!trip) return;
   const { latitude: lat, longitude: lon, accuracy } = p.coords;
   lastFix = { lat, lon, accuracy, time: p.timestamp };
+  noteFix(lat, lon, accuracy);
   const gps = $('#trip-gps');
   if (gps) gps.textContent = `GPS ±${Math.round(accuracy)} m · ${trip.track.length} track points`;
   if (accuracy > 50) return;
@@ -196,6 +199,7 @@ async function renderLive(t) {
       <button class="q-bite" id="q-bite">💥<span>Bite</span></button>
       <button class="q-lost" id="q-lost">💨<span>Lost</span></button>
     </div>
+    <div class="wh-links trip-where"><button type="button" data-wh-open="plan">📨 Check in</button><button type="button" data-wh-open="truck">🚙 Truck</button><button type="button" data-wh-open="sos">🆘 SOS</button></div>
     <div id="quick-sheet"></div>
     <div class="card small">${log.length ? log.map(x => `<div class="row trip-log"><span class="muted">${new Date(x.time).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}</span><span style="flex:1">${x.html}</span>
       ${x.catchId ? `<a href="#" data-edit="${esc(x.catchId)}">details</a>` : `<a href="#" class="danger" data-undo="${esc(x.eventId)}">undo</a>`}</div>`).join('') : '<span class="muted">Tap Catch, Bite or Lost as it happens. Each one is stamped with the time and your GPS spot.</span>'}</div>
@@ -207,6 +211,7 @@ async function renderLive(t) {
   el.querySelectorAll('[data-edit]').forEach(a => a.onclick = e => { e.preventDefault(); editCatch(a.dataset.edit); });
   el.querySelectorAll('[data-undo]').forEach(a => a.onclick = async e => { e.preventDefault(); await db.del('events', a.dataset.undo); renderLive(t); });
   $('#trip-end').onclick = () => endTrip(t);
+  el.querySelectorAll('[data-wh-open]').forEach(b => b.onclick = () => openWhere(b.dataset.whOpen));
   updatePill();
 }
 

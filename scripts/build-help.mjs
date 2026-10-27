@@ -5,7 +5,9 @@
 //     er:       [{ name, lat, lon, phone, address, city, county, critical }]   CMS Hospital General Information,
 //                 hospitals that report emergency services, placed with the Census geocoder (OpenStreetMap's
 //                 hospital of the same name when the address doesn't match)
-//     sheriffs: [{ county, name, phone, website, lat, lon, main }]   OpenStreetMap sheriff offices and substations
+//     sheriffs: [{ county, name, phone, website, lat, lon, main }]   OpenStreetMap sheriff offices and substations, and
+//                 each county's office from its state sheriffs' association (California State Sheriffs' Association
+//                 directory, Oregon State Sheriffs' Association county pages), which fills in the phone OSM rarely has
 //     rangers:  [{ name, operator, phone, website, hours, lat, lon }]   OpenStreetMap ranger stations
 //   }
 //
@@ -95,6 +97,51 @@ function sheriffOf(st, t, lat, lon) {
   return { county, name: name || `${county} County Sheriff`, phone: phone(t.phone ?? t['contact:phone']), website: t.website ?? t['contact:website'] ?? null, lat: r5(lat), lon: r5(lon), main };
 }
 
+// ---------- The sheriffs' associations' directories: { county: { phone, address } } ----------
+const DEBUG = process.env.HELP_DEBUG === 'true';
+const ENT = { amp: '&', nbsp: ' ', quot: '"', apos: "'", lt: '<', gt: '>', '#8217': "'", '#039': "'", '#8211': '-' };
+const htmlText = html => html.replace(/<(script|style)[\s\S]*?<\/\1>/gi, ' ').replace(/<br\s*\/?>|<\/(p|div|h\d|li|tr|td|span|a)>/gi, '\n').replace(/<[^>]+>/g, ' ')
+  .replace(/&(#?\w+);/g, (m, e) => ENT[e] ?? (e[0] === '#' ? String.fromCharCode(+e.slice(1)) : m)).split(/\n/).map(l => l.replace(/\s+/g, ' ').trim()).filter(Boolean);
+const PHONE_RE = /\(?\b\d{3}\)?[\s./-]*\d{3}[\s./-]+\d{4}\b/;
+async function getText(url) {
+  const r = await fetch(url, { headers: { ...UA, Accept: 'text/html' }, signal: AbortSignal.timeout(60000) });
+  if (!r.ok) throw new Error(`${r.status} ${url}`);
+  return r.text();
+}
+
+// California: one page, each sheriff with the county, address, phone and fax.
+async function caDirectory() {
+  const lines = htmlText(await getText('https://www.calsheriffs.org/sheriffs-directory/'));
+  if (DEBUG) console.log('CA directory sample:', JSON.stringify(lines.slice(0, 120)));
+  const names = counties.CA.map(k => k.name).sort((a, b) => b.length - a.length);
+  const out = {};
+  let county = null;
+  for (const l of lines) {
+    const hit = names.find(n => new RegExp(`\\b${n}\\s+County\\b`, 'i').test(l) || l.toLowerCase() === n.toLowerCase());
+    if (hit && !PHONE_RE.test(l)) { county = hit; continue; }
+    const m = l.match(PHONE_RE);
+    if (county && m && !/fax/i.test(l) && !out[county]) out[county] = { phone: phone(m[0]) };
+  }
+  return out;
+}
+
+// Oregon: a page per county.
+async function orDirectory() {
+  const out = {};
+  for (const k of counties.OR) {
+    const slug = k.name.toLowerCase().replace(/\s+/g, '-');
+    try {
+      const lines = htmlText(await getText(`https://oregonsheriffs.org/sheriff/${slug}/`));
+      if (DEBUG && k.name === 'Klamath') console.log('OR page sample:', JSON.stringify(lines.slice(0, 150)));
+      // The association's own Salem number is on every page.
+      const p = lines.map(l => l.match(PHONE_RE)?.[0]).filter(Boolean).map(phone).find(x => x && x !== '(503) 364-4204');
+      if (p) out[k.name] = { phone: p };
+    } catch (e) { console.error(`OR ${k.name}: ${e.message}`); }
+    await sleep(500);
+  }
+  return out;
+}
+
 // ---------- CMS hospitals that report emergency services ----------
 async function cmsHospitals(st) {
   const out = [];
@@ -134,6 +181,7 @@ async function geocode(rows) {
         text = await r.text();
       } catch (e) { console.error(`geocoder attempt ${attempt}: ${e.message}`); await sleep(15000 * attempt); }
     }
+    if (DEBUG) console.log('geocoder answer sample:', JSON.stringify((text ?? '').slice(0, 400)));
     for (const line of (text ?? '').split(/\r?\n/)) {
       const c = parseCsvLine(line);
       if (c[2] !== 'Match' || !c[5]) continue;
@@ -142,6 +190,15 @@ async function geocode(rows) {
     }
   }
   return found;
+}
+// One address at a time, for what the batch missed.
+async function geocodeOne(h) {
+  const q = new URLSearchParams({ street: h.address, city: h.citytown, state: h.state, zip: h.zip_code, benchmark: 'Public_AR_Current', format: 'json' });
+  try {
+    const j = await getJson(`https://geocoding.geo.census.gov/geocoder/locations/address?${q}`, { timeout: 30000 }, 2);
+    const c = j.result?.addressMatches?.[0]?.coordinates;
+    return c ? { lat: c.y, lon: c.x } : null;
+  } catch { return null; }
 }
 
 // ---------- Build ----------
@@ -189,9 +246,10 @@ for (const st of STATES) {
     const rows = await cmsHospitals(st);
     const placed = await geocode(rows);
     const er = [];
-    let byOsm = 0, missed = [];
+    let byOsm = 0, byOne = 0, missed = [];
     for (const h of rows) {
       let at = placed.get(h.facility_id);
+      if (!at && (at = await geocodeOne(h))) byOne++;
       if (!at) {
         // OpenStreetMap's hospital with the same name in the same city.
         const n = normName(h.facility_name), city = String(h.citytown ?? '').toLowerCase();
@@ -202,11 +260,32 @@ for (const st of STATES) {
       er.push({ name: title(h.facility_name), lat: r5(at.lat), lon: r5(at.lon), phone: phone(h.telephone_number), address: title(h.address), city: title(h.citytown),
         county: countyAt(st, at.lat, at.lon), critical: /critical access/i.test(h.hospital_type ?? '') });
     }
-    console.log(`${st}: ${rows.length} hospitals with emergency services, ${er.length} placed (${byOsm} by OpenStreetMap name), ${missed.length} not placed${missed.length ? `: ${missed.slice(0, 15).join('; ')}` : ''}`);
+    console.log(`${st}: ${rows.length} hospitals with emergency services, ${er.length} placed (${byOne} one by one, ${byOsm} by OpenStreetMap name), ${missed.length} not placed${missed.length ? `: ${missed.slice(0, 15).join('; ')}` : ''}`);
     if (er.length < rows.length * 0.8 || er.length < 10) throw new Error(`only ${er.length} of ${rows.length} placed`);
     out[st].er = er.sort((a, b) => a.lat - b.lat);
     out[st].sources.er = 'CMS Hospital General Information (data.cms.gov, dataset xubh-q36u); placed with the U.S. Census Geocoder';
   } catch (e) { console.error(`${st} hospitals failed, keeping last week's: ${e.message}`); }
+}
+
+// Each county's office from its association, so every county has a number even where OpenStreetMap has none.
+const directories = { CA: caDirectory, OR: orDirectory };
+for (const [st, fn] of Object.entries(directories)) {
+  if (!out[st].sheriffs) continue;
+  try {
+    const dir = await fn();
+    const n = Object.keys(dir).length;
+    console.log(`${st}: sheriffs' association directory has a phone for ${n} of ${counties[st].length} counties`);
+    if (n < counties[st].length / 2) throw new Error('too few, page layout changed?');
+    for (const [county, d] of Object.entries(dir)) {
+      const k = counties[st].find(c => c.name === county);
+      const osmMain = out[st].sheriffs.find(s => s.county === county && s.main);
+      // Placed at the OSM main office when there is one, else the middle of the county (it's only for "nearest").
+      out[st].sheriffs.push({ county, name: `${county} County Sheriff's Office`, phone: d.phone, website: null,
+        lat: osmMain?.lat ?? r5((k.bbox[1] + k.bbox[3]) / 2), lon: osmMain?.lon ?? r5((k.bbox[0] + k.bbox[2]) / 2), main: true, directory: true });
+      if (osmMain) osmMain.main = false;
+    }
+    out[st].sources.directory = st === 'CA' ? "California State Sheriffs' Association directory (calsheriffs.org)" : "Oregon State Sheriffs' Association (oregonsheriffs.org)";
+  } catch (e) { console.error(`${st} sheriffs' directory failed: ${e.message}`); }
 }
 
 for (const st of STATES) {
@@ -214,8 +293,7 @@ for (const st of STATES) {
   for (const k of ['er', 'sheriffs', 'rangers']) {
     if (o[k] != null) continue;
     o[k] = prev[k] ?? [];
-    const src = k === 'er' ? 'er' : 'osm';
-    if (prev.sources?.[src]) o.sources[src] = prev.sources[src];
+    for (const src of k === 'er' ? ['er'] : ['osm', 'directory']) if (prev.sources?.[src]) o.sources[src] = prev.sources[src];
   }
   o.sheriffs.sort((a, b) => a.county.localeCompare(b.county) || b.main - a.main || a.name.localeCompare(b.name));
   o.rangers.sort((a, b) => a.lat - b.lat);

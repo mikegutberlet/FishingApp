@@ -34,6 +34,8 @@ jobs:
       - name: ERs, sheriffs and ranger stations
         continue-on-error: true
         timeout-minutes: 45
+        env:
+          HELP_DEBUG: ${{ github.ref_name != 'main' }}
         run: |
           mkdir -p data/ca/logs
           node scripts/build-help.mjs 2>&1 | tee data/ca/logs/build-help.log
