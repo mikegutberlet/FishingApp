@@ -8,7 +8,7 @@
 //   USGS PAD-US (who manages the land) via ArcGIS Online
 //   OpenStreetMap via the Overpass API (every road and path, with surface and access tags where mappers added them)
 //   Wikipedia (a short description of the water, when it has an article)
-import { searchKm, shoreKm } from './access-rules.js';
+import { searchKm, shoreKm, summarize, hikeRoute, crowLine, samplePath, hikeStats } from './access-rules.js';
 
 const FS = 'https://apps.fs.usda.gov/arcx/rest/services/EDW';
 const BLM = 'https://gis.blm.gov/arcgis/rest/services/transportation/BLM_Natl_GTLF_Public_Display/MapServer';
@@ -65,8 +65,46 @@ export async function lookupAccess(lake, { spot = null, force = false, onPartial
   await osmDone;
   const data = snapshot([]);
   // A lookup where nothing answered isn't worth keeping: offline, or every service down.
-  if (failed.length < 6) await store(lake, spot, data);
+  if (failed.length < 6) await withHike(lake, spot, data);
   return data;
+}
+
+// The walk from the road to the shore, with its climb from the Open-Meteo elevation model (Copernicus 90 m DEM).
+// Worked out once the roads and trails are in, and kept with them. A lookup saved before this existed gets it the
+// next time it's shown.
+export async function withHike(lake, spot, data) {
+  if (!('hike' in data) && !data.pending?.length) {
+    const s = summarize({ lat: data.lat, lon: data.lon }, data.shoreKm, data.features, { land: data.land });
+    const r = hikeRoute(s) ?? crowLine(s);
+    data.hike = r ? { km: r.km, crow: !!r.crow, coords: r.coords, start: { lat: r.start.lat, lon: r.start.lon, road: r.start.road?.name ?? null },
+      trails: wayNames(r.trails) } : null;
+    if (data.hike) {
+      const { points, at } = samplePath(r.coords, 80);
+      try {
+        const u = `https://api.open-meteo.com/v1/elevation?latitude=${points.map(p => p[0]).join(',')}&longitude=${points.map(p => p[1]).join(',')}`;
+        const res = await fetch(u, { signal: AbortSignal.timeout(15000) });
+        if (!res.ok) throw new Error(`${res.status}`);
+        const elev = (await res.json()).elevation;
+        if (elev?.length === points.length) Object.assign(data.hike, { profile: at.map((d, i) => [+d.toFixed(3), elev[i]]), stats: hikeStats(r.km, elev), elevationSource: { label: 'Open-Meteo elevation (Copernicus DEM 90 m)', url: 'https://open-meteo.com/en/docs/elevation-api' } });
+      } catch (e) { console.warn('access elevation:', e.message); data.hike.profileFailed = true; }
+    }
+  }
+  await store(lake, spot, data);
+  return data;
+}
+
+// The trails along the walk, for "then X, then Y": the same trail mapped by OSM and the Forest Service ("Winnemucca
+// Trail", "Winnemucca") or split into pieces counts once, and short unnamed links are left out when named ones exist.
+const baseName = n => n?.toLowerCase().replace(/\b(trail|path|tr\.?)\b/g, '').replace(/\s+/g, ' ').trim() || null;
+function wayNames(trails) {
+  const out = [];
+  for (const t of trails) {
+    const b = baseName(t.name);
+    if (b && out.some(o => baseName(o.name) === b)) continue;
+    if (!b && out.at(-1) && !out.at(-1).name) continue;
+    out.push({ name: t.name, source: t.sources?.[0] ?? t.source });
+  }
+  return out.some(o => o.name) ? out.filter(o => o.name) : out.slice(0, 1);
 }
 
 // ---------- ArcGIS REST ----------
@@ -218,7 +256,9 @@ const OSM_ROADS = /^(motorway|trunk|primary|secondary|tertiary|unclassified|resi
 const OSM_TRAILS = /^(path|footway|bridleway|cycleway|steps)$/;
 async function osm(lat, lon, km) {
   const m = Math.round(km * 1000);
-  const q = `[out:json][timeout:60];(way[highway~"^(motorway|trunk|primary|secondary|tertiary|unclassified|residential|service|track|path|footway|bridleway|cycleway|road|living_street|steps)(_link)?$"][service!~"driveway|parking_aisle"](around:${m},${lat},${lon});node[barrier~"^(gate|lift_gate|swing_gate)$"](around:${m},${lat},${lon}););out tags geom 400;`;
+  // Cell masts mappers have tagged, within 15 km: the nearest one is a rough hint of signal.
+  const q = `[out:json][timeout:60];(way[highway~"^(motorway|trunk|primary|secondary|tertiary|unclassified|residential|service|track|path|footway|bridleway|cycleway|road|living_street|steps)(_link)?$"][service!~"driveway|parking_aisle"](around:${m},${lat},${lon});node[barrier~"^(gate|lift_gate|swing_gate)$"](around:${m},${lat},${lon}););out tags geom 400;`
+    + `(node["communication:mobile_phone"~"^(yes|lte|gsm|umts|5g)"](around:15000,${lat},${lon});nwr[man_made~"^(mast|tower)$"]["tower:type"="communication"](around:15000,${lat},${lon}););out tags center 60;`;
   let last;
   for (const wait of [0, 4000, 12000]) {
     if (wait) await new Promise(r => setTimeout(r, wait));
@@ -244,6 +284,12 @@ const PAVED = /^(paved|asphalt|concrete|concrete:.*|paving_stones|sett|cobblesto
 function osmFeature(e) {
   const t = e.tags ?? {}, url = `https://www.openstreetmap.org/${e.type}/${e.id}`;
   const src = { label: 'OpenStreetMap', url, id: `osm-${e.type}-${e.id}` };
+  if (t['communication:mobile_phone'] || t['tower:type'] === 'communication') {
+    const c = e.center ?? e;
+    if (c.lat == null) return null;
+    const mobile = t['communication:mobile_phone'] && t['communication:mobile_phone'] !== 'no';
+    return { kind: 'mast', name: title(t.name) || null, lat: c.lat, lon: c.lon, paths: [], tags: { operator: t.operator ?? t['communication:mobile_phone:operator'] ?? null, mobile, dates: {} }, source: src };
+  }
   if (e.type === 'node') {
     return { kind: 'gate', name: title(t.name) || 'Gate', lat: e.lat, lon: e.lon, paths: [], tags: { locked: t.locked === 'yes' || NO.test(t.access ?? '') || NO.test(t.motor_vehicle ?? ''), access: t.access ?? t.motor_vehicle ?? null, note: t.note ?? t.description ?? null }, source: src };
   }

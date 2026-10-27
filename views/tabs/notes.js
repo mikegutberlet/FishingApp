@@ -6,7 +6,7 @@ import { openLake } from '../lake.js';
 import { openComposer } from '../../crew.js';
 
 export async function renderNotes(lake, body) {
-  const notes = (await db.byLake('notes', lake.id)).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  const notes = (await db.byLake('notes', lake.id)).filter(n => n.kind !== 'access').sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   body.innerHTML = `<form class="card form" id="note-form"><label>New note <textarea name="text" rows="4" required placeholder="Weed edge on the north bay held fish at 12 ft…"></textarea></label>
     <div class="row"><button type="button" id="note-pin">📍 Pin to a spot</button><span id="note-loc" class="muted small"></span></div>
     <button class="primary" style="margin-top:8px">Save note</button></form>

@@ -11,6 +11,7 @@ import { map, layersControl, refreshMap } from './map.js';
 import { fmtLen } from './units.js';
 import { saveFile, askNewPassword } from './backup.js';
 import { shrinkPhoto, weightText } from './views/log.js';
+import { ACCESS_FIELDS, CARRIERS, SIGNAL, VEHICLES, allAccessNotes } from './access-notes.js';
 
 const NAME_KEY = 'tackle-box-crew-name';
 const QR_MAX = 2900;  // bytes a version-40 QR code holds at low error correction, less a little headroom
@@ -31,7 +32,8 @@ function myName() {
 const blobToDataUrl = blob => new Promise(r => { const f = new FileReader(); f.onload = () => r(f.result); f.readAsDataURL(blob); });
 
 // Builds the pack. Catches lose their GPS spot unless `exact`; photos are redrawn, which drops all EXIF (camera, GPS, time).
-async function buildPack({ catches = [], spots = [] }, { exact = false, photos = true, notes = false } = {}) {
+// Access notes carry their gate code only if `gateCodes`.
+async function buildPack({ catches = [], spots = [], access = [] }, { exact = false, photos = true, notes = false, gateCodes = false } = {}) {
   const lakes = new Map((await db.all('lakes')).map(l => [l.id, l]));
   const lakeKeys = [], lakeIdx = id => {
     let i = lakeKeys.indexOf(id);
@@ -52,6 +54,13 @@ async function buildPack({ catches = [], spots = [] }, { exact = false, photos =
     if (!lakes.has(s.lakeId)) lakes.set(`spot:${s.id}`, { name: s.name || 'Shared spot', lat: s.lat, lon: s.lon });
     items.push({ kind: s.kind, id: s.id, lake: lakeIdx(lakes.has(s.lakeId) ? s.lakeId : `spot:${s.id}`), lat: s.lat, lon: s.lon, name: s.name, text: s.text, type: s.type });
   }
+  for (const a of access) {
+    if (!lakes.has(a.lakeId)) continue;
+    const it = { kind: 'access', id: a.id, lake: lakeIdx(a.lakeId), lat: a.lat, lon: a.lon, signal: a.signal };
+    for (const k of ACCESS_FIELDS) if (a[k] && (k !== 'gateCode' || gateCodes)) it[k] = a[k];
+    if (photos && a.photo instanceof Blob) it.photo = await blobToDataUrl(await shrinkPhoto(a.photo, 1200));
+    items.push(it);
+  }
   return {
     app: 'tackle-box', kind: 'crew', v: 1, from: myName(), sharedAt: new Date().toISOString(),
     // stockId is the water's id in its state's stocking data (CDFW stock id, NDOW water slug).
@@ -63,7 +72,7 @@ async function buildPack({ catches = [], spots = [] }, { exact = false, photos =
 // ---------- Receiving ----------
 // A pack is someone else's file, so only known fields of the expected types come in: never their ids
 // (the lake gets a fresh id), and nothing that would link to your own trips or tackle.
-const KINDS = ['catch', 'spot', 'waypoint'];
+const KINDS = ['catch', 'spot', 'waypoint', 'access'];
 const num = v => v == null || v === '' || !isFinite(+v) ? undefined : +v;
 const str = (v, n = 500) => v == null ? undefined : String(v).slice(0, n);
 const token = v => v == null || v === '' ? undefined : String(v).replace(/[^\w.:-]/g, '').slice(0, 80) || undefined; // as db.js SAFE_ID (Oregon ids use dots)
@@ -82,6 +91,12 @@ function cleanItem(it) {
   for (const k of ['notes', 'text']) out[k] = str(it[k], 4000);
   out.time = it.time && !isNaN(Date.parse(it.time)) ? new Date(it.time).toISOString() : undefined;
   out.released = it.released == null ? undefined : !!it.released;
+  if (it.kind === 'access') {
+    for (const k of ['road', 'park', 'launch', 'gate', 'gateCode', 'signalNote']) out[k] = str(it[k], 300);
+    out.vehicle = it.vehicle in VEHICLES ? it.vehicle : undefined;
+    out.checked = /^\d{4}-\d\d-\d\d$/.test(it.checked ?? '') ? it.checked : undefined;
+    out.signal = Object.fromEntries(Object.keys(CARRIERS).filter(k => it.signal?.[k] in SIGNAL).map(k => [k, it.signal[k]]));
+  }
   if (it.conditions && typeof it.conditions === 'object') {
     const c = it.conditions;
     out.conditions = { airTemp: num(c.airTemp), wind: num(c.wind), windDir: num(c.windDir), gusts: num(c.gusts), pressureInHg: num(c.pressureInHg), cloud: num(c.cloud), pressureTrend: str(c.pressureTrend, 20), sky: str(c.sky, 60) };
@@ -98,7 +113,8 @@ async function matchLake(l, mine) {
 export async function importCrewPack(pack, { ask = true } = {}) {
   const n = k => pack.items.filter(i => k.includes(i.kind)).length;
   const fish = n(['catch']), spots = n(['spot', 'waypoint']);
-  const summary = [fish && `${fish} catch${fish > 1 ? 'es' : ''}`, spots && `${spots} spot${spots > 1 ? 's' : ''}`].filter(Boolean).join(' and ');
+  const notes = n(['access']);
+  const summary = [fish && `${fish} catch${fish > 1 ? 'es' : ''}`, spots && `${spots} spot${spots > 1 ? 's' : ''}`, notes && `access notes for ${notes} water${notes > 1 ? 's' : ''}`].filter(Boolean).join(' and ');
   if (ask && !confirm(`${pack.from || 'A friend'} shared ${summary || 'nothing'} on ${pack.lakes.map(l => l.name).join(', ')}.\n\nAdd to your Crew list?`)) return false;
   const mine = await db.all('lakes');
   const ids = [], added = [];
@@ -204,35 +220,39 @@ async function scanQr() {
 // ---------- The composer: pick what to share ----------
 export async function openComposer(preselect = {}) {
   showView('settings', { render: false });
-  const [catches, notes, lakes] = await Promise.all([db.all('catches'), db.all('notes'), db.all('lakes')]);
+  const [catches, notes, lakes, access] = await Promise.all([db.all('catches'), db.all('notes'), db.all('lakes'), allAccessNotes()]);
   const waypoints = STORES.includes('waypoints') ? await db.all('waypoints') : [];
   const lakeName = Object.fromEntries(lakes.map(l => [l.id, l.name]));
-  const spots = [...notes.filter(n => n.lat != null).map(n => ({ ...n, kind: 'spot', label: n.text.slice(0, 60) })),
+  const spots = [...notes.filter(n => n.lat != null && n.kind !== 'access').map(n => ({ ...n, kind: 'spot', label: n.text.slice(0, 60) })),
     ...waypoints.map(w => ({ ...w, kind: 'waypoint', label: `${w.kind ? w.kind + ': ' : ''}${w.name || ''}`, type: w.kind, text: w.note }))];
   catches.sort((a, b) => b.time.localeCompare(a.time));
-  const sel = new Set([...(preselect.catches ?? []), ...(preselect.spots ?? [])]);
+  const sel = new Set([...(preselect.catches ?? []), ...(preselect.spots ?? []), ...(preselect.access ?? [])]);
+  const only = preselect.spots || preselect.access;
   const el = $('#crew-card');
   el.innerHTML = `<h3>Share with your crew</h3>
     <p class="small muted">Tick what to send. Your other catches, notes and spots stay on this phone.</p>
-    ${catches.length ? `<details class="pick" ${preselect.spots ? '' : 'open'}><summary><b>Catches</b></summary>${catches.slice(0, 200).map(c => `<label class="check pick-row"><input type="checkbox" value="${c.id}" data-k="c" ${sel.has(c.id) ? 'checked' : ''}>
+    ${catches.length ? `<details class="pick" ${only ? '' : 'open'}><summary><b>Catches</b></summary>${catches.slice(0, 200).map(c => `<label class="check pick-row"><input type="checkbox" value="${c.id}" data-k="c" ${sel.has(c.id) ? 'checked' : ''}>
       <span><b>${esc(c.species)}</b> ${fmtLen(c.length)} ${weightText(c)} <span class="muted small">${esc(lakeName[c.lakeId] ?? '')} · ${fmtDate(c.time)}${c.photo ? ' · 📷' : ''}</span></span></label>`).join('')}</details>` : ''}
     ${spots.length ? `<details class="pick" ${preselect.spots || !catches.length ? 'open' : ''}><summary><b>Spots</b></summary>${spots.map(s => `<label class="check pick-row"><input type="checkbox" value="${s.id}" data-k="s" ${sel.has(s.id) ? 'checked' : ''}>
       <span>📍 ${esc(s.label)} <span class="muted small">${esc(lakeName[s.lakeId] ?? '')}</span></span></label>`).join('')}</details>` : ''}
+    ${access.length ? `<details class="pick" ${preselect.access || !catches.length ? 'open' : ''}><summary><b>Access notes</b></summary>${access.filter(a => lakeName[a.lakeId]).map(a => `<label class="check pick-row"><input type="checkbox" value="${a.id}" data-k="a" ${sel.has(a.id) ? 'checked' : ''}>
+      <span>🚙 ${esc(lakeName[a.lakeId])} <span class="muted small">${esc([VEHICLES[a.vehicle], a.park].filter(Boolean).join(' · '))}${a.photo ? ' · 📷' : ''}</span></span></label>`).join('')}</details>` : ''}
     <form class="form" id="crew-opts" style="margin-top:8px">
       <label class="check"><input type="checkbox" name="exact"> Include where each fish was caught (GPS spot)</label>
       <label class="check"><input type="checkbox" name="photos" checked> Include photos (camera and location data removed)</label>
       <label class="check"><input type="checkbox" name="notes"> Include my notes on those catches</label>
+      ${access.length ? '<label class="check"><input type="checkbox" name="gateCodes"> Include gate codes in access notes</label>' : ''}
     </form>
     <div class="row"><button id="crew-file" class="primary" style="flex:1">Send as file</button><button id="crew-qr" style="flex:1">QR code</button></div>
     <button id="crew-cancel" style="width:100%;margin-top:8px">Cancel</button>`;
   const picked = () => {
     const ids = k => [...el.querySelectorAll(`input[data-k="${k}"]:checked`)].map(i => i.value);
-    return { catches: catches.filter(c => ids('c').includes(c.id)), spots: spots.filter(s => ids('s').includes(s.id)) };
+    return { catches: catches.filter(c => ids('c').includes(c.id)), spots: spots.filter(s => ids('s').includes(s.id)), access: access.filter(a => ids('a').includes(a.id)) };
   };
   const go = how => async () => {
     const p = picked();
-    if (!p.catches.length && !p.spots.length) return alert('Tick at least one catch or spot.');
-    const o = Object.fromEntries(['exact', 'photos', 'notes'].map(k => [k, $('#crew-opts')[k].checked]));
+    if (!p.catches.length && !p.spots.length && !p.access.length) return alert('Tick at least one catch, spot or access note.');
+    const o = Object.fromEntries(['exact', 'photos', 'notes', 'gateCodes'].map(k => [k, !!$('#crew-opts')[k]?.checked]));
     if (how === 'qr') o.photos = false; // photos never fit in a QR code
     const pack = await buildPack(p, o);
     if (!pack.from) return;
@@ -254,7 +274,7 @@ export async function renderCrewCard() {
       Shared photos have their location stripped, and catches leave out the exact spot unless you tick it.</p>
     <button id="crew-new" class="primary">Choose what to share</button>
     <div class="row" style="margin-top:8px">${'BarcodeDetector' in window ? '<button id="crew-scan" style="flex:1">📷 Scan</button>' : ''}<button id="crew-paste" style="flex:1">Paste a code</button></div>
-    ${byFriend.length ? `<h3 style="margin-top:12px">From your crew</h3>${byFriend.map(([f, rows]) => `<div class="row small crew-row"><span style="flex:1"><b>${esc(f)}</b> · ${rows.filter(r => r.kind === 'catch').length} catches, ${rows.filter(r => r.kind !== 'catch').length} spots</span>
+    ${byFriend.length ? `<h3 style="margin-top:12px">From your crew</h3>${byFriend.map(([f, rows]) => `<div class="row small crew-row"><span style="flex:1"><b>${esc(f)}</b> · ${rows.filter(r => r.kind === 'catch').length} catches, ${rows.filter(r => r.kind === 'spot' || r.kind === 'waypoint').length} spots${rows.some(r => r.kind === 'access') ? `, ${rows.filter(r => r.kind === 'access').length} access notes` : ''}</span>
       <a href="#" class="danger" data-forget="${esc(f)}">remove</a></div>`).join('')}<p class="muted small">Friends' catches show on each water's <b>Crew</b> tab and the <b>Crew</b> map layer, never in your own stats.</p>` : ''}`;
   $('#crew-new').onclick = () => openComposer();
   $('#crew-scan')?.addEventListener('click', () => scanQr().catch(e => alert(e.message)));
@@ -283,7 +303,7 @@ export async function refreshCrewLayer() {
   for (const r of await db.all('crew')) {
     if (r.lat == null) continue;
     L.circleMarker([r.lat, r.lon], { radius: 6, color: '#fff', weight: 2, fillColor: r.kind === 'catch' ? '#9b5de5' : '#00a6a6', fillOpacity: 1 }).addTo(crewLayer)
-      .bindPopup(`<b>${esc(r.kind === 'catch' ? r.species : r.name || 'Spot')}</b> · from ${esc(r.from)}${r.time ? '<br>' + fmtDate(r.time) : ''}${r.text ? '<br>' + esc(r.text) : ''}`);
+      .bindPopup(`<b>${esc(r.kind === 'catch' ? r.species : r.kind === 'access' ? 'Parking' : r.name || 'Spot')}</b> · from ${esc(r.from)}${r.time ? '<br>' + fmtDate(r.time) : ''}${r.text ? '<br>' + esc(r.text) : ''}`);
   }
 }
 export const showCrewSpot = r => { showView('map'); map.setView([r.lat, r.lon], 16); crewLayer.addTo(map); L.popup().setLatLng([r.lat, r.lon]).setContent(`${esc(r.name || r.species || 'Spot')} · from ${esc(r.from)}`).openOn(map); };

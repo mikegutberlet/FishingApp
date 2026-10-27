@@ -82,6 +82,8 @@ const SHELL = [
   'views/tabs/access.js',
   'access-lookup.js',
   'access-rules.js',
+  'access-now.js',
+  'access-notes.js',
   'views/new-plants.js',
   'views/catch-warnings.js',
   'safety-map.js',
