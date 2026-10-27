@@ -16,7 +16,9 @@ const KINDS = {
   other: { label: 'Other', what: 'due' },
 };
 const daysUntil = d => Math.round((Date.parse(d + 'T12:00') - Date.now()) / 864e5);
-const label = r => r.name || KINDS[r.kind]?.label || 'License';
+const STATES = { CA: 'California', NV: 'Nevada', OR: 'Oregon' };
+// A license saved before licenses had a state is a California one (the app started there).
+const label = r => r.name || (r.kind === 'license' ? `${STATES[r.state] ?? 'California'} fishing license` : KINDS[r.kind]?.label) || 'License';
 
 // Items expiring or due within 30 days, or past due (but not more than 60 days ago).
 export async function licensesDue() {
@@ -48,6 +50,7 @@ export async function renderLicenseCard(edit = null) {
     <form class="form" id="lic-form" style="margin-top:8px">
       <div class="row"><label>What <select name="kind">${Object.entries(KINDS).map(([k, v]) => `<option value="${k}" ${e.kind === k ? 'selected' : ''}>${v.label}</option>`).join('')}</select></label>
         <label>Date <input type="date" name="date" value="${esc(e.date)}"></label></div>
+      <label>State <select name="state">${Object.entries(STATES).map(([k, v]) => `<option value="${k}" ${(e.state ?? 'CA') === k ? 'selected' : ''}>${v}</option>`).join('')}</select></label>
       <div class="row"><label>Number (optional) <input name="number" value="${esc(e.number)}" autocomplete="off"></label>
         <label>Name (optional) <input name="name" value="${esc(e.name)}"></label></div>
       <button class="primary">${edit ? 'Save' : 'Add'}</button>
@@ -66,7 +69,7 @@ export async function renderLicenseCard(edit = null) {
   form.onsubmit = async ev => {
     ev.preventDefault();
     const f = Object.fromEntries(new FormData(form));
-    await db.put('licenses', { ...edit, kind: f.kind, date: f.date || null, number: f.number.trim(), name: f.name.trim(), done: edit?.date === f.date ? edit?.done ?? false : false });
+    await db.put('licenses', { ...edit, kind: f.kind, state: f.state, date: f.date || null, number: f.number.trim(), name: f.name.trim(), done: edit?.date === f.date ? edit?.done ?? false : false });
     status('Saved'); renderLicenseCard();
   };
   $('#lic-cancel')?.addEventListener('click', () => renderLicenseCard());

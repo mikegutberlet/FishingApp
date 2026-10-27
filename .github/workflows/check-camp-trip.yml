@@ -1,0 +1,19 @@
+name: Check camp trip lookups
+# Prints Recreation.gov availability for a few campgrounds as the camp trip reads it, and checks the links the camp
+# card shows (Claude's sandbox can't reach them). Writes nothing.
+on:
+  push:
+    paths:
+      - scripts/dev/check-camp-trip.mjs
+      - camp-trip.js
+      - .github/workflows/check-camp-trip.yml
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --experimental-detect-module scripts/dev/check-camp-trip.mjs

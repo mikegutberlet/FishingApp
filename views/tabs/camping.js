@@ -99,7 +99,7 @@ function draw(lake, data, el, ctx) {
       s.about?.length > 30 && `<span class="muted">${esc(s.about)}</span>`,
     ].filter(Boolean);
     const links = [s.bookUrl && link(s.recgovId ? 'Book on Recreation.gov' : /reservecalifornia/.test(s.bookUrl) ? 'ReserveCalifornia' : 'Reserve', s.bookUrl), s.infoUrl && link(/fs\.usda/.test(s.infoUrl) ? 'Forest Service page' : /blm\.gov/.test(s.infoUrl) ? 'BLM page' : 'Website', s.infoUrl),
-      link('Directions', directionsUrl(s.lat, s.lon)), `<a href="#" data-cp-map="${s.lat},${s.lon}">Map</a>`, srcs(s)].filter(Boolean);
+      link('Directions', directionsUrl(s.lat, s.lon)), `<a href="#" data-cp-map="${s.lat},${s.lon}">Map</a>`, `<a href="#" data-cp-camp="${s.lat},${s.lon}">⛺ Camp trip from here</a>`, srcs(s)].filter(Boolean);
     return `<details class="cp-site"><summary><span><b>${esc(s.name)}</b> <span class="cp-icons">${icons(s)}</span>${s.status === 'closed' ? ' <span class="muted small">closed now</span>' : ''}</span>
         <span class="nowrap muted small">${s.distKm < 0.15 ? 'at the water' : fmtMi(s.distKm)}</span></summary>
       <div class="small cp-body">${facts.map(f => `<div>${f}</div>`).join('')}
@@ -153,6 +153,12 @@ function draw(lake, data, el, ctx) {
   el.querySelectorAll('[data-cp-filter]').forEach(b => b.onclick = () => { ctx.filter = b.dataset.cpFilter; draw(lake, data, el, ctx); });
   el.querySelectorAll('[data-cp-map]').forEach(a => a.onclick = e => { e.preventDefault(); const [lat, lon] = a.dataset.cpMap.split(',').map(Number); showCamps(data, [lat, lon]); });
   el.querySelector('[data-cp-showmap]')?.addEventListener('click', e => { e.preventDefault(); showCamps(data); });
+  // A camp trip based at this campground (views/camp.js, loaded on demand: it imports the lake page).
+  el.querySelectorAll('[data-cp-camp]').forEach(a => a.onclick = e => {
+    e.preventDefault();
+    const s = sites.find(x => `${x.lat},${x.lon}` === a.dataset.cpCamp);
+    if (s) import('../camp.js').then(m => m.newTripAt({ name: s.name, lat: s.lat, lon: s.lon, recgovId: s.recgovId ?? null, lakeId: lake.unsaved ? null : lake.id, kind: s.kind ?? null }));
+  });
   el.querySelectorAll('[data-cp-check]').forEach(a => a.onclick = async e => {
     e.preventDefault();
     const box = a.closest('[data-cp-avail]'), id = box.dataset.cpAvail;

@@ -47,12 +47,13 @@ async function saveMap(lake, { topo, signal, onProgress }) {
   return runPack(lake, pl, { existing, signal, onProgress });
 }
 
-export async function readyDialog() {
+// pick: ids of the waters to tick (a camp trip's waters); otherwise your favorites and the running trip's water.
+export async function readyDialog({ pick = null } = {}) {
   const lakes = (await db.all('lakes')).sort((a, b) => (b.favorite ?? false) - (a.favorite ?? false) || a.name.localeCompare(b.name));
   if (!lakes.length) return alert('Save the waters you\'re heading to first: tap one on the map, then Save.');
   const trip = await activeTrip().catch(() => null), log = readyLog();
   const packs = new Map(await Promise.all(lakes.map(async l => [l.id, await readPackFor(l).catch(() => null)])));
-  const pre = new Set(lakes.filter(l => l.favorite || l.id === trip?.lakeId).map(l => l.id));
+  const pre = new Set(pick?.filter(id => lakes.some(l => l.id === id)) ?? lakes.filter(l => l.favorite || l.id === trip?.lakeId).map(l => l.id));
   if (!pre.size && lakes.length === 1) pre.add(lakes[0].id);
   const dlg = document.createElement('dialog');
   dlg.className = 'sheet';

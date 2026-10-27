@@ -196,7 +196,7 @@ export async function weekendAvailability(recgovId, nights = nextWeekend()) {
   for (const m of months) {
     const r = await fetch(`${RECGOV}/api/camps/availability/campground/${recgovId}/month?start_date=${m}T00%3A00%3A00.000Z`, { signal: AbortSignal.timeout(20000) });
     if (!r.ok) throw new Error(`${r.status}`);
-    for (const [id, s] of Object.entries((await r.json()).campsites ?? {})) (sites[id] ??= { ...s, availabilities: {} }, Object.assign(sites[id].availabilities, s.availabilities ?? {}));
+    for (const [id, s] of Object.entries((await r.json()).campsites ?? {})) (sites[id] ??= { ...s, campsite_id: s.campsite_id ?? id, availabilities: {} }, Object.assign(sites[id].availabilities, s.availabilities ?? {}));
   }
   const list = Object.values(sites);
   const at = (s, d) => s.availabilities?.[`${d}T00:00:00Z`] ?? null;
@@ -209,7 +209,9 @@ export async function weekendAvailability(recgovId, nights = nextWeekend()) {
   const reserved = list.filter(s => nights.some(d => /^reserved$/i.test(at(s, d) ?? ''))).length;
   const values = {};
   for (const s of list) for (const d of nights) { const v = at(s, d) ?? 'none'; values[v] = (values[v] ?? 0) + 1; }
-  return { nights, total: list.length, all: all.length, some: some.length, notReleased, firstCome, closed, reserved, values, checkedAt: new Date().toISOString() };
+  // Which sites, for the camp trip's "new since you last looked": Recreation.gov's site number and loop name.
+  const open = all.map(s => ({ id: String(s.campsite_id ?? ''), label: [s.loop, s.site].filter(Boolean).join(' ') || String(s.campsite_id ?? '') }));
+  return { nights, total: list.length, all: all.length, some: some.length, notReleased, firstCome, closed, reserved, values, open, checkedAt: new Date().toISOString() };
 }
 // Friday and Saturday nights of this weekend (from Sunday on, the coming one); on a Saturday, just tonight.
 export function nextWeekend(now = new Date()) {

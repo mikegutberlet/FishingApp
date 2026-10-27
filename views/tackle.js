@@ -13,7 +13,7 @@ export async function renderTackle(el, edit = null) {
   const fish = t => catches.filter(c => c.tackleId === t.id || (!c.tackleId && c.lure && c.lure.toLowerCase() === tackleLabel(t).toLowerCase())).length;
   const rows = tackle.map(t => ({ t, n: fish(t) })).sort((a, b) => b.n - a.n || tackleLabel(a.t).localeCompare(tackleLabel(b.t)));
   const e = edit ?? {};
-  el.innerHTML = `<form class="card form" id="tackle-form"><h3>${edit ? 'Edit' : 'Add to your tackle box'}</h3>
+  el.innerHTML = `<div class="restock-slot"></div><form class="card form" id="tackle-form"><h3>${edit ? 'Edit' : 'Add to your tackle box'}</h3>
       <label>Name <input name="name" required value="${esc(e.name)}" placeholder="Senko, Rapala Shad Rap, PowerBait…"></label>
       <div class="row"><label>Type <select name="type">${TACKLE_TYPES.map(x => `<option ${e.type === x ? 'selected' : ''}>${x}</option>`).join('')}</select></label>
         <label>Color <input name="color" value="${esc(e.color)}" placeholder="green pumpkin"></label></div>
@@ -29,6 +29,9 @@ export async function renderTackle(el, edit = null) {
       ${t.notes ? `<div class="small muted">${esc(t.notes)}</div>` : ''}
       <a href="#" class="small" data-edit="${esc(t.id)}">edit</a> · <a href="#" class="small danger" data-del="${esc(t.id)}">delete</a></div></div>`).join('')
     : '<div class="card muted">Add the lures and baits you carry. When you log a catch, pick one and it counts toward that lure\'s fish.</div>'}`;
+  const slot = $('.restock-slot', el);
+  slot.addEventListener('restocked', () => renderTackle(el));
+  import('../lost-lure.js').then(m => m.renderRestock(slot)); // lost-lure.js imports this file
   const form = $('#tackle-form', el);
   form.onsubmit = async ev => {
     ev.preventDefault();

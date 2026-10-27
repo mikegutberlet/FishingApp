@@ -51,6 +51,16 @@ It is a PWA: open it once in Safari/Chrome, choose **Add to Home Screen**, and i
 * **Catch temps in °C**: Settings → Units → Water & air temp converts water temp on the form and the water and air temps on catch cards, the catch page and the CSV. Stored in °F.
 * **Personal bests and life list**: every species you've caught, when and where first, longest and heaviest, overall and per water. A blank weight is estimated from length with standard-weight formulas for the species (shown with ≈).
 * **Tackle box**: your lures and baits with photos; pick one on the catch form and see how many fish each has caught.
+
+## Before you go, on the water, after
+
+* **Before you go** (a water's page, Plan a trip, or the Start trip form): one checklist for a water and a day. The license that water takes (your saved licenses now carry a state; Topaz Lake and Lake Tahoe take either California's or Nevada's, the Columbia and Snake border reaches either neighbor's), add-ons like report cards and two-rod validations, boat rules when you bring one (each state's mussel sticker or AIS decal, and waters that inspect every boat), passes (Adventure Pass and Northwest Forest Pass only where the water or the forest around it needs one), bear canisters for a night out, layers from the forecast, the lures that worked on your days most like this one (and whether you have any left), whether the map is saved for offline, last trip's "next time" note, and your own items for every trip, this water or overnight. Hand-kept rules live in `trip-rules.js` (`views/before-go.js`).
+* **Bag count in trip mode**: today's kept fish against the daily limit and what you hold against the possession limit, read from the state's regulations for the water (California special and statewide rules, NDOW region and special limits, ODFW zone limits and exceptions). Untick *Released* to count a fish as kept (`bag.js`).
+* **Troll / drift readout**: big speed and heading from the GPS in trip mode; while it's on, each fish and bite saves the speed, and the trip page says what speeds the fish came at (`troll.js`).
+* **Lost lure**: one tap logs a snag, takes one off what you have on hand, and puts it on the **restock list** (Journal → Tackle box), with *Bought* and *Copy the list* (`lost-lure.js`).
+* **Debrief at the truck**: after *End trip*, what worked (chips from the day's catches) and a "next time" note that comes back when you start a trip there again; **share card** makes a picture of the day with no map or spot, the water's name optional (`views/debrief.js`).
+* **Not sure?**: on the catch form and in trip mode, tips for fish that look alike when the rules differ (bull vs brook trout, coho vs Chinook, hatchery vs wild, rainbow vs steelhead, green vs white sturgeon, cutthroat vs rainbow, wiper vs striper, the black basses), only in the states where it matters (`lookalikes.js`).
+* **Report lines**: the latest NDOW fishing report or ODFW Recreation Report line for Nevada and Oregon waters on Plan a trip and the Today cards (`report-line.js`).
 * **From photos**: pick old fish photos and Tackle Box reads the date and GPS on the device, matches the water (yours or any California water), and makes draft catches to confirm.
 * **Units**: inches or cm, pounds or kg, feet or meters (⚙️ gear, top right). Records are stored in inches, pounds and feet.
 
