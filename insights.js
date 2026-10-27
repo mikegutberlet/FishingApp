@@ -91,7 +91,7 @@ export async function renderDaysLikeToday(el, { lakeId = null, compact = false }
   const pick = compact ? '' : `<label class="form small" style="margin:0">Conditions at <select id="dlt-lake" style="display:inline-block;width:auto">${lakes.map(l => `<option value="${l.id}" ${l.id === lake.id ? 'selected' : ''}>${esc(l.name)}</option>`).join('')}</select></label>`;
   el.innerHTML = `<h3>📈 Days like today</h3>
     <p class="small muted">${esc(conditionsText(ref))}${compact ? ` at ${esc(lake.name)}` : ''}</p>${pick}
-    ${a.rows.length < 2 ? `<p class="small">None of your ${catches.length} catches came on a day much like this one yet. Every catch you log (with its weather) sharpens this.</p>`
+    ${a.rows.length < 2 ? `<p class="small">${a.rows.length === 1 ? 'Only one of your catches came on a day much like this one so far.' : catches.length === 1 ? 'Your one catch didn’t come on a day much like this one.' : `None of your ${catches.length} catches came on a day much like this one yet.`} Every catch you log (with its weather) sharpens this.</p>`
       : `<p class="small"><b>${a.rows.length} catches</b> on ${a.days.length} similar day${a.days.length > 1 ? 's' : ''}.</p>
       <div class="dlt">
         <div><span class="muted small">Species</span><div>${list(a.species)}</div></div>

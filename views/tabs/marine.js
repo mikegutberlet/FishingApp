@@ -3,7 +3,7 @@
 import { fetchAlerts, alertLevel, weatherFor, hourIndex, forecastAge } from '../../forecast.js';
 import { marineFor, marineZoneNear, zoneForecast, zonePageUrl, isMarineEvent } from '../../coast.js';
 import { compass } from '../../data-sources.js';
-import { esc, arrow } from '../../ui.js';
+import { esc, arrow, noSignal } from '../../ui.js';
 
 const KT = 0.868976; // knots per mph
 const when = iso => new Date(iso).toLocaleString(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' });
@@ -22,7 +22,7 @@ export async function renderMarine(lake, body) {
   }).catch(() => {});
 
   marineFor(lake.lat, lake.lon).then(({ data: m, savedAt }) => { if (body.isConnected) $('#oc-waves').innerHTML = wavesHtml(m, savedAt); })
-    .catch(e => { if (body.isConnected) $('#oc-waves').innerHTML = `<h3>Waves & swell</h3><p class="muted small">No wave forecast (${esc(e.message)}). Bays and harbors are often too sheltered for the wave model.</p>`; });
+    .catch(e => { if (body.isConnected) $('#oc-waves').innerHTML = `<h3>Waves & swell</h3><p class="muted small">${noSignal(e) ? 'No signal, and no wave forecast saved for this spot (📴 Ready keeps one).' : `No wave forecast (${esc(e.message)}).`} Bays and harbors are often too sheltered for the wave model.</p>`; });
 
   weatherFor(lake.lat, lake.lon).then(w => {
     if (!body.isConnected) return;
@@ -46,7 +46,7 @@ export async function renderMarine(lake, body) {
       ${fc.synopsis ? `<details><summary class="small">Synopsis</summary><p class="small">${esc(fc.synopsis)}</p></details>` : ''}
       <p class="muted small">NWS ${esc(fc.office)} Coastal Waters Forecast, issued ${esc(when(fc.issued))}. Wind in knots. <a href="${zonePageUrl(zone.id)}" target="_blank" rel="noopener">NWS page ↗</a></p>`;
   } catch (e) {
-    if (body.isConnected) $('#oc-zone').innerHTML = `<h3>Marine forecast</h3><p class="muted small">Marine forecast unavailable (${esc(e.message)}).</p>`;
+    if (body.isConnected) $('#oc-zone').innerHTML = `<h3>Marine forecast</h3><p class="muted small">${noSignal(e) ? 'No signal, and no marine forecast saved for this spot (📴 Ready keeps one).' : `Marine forecast unavailable (${esc(e.message)}).`}</p>`;
   }
 }
 
