@@ -1,9 +1,9 @@
 // The Log view: the catch form (with an automatic weather snapshot) and catch cards used across the app.
 import { db } from '../db.js';
 import { fetchWeather, pressureTrend, moonPhase, WEATHER_CODES, compass } from '../data-sources.js';
-import { $, esc, fmtDate, fmtTime, status, localNow, onShow, showView } from '../ui.js';
+import { $, esc, fmtDate, fmtTime, status, localNow, onShow, showView, undoBar } from '../ui.js';
 import { locate, refreshMap } from '../map.js';
-import { units, reunit, display, fromLen, fromWt, fromDepth, toLen, toWt, toDepth, fmtLen, fmtWt, fmtDepth } from '../units.js';
+import { units, reunit, display, fromLen, fromWt, fromDepth, fromTemp, toLen, toWt, toDepth, toTemp, fmtLen, fmtWt, fmtDepth, fmtTemp } from '../units.js';
 import { estimateWeight } from '../weight.js';
 import { activeTrip, openTrip, startTripFlow } from './trips.js';
 import { tackleLabel } from './tackle.js';
@@ -17,6 +17,13 @@ import { openCatch, openViewer } from './catch.js';
 let editing = null; // the catch being edited, or null for a new one
 let photos = []; // the form's photos, already shrunk: the first is the catch's main photo
 let pendingPhotos = Promise.resolve(); // photos still being read when Save is tapped
+let lastCatch = null; // the newest catch, for Same as last
+const DRAFT = 'tackle-box-catch-draft'; // a half-typed new catch, kept if the app is closed
+const DRAFT_FIELDS = ['lakeId', 'species', 'length', 'weight', 'tackleId', 'lure', 'time', 'count', 'notes', 'tags', 'depth', 'waterTemp', 'clarity', 'technique', 'lat', 'lon'];
+let draftChecked = false;
+
+// A catch's tags: what you typed, split on commas, trimmed, no repeats.
+export const parseTags = text => [...new Map(String(text ?? '').split(',').map(t => t.trim()).filter(Boolean).map(t => [t.toLowerCase(), t])).values()];
 
 // All of a catch's photos: `photo` is the main one (what cards, shares and Stats show), `photos` holds the rest.
 export const catchPhotos = c => [c.photo, ...(Array.isArray(c.photos) ? c.photos : [])].filter(p => p instanceof Blob);
@@ -34,10 +41,10 @@ export async function renderCatchForm() {
   document.querySelectorAll('[data-unit]').forEach(s => s.textContent = u[s.dataset.unit]);
   // If the units setting changed while the form had values, convert them rather than reading them in the new unit.
   const was = form.dataset.units ? JSON.parse(form.dataset.units) : u;
-  for (const k of ['length', 'weight', 'depth']) {
-    if (was[k] === u[k] || form[k].value === '') continue;
+  for (const [k, field] of [['length', 'length'], ['weight', 'weight'], ['depth', 'depth'], ['temp', 'waterTemp']]) {
+    if ((was[k] ?? u[k]) === u[k] || form[field].value === '') continue;
     // A value still showing the stored one is re-shown from the stored value, so it stays untouched on save.
-    form[k].value = editing && +form[k].value === display(k, editing[k], was[k]) ? display(k, editing[k], u[k]) : reunit(+form[k].value, k, was[k], u[k]);
+    form[field].value = editing && +form[field].value === display(k, editing[field], was[k]) ? display(k, editing[field], u[k]) : reunit(+form[field].value, k, was[k], u[k]);
   }
   form.dataset.units = JSON.stringify(u);
   const tackleId = form.tackleId.value;
@@ -49,6 +56,10 @@ export async function renderCatchForm() {
   const catches = (await db.all('catches')).sort((a, b) => b.time.localeCompare(a.time));
   renderCatchCards(catches.slice(0, 20), $('#catch-list'), lakes);
   renderSpeciesChips(catches);
+  lastCatch = catches[0] ?? null;
+  showSameAsLast(lakes);
+  renderTagChips(catches);
+  if (!draftChecked) { draftChecked = true; restoreDraft(); }
   $('#lure-list').innerHTML = [...new Set([...tackle.map(tackleLabel), ...catches.map(c => c.lure)].filter(Boolean))].map(l => `<option value="${esc(l)}">`).join('');
   showEstimate();
   showCatchWarnings(form, editing?.id);
@@ -69,6 +80,88 @@ $('#species-chips').onclick = e => {
   f.species.value = s;
   f.species.dispatchEvent(new Event('input', { bubbles: true }));
 };
+
+// ---------- Same as last, how many, tags ----------
+function showSameAsLast(lakes) {
+  const b = $('#btn-same'), c = lastCatch;
+  b.classList.toggle('hidden', !c || !!editing);
+  if (!c) return;
+  const lake = lakes.find(l => l.id === c.lakeId);
+  b.textContent = `↺ Same as last: ${[c.species, c.lure, lake?.name].filter(Boolean).join(' · ')}`;
+}
+// Copies the water, species, lure, technique, depth, clarity, spot, tags and Released from your newest catch. Size, notes and photos start blank.
+$('#btn-same').onclick = async () => {
+  const c = lastCatch, f = $('#catch-form');
+  if (!c || editing) return;
+  if (await db.get('lakes', c.lakeId)) f.lakeId.value = c.lakeId;
+  const tackleOk = c.tackleId && [...f.tackleId.options].some(o => o.value === c.tackleId);
+  f.species.value = c.species ?? ''; f.lure.value = c.lure ?? ''; f.technique.value = c.technique ?? '';
+  f.tackleId.value = tackleOk ? c.tackleId : '';
+  f.depth.value = toDepth(c.depth) ?? ''; f.clarity.value = c.clarity ?? '';
+  f.lat.value = c.lat ?? ''; f.lon.value = c.lon ?? '';
+  f.tags.value = (c.tags ?? []).join(', ');
+  f.released.checked = !!c.released;
+  if ([c.depth, c.clarity, c.technique].some(v => v != null && v !== '')) $('#more-details').open = true;
+  f.species.dispatchEvent(new Event('input', { bubbles: true }));
+  saveDraft();
+  renderTagChips();
+  status('Copied from your last catch');
+};
+
+const countOf = f => Math.min(200, Math.max(1, Math.round(+f.count.value) || 1));
+$('#catch-form').count.addEventListener('input', e => $('#count-hint').classList.toggle('hidden', countOf(e.target.form) < 2));
+
+// Your tags, most used first: tap one to add it to (or take it off) the Tags field.
+let tagCounts = {};
+function renderTagChips(catches) {
+  if (catches) { tagCounts = {}; for (const c of catches) for (const t of c.tags ?? []) tagCounts[t] = (tagCounts[t] ?? 0) + 1; }
+  const on = new Set(parseTags($('#catch-form').tags.value).map(t => t.toLowerCase()));
+  const tags = Object.keys(tagCounts).sort((a, b) => tagCounts[b] - tagCounts[a]).slice(0, 12);
+  $('#tag-chips').innerHTML = tags.map(t => `<button type="button" data-tag="${esc(t)}" class="${on.has(t.toLowerCase()) ? 'on' : ''}">${esc(t)}</button>`).join('');
+}
+$('#tag-chips').onclick = e => {
+  const t = e.target.closest('[data-tag]')?.dataset.tag;
+  if (!t) return;
+  const f = $('#catch-form'), cur = parseTags(f.tags.value);
+  const has = cur.some(x => x.toLowerCase() === t.toLowerCase());
+  f.tags.value = (has ? cur.filter(x => x.toLowerCase() !== t.toLowerCase()) : [...cur, t]).join(', ');
+  renderTagChips(); saveDraft();
+};
+$('#catch-form').tags.addEventListener('input', () => renderTagChips());
+
+// ---------- The draft: a new catch you started is kept (without photos) if the app closes before you save ----------
+function saveDraft() {
+  if (editing) return;
+  const f = $('#catch-form');
+  const d = Object.fromEntries(DRAFT_FIELDS.map(k => [k, f[k].value]));
+  if (f.time.dataset.auto) delete d.time;
+  const typed = ['species', 'length', 'weight', 'lure', 'notes', 'tags', 'depth', 'waterTemp', 'technique'].some(k => d[k]);
+  try {
+    if (typed) localStorage.setItem(DRAFT, JSON.stringify({ ...d, released: f.released.checked, units: units(), savedAt: Date.now() }));
+    else localStorage.removeItem(DRAFT);
+  } catch { /* storage full or blocked: no draft */ }
+}
+const clearDraft = () => { try { localStorage.removeItem(DRAFT); } catch { /* blocked */ } };
+function restoreDraft(quiet = false) {
+  let d;
+  try { d = JSON.parse(localStorage.getItem(DRAFT)); } catch { return; }
+  if (!d || editing || Date.now() - d.savedAt > 3 * 86400e3) return clearDraft();
+  const f = $('#catch-form');
+  for (const k of DRAFT_FIELDS) if (d[k] != null && d[k] !== '' && !(k === 'lakeId' && ![...f.lakeId.options].some(o => o.value === d[k]))) f[k].value = d[k];
+  // Sizes typed under other unit settings are shown in today's.
+  const u = units();
+  for (const [k, field] of [['length', 'length'], ['weight', 'weight'], ['depth', 'depth'], ['temp', 'waterTemp']]) {
+    if (d[field] !== '' && d[field] != null && d.units?.[k] && d.units[k] !== u[k]) f[field].value = reunit(+d[field], k, d.units[k], u[k]);
+  }
+  if (d.time) delete f.time.dataset.auto;
+  f.released.checked = d.released !== false;
+  if (['depth', 'waterTemp', 'clarity', 'technique'].some(k => d[k])) $('#more-details').open = true;
+  $('#count-hint').classList.toggle('hidden', countOf(f) < 2);
+  f.species.dispatchEvent(new Event('input', { bubbles: true }));
+  renderTagChips();
+  if (!quiet) status('Your unsaved catch is back');
+}
+for (const type of ['input', 'change']) $('#catch-form').addEventListener(type, e => { if (e.target.name !== 'photo') saveDraft(); });
 
 function drawFormPhotos() {
   const box = $('#form-photos');
@@ -158,6 +251,7 @@ export async function logCatchAt(lakeId) {
 function resetForm() {
   const form = $('#catch-form');
   const lakeId = form.lakeId.value;
+  const wasEditing = !!editing;
   editing = null;
   form.reset(); form.lakeId.value = lakeId; form.time.value = localNow(); form.time.dataset.auto = '1';
   $('#catch-form-title').textContent = 'Log a catch';
@@ -165,6 +259,10 @@ function resetForm() {
   $('#more-details').open = false;
   photos = []; drawFormPhotos();
   $('#photo-hint').classList.add('hidden');
+  $('#count-hint').classList.add('hidden');
+  $('#count-label').classList.remove('hidden');
+  // After editing an older catch, the new one you'd started comes back; after saving a new one, its draft is done.
+  if (wasEditing) restoreDraft(true); else clearDraft();
 }
 
 // Opens the full form on an existing catch, e.g. to add details to a one-tap trip catch.
@@ -175,8 +273,8 @@ export async function editCatch(id) {
   editing = c;
   const f = $('#catch-form');
   const local = new Date(Date.parse(c.time) - new Date(c.time).getTimezoneOffset() * 60e3).toISOString().slice(0, 16);
-  const vals = { lakeId: c.lakeId, species: c.species, time: local, length: toLen(c.length), weight: toWt(c.weight), depth: toDepth(c.depth), waterTemp: c.waterTemp, clarity: c.clarity,
-    tackleId: c.tackleId || '', lure: c.lure, technique: c.technique, notes: c.notes, lat: c.lat, lon: c.lon };
+  const vals = { lakeId: c.lakeId, species: c.species, time: local, length: toLen(c.length), weight: toWt(c.weight), depth: toDepth(c.depth), waterTemp: toTemp(c.waterTemp), clarity: c.clarity,
+    tackleId: c.tackleId || '', lure: c.lure, technique: c.technique, notes: c.notes, lat: c.lat, lon: c.lon, tags: (c.tags ?? []).join(', '), count: 1 };
   for (const [k, v] of Object.entries(vals)) f[k].value = v ?? '';
   delete f.time.dataset.auto;
   f.time.dataset.loaded = local; // the field has minute precision; an unchanged field keeps the stored time
@@ -185,6 +283,9 @@ export async function editCatch(id) {
   $('#photo-hint').classList.add('hidden');
   $('#more-details').open = [c.depth, c.waterTemp, c.clarity, c.technique].some(v => v != null && v !== '');
   $('#catch-form-title').textContent = 'Edit catch';
+  $('#count-label').classList.add('hidden'); $('#count-hint').classList.add('hidden');
+  $('#btn-same').classList.add('hidden');
+  renderTagChips();
   $('#btn-cancel-edit').classList.remove('hidden');
   showEstimate();
   showCatchWarnings(f, c.id);
@@ -215,13 +316,14 @@ $('#catch-form').onsubmit = async e => {
     const record = {
       ...base,
       lakeId: f.lakeId, species: f.species.trim(), time,
-      length: keep('length', toLen, fromLen), weight: keep('weight', toWt, fromWt), depth: keep('depth', toDepth, fromDepth), waterTemp: num('waterTemp'),
+      length: keep('length', toLen, fromLen), weight: keep('weight', toWt, fromWt), depth: keep('depth', toDepth, fromDepth), waterTemp: keep('waterTemp', toTemp, fromTemp),
       lure: f.lure.trim(), technique: f.technique.trim(), notes: f.notes.trim(), released: !!f.released,
       lat: f.lat && !atOldLake ? +f.lat : lake.lat, lon: f.lon && !atOldLake ? +f.lon : lake.lon,
       photo: photos[0] ?? null, photos: photos.slice(1),
       moon: moonPhase(new Date(time)).name,
       tackleId: f.tackleId || null,
       clarity: f.clarity || null,
+      tags: parseTags(f.tags),
     };
     record.weightEst = record.weight == null ? estimateWeight(record.species, record.length) : null;
     // Weather from another time or water doesn't belong to this catch any more.
@@ -237,7 +339,13 @@ $('#catch-form').onsubmit = async e => {
         : await pastConditions(lake.lat, lake.lon, record.time)) ?? undefined;
     }
     await db.put('catches', record);
-    status(base ? 'Catch updated' : 'Catch saved 🎣');
+    // How many: the same fish again, without the size, photos and notes (those stay on the first).
+    const more = base ? 0 : countOf(form) - 1;
+    for (let i = 0; i < more; i++) {
+      const { id, updatedAt, ...copy } = record;
+      await db.put('catches', { ...copy, length: null, weight: null, weightEst: null, photo: null, photos: [], notes: '' });
+    }
+    status(base ? 'Catch updated' : more ? `${more + 1} × ${record.species} saved 🎣` : 'Catch saved 🎣');
     if (editing === editingAtStart) resetForm(); // unless another catch was opened for editing meanwhile
     await refreshMap();
     renderCatchForm();
@@ -270,9 +378,10 @@ export async function renderCatchCards(catches, el, lakes) {
     card.innerHTML = `${c.photo ? `<span class="catch-ph"><img src="${URL.createObjectURL(c.photo)}" alt="">${n > 1 ? `<span class="ph-count">${n}</span>` : ''}</span>` : ''}<div style="flex:1">
       <b>${esc(c.species)}</b> ${fmtLen(c.length)} ${weightText(c)} ${c.released ? '<span class="muted small">released</span>' : ''}
       <div class="muted small">${esc(lakeName[c.lakeId] || '')} · ${fmtDate(c.time)} ${fmtTime(c.time)}${c.tripId ? ` · <a href="#" data-trip>trip</a>` : ''}</div>
-      <div class="small">${[c.lure, c.technique, c.depth != null && fmtDepth(c.depth), c.waterTemp != null && `water ${c.waterTemp}°F`].filter(Boolean).map(esc).join(' · ')}</div>
-      ${cond ? `<div class="muted small">${Math.round(cond.airTemp)}°F · ${compass(cond.windDir)} ${Math.round(cond.wind)} mph · ${cond.pressureInHg}" ${cond.pressureTrend ?? ''} · ${esc(cond.sky)} · ${esc(c.moon)}</div>` : ''}
+      <div class="small">${[c.lure, c.technique, c.depth != null && fmtDepth(c.depth), c.waterTemp != null && `water ${fmtTemp(c.waterTemp)}`].filter(Boolean).map(esc).join(' · ')}</div>
+      ${cond ? `<div class="muted small">${fmtTemp(cond.airTemp, true)} · ${compass(cond.windDir)} ${Math.round(cond.wind)} mph · ${cond.pressureInHg}" ${cond.pressureTrend ?? ''} · ${esc(cond.sky)} · ${esc(c.moon)}</div>` : ''}
       ${c.notes ? `<div class="small" style="white-space:pre-wrap">${esc(c.notes)}</div>` : ''}
+      ${c.tags?.length ? `<div class="tag-list">${c.tags.map(t => `<span class="pill">${esc(t)}</span>`).join('')}</div>` : ''}
       <a href="#" class="small" data-edit>edit</a> · <a href="#" class="small" data-share>share</a> · <a href="#" class="small danger" data-del>delete</a></div>`;
     // Tapping the card (anywhere but its links) opens the catch page, with older and newer from this list.
     card.onclick = e => { if (!e.target.closest('a')) openCatch(c.id, catches.map(x => x.id)); };
@@ -281,11 +390,24 @@ export async function renderCatchCards(catches, el, lakes) {
     card.querySelector('[data-trip]')?.addEventListener('click', e => { e.preventDefault(); openTrip(c.tripId); });
     card.querySelector('[data-del]').onclick = async e => {
       e.preventDefault();
-      if (!confirm('Delete this catch?')) return;
-      await db.del('catches', c.id); card.remove(); refreshMap();
+      const next = card.nextSibling, parent = card.parentNode;
+      card.remove();
+      await deleteCatch(c, () => parent?.isConnected && parent.insertBefore(card, next?.parentNode === parent ? next : null));
     };
     el.append(card);
   }
+}
+
+// Deletes a catch with an Undo bar instead of a confirm dialog. onUndo puts it back on screen.
+export async function deleteCatch(c, onUndo = () => {}) {
+  c = await db.get('catches', c.id) ?? c; // the stored copy, so Undo brings back the latest edits
+  await db.del('catches', c.id);
+  refreshMap();
+  undoBar(`${c.species || 'Catch'} deleted`, async () => {
+    await db.put('catches', c, { touch: false });
+    refreshMap();
+    onUndo();
+  });
 }
 
 onShow('log', renderCatchForm);

@@ -3,6 +3,7 @@ import { db, importAll } from '../db.js';
 import { $, status, onShow } from '../ui.js';
 import { refreshMap } from '../map.js';
 import { backup, openFile } from '../backup.js';
+import { exportCatchesCsv } from '../catch-csv.js';
 import { isCrewPack, importCrewPack } from '../crew.js';
 
 // ---------- Sharing with friends ----------
@@ -25,6 +26,7 @@ export async function shareLake(lake) {
 
 // ---------- Backup ----------
 $('#btn-export').onclick = () => backup().catch(err => alert(err.message));
+$('#btn-csv').onclick = () => exportCatchesCsv().catch(err => alert(err.message));
 $('#import-file').onchange = async e => {
   try {
     const data = await openFile(JSON.parse(await e.target.files[0].text()));
