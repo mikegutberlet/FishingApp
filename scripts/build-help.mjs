@@ -109,19 +109,33 @@ async function getText(url) {
   return r.text();
 }
 
-// California: one page, each sheriff with the county, address, phone and fax.
+// California: one page, each sheriff as name, "Sheriff", address line(s), phone, fax. The entries don't name their
+// county, so the office's street address is placed with the Census geocoder and the county read from the map.
 async function caDirectory() {
   const lines = htmlText(await getText('https://www.calsheriffs.org/sheriffs-directory/'));
   if (DEBUG) console.log('CA directory sample:', JSON.stringify(lines.slice(0, 120)));
-  const names = counties.CA.map(k => k.name).sort((a, b) => b.length - a.length);
-  const out = {};
-  let county = null;
-  for (const l of lines) {
-    const hit = names.find(n => new RegExp(`\\b${n}\\s+County\\b`, 'i').test(l) || l.toLowerCase() === n.toLowerCase());
-    if (hit && !PHONE_RE.test(l)) { county = hit; continue; }
-    const m = l.match(PHONE_RE);
-    if (county && m && !/fax/i.test(l) && !out[county]) out[county] = { phone: phone(m[0]) };
+  const entries = [];
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i] !== 'Sheriff') continue;
+    const addr = [];
+    let ph = null;
+    for (let j = i + 1; j < Math.min(lines.length, i + 6); j++) {
+      if (PHONE_RE.test(lines[j])) { if (!/fax/i.test(lines[j])) ph = phone(lines[j].match(PHONE_RE)[0]); break; }
+      addr.push(lines[j]);
+    }
+    // A street address beats a P.O. box; "550 N Flower Santa Ana, CA 92703".
+    const street = addr.filter(a => /,\s*CA\s+\d{5}/.test(a)).sort((x, y) => /^p\.?\s*o\.?\s*box/i.test(x) - /^p\.?\s*o\.?\s*box/i.test(y))[0];
+    if (ph && street) entries.push({ facility_id: String(entries.length), address: street.replace(/,\s*CA\s+\d{5}(-\d{4})?\s*$/, ''), citytown: '', state: 'CA', zip_code: street.match(/(\d{5})(-\d{4})?\s*$/)?.[1] ?? '', phone: ph });
   }
+  const placed = await geocode(entries);
+  const out = {};
+  for (const e of entries) {
+    const at = placed.get(e.facility_id) ?? await geocodeOne(e);
+    const county = at && countyAt('CA', at.lat, at.lon);
+    if (county && !out[county]) out[county] = { phone: e.phone };
+    else if (!county) console.error(`CA directory: couldn't place ${e.address} ${e.zip_code}`);
+  }
+  console.log(`CA directory: ${entries.length} sheriffs listed`);
   return out;
 }
 
@@ -193,9 +207,9 @@ async function geocode(rows) {
 }
 // One address at a time, for what the batch missed.
 async function geocodeOne(h) {
-  const q = new URLSearchParams({ street: h.address, city: h.citytown, state: h.state, zip: h.zip_code, benchmark: 'Public_AR_Current', format: 'json' });
+  const q = new URLSearchParams({ address: [h.address, h.citytown, `${h.state} ${h.zip_code}`].filter(x => x.trim()).join(', '), benchmark: 'Public_AR_Current', format: 'json' });
   try {
-    const j = await getJson(`https://geocoding.geo.census.gov/geocoder/locations/address?${q}`, { timeout: 30000 }, 2);
+    const j = await getJson(`https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?${q}`, { timeout: 30000 }, 2);
     const c = j.result?.addressMatches?.[0]?.coordinates;
     return c ? { lat: c.y, lon: c.x } : null;
   } catch { return null; }
