@@ -1,0 +1,24 @@
+/* Know your water: Game plan tab (views/tabs/know.js), spot pages (spot-book.js), Today plan line. Every class starts with kw-. */
+.kw-warn { background: rgba(214,158,46,.15); border-left: 4px solid #d69e2e; padding: 6px 10px; border-radius: 6px; margin: 6px 0; }
+.kw-yours { border-left: 4px solid var(--accent); padding: 4px 10px; margin: 8px 0; }
+.kw-yours .small { margin-top: 3px; line-height: 1.5; }
+.kw-pick { padding: 8px 0; border-top: 1px solid var(--line); }
+.kw-pick .small { margin-top: 2px; line-height: 1.4; }
+.kw-pick-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 2px; }
+.kw-pick-head .chip { flex: none; }
+.kw-spot { padding: 6px 0; border-bottom: 1px solid var(--line); }
+.kw-spot:last-of-type { border-bottom: 0; }
+.kw-rank { display: inline-block; min-width: 20px; text-align: center; margin-right: 4px; border-radius: 10px; background: var(--accent); color: var(--accent-ink); font-size: 12px; }
+.kw-lines { display: grid; gap: 4px; margin: 6px 0; }
+.kw-line { display: grid; grid-template-columns: 84px 1fr; gap: 8px; align-items: baseline; }
+.kw-fish { padding: 3px 0; border-bottom: 1px solid var(--line); }
+.kw-ice-acts { flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.kw-ice-acts button { flex: 1; min-width: 120px; }
+.kw-year-wrap { overflow-x: auto; margin: 0 -4px; }
+.kw-year { width: 100%; border-collapse: collapse; }
+.kw-year th, .kw-year td { text-align: left; vertical-align: top; padding: 4px; border-bottom: 1px solid var(--line); }
+.kw-year thead th { font-weight: 600; color: var(--muted); }
+.kw-year tr.kw-now { background: rgba(49,130,206,.1); }
+.kw-mine { color: var(--accent); font-size: 11px; margin-top: 2px; }
+.kw-today { margin: 0 12px 10px; color: var(--muted); line-height: 1.35; }
+.kw-today:empty { display: none; }

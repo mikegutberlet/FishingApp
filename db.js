@@ -19,6 +19,7 @@ const SCHEMA = {
   routes: ['lakeId'],
   campTrips: [],
   campsites: ['lakeId'],
+  iceLogs: ['lakeId'],
   crewPlans: [],
 };
 export const STORES = Object.keys(SCHEMA);

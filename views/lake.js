@@ -16,6 +16,7 @@ import { renderCrew } from './tabs/crew.js';
 import { renderInfo } from './tabs/info.js';
 import { renderGettingThere } from './tabs/access.js';
 import { renderCamping } from './tabs/camping.js';
+import { renderKnow } from './tabs/know.js';
 import { renderStateSafety, renderNvBanner } from './tabs/nv-safety.js';
 import { renderOrBanner } from './tabs/or-safety.js';
 import { renderSafety, renderSafetyBanner } from './tabs/safety.js';
@@ -54,6 +55,7 @@ export async function saveWater(lake, tab) {
 // Tabs on a saved water, in order. To add one, create views/tabs/<name>.js and add a line here.
 export const LAKE_TABS = {
   conditions: { label: 'Conditions', render: renderConditions },
+  plan: { label: 'Game plan', render: renderKnow },
   depth: { label: 'Depth', render: renderDepth },
   stocking: { label: 'Stocking', render: renderStocking },
   history: { label: 'History', render: renderHistory },
@@ -69,11 +71,11 @@ export const LAKE_TABS = {
   oceanrules: { label: 'Ocean rules', render: renderOceanRules },
 };
 // Tabs on a lake or river, saved; ocean spots (piers, jetties, beaches) get their own set.
-const LAKE_TAB_KEYS = ['conditions', 'depth', 'stocking', 'history', 'catches', 'notes', 'access', 'camping', 'safety', 'crew', 'info'];
+const LAKE_TAB_KEYS = ['conditions', 'plan', 'depth', 'stocking', 'history', 'catches', 'notes', 'access', 'camping', 'safety', 'crew', 'info'];
 const COAST_TABS = ['conditions', 'tides', 'marine', 'oceanrules', 'catches', 'notes', 'access', 'camping', 'crew', 'info'];
 const COAST_WATER_TABS = ['conditions', 'tides', 'marine', 'oceanrules', 'access', 'camping', 'info'];
 // Tabs on a water you haven't saved yet (only the ones that work without your own data).
-export const WATER_TABS = ['conditions', 'stocking', 'depth', 'history', 'access', 'camping', 'safety', 'info'];
+export const WATER_TABS = ['conditions', 'plan', 'stocking', 'depth', 'history', 'access', 'camping', 'safety', 'info'];
 const tabsFor = lake => isCoast(lake) ? (lake.unsaved ? COAST_WATER_TABS : COAST_TABS) : lake.unsaved ? WATER_TABS : LAKE_TAB_KEYS;
 // A tab asked for that this kind of water doesn't have: the rules tab for "regs", else the first one.
 const fitTab = (lake, tab) => tabsFor(lake).includes(tab) ? tab : tab === 'safety' && isCoast(lake) ? 'oceanrules' : tabsFor(lake)[0];
