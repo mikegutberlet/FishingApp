@@ -1,4 +1,5 @@
-// Settings & data (the ⚙️ gear in the header): backup and restore, sharing a lake with friends, install help, storage use.
+// Settings & data (the ⚙️ gear in the header): backup and restore, sharing a lake with friends, storage use.
+// Install help and the invite card are welcome.js.
 import { db, importAll } from '../db.js';
 import { $, status, onShow } from '../ui.js';
 import { refreshMap } from '../map.js';
@@ -39,16 +40,7 @@ $('#import-file').onchange = async e => {
     status((isPack ? `Added ${data.lakes.map(l => l.name).join(', ')}` : 'Backup imported') + (skipped ? ` (${skipped} damaged entries skipped)` : ''));
   } catch (err) { alert(err.message); }
 };
-function renderInstallHelp() {
-  const ua = navigator.userAgent, standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
-  $('#install-help').innerHTML = standalone ? '✅ Installed on this device.'
-    : /iPhone|iPad|iPod/.test(ua) ? 'iPhone: open this page in <b>Safari</b>, tap the <b>Share</b> button, then <b>Add to Home Screen</b>.'
-    : /Android/.test(ua) ? 'Android: in <b>Chrome</b>, tap <b>⋮</b> then <b>Install app</b> (or <b>Add to Home screen</b>).'
-    : 'On a phone, open this page and add it to your home screen. iPhone: Safari → Share → Add to Home Screen. Android: Chrome → ⋮ → Install app.';
-}
-
 async function renderStorageInfo() {
-  renderInstallHelp();
   const counts = await Promise.all(['lakes', 'catches', 'notes', 'stocking', 'depthSets'].map(s => db.all(s).then(r => `${r.length} ${s === 'depthSets' ? 'depth maps' : s}`)));
   const est = await navigator.storage?.estimate?.();
   const persisted = await navigator.storage?.persisted?.();

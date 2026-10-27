@@ -211,10 +211,12 @@ async function showQr(url, pack) {
     <div class="qr">${qr.createSvgTag({ cellSize: 4, margin: 4, scalable: true })}</div>
     <p class="small">${esc(pack.items.length)} item${pack.items.length > 1 ? 's' : ''} from ${esc(pack.from)}. The whole share is inside the code; no server sees it.
       Friends with the app on their home screen: in Tackle Box tap <b>the ⚙️ gear → Share with your crew → Scan</b>${'BarcodeDetector' in window ? '' : ' (Android), or open the link and copy the code'}.</p>
-    <div class="row"><button id="qr-copy" style="flex:1">Copy link</button><button id="qr-close" class="primary" style="flex:1">Done</button></div></div>`;
+    <div class="row"><button id="qr-copy" style="flex:1">${navigator.share ? 'Send link' : 'Copy link'}</button><button id="qr-close" class="primary" style="flex:1">Done</button></div></div>`;
   document.body.append(sheet);
   sheet.querySelector('#qr-close').onclick = () => sheet.remove();
-  sheet.querySelector('#qr-copy').onclick = () => navigator.clipboard.writeText(url).then(() => status('Link copied'), () => prompt('Copy this link:', url));
+  // Not together? Text the link instead: everything is still in the part after #.
+  sheet.querySelector('#qr-copy').onclick = () => (navigator.share ? navigator.share({ title: 'Tackle Box share', url }).catch(e => { if (e.name !== 'AbortError') throw e; })
+    : navigator.clipboard.writeText(url).then(() => status('Link copied'))).catch(() => prompt('Copy this link:', url));
 }
 
 // Scan a friend's QR code in the app (Android Chrome and others with BarcodeDetector).

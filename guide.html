@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f3b4c">
+  <title>Getting started with Tackle Box</title>
+  <link rel="icon" href="icon.svg">
+  <style>
+    :root { --bg: #f3f6f7; --card: #fff; --text: #14222b; --muted: #5d6f7a; --line: #dbe3e7; --accent: #0f6e8c; --accent-ink: #fff; }
+    @media (prefers-color-scheme: dark) { :root { --bg: #0d1418; --card: #16212a; --text: #e4ecef; --muted: #93a6b1; --line: #26343e; --accent: #3fb0d4; --accent-ink: #04161d; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+    header { background: #0f3b4c; color: #fff; padding: 20px 16px; }
+    header h1 { margin: 0; font-size: 22px; }
+    header p { margin: 4px 0 0; color: #b7d3dd; }
+    main { max-width: 680px; margin: 0 auto; padding: 8px 16px 40px; }
+    h2 { font-size: 18px; margin: 24px 0 8px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; margin-bottom: 12px; }
+    .card h3 { margin: 0 0 6px; font-size: 16px; }
+    ol, ul { padding-left: 22px; margin: 6px 0; }
+    li { margin-bottom: 6px; }
+    a { color: var(--accent); }
+    .cta { display: block; text-align: center; background: var(--accent); color: var(--accent-ink); text-decoration: none; font-weight: 600; padding: 14px; border-radius: 10px; margin: 16px 0; }
+    .muted { color: var(--muted); font-size: 14px; }
+    nav.toc { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
+    nav.toc a { font-size: 14px; padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; text-decoration: none; background: var(--card); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎣 Getting started with Tackle Box</h1>
+    <p>A private fishing app. No account, and what you log stays on your phone.</p>
+  </header>
+  <main>
+    <a class="cta" href="./">Open Tackle Box</a>
+    <nav class="toc"><a href="#install">Install</a><a href="#privacy">Privacy</a><a href="#first">First steps</a><a href="#share">Sharing</a><a href="#phone">New phone</a><a href="#faq">Questions</a></nav>
+
+    <h2 id="install">1. Put it on your home screen</h2>
+    <div class="card">
+      <h3>iPhone</h3>
+      <ol>
+        <li>Open the link in <b>Safari</b> (or Chrome). If it opened inside Instagram, Facebook or another app, use that app's menu to <i>Open in Safari</i> first.</li>
+        <li>Tap <b>Share</b> (the square with an arrow; in Safari it may be under <b>⋯</b>).</li>
+        <li>Tap <b>Add to Home Screen</b>, then <b>Add</b>.</li>
+        <li>From now on, open <b>Tackle Box</b> from the home-screen icon.</li>
+      </ol>
+      <p class="muted">Why it matters on iPhone: the home-screen app keeps its own data, separate from Safari, and Safari can clear a website's data after a week without a visit. Install first, then log your catches in the home-screen app.</p>
+    </div>
+    <div class="card">
+      <h3>Android</h3>
+      <ol>
+        <li>Open the link in <b>Chrome</b>.</li>
+        <li>Tap <b>Install</b> if it offers, or <b>⋮</b> (top right) → <b>Install app</b> / <b>Add to Home screen</b>.</li>
+        <li>Samsung Internet: <b>☰</b> → <b>Add page to</b> → <b>Home screen</b>.</li>
+      </ol>
+    </div>
+
+    <h2 id="privacy">2. What stays on your phone</h2>
+    <div class="card">
+      <ul>
+        <li><b>Everything you log</b> (catches, photos, notes, spots, trips, depth maps) is saved only on your phone. There's no account and no server copy. The friend who sent you the app can't see it.</li>
+        <li><b>Looking things up</b>: for weather, wind, flows, maps and stocking, the app sends public services the location of the water you're looking at, or the map area on screen. It never sends your catches or notes. The exact list is in the app: ⚙️ gear → <i>What leaves your device</i>.</li>
+        <li><b>Sharing</b> happens only when you tap Share, and goes straight to the friend you pick, as a link, file or QR code. In a link, the shared part comes after the <code>#</code>, which browsers never send to a website.</li>
+        <li><b>Optional lock</b>: ⚙️ gear → App lock, with a passcode or Face ID / fingerprint.</li>
+      </ul>
+    </div>
+
+    <h2 id="first">3. First steps</h2>
+    <div class="card">
+      <ol>
+        <li><b>Find your water</b>: Map → search a lake, river or pier, tap it, then <b>Save to my lakes</b>. Tap ☆ to put it on your Today screen.</li>
+        <li><b>Check conditions</b>: each water has Conditions (weather, wind, flows), Stocking, Depth, Getting there, Camping and Regs tabs.</li>
+        <li><b>Log a catch</b>: the Log tab. A photo fills in the time and spot; weather and moon are saved for you.</li>
+        <li><b>No signal?</b> On a water, tap <b>Offline</b> (or <b>📴 Ready</b> on Today) before you leave home.</li>
+        <li><b>SOS</b> (top right) shows where you are and who to call, even with no signal.</li>
+      </ol>
+    </div>
+
+    <h2 id="share">4. Sharing with friends</h2>
+    <div class="card">
+      <ul>
+        <li><b>A water</b>: open it → <b>Share</b> → <i>Send a link</i>. It opens the same water in your friend's app. Nothing of yours goes with it.</li>
+        <li><b>Your depth maps</b>: Share → <i>Send with my depth maps</i> sends a file. You choose whether your notes and waypoints go too. Catches never do.</li>
+        <li><b>Catches, spots, access notes, campsites</b>: ⚙️ gear → <i>Share with your crew</i>, then tick what to send. Exact GPS spots and gate codes stay off unless you tick them; photos lose their location.</li>
+        <li><b>A group trip</b>: Today → Plan a trip → ⛺ Camp trip → 👥 Crew trips, then send it. Everyone's changes merge when they send it back.</li>
+        <li><b>Inviting someone new</b>: ⚙️ gear → <i>Invite a friend</i>.</li>
+      </ul>
+      <p class="muted">Got a link on iPhone and use the home-screen app? Copy the link, open Tackle Box, then ⚙️ gear → Invite a friend → <i>Open a link a friend sent</i>. A file: ⚙️ gear → <i>Import backup or shared lake</i>.</p>
+    </div>
+
+    <h2 id="phone">5. Back up, or move to a new phone</h2>
+    <div class="card">
+      <ol>
+        <li>⚙️ gear → <b>Export backup</b>. You can lock it with a password. Save it to Files, Drive or email it to yourself.</li>
+        <li>On the new phone, install Tackle Box, then ⚙️ gear → <b>Import backup</b> and pick that file.</li>
+      </ol>
+      <p class="muted">Since nothing is in the cloud, a backup is the only copy if you lose your phone. The app reminds you once a month.</p>
+    </div>
+
+    <h2 id="faq">Questions</h2>
+    <div class="card">
+      <p><b>My catches are gone on iPhone.</b> You may be in Safari instead of the home-screen app (or the other way round). They keep separate data. Open the other one; if the data is there, export a backup from it and import it into the home-screen app.</p>
+      <p><b>Does it cost anything?</b> No. No ads and no tracking.</p>
+      <p><b>Which states?</b> California, Nevada and Oregon lakes and rivers, plus piers, jetties and beaches on the coast. Elsewhere you can still add a lake by hand and log catches.</p>
+      <p><b>How does it update?</b> By itself, the next time you open it with signal.</p>
+    </div>
+    <a class="cta" href="./">Open Tackle Box</a>
+  </main>
+</body>
+</html>
