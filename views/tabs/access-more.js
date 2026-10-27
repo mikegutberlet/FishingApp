@@ -4,7 +4,7 @@
 import { esc, fmtDate, showView } from '../../ui.js';
 import { map } from '../../map.js';
 import { forLake } from '../../states/index.js';
-import { rulesFor, permitSeason, nearbyPoints, cachedPoints, accessGpxParts, POINT_KIND, BOAT_SRC, TAHOE_SRC, PASS_SRC } from '../../access-more.js';
+import { rulesFor, permitSeason, nearbyPoints, cachedPoints, accessGpxParts, pointsKm, POINT_KIND, BOAT_SRC, TAHOE_SRC, PASS_SRC } from '../../access-more.js';
 import { CLASS_TEXT, fmtMi } from '../../access-rules.js';
 import { gpxFile, sendFile } from '../../routes.js';
 import { showPoints } from '../../access-points.js';
@@ -16,7 +16,7 @@ export function renderAccessMore(lake, data, s, el) {
   if (!el?.isConnected) return;
   const S = forLake(lake);
   const r = rulesFor(lake, { lat: data.lat, lon: data.lon, parcels: data.land?.parcels ?? [], state: S?.code ?? null });
-  const km = Math.min(6, Math.max(3, (data.searchKm ?? 3) + 1));
+  const km = pointsKm(data);
   let st = slots.get(el);
   if (!st || st.key !== `${data.lat},${data.lon}`) { st = { key: `${data.lat},${data.lon}`, points: null, error: null, loading: false }; slots.set(el, st); }
   const paint = () => {

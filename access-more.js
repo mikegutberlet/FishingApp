@@ -30,7 +30,7 @@ const SIERRA_BOOK = { label: 'Sierra NF wilderness permits (west-side trailheads
 export const PERMITS = [
   { id: 'whitney', name: 'Mt. Whitney Zone', near: [36.57, -118.26, 6], day: true, overnight: true, season: ['05-01', '11-01'],
     text: 'A permit is needed for day hikes as well as overnight trips. Quota-season permits are given out by a lottery in late winter; what’s left (and cancellations) is released on Recreation.gov.',
-    book: [{ label: 'Mt. Whitney permits (Recreation.gov)', url: 'https://www.recreation.gov/permits/233260' }], source: INYO_SRC },
+    book: [{ label: 'Mt. Whitney permits (Recreation.gov)', url: 'https://www.recreation.gov/permits/445860' }], source: INYO_SRC },
   { id: 'desolation', unit: /\bdesolation\b/i, name: 'Desolation Wilderness', day: true, overnight: true,
     text: 'Day hikes: a free day-use permit you fill in yourself at the trailhead. Overnight: a permit all year, with a daily quota per zone (70% bookable from six months out, 30% kept for walk-ins at the Placerville Ranger Station). Bear canisters are required overnight.',
     book: [{ label: 'Desolation overnight permits (Recreation.gov)', url: 'https://www.recreation.gov/permits/233261' }],
@@ -70,7 +70,7 @@ export function permitSeason(p, now = new Date()) {
 // Where each state's boat rule comes from, and Lake Tahoe's own inspection program.
 export const BOAT_SRC = {
   CA: { label: 'California State Parks Division of Boating and Waterways: quagga and zebra mussels', url: 'https://dbw.parks.ca.gov/?page_id=28702' },
-  NV: { label: 'Nevada Department of Wildlife: aquatic invasive species', url: 'https://www.ndow.org/blog/aquatic-invasive-species/' },
+  NV: { label: 'Nevada Department of Wildlife: aquatic invasive species', url: 'https://www.ndow.org/get-outside/aquatic-invasive-species-prevention-program/' },
   OR: { label: 'Oregon State Marine Board: aquatic invasive species program', url: 'https://www.oregon.gov/osmb/boater-info/pages/aquatic-invasive-species-program.aspx' },
 };
 export const TAHOE_SRC = { label: 'Lake Tahoe boat inspections (TRPA and Tahoe Resource Conservation District)', url: 'https://tahoeboatinspections.com/' };
@@ -78,8 +78,8 @@ export const TAHOE_SRC = { label: 'Lake Tahoe boat inspections (TRPA and Tahoe R
 // Where the parking-pass rules come from (trip-rules.js PASS_UNITS: Adventure Pass in southern California,
 // Northwest Forest Pass in Oregon).
 export const PASS_SRC = {
-  CA: { label: 'Forest Service passes in California (Adventure Pass)', url: 'https://www.fs.usda.gov/r05/passes-permits/recreation' },
-  OR: { label: 'Forest Service passes in Oregon (Northwest Forest Pass)', url: 'https://www.fs.usda.gov/r06/passes-permits/recreation' },
+  CA: { label: 'Forest Service passes in California (Adventure Pass)', url: 'https://www.fs.usda.gov/r05/passes' },
+  OR: { label: 'Forest Service passes in Oregon (Northwest Forest Pass)', url: 'https://www.fs.usda.gov/r06/passes' },
 };
 
 // What applies at this water: permits (by land unit or place), parking passes and the boat rule.
@@ -155,6 +155,8 @@ export async function nearbyPoints(lat, lon, km, { force = false } = {}) {
     return data;
   } catch (e) { if (have) return { ...have, error: e.message }; throw e; }
 }
+// How far to look: the road lookup's search area, and far enough to reach the trailhead of a walk in.
+export const pointsKm = data => Math.min(8, Math.max(3, (data.searchKm ?? 3) + 1, (data.hike?.km ?? 0) + 1.5));
 export const cachedPoints = (lat, lon, km) => cacheGet('points', pointKey(lat, lon, km), 30);
 
 // ---------- Fish seen nearby (iNaturalist) ----------
