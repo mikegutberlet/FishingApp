@@ -17,6 +17,21 @@ async function get(url, { show = 600, grep = null, links = null, method = 'GET',
   } catch (e) { console.log(`\n### ${url}\nFAILED ${e.message}`); }
 }
 const part = process.argv[2] ?? 'all';
+if (part === 'round3') {
+  const t = await get('https://wildlife.ca.gov/Regulations', { show: 0 });
+  for (const m of (t ?? '').matchAll(/<a[^>]+href="([^"]+)"[^>]*>([^<]*(Booklet|PDF)[^<]*)/gi)) console.log('  CA ->', m[1], '|', m[2]);
+  const o = await get('https://www.parks.ca.gov/?page_id=28411', { show: 0 });
+  const ot = (o ?? '').replace(/<[^>]+>/g, ' ').replace(/&nbsp;|&#160;/g, ' ').replace(/&rsquo;|&#8217;/g, "'").replace(/&ndash;/g, '-').replace(/\s+/g, ' ');
+  const i = ot.indexOf('Standard Launch Ramps'); console.log('OROVILLE:', ot.slice(i, i + 4000));
+  const f = await get('https://www.parks.ca.gov/?page_id=31951', { show: 0 });
+  const ft = (f ?? '').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ');
+  const j = ft.indexOf('Closed Launch'); console.log('FOLSOM:', ft.slice(Math.max(0, j - 1500), j + 2500));
+  await get('https://www.nps.gov/lake/planyourvisit/motorized-boating.htm', { show: 0, grep: '(ramp|launch).{0,200}(feet|ft\\b|elevation)', links: 'ramp|launch|status' });
+  await get('https://www.oregon.gov/osmb/boater-info/Pages/Water-Level-and-Chart-Information.aspx', { show: 0, links: 'level|reservoir|ramp|usace|teacup', grep: 'ramp.{0,200}' });
+  await get('https://www.usbr.gov/mp/ccao/berryessa/', { show: 0, links: 'ramp|launch|boat' });
+  await get('https://www.usbr.gov/mp/ccao/newmelones/planning-visit/boating-fishing.html', { show: 0, grep: '(Glory Hole|Tuttletown|Angels).{0,300}' });
+  await get('https://www.fs.usda.gov/r05/shasta-trinity/recreation', { show: 0, links: 'ramp|launch|boat|lake level' });
+}
 if (part === 'round2') {
   await get('https://wildlife.ca.gov/Regulations', { show: 0, links: 'FileHandler|pdf|Sport-Fishing|freshwater', grep: 'Freshwater Sport Fishing Regulations.{0,200}' });
   await get('https://wildlife.ca.gov/Regulations', { show: 0, grep: 'DocumentID=\\d+[^"]{0,30}"[^>]*>[^<]{0,80}' });
