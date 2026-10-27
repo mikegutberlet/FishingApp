@@ -88,6 +88,10 @@ export async function openLake(id, tab = 'conditions') {
   $('#share').onclick = () => shareLake(lake);
   $('#fav').onclick = () => toggleFavorite(lake, $('#fav'));
   $('#share').after(offlineButton(lake));
+  const go = document.createElement('button');
+  go.innerHTML = '📋 Before you go';
+  go.onclick = () => import('./before-go.js').then(m => m.openChecklist(lake.id, undefined, { from: () => openLake(lake.id) }));
+  $('.lake-acts', d).append(go);
   d.querySelectorAll('.tabs button').forEach(b => b.onclick = () => openLake(id, b.dataset.tab));
   fitTabs($('.tabs', d));
   const body = $('#tab-body');

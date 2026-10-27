@@ -10,6 +10,7 @@ import { openLake } from './lake.js';
 import { tackleLabel } from './tackle.js';
 import { openComposer } from '../crew.js';
 import { pastConditions } from '../past-weather.js';
+import { fmtSpeed, fmtHeading } from '../troll.js';
 
 let list = [], from = 'journal', pin = null;
 
@@ -50,6 +51,7 @@ async function draw(id) {
     <div class="card c-facts">
       ${row('Lure / bait', esc(c.lure || (tackle ? tackleLabel(tackle) : '')))}
       ${row('Technique', esc(c.technique))}
+      ${row('Trolling speed', Number.isFinite(c.trollMph) && c.trollMph >= 0.3 ? `${fmtSpeed(c.trollMph)}${c.heading != null ? ` heading ${fmtHeading(c.heading)}` : ''}` : '')}
       ${row('Depth', c.depth != null ? fmtDepth(c.depth) : '')}
       ${row('Water temp', fmtTemp(c.waterTemp))}
       ${row('Clarity', esc(c.clarity))}
