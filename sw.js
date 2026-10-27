@@ -8,6 +8,7 @@ const SHELL = [
   'forecast.css',
   'privacy.css',
   'polish.css',
+  'journal.css',
   'manifest.json',
   'icon.svg',
   'icons/icon-180.png',
@@ -89,6 +90,8 @@ const SHELL = [
   'views/tabs/camping.js',
   'views/new-plants.js',
   'views/catch-warnings.js',
+  'views/catch.js',
+  'past-weather.js',
   'safety-map.js',
 ];
 

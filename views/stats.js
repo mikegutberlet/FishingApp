@@ -1,11 +1,13 @@
 // Stats, shown as a section of the Journal: days like today, patterns across everything you've logged, catch rates from trips, and a year in review.
 import { db } from '../db.js';
-import { $, esc, fmtDate, emptyState } from '../ui.js';
+import { $, esc, fmtDate, emptyState, status } from '../ui.js';
 import { fmtLen, toDepth, units } from '../units.js';
 import { renderDaysLikeToday } from '../insights.js';
 import { bestsBySpecies } from './bests.js';
 import { tackleLabel } from './tackle.js';
-import { weightText, weightEstimate, editCatch } from './log.js';
+import { weightText, weightEstimate } from './log.js';
+import { openCatch } from './catch.js';
+import { catchesWithoutWeather, fillMissingWeather } from '../past-weather.js';
 import { openTrip } from './trips.js';
 
 let tab = 'patterns', year = null;
@@ -61,12 +63,28 @@ export async function renderStats() {
   const el = $('#stats');
   const [catches, lakes, trips, tackleRows] = await Promise.all([db.all('catches'), db.all('lakes'), db.all('trips'), db.all('tackle')]);
   if (!catches.length) { el.innerHTML = emptyState('📊', 'Log a few catches and your best lures, depths, times and conditions show up here.', ['🐟 Log a catch', 'log']); return; }
-  el.innerHTML = `<div class="tabs"><button data-t="patterns" class="${tab === 'patterns' ? 'active' : ''}">Patterns</button><button data-t="year" class="${tab === 'year' ? 'active' : ''}">Year in review</button></div><div id="stats-body"></div>`;
+  el.innerHTML = `<div class="tabs"><button data-t="patterns" class="${tab === 'patterns' ? 'active' : ''}">Patterns</button><button data-t="year" class="${tab === 'year' ? 'active' : ''}">Year in review</button></div><div id="wx-fill"></div><div id="stats-body"></div>`;
   el.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { tab = b.dataset.t; renderStats(); });
+  offerWeatherFill($('#wx-fill', el));
   const body = $('#stats-body');
   const data = { catches, lakes, trips, tackle: Object.fromEntries(tackleRows.map(t => [t.id, t])), lakeName: Object.fromEntries(lakes.map(l => [l.id, l.name])) };
   if (tab === 'year') return renderYear(body, data);
   renderPatterns(body, data);
+}
+
+// Catches logged later or offline have no weather, so they're missing from the pressure, wind and Days like today patterns.
+async function offerWeatherFill(box) {
+  const n = (await catchesWithoutWeather()).length;
+  if (!n || !box.isConnected) return;
+  box.innerHTML = `<div class="card small"><b>${n} catch${n === 1 ? ' has' : 'es have'} no weather saved.</b> Look up the weather for each one's day and hour
+    so they count in these patterns. Only each water's location and the date are sent to Open-Meteo.
+    <button id="wx-go" style="width:100%;margin-top:8px">Fill in the weather</button></div>`;
+  $('#wx-go', box).onclick = async e => {
+    e.target.disabled = true;
+    const filled = await fillMissingWeather((i, total) => { e.target.textContent = `Looking up ${i + 1} of ${total}…`; });
+    status(filled ? `Weather added to ${filled} catch${filled === 1 ? '' : 'es'}` : "Couldn't get the weather (offline?)");
+    if (box.isConnected) renderStats();
+  };
 }
 
 function renderPatterns(el, { catches, trips, tackle, lakeName }) {
@@ -145,7 +163,7 @@ function renderYear(el, { catches, trips, lakeName, tackle }) {
     ${bars('Species', count(cs, c => c.species))}
     ${photos.length ? `<div class="card"><h3>Photos</h3><div class="photos">${photos.map(c => `<span class="ph" data-catch="${c.id}"><img src="${URL.createObjectURL(c.photo)}" alt="${esc(c.species)}"></span>`).join('')}</div></div>` : ''}`;
   $('#yr')?.addEventListener('change', e => { year = +e.target.value; renderStats(); });
-  el.querySelectorAll('[data-catch]').forEach(a => a.onclick = e => { e.preventDefault(); editCatch(a.dataset.catch); });
+  el.querySelectorAll('[data-catch]').forEach(a => a.onclick = e => { e.preventDefault(); openCatch(a.dataset.catch, [...el.querySelectorAll('[data-catch]')].map(x => x.dataset.catch).filter((x, i, all) => all.indexOf(x) === i)); });
   el.querySelectorAll('[data-trip]').forEach(a => a.onclick = e => { e.preventDefault(); openTrip(a.dataset.trip); });
 }
 

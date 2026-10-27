@@ -10,6 +10,7 @@ import { shrinkPhoto } from './log.js';
 import { waterRecord } from './lake.js';
 import { reunit, units } from '../units.js';
 import { estimateWeight } from '../weight.js';
+import { fillMissingWeather } from '../past-weather.js';
 
 let drafts = [];
 let saving = false;
@@ -132,6 +133,7 @@ async function saveDrafts() {
   btn.disabled = true; btn.textContent = 'Saving…';
   saving = true;
   let saved = 0, unreadable = 0;
+  const added = [];
   try {
     for (const d of chosen) {
       try {
@@ -142,9 +144,9 @@ async function saveDrafts() {
         if (!lake) throw new Error('That water was deleted');
         const length = d.length === '' ? null : reunit(+d.length, 'length', d.lengthUnit ?? units().length, 'in');
         const trip = d.tripId && await db.get('trips', d.tripId);
-        await db.put('catches', { lakeId, species: d.species.trim(), time: d.time, length, weight: null, weightEst: estimateWeight(d.species, length), depth: null, waterTemp: null,
+        added.push(await db.put('catches', { lakeId, species: d.species.trim(), time: d.time, length, weight: null, weightEst: estimateWeight(d.species, length), depth: null, waterTemp: null,
           lure: '', technique: '', notes: '', released: d.released, lat: d.lat ?? lake.lat, lon: d.lon ?? lake.lon,
-          photo, moon: moonPhase(new Date(d.time)).name, tripId: trip?.lakeId === lakeId ? trip.id : null, source: 'photo' });
+          photo, moon: moonPhase(new Date(d.time)).name, tripId: trip?.lakeId === lakeId ? trip.id : null, source: 'photo' }));
         d.saved = true; saved++;
       } catch (err) { console.error(err); }
     }
@@ -154,6 +156,8 @@ async function saveDrafts() {
     status(`Added ${saved} catch${saved === 1 ? '' : 'es'} from photos${unreadable ? ` (${unreadable} photo${unreadable === 1 ? '' : 's'} couldn't be read)` : ''}${chosen.length > saved ? `; ${chosen.length - saved} failed` : ''}`);
     await refreshMap();
     drawDrafts();
+    // The weather on each photo's day and hour, in the background (only each water's location and the date are sent).
+    if (added.length) fillMissingWeather(undefined, added.map(c => c.id));
   }
 }
 

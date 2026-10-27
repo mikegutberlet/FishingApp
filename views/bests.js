@@ -2,7 +2,8 @@
 import { db } from '../db.js';
 import { esc, fmtDate } from '../ui.js';
 import { fmtLen } from '../units.js';
-import { editCatch, weightText, weightEstimate } from './log.js';
+import { weightText, weightEstimate } from './log.js';
+import { openCatch } from './catch.js';
 
 // Per species: count, first catch, longest, heaviest (logged weight, else the length estimate).
 export function bestsBySpecies(catches) {
@@ -28,7 +29,7 @@ function table(rows, lakeName, { first = true } = {}) {
       <td>${s.heaviest ? link(s.heaviest, weightText(s.heaviest)) : '–'}</td>${first ? `<td class="small">${fmtDate(s.first.time)}<div class="muted">${esc(lakeName[s.first.lakeId] ?? '')}</div></td>` : ''}</tr>`).join('')}</table>`;
 }
 
-const wire = el => el.querySelectorAll('[data-catch]').forEach(a => a.onclick = e => { e.preventDefault(); editCatch(a.dataset.catch); });
+const wire = el => el.querySelectorAll('[data-catch]').forEach(a => a.onclick = e => { e.preventDefault(); openCatch(a.dataset.catch); });
 
 export async function renderBests(el) {
   const [catches, lakes] = await Promise.all([db.all('catches'), db.all('lakes')]);

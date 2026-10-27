@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="maps.css">
   <link rel="stylesheet" href="privacy.css">
   <link rel="stylesheet" href="polish.css">
+  <link rel="stylesheet" href="journal.css">
   <script>try { if (JSON.parse(localStorage.getItem('tackle-box-lock'))?.hash) document.documentElement.classList.add('locked'); } catch {}</script>
 </head>
 <body>
@@ -86,7 +87,9 @@
         <label>Lure / bait <input name="lure" list="lure-list"></label>
         <label>When <input name="time" type="datetime-local" required></label>
         <label class="check released"><input type="checkbox" name="released" checked> Released</label>
-        <label>Photo <input name="photo" type="file" accept="image/*" capture="environment"></label>
+        <div id="form-photos" class="photos"></div>
+        <label>Photos <input name="photo" type="file" accept="image/*" multiple></label>
+        <p id="photo-hint" class="muted small hidden"></p>
         <label>Notes <textarea name="notes" rows="2"></textarea></label>
         <details id="more-details" class="more">
           <summary>More details <span class="muted small">depth, water temp, clarity, technique, location</span></summary>
@@ -104,7 +107,8 @@
         </details>
         <button type="submit" class="primary save-bar">Save catch</button>
         <button type="button" id="btn-cancel-edit" class="hidden" style="width:100%;margin-top:8px">Cancel editing</button>
-        <p class="muted small">Current weather, wind, pressure and moon phase are saved with the catch automatically.</p>
+        <p class="muted small">Weather, wind, pressure and moon phase are saved with the catch automatically, also for a catch you log later.
+          A photo's time and spot are read on this phone and fill in When and the location.</p>
       </form>
       <h2>Recent catches</h2>
       <div id="catch-list"></div>
@@ -112,6 +116,7 @@
 
     <section id="view-journal" class="view"><div id="journal"></div></section>
     <section id="view-trip" class="view"><div id="trip"></div></section>
+    <section id="view-catch" class="view"><div id="catch"></div></section>
 
     <section id="view-settings" class="view">
       <h2 class="view-title">Settings &amp; data</h2>

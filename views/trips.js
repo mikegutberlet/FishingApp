@@ -4,6 +4,7 @@ import { db } from '../db.js';
 import { haversineKm, moonPhase } from '../data-sources.js';
 import { $, esc, fmtDate, status, showView, onShow, localNow, COMMON_SPECIES } from '../ui.js';
 import { refreshMap } from '../map.js';
+import { openViewer } from './catch.js';
 import { renderCatchCards, snapshotConditions, shrinkPhoto, editCatch, weightText } from './log.js';
 import { fmtLen, fromLen, units } from '../units.js';
 import { estimateWeight } from '../weight.js';
@@ -317,6 +318,7 @@ async function renderSummary(t) {
     <h2>Catches</h2><div id="trip-catches"></div>
     <button id="trip-del" class="danger" style="width:100%;margin-top:12px">Delete trip (keeps its catches)</button>`;
   $('#trip-back').onclick = () => showView('journal');
+  el.querySelectorAll('#journal-form .ph img').forEach((img, i) => img.onclick = () => openViewer(t.photos, i));
   let rating = t.rating ?? null;
   el.querySelectorAll('[data-star]').forEach(b => b.onclick = () => { rating = +b.dataset.star === rating ? null : +b.dataset.star; el.querySelectorAll('[data-star]').forEach(s => s.classList.toggle('on', +s.dataset.star <= (rating ?? 0))); });
   el.querySelectorAll('[data-rm]').forEach(a => a.onclick = async e => {
