@@ -3,3 +3,5 @@
 .fs-ph { flex: 0 0 104px; scroll-snap-align: start; text-decoration: none; color: inherit; }
 .fs-ph img { width: 104px; height: 104px; object-fit: cover; border-radius: 8px; display: block; background: var(--line); }
 .fs-ph span { display: block; margin-top: 3px; line-height: 1.25; }
+/* Permits and trailheads cards (views/tabs/access-more.js): long agency link names wrap instead of widening the card. */
+.gtm .gt-chip > div { min-width: 0; overflow-wrap: anywhere; }

@@ -9,7 +9,7 @@ import { CLASS_TEXT, fmtMi } from '../../access-rules.js';
 import { gpxFile, sendFile } from '../../routes.js';
 import { showPoints } from '../../access-points.js';
 
-const a = (s, text = 'source') => s?.url ? `<a class="gt-src" href="${esc(s.url)}" target="_blank" rel="noopener" title="${esc(s.label ?? '')}">${esc(text)} ↗</a>` : '';
+const a = (s, text = 'source') => s?.url ? `<a ${text === 'source' ? 'class="gt-src" ' : ''}href="${esc(s.url)}" target="_blank" rel="noopener" title="${esc(s.label ?? '')}">${esc(text)} ↗</a>` : '';
 const slots = new WeakMap();
 // data, s: the road lookup and its summary, as the main card has them. Called again whenever that card redraws.
 export function renderAccessMore(lake, data, s, el) {
@@ -56,7 +56,7 @@ function rulesCard(lake, r, S) {
     items.push(`<div class="gt-chip"><span>🚤</span><div><b>${r.boatHere ? 'Boat inspection here' : 'Bringing a boat'}</b><div class="small">${esc(r.boat)}</div>${src ? `<div class="muted small">${a(src, src.label)}</div>` : ''}</div></div>`);
   }
   if (!items.length) return '';
-  return `<div class="card"><h3>Permits, passes & boats</h3><div class="gt-chips">${items.join('')}</div>
+  return `<div class="card gtm"><h3>Permits, passes & boats</h3><div class="gt-chips">${items.join('')}</div>
     <p class="muted small" style="margin-top:8px">${r.permits.length ? 'Permit rules matched on the wilderness or park at the shore (USGS PAD-US) and kept by hand from the agency pages linked; quotas and dates change, so book from the agency’s page. ' : ''}Rules change: the linked page is the word to go by.</p></div>`;
 }
 
@@ -72,7 +72,7 @@ function pointsCard(st, km) {
       : `<p class="muted small">No trailhead, car park or toilet is mapped within ${fmtMi(km)} in OpenStreetMap. Pullouts often aren’t mapped: your crew’s access notes are the better guide.</p>`)
     : st.error ? `<p class="muted small">${st.error === 'offline' ? 'You’re offline: open this tab once with signal and the trailheads are kept on your phone.' : `OpenStreetMap didn’t answer (${esc(st.error)}).`} <a href="#" data-pt-retry>Try again</a></p>`
     : '<p class="muted small">Looking up trailheads and parking (OpenStreetMap can take up to a minute)…</p>';
-  return `<div class="card"><h3>Trailheads & parking</h3>${body}
+  return `<div class="card gtm"><h3>Trailheads & parking</h3>${body}
     <div class="row" style="margin-top:8px;flex-wrap:wrap;gap:6px">${main.length ? '<button class="small" data-pt-map>Show on map</button>' : ''}<button class="small" data-pt-gpx>⬇ Roads, trails & trailheads (GPX)</button></div>
     <p class="muted small" style="margin-top:6px">Within ${fmtMi(km)}, from OpenStreetMap (volunteer-mapped: fees and hours are as mappers last saw them). “Go” opens directions in Google Maps. The GPX holds every road and trail on this tab, the walk in, trailheads, parking and gates, for Gaia GPS, CalTopo or onX with no signal.${st.points?.fetchedAt ? ` Looked up ${fmtDate(st.points.fetchedAt)}.` : ''}</p></div>`;
 }
