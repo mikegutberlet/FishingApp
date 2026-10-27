@@ -1,130 +1,76 @@
 {
-  "startedAt": "2026-10-26T18:05:41.934Z",
+  "startedAt": "2026-10-27T02:03:25.941Z",
   "steps": {
-    "nhdLayersError": "502 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/layers?f=json",
-    "splitTiles": 30,
-    "failedTiles": [
+    "nhdLayers": [
       {
-        "layerId": 12,
-        "x": -120.5,
-        "y": 45.77125,
-        "size": 0.03125,
-        "error": "502 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/12/query?wh"
+        "id": 0,
+        "name": "Point"
       },
       {
-        "x": -124.75,
-        "y": 41.99,
-        "size": 0.03125,
-        "error": "400 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/undefined/q"
+        "id": 1,
+        "name": "Point Event"
       },
       {
-        "x": -124.71875,
-        "y": 41.99,
-        "size": 0.03125,
-        "error": "400 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/undefined/q"
+        "id": 2,
+        "name": "Line - Large Scale "
       },
       {
-        "x": -124.75,
-        "y": 42.02125,
-        "size": 0.03125,
-        "error": "400 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/undefined/q"
+        "id": 3,
+        "name": "Flow Direction"
       },
       {
-        "x": -124.71875,
-        "y": 42.02125,
-        "size": 0.03125,
-        "error": "400 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/undefined/q"
+        "id": 4,
+        "name": "Flowline - Small Scale"
       },
       {
-        "x": -124.6875,
-        "y": 41.99,
-        "size": 0.03125,
-        "error": "400 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/undefined/q"
+        "id": 5,
+        "name": "Flowline - Small Scale (HI, PR, VI, Pacific Territories)"
       },
       {
-        "x": -124.65625,
-        "y": 41.99,
-        "size": 0.03125,
-        "error": "400 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/undefined/q"
+        "id": 6,
+        "name": "Flowline - Large Scale"
       },
       {
-        "x": -124.6875,
-        "y": 42.02125,
-        "size": 0.03125,
-        "error": "400 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/undefined/q"
+        "id": 7,
+        "name": "Area - Small Scale"
+      },
+      {
+        "id": 8,
+        "name": "Area - Small Scale (HI, PR, VI, Pacific Territories)"
+      },
+      {
+        "id": 9,
+        "name": "Area - Large Scale"
+      },
+      {
+        "id": 10,
+        "name": "Waterbody - Small Scale"
+      },
+      {
+        "id": 11,
+        "name": "Waterbody - Small Scale (HI, PR, VI, Pacific Territories)"
+      },
+      {
+        "id": 12,
+        "name": "Waterbody - Large Scale"
       }
     ],
     "lakes": {
-      "features": 3337,
-      "polygons": 2317,
-      "inState": 2242,
+      "reused": "2026-10-26T20:00:29.469Z",
+      "inState": 2225,
+      "outsideOutline": 17
+    },
+    "rivers": {
+      "layer": 4,
+      "segments": 51135,
+      "named": 11563,
+      "kept": 1173,
+      "inLakes": {
+        "lakes": 538,
+        "labels": 58
+      },
       "carriedOver": 0
-    },
-    "elevations": {
-      "nhdKept": 428,
-      "fromDem": 1814,
-      "missing": 0
-    },
-    "depthProbe": "403 https://pasta.lternet.edu/package/eml/edi/1043?filter=newest",
-    "depth": {
-      "package": "edi.1043.1",
-      "pastaError": "403 https://pasta.lternet.edu/package/data/eml/edi/1043/1",
-      "portalUrls": [],
-      "portalResponse": " <!DOCTYPE html> <html lang=\"en\"> <head> <title>Data Portal - Login | Environmental Data Initiative (EDI) </title> <meta charset=\"UTF-8\"/> <meta content=\"width=device-width, initial-scale=1, maximum-scale=1\" name=\"viewport\"> <link rel=\"shortcut icon\" href=\"./images/favicon.ico\" type=\"image/x-icon\"/>",
-      "matchedWikidata": 11,
-      "unmatchedWikidata": [
-        "Sparks Lake 44.015669444,-121.745311111 1ft nearest Sparks Lake 0.1km",
-        "Devils Lake 44.98241,-123.99213 21ft nearest Devils Lake 0.1km",
-        "Hole-in-the-Ground 43.4029,-121.198 492ft nearest Morehouse Lake 15.7km",
-        "Washington Park 45.510661,-122.716869 260ft nearest City of Portland Reservoir Number 3 1.5km",
-        "Diamond Lake 43.16,-122.151666666 52ft nearest Diamond Lake 0.0km",
-        "Crater Lake 42.943611111,-122.106666666 1148ft nearest Crater Lake 0.1km"
-      ],
-      "lakesWithDepth": 11
-    },
-    "depthPackageError": "No depth table found via portal",
-    "depthError": "403 https://pasta.lternet.edu/package/search/eml?defType=edismax&q=title:%22LAGOS-US%20DEPTH%22&fl=packageid,title,pubdate&rows=20",
-    "wikidata": {
-      "rows": 17,
-      "sample": [
-        {
-          "lat": 43.718888888,
-          "lon": -122.040833333,
-          "maxFt": 427,
-          "meanFt": null,
-          "name": "Waldo Lake"
-        },
-        {
-          "lat": 43.4756,
-          "lon": -121.992,
-          "maxFt": 125,
-          "meanFt": null,
-          "name": "Crescent Lake"
-        },
-        {
-          "lat": 42.054722222,
-          "lon": -123.114444444,
-          "maxFt": 226,
-          "meanFt": null,
-          "name": "Applegate Lake"
-        },
-        {
-          "lat": 42.943611111,
-          "lon": -122.106666666,
-          "maxFt": 1949,
-          "meanFt": null,
-          "name": "Crater Lake"
-        },
-        {
-          "lat": 43.5728,
-          "lon": -121.998,
-          "maxFt": 282,
-          "meanFt": null,
-          "name": "Odell Lake"
-        }
-      ]
-    },
-    "riversError": "400 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/undefined/query?where=GNIS_NAME+IS+NOT+NULL+AND+%28GNIS_NAME+LIKE+%27%25+River%25%27+OR+GNIS_NAME+LIKE+%27%25+Creek%25%27+OR+GNIS_NAME+"
+    }
   },
-  "finishedAt": "2026-10-26T20:02:05.140Z"
+  "finishedAt": "2026-10-27T02:20:47.930Z"
 }
