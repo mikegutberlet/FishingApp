@@ -12,6 +12,7 @@ import { lookupNow, cachedNow, nowFresh, forestAlerts } from '../../access-now.j
 import { myAccessNote, crewAccessNotes, noteCard, noteForm, wireNoteCards, signalSummary, VEHICLES } from '../../access-notes.js';
 import { openComposer } from '../../crew.js';
 import { renderAccess, directionsUrl } from '../access.js';
+import { renderRoutesCard, exportWalkIn } from '../../routes.js';
 
 const SOURCES = ['USFS MVUM', 'USFS roads', 'USFS trails', 'BLM routes', 'PAD-US', 'OpenStreetMap', 'Wikipedia'];
 const src = s => s?.url ? `<a class="gt-src" href="${esc(s.url)}" target="_blank" rel="noopener" title="${esc(s.label)}">source ↗</a>` : '';
@@ -44,7 +45,7 @@ const spots = {};
 const spotKey = lake => lake.nhdId ? `nhd-${lake.nhdId}` : String(lake.id);
 
 export async function renderGettingThere(lake, body) {
-  body.innerHTML = `<div id="gt-notes"></div><div id="gt-where"></div><div id="gt-now"></div><div id="gt"></div><div id="gt-access"></div>`;
+  body.innerHTML = `<div id="gt-notes"></div><div id="gt-where"></div><div id="gt-now"></div><div id="gt"></div><div id="gt-routes"></div><div id="gt-access"></div>`;
   const el = body.querySelector('#gt');
   const S = forLake(lake);
   // What the main card and the Today card share: your and your crew's notes, today's conditions, the route summary.
@@ -130,6 +131,7 @@ export async function renderGettingThere(lake, body) {
     }
   };
   renderAccess(lake, body.querySelector('#gt-access'));
+  renderRoutesCard(lake, body.querySelector('#gt-routes'));
   await load();
 }
 
@@ -221,6 +223,7 @@ const list = items => {
     try { draw(lake, await lookupAccess(lake, { spot: data.spot, force: true, onPartial: d => el.isConnected && draw(lake, d, el, ctx) }), el, ctx); } catch (err) { el.querySelector('.gt-head').textContent = `Couldn’t refresh: ${err.message}`; }
   };
   el.querySelectorAll('[data-gt-map]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); showRoutes(lake, s, hike); }));
+  el.querySelector('[data-gt-gpx]')?.addEventListener('click', e => { e.preventDefault(); exportWalkIn(lake, hike); });
 }
 
 // ---------- Cell signal ----------
@@ -248,7 +251,7 @@ function hikeCard(h) {
     <p class="small"><b>${fmtMi(h.km)}</b>${st ? ` · <b>${fmtFt(st.upM)} up</b>, ${fmtFt(st.downM)} down · about <b>${fmtMins(st.minIn)}</b> in, ${fmtMins(st.minOut)} back out` : ''}${st ? ` · ${fmtFt(st.minM)}–${fmtFt(st.maxM)}` : ''}</p>
     ${prof}
     <p class="small">${h.crow ? 'No mapped trail joins the road to the shore, so this is the straight line: expect cross-country walking or an unmapped use trail, and allow more time.' : `Start where ${h.start.road ? esc(h.start.road) : 'the road'} meets the way in${h.trails.length ? `, then ${h.trails.map(t => `${esc(t.name || 'an unnamed trail')}${t.source?.url ? ` ${src(t.source)}` : ''}`).join(', then ')}` : ''}.`}
-      <a href="${directionsUrl(h.start.lat, h.start.lon)}" target="_blank" rel="noopener">Directions to the start ↗</a> · <a href="#" data-gt-map>Show on map</a></p>
+      <a href="${directionsUrl(h.start.lat, h.start.lon)}" target="_blank" rel="noopener">Directions to the start ↗</a> · <a href="#" data-gt-map>Show on map</a> · <a href="#" data-gt-gpx>⬇ GPX for Gaia or CalTopo</a></p>
     <p class="muted small">Time by Naismith’s rule (3 mph, plus an hour for every 2,000 ft of climb); slower with a pack, kids or snow. ${h.elevationSource ? `Elevations from <a href="${h.elevationSource.url}" target="_blank" rel="noopener">${esc(h.elevationSource.label)} ↗</a>.` : h.profileFailed ? 'The elevation service didn’t answer, so the climb isn’t known.' : ''}</p></div>`;
 }
 function profileSvg(p) {

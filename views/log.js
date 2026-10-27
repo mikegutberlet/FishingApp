@@ -8,6 +8,7 @@ import { estimateWeight } from '../weight.js';
 import { activeTrip, openTrip, startTripFlow } from './trips.js';
 import { tackleLabel } from './tackle.js';
 import { showCatchWarnings } from './catch-warnings.js';
+import { fmtSpeed } from '../troll.js';
 import { openComposer } from '../crew.js';
 import { readExif } from '../exif.js';
 import { matchWater } from './backfill.js';
@@ -378,7 +379,7 @@ export async function renderCatchCards(catches, el, lakes) {
     card.innerHTML = `${c.photo ? `<span class="catch-ph"><img src="${URL.createObjectURL(c.photo)}" alt="">${n > 1 ? `<span class="ph-count">${n}</span>` : ''}</span>` : ''}<div style="flex:1">
       <b>${esc(c.species)}</b> ${fmtLen(c.length)} ${weightText(c)} ${c.released ? '<span class="muted small">released</span>' : ''}
       <div class="muted small">${esc(lakeName[c.lakeId] || '')} · ${fmtDate(c.time)} ${fmtTime(c.time)}${c.tripId ? ` · <a href="#" data-trip>trip</a>` : ''}</div>
-      <div class="small">${[c.lure, c.technique, c.depth != null && fmtDepth(c.depth), c.waterTemp != null && `water ${fmtTemp(c.waterTemp)}`].filter(Boolean).map(esc).join(' · ')}</div>
+      <div class="small">${[c.lure, c.technique, c.depth != null && fmtDepth(c.depth), c.waterTemp != null && `water ${fmtTemp(c.waterTemp)}`, Number.isFinite(c.trollMph) && c.trollMph >= 0.3 && fmtSpeed(c.trollMph)].filter(Boolean).map(esc).join(' · ')}</div>
       ${cond ? `<div class="muted small">${fmtTemp(cond.airTemp, true)} · ${compass(cond.windDir)} ${Math.round(cond.wind)} mph · ${cond.pressureInHg}" ${cond.pressureTrend ?? ''} · ${esc(cond.sky)} · ${esc(c.moon)}</div>` : ''}
       ${c.notes ? `<div class="small" style="white-space:pre-wrap">${esc(c.notes)}</div>` : ''}
       ${c.tags?.length ? `<div class="tag-list">${c.tags.map(t => `<span class="pill">${esc(t)}</span>`).join('')}</div>` : ''}

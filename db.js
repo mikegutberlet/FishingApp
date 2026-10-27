@@ -15,6 +15,8 @@ const SCHEMA = {
   tempProfiles: ['lakeId'],
   crew: ['lakeId'],
   licenses: [],
+  checklist: [],
+  routes: ['lakeId'],
 };
 export const STORES = Object.keys(SCHEMA);
 const DB_VERSION = STORES.reduce((n, name) => n + 1 + SCHEMA[name].length, 0) - 8;
@@ -90,9 +92,9 @@ export async function exportAll() {
 // characters that could open a tag or close an attribute. Free text (names, notes, species, lures...) stays as typed.
 const SAFE_ID = /^[\w.:-]{0,100}$/;
 const FREE_TEXT = new Set(['name', 'notes', 'note', 'text', 'journal', 'species', 'lure', 'technique', 'companions', 'title', 'color', 'size', 'brand', 'from', 'description', 'county',
-  'regs', 'access', 'number', 'stockName', 'road', 'park', 'launch', 'gate', 'gateCode', 'signalNote']);
+  'regs', 'access', 'number', 'stockName', 'road', 'park', 'launch', 'gate', 'gateCode', 'signalNote', 'worked', 'nextTime']);
 const NUMERIC = new Set(['lat', 'lon', 'acres', 'elevationFt', 'maxDepth', 'maxDepthFt', 'lengthKm', 'km', 'length', 'weight', 'weightEst', 'depth',
-  'waterTemp', 'airTemp', 'wind', 'windDir', 'gusts', 'cloud', 'pressureInHg', 'levelFt', 'count', 'inches', 'qty', 'rating', 'accuracy']);
+  'waterTemp', 'airTemp', 'wind', 'windDir', 'gusts', 'cloud', 'pressureInHg', 'levelFt', 'count', 'inches', 'qty', 'rating', 'accuracy', 'trollMph', 'heading']);
 const BAD = Symbol('unsafe id');
 function clean(v, k = '') {
   if (k === 'id' || k.endsWith('Id')) return v == null || typeof v === 'number' || (typeof v === 'string' && SAFE_ID.test(v)) ? v : BAD;

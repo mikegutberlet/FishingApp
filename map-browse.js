@@ -42,14 +42,18 @@ $('#map-search-clear').onclick = () => { search.value = ''; results.innerHTML = 
 
 // ---------- Quick chips: base map, stocked waters, names ----------
 const chips = $('#map-chips');
+const BASES = ['Satellite', 'Topo', 'Streets'];
 const syncChips = () => {
-  chips.querySelector('[data-chip=base]').textContent = map.hasLayer(baseLayers.Satellite) ? 'Satellite' : 'Streets';
+  chips.querySelector('[data-chip=base]').textContent = BASES.find(n => map.hasLayer(baseLayers[n])) ?? 'Satellite';
   chips.querySelector('[data-chip=stocked]').classList.toggle('on', map.hasLayer(stockedLayer));
   chips.querySelector('[data-chip=names]').classList.toggle('on', map.hasLayer(watersLayer));
 };
 chips.onclick = e => {
   const c = e.target.closest('[data-chip]')?.dataset.chip;
-  if (c === 'base') { const sat = map.hasLayer(baseLayers.Satellite); map.removeLayer(sat ? baseLayers.Satellite : baseLayers.Streets); map.addLayer(sat ? baseLayers.Streets : baseLayers.Satellite); }
+  if (c === 'base') { // Satellite → Topo → Streets → Satellite
+    const now = BASES.find(n => map.hasLayer(baseLayers[n])) ?? 'Satellite', next = BASES[(BASES.indexOf(now) + 1) % BASES.length];
+    map.removeLayer(baseLayers[now]); map.addLayer(baseLayers[next]); map.fire('baselayerchange', { layer: baseLayers[next], name: next });
+  }
   if (c === 'stocked') map.hasLayer(stockedLayer) ? map.removeLayer(stockedLayer) : map.addLayer(stockedLayer);
   if (c === 'names') map.hasLayer(watersLayer) ? map.removeLayer(watersLayer) : map.addLayer(watersLayer);
   syncChips();
