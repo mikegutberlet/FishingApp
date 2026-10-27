@@ -41,7 +41,7 @@ export async function openShareSheet(lake) {
   const sheet = document.createElement('div');
   sheet.className = 'qr-sheet';
   sheet.innerHTML = `<div class="qr-sheet-card sw-card"><h3>Share ${esc(lake.name)}</h3>
-    <button class="sw-opt primary" data-how="link"><b>🔗 Send a link</b><span>Opens this water in their Tackle Box: its name and place, nothing of yours.</span></button>
+    <button class="sw-opt primary" data-how="link"><b>🔗 Send a link</b><span>Opens this water in their Tackle Box: its name and place, plus your crew name if you've set one. Nothing else of yours.</span></button>
     <button class="sw-opt" data-how="qr"><b>▦ Show a QR code</b><span>The same link, for a friend standing next to you.</span></button>
     ${saved ? `<button class="sw-opt" data-how="pack"><b>📦 Send with my depth maps</b><span>A file with your depth maps and stocking notes. You choose whether to add your notes and waypoints. Never catches.</span></button>
     <button class="sw-opt" data-how="crew"><b>👥 Send catches or spots</b><span>Pick which ones in the crew share. GPS spots and photo locations stay off unless you tick them.</span></button>` : ''}

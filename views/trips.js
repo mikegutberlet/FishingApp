@@ -14,7 +14,7 @@ import { openWhere } from './where.js';
 import { tripWatch } from './day-plan.js';
 import { forLake } from '../states/index.js';
 import { isRiver } from '../states/common.js';
-import { renderBagBar } from '../bag.js';
+import { renderBagBar, catOf } from '../bag.js';
 import { feedFix, trollOn, setTroll, mountReadout, snapshot, resetReadout, speedSummary } from '../troll.js';
 import { lostLureSheet, undoLostLure } from '../lost-lure.js';
 import { lookalikesFor, lookalikeHtml } from '../lookalikes.js';
@@ -221,11 +221,23 @@ export async function closeStale(t) {
   return db.put('trips', { ...t, end });
 }
 
+// The Catch buttons: what you've caught here, then what the state plants here (newest first), the game fish iNaturalist
+// has seen here (if Game plan saved them) and the species on its Info, then what you catch elsewhere, then the common list.
+// Plant lists name fish loosely ("Legal trout", "Raibow Trout", "Brown"), so a plant becomes the common species it names,
+// else its bag-limit group ("Trout"), else it's left out. Plants get 1.5 s, so a slow connection doesn't hold up Catch.
 async function recentSpecies(lake) {
   const catches = (await db.all('catches')).sort((a, b) => b.time.localeCompare(a.time));
   const here = catches.filter(c => c.lakeId === lake?.id).map(c => c.species);
   const fromLake = String(lake?.species ?? '').split(/[,;]/).map(s => s.trim());
-  return [...new Set([...here, ...catches.map(c => c.species), ...fromLake, ...COMMON_SPECIES].filter(Boolean))].slice(0, 8);
+  const S = lake && forLake(lake), stockId = S && lake[S.stockField];
+  const plants = stockId != null ? await Promise.race([S.plantsFor(stockId).catch(() => []), new Promise(res => setTimeout(() => res([]), 1500))]) : [];
+  const planted = [...plants].sort((a, b) => String(b.week).localeCompare(String(a.week)))
+    .map(p => COMMON_SPECIES.find(c => String(p.species).toLowerCase().includes(c.toLowerCase())) ?? catOf(p.species));
+  const inat = lake?.lat != null ? await import('../access-more.js').then(m => m.cachedFishSeen(lake.lat, lake.lon, m.fishKm(lake))).catch(() => null) : null;
+  const seenHere = (inat?.species ?? []).map(s => s.common).filter(s => catOf(s));
+  const seen = new Set();
+  return [...here, ...planted, ...seenHere, ...fromLake, ...catches.map(c => c.species), ...COMMON_SPECIES]
+    .filter(s => s && !seen.has(s.toLowerCase()) && seen.add(s.toLowerCase())).slice(0, 8);
 }
 
 async function renderLive(t) {

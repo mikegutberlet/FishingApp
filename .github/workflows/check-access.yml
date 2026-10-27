@@ -9,6 +9,8 @@ on:
       - access-rules.js
       - access-now.js
       - .github/workflows/check-access.yml
+permissions:
+  contents: read
 jobs:
   check:
     runs-on: ubuntu-latest

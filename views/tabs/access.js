@@ -160,7 +160,7 @@ function draw(lake, data, el, ctx) {
   const dead = !data.features.length && data.failed.length >= 5;
   const headline = dead ? 'Nothing could be checked right now: the road and land services didn’t answer. Try again with better signal.'
     : !v && !s.nearestUnknown ? `No road comes within ${fmtMi(data.searchKm)} of this water in the public records: a walk-in, boat-in or private water.`
-    : v && !walk ? `${verdict.label}: drive to the water${v.road.tags.dates?.car ? ` (open ${v.road.tags.dates.car}; ${seasonNow(v.road)})` : ''}.`
+    : v && !walk ? `${verdict.label}: drive to the water${v.road.tags.dates?.car ? ` (open ${esc(v.road.tags.dates.car)}; ${seasonNow(v.road)})` : ''}.`
     : v ? `${verdict.label} to within ${fmtMi(v.hikeKm)}, then on foot.`
     : `A road reaches the water (${fmtMi(s.nearestUnknown.shoreKm)}), but the records don’t say what it takes to drive it.`;
 

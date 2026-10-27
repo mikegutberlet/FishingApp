@@ -58,13 +58,15 @@ map.on('click', e => {
 });
 
 // ---------- Statewide labels: every named lake and river in the states we have data for ----------
-// Each state's list loads the first time the map shows part of that state. `statewide` holds every loaded one.
+// Each state's list loads the first time the map shows part of that state (not while the map is hidden behind Today,
+// so the app's first load doesn't fetch them). `statewide` holds every loaded one.
 export let statewide = null;
 // Make sure a state's list is loaded (for search), even when the map isn't looking at it yet (or is still loading it).
 export const loadState = S => loadedStates.get(S.code) ? Promise.resolve(loadedStates.get(S.code)) : S.statewide().then(d => { loadedStates.set(S.code, d); const all = [...loadedStates.values()].filter(Boolean); statewide = { lakes: all.flatMap(x => x.lakes), riverLabels: all.flatMap(x => x.riverLabels) }; drawWaterLabels(); return d; });
 let shownWaters = [];
 const loadedStates = new Map();
 function loadStates() {
+  if (!map.getContainer().offsetWidth) return; // hidden: wait until the map is on screen (showing it fires moveend)
   for (const S of statesIn(map.getBounds())) {
     if (loadedStates.has(S.code)) continue;
     loadedStates.set(S.code, null);

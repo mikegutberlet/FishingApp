@@ -7,6 +7,8 @@ on:
       - scripts/dev/check-camp-trip.mjs
       - camp-trip.js
       - .github/workflows/check-camp-trip.yml
+permissions:
+  contents: read
 jobs:
   check:
     runs-on: ubuntu-latest

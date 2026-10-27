@@ -17,7 +17,7 @@ async function cacheGet(kind, key, maxDays) {
   } catch { return null; }
 }
 async function cachePut(kind, key, data) { try { await (await caches.open(CACHE)).put(cacheUrl(kind, key), new Response(JSON.stringify(data), { headers: { 'Content-Type': 'application/json' } })); } catch {} }
-const pointKey = (lat, lon, km) => `${(+lat).toFixed(3)},${(+lon).toFixed(3)},${Math.round(km)}`;
+const pointKey = (lat, lon, km, trailKm = km) => `${(+lat).toFixed(3)},${(+lon).toFixed(3)},${Math.round(km)}${trailKm > km ? `,t${Math.round(trailKm)}` : ''}`;
 
 // ---------- Permits and quotas ----------
 // Wildernesses and parks in the three states where a permit is needed to go in, matched on the land unit at the
@@ -124,13 +124,13 @@ export function osmPoint(e) {
   if (!kind || NOT_PUBLIC.test(t.access ?? '')) return null;
   return { kind, id: `${e.type}/${e.id}`, name: t.name ?? null, lat: +c.lat.toFixed(5), lon: +c.lon.toFixed(5), facts: pointFacts(t), source: { label: 'OpenStreetMap', url: `https://www.openstreetmap.org/${e.type}/${e.id}` } };
 }
-export const pointsQuery = bbox => `[out:json][timeout:40];(nwr[highway=trailhead](${bbox});nwr[amenity=parking](${bbox});nwr[amenity=toilets](${bbox});node[amenity=drinking_water](${bbox}););out tags center 300;`;
-export async function overpassPoints(bbox) {
+export const pointsQuery = (bbox, trailBbox = bbox) => `[out:json][timeout:40];(nwr[highway=trailhead](${trailBbox});nwr[amenity=parking](${bbox});nwr[amenity=toilets](${bbox});node[amenity=drinking_water](${bbox}););out tags center 300;`;
+export async function overpassPoints(bbox, trailBbox = bbox) {
   let last;
   for (const wait of [0, 4000]) {
     if (wait) await new Promise(r => setTimeout(r, wait));
     try {
-      const r = await fetch(OVERPASS, { method: 'POST', body: new URLSearchParams({ data: pointsQuery(bbox) }), signal: AbortSignal.timeout(50000) });
+      const r = await fetch(OVERPASS, { method: 'POST', body: new URLSearchParams({ data: pointsQuery(bbox, trailBbox) }), signal: AbortSignal.timeout(50000) });
       if (r.status === 429 || r.status >= 500) { last = new Error(`${r.status}: server busy`); continue; }
       if (!r.ok) throw new Error(`${r.status}`);
       const j = await r.json();
@@ -142,22 +142,25 @@ export async function overpassPoints(bbox) {
 }
 const bboxAround = (lat, lon, km) => { const dLat = km / 111, dLon = km / (111 * Math.cos(lat * Math.PI / 180)); return [lat - dLat, lon - dLon, lat + dLat, lon + dLon].map(v => v.toFixed(5)).join(','); };
 
-// Trailheads, parking, toilets and taps within km of a point, nearest first. Kept 30 days.
-export async function nearbyPoints(lat, lon, km, { force = false } = {}) {
-  const key = pointKey(lat, lon, km);
+// Trailheads, parking, toilets and taps within km of a point (trailheads within trailKm), nearest first. Kept 30 days.
+export async function nearbyPoints(lat, lon, km, { force = false, trailKm = km } = {}) {
+  const key = pointKey(lat, lon, km, trailKm);
   const have = await cacheGet('points', key, 30);
   if (have && !have.stale && !force) return have;
   try {
-    const points = (await overpassPoints(bboxAround(lat, lon, km)))
-      .map(p => ({ ...p, km: +haversineKm(lat, lon, p.lat, p.lon).toFixed(2) })).filter(p => p.km <= km * 1.05).sort((a, b) => a.km - b.km);
-    const data = { fetchedAt: new Date().toISOString(), lat, lon, km, points };
+    const points = (await overpassPoints(bboxAround(lat, lon, km), bboxAround(lat, lon, trailKm)))
+      .map(p => ({ ...p, km: +haversineKm(lat, lon, p.lat, p.lon).toFixed(2) })).filter(p => p.km <= (p.kind === 'trailhead' ? trailKm : km) * 1.05).sort((a, b) => a.km - b.km);
+    const data = { fetchedAt: new Date().toISOString(), lat, lon, km, trailKm, points };
     await cachePut('points', key, data);
     return data;
   } catch (e) { if (have) return { ...have, error: e.message }; throw e; }
 }
 // How far to look: the road lookup's search area, and far enough to reach the trailhead of a walk in.
 export const pointsKm = data => Math.min(8, Math.max(3, (data.searchKm ?? 3) + 1, (data.hike?.km ?? 0) + 1.5));
-export const cachedPoints = (lat, lon, km) => cacheGet('points', pointKey(lat, lon, km), 30);
+// No road you can drive comes within the search area (Lake Aloha, Green Lakes): the trailheads are farther out, so
+// look for them (only them) up to 12 km (7.5 miles) away.
+export const trailheadKm = (data, s) => s.vehicle ? pointsKm(data) : Math.max(12, pointsKm(data));
+export const cachedPoints = (lat, lon, km, trailKm = km) => cacheGet('points', pointKey(lat, lon, km, trailKm), 30);
 
 // ---------- Fish seen nearby (iNaturalist) ----------
 // Research-grade observations of ray-finned fish (Actinopterygii) within km: species with counts, and the latest
@@ -178,7 +181,7 @@ export async function fishSeen(lat, lon, km, { force = false } = {}) {
     const data = {
       fetchedAt: new Date().toISOString(), lat, lon, km, total: counts.total_results ?? 0,
       species: (counts.results ?? []).map(r => ({ count: r.count, ...taxonOf(r.taxon) })),
-      recent: (recent.results ?? []).map(o => ({ id: o.id, url: o.uri ?? `https://www.inaturalist.org/observations/${o.id}`, date: o.observed_on ?? null, taxon: taxonOf(o.taxon),
+      recent: (recent.results ?? []).map(o => ({ id: o.id, url: /^https:\/\//.test(o.uri) ? o.uri : `https://www.inaturalist.org/observations/${o.id}`, date: o.observed_on ?? null, taxon: taxonOf(o.taxon),
         photo: o.photos?.[0]?.url?.replace('/square.', '/small.') ?? null, photoBy: o.photos?.[0]?.attribution ?? null, place: o.place_guess ?? null })),
       searchUrl: inatSearchUrl(lat, lon, km),
     };

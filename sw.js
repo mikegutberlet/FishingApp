@@ -1,5 +1,5 @@
 // Caches the app shell so it opens with no signal on the water. Your data is in IndexedDB, not here.
-const CACHE = 'tackle-box-v31';
+const CACHE = 'tackle-box-v37';
 // One file per line. Add new files here and bump CACHE.
 const SHELL = [
   './',
@@ -152,6 +152,12 @@ const SHELL = [
   'views/tabs/marine.js',
   'views/tabs/ocean-rules.js',
   'welcome.css',
+  'theme.css',
+  'vendor/fonts/barlow-latin-400-normal.woff2',
+  'vendor/fonts/barlow-latin-500-normal.woff2',
+  'vendor/fonts/barlow-latin-600-normal.woff2',
+  'vendor/fonts/barlow-condensed-latin-600-normal.woff2',
+  'vendor/fonts/barlow-condensed-latin-600-italic.woff2',
   'welcome.js',
   'share-water.js',
   'guide.html',
@@ -183,7 +189,10 @@ self.addEventListener('fetch', e => {
     e.waitUntil(net.catch(() => {}));
     e.respondWith(caches.open(CACHE).then(c => c.match(e.request)).then(saved => saved || caches.match(e.request)).then(saved => !saved ? net
       : Date.now() < slowUntil ? saved
-      : Promise.race([net.catch(() => saved), new Promise(res => setTimeout(() => { slowUntil = Date.now() + 60e3; res(saved); }, 4000))])));
+      : new Promise(res => {
+        const slow = setTimeout(() => { slowUntil = Date.now() + 60e3; res(saved); }, 4000);
+        net.then(r => { clearTimeout(slow); res(r); }, () => { clearTimeout(slow); res(saved); });
+      })));
   }
   // Weather/USGS calls go straight to the network.
 });

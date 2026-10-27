@@ -1,0 +1,101 @@
+/* Visual theme: loaded last, so it restyles the app without moving anything around.
+   Type is Barlow (SIL Open Font License, vendor/fonts), drawn from California's highway signs and plates: built to be read at a glance outdoors.
+   Colors come from a USGS topo quad: conifer green for the chrome, quad water blue for links and water names, and bobber orange for the one thing to tap. */
+@font-face { font-family: Barlow; font-weight: 400; font-display: swap; src: url(vendor/fonts/barlow-latin-400-normal.woff2) format('woff2'); }
+@font-face { font-family: Barlow; font-weight: 500; font-display: swap; src: url(vendor/fonts/barlow-latin-500-normal.woff2) format('woff2'); }
+@font-face { font-family: Barlow; font-weight: 600 700; font-display: swap; src: url(vendor/fonts/barlow-latin-600-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Barlow Condensed'; font-weight: 600 700; font-display: swap; src: url(vendor/fonts/barlow-condensed-latin-600-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Barlow Condensed'; font-weight: 600 700; font-style: italic; font-display: swap; src: url(vendor/fonts/barlow-condensed-latin-600-italic.woff2) format('woff2'); }
+
+:root {
+  --bg: #e9eee9; --card: #fff; --text: #10201d; --muted: #4b5f5a; --line: #ccd7d0;
+  --accent: #155f96; --accent-ink: #fff;
+  --brand: #14352e; --brand-2: #14352e; --brand-ink: #e8f1ec;
+  --bobber: #f2561d; --bobber-ink: #10201d;
+  --water: #155f96;
+  --shadow: none;
+  --display: 'Barlow Condensed', 'Arial Narrow', system-ui, sans-serif;
+  --topo: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='120' viewBox='0 0 240 120' fill='none' stroke='%23fff' stroke-opacity='.13' stroke-width='1.2'%3E%3Cpath d='M-10 92c30-10 46-34 80-30s44 30 80 22 52-38 100-30'/%3E%3Cpath d='M-10 74c32-8 50-30 82-26s40 22 76 16 56-34 102-28'/%3E%3Cpath d='M-10 56c34-6 52-26 84-22s38 16 72 10 60-30 104-26'/%3E%3Cpath d='M-10 38c36-4 54-22 86-18s36 10 68 4 64-26 106-24'/%3E%3Cpath d='M-10 20c38-2 56-18 88-14s34 4 64-2 68-22 108-22'/%3E%3Cpath d='M-10 110c28-12 42-38 78-34s46 38 84 30 48-42 98-34'/%3E%3C/svg%3E");
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0c1715; --card: #14231f; --text: #e2ece7; --muted: #97aba4; --line: #273a34;
+    --accent: #72b6ea; --accent-ink: #061421; --water: #8cc6f0;
+    --brand: #0f211c; --brand-2: #0f211c; --bobber: #ff6a2b;
+  }
+}
+
+html, body { font-family: Barlow, system-ui, -apple-system, sans-serif; font-size: 16px; line-height: 1.45; }
+
+/* The header is a strip of topo map: conifer green with faint contour lines, the name set like a quad title. */
+header { background: var(--brand) var(--topo) 0 50% / 240px 120px repeat-x; box-shadow: none; border-bottom: 3px solid var(--bobber); }
+header::before { content: none; }
+header h1 { font-family: var(--display); font-style: italic; font-weight: 600; font-size: 23px; letter-spacing: .3px; color: var(--brand-ink); }
+header #status { background: var(--brand); border: 1px solid rgba(255,255,255,.12); font-size: 15px; }
+.head-btn { color: var(--brand-ink); }
+
+/* Headings: condensed and set firmly, so a long page has landmarks you can find mid-scroll. */
+h2, .view-title { font-family: var(--display); font-weight: 600; font-size: 23px; line-height: 1.15; letter-spacing: .1px; }
+.view-title { font-size: 28px; }
+h3 { font-size: 17px; font-weight: 600; }
+.card > h3:first-child, .card > b:first-child { font-family: var(--display); font-size: 20px; font-weight: 600; letter-spacing: .1px; }
+
+/* Water names are labelled the way a topo map labels water: blue condensed italic. */
+.lake-name, .sheet-head b, .lake-item b, .today-title b { font-family: var(--display); font-style: italic; font-weight: 600; letter-spacing: .1px; }
+.lake-name { font-size: 34px; line-height: 1.05; color: var(--water); }
+.lake-name small { font-family: Barlow, system-ui, sans-serif; font-style: normal; font-size: 14px; }
+.lake-item b, .sheet-head b { color: var(--water); font-size: 20px; }
+
+/* Numbers you read at a glance */
+.stat b, .hero-temp, .trip-clock { font-family: var(--display); font-weight: 600; letter-spacing: 0; }
+.stat b { font-size: 26px; line-height: 1.1; }
+.stat span { font-size: 13px; }
+.hero-temp { font-size: 54px; }
+
+/* Cards: flat field cards with a hairline edge. Hierarchy comes from type and the colored heroes, not shadows. */
+.card { border-radius: 8px; box-shadow: none; border-color: var(--line); }
+.stat, .hour, .inset { border-radius: 6px; }
+
+/* Buttons: the one primary action on a screen is bobber orange, readable in full sun; everything else stays quiet. */
+button, .file-btn, .sheet-acts .btn { border-radius: 8px; font-weight: 500; }
+button.primary, .q-catch { background: var(--bobber); border-color: var(--bobber); color: var(--bobber-ink); box-shadow: none; font-weight: 600; border-radius: 8px; }
+button.primary .ic { color: var(--bobber-ink); }
+.save-bar { box-shadow: 0 4px 14px rgba(16,32,29,.3); }
+.trip-cta { border-width: 2px; border-color: var(--brand); color: var(--brand); font-weight: 600; }
+@media (prefers-color-scheme: dark) { .trip-cta { border-color: var(--accent); color: var(--accent); } }
+
+/* Tab strips: the active tab is filled with conifer ink, the rest are outlined. */
+.tabs button { border-radius: 6px; font-weight: 500; }
+.tabs button.active, .cp-filters button.active { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+@media (prefers-color-scheme: dark) { .tabs button.active, .cp-filters button.active { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); } }
+
+/* Bottom nav: the active tab gets a bobber-orange tick, like a float on the line. */
+nav { box-shadow: none; border-top: 1px solid var(--line); }
+nav button span { font-size: 12px; font-weight: 500; }
+nav button.active { color: var(--text); }
+nav button.active::after { background: var(--bobber); height: 4px; left: 30%; right: 30%; }
+
+/* Today: the water's hero takes its color from the sky, over the same contour lines as the header. */
+.hero { background: #155f96 var(--topo) 0 0 / 240px 120px; }
+.hero.sky-cloud { background-color: #4b6560; background-image: var(--topo); }
+.hero.sky-rain { background-color: #2b4650; background-image: var(--topo); }
+.hero.sky-night { background-color: #0e2030; background-image: var(--topo); }
+.hero .today-title { font-size: 22px; }
+.hero .today-title b { color: #fff; }
+
+/* Map: the floating controls read as part of the map, with the same hairline edge as cards. */
+.map-actions button, .map-chips button, .map-search { box-shadow: 0 1px 2px rgba(0,0,0,.25), 0 0 0 1px rgba(16,32,29,.08); }
+.map-chips button.on { background: var(--brand); color: var(--brand-ink); }
+.water-sheet { border-radius: 12px; border-top: 3px solid var(--bobber); }
+
+/* Welcome sheet */
+.wl-card { border-radius: 12px; }
+.wl-dots i.on { background: var(--bobber); }
+.wl-glance { border-left-color: var(--water); }
+
+/* Settings is desk work, not on the water: its buttons stay conifer so the orange keeps meaning "do this now". */
+#view-settings button.primary { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+@media (prefers-color-scheme: dark) { #view-settings button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); } }
+
+/* The status toast floats above the trip plan banner (#plan-banner, z-index 1501). */
+header #status { z-index: 1510; }
