@@ -1,0 +1,33 @@
+{
+ "updatedAt": "2026-10-27T17:36:38.671Z",
+ "count": 2,
+ "stocked": 217,
+ "waters": [
+  {
+   "id": "ALDER_LK",
+   "name": "Alder Lake",
+   "county": "Lane",
+   "lat": 44.07092,
+   "lon": -124.10344,
+   "checkedAt": "2026-10-27T17:36:38.585Z",
+   "updatedAt": "2026-10-27T17:32:57.112Z",
+   "verdict": null,
+   "camps": null,
+   "years": "2006–2026 (21 years)",
+   "notes": 0
+  },
+  {
+   "id": "ANSON_WRIGHT_PD",
+   "name": "Anson Wright Pond",
+   "county": "Morrow",
+   "lat": 45.10939,
+   "lon": -119.62624,
+   "checkedAt": "2026-10-27T17:36:38.656Z",
+   "updatedAt": "2026-10-27T17:32:57.273Z",
+   "verdict": null,
+   "camps": null,
+   "years": "2006–2026 (20 years)",
+   "notes": 0
+  }
+ ]
+}

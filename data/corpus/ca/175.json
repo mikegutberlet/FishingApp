@@ -1,0 +1,322 @@
+{
+ "id": "175",
+ "state": "CA",
+ "name": "Dry Lake",
+ "lat": 41.74244,
+ "lon": -123.8767,
+ "county": "Del Norte",
+ "kind": "lake",
+ "firstSeen": "2026-10-27",
+ "checkedAt": "2026-10-27T17:36:38.426Z",
+ "updatedAt": "2026-10-27T17:32:56.841Z",
+ "agency": {
+  "name": "CDFW",
+  "url": "https://apps.wildlife.ca.gov/fishing/?stockid=175",
+  "about": null,
+  "lastYearStocked": 2025
+ },
+ "facts": {
+  "type": "Lake",
+  "acres": 3,
+  "elevationFt": 1473,
+  "maxDepthFt": null,
+  "meanDepthFt": null,
+  "depthSource": null,
+  "lengthKm": null,
+  "nhdId": "00259583",
+  "hydro": null,
+  "surveys": []
+ },
+ "about": null,
+ "access": null,
+ "camping": null,
+ "stocking": {
+  "recent": [
+   {
+    "year": 2026,
+    "species": "Trout",
+    "plants": 1,
+    "fish": null
+   }
+  ],
+  "history": {
+   "names": [
+    "Dry Lake"
+   ],
+   "years": [
+    {
+     "y": 2026,
+     "fish": null,
+     "plants": 1,
+     "sp": {
+      "Trout": [
+       null,
+       1
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20260331114648/https://nrm.dfg.ca.gov/FishPlants/PublicPlantSearch"
+     ]
+    },
+    {
+     "y": 2025,
+     "fish": null,
+     "plants": 1,
+     "sp": {
+      "Trout": [
+       null,
+       1
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20250430002817/https://nrm.dfg.ca.gov/FishPlants/PublicPlantSearch"
+     ]
+    },
+    {
+     "y": 2024,
+     "fish": null,
+     "plants": 1,
+     "sp": {
+      "Trout": [
+       null,
+       1
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20240520100042/https://www.nrm.dfg.ca.gov/FishPlants/"
+     ]
+    },
+    {
+     "y": 2022,
+     "fish": null,
+     "plants": 1,
+     "sp": {
+      "Trout": [
+       null,
+       1
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20220428125947/https://nrm.dfg.ca.gov/FishPlants/"
+     ]
+    },
+    {
+     "y": 2017,
+     "fish": 3500,
+     "plants": 2,
+     "sp": {
+      "Chinook Salmon": [
+       3500,
+       2
+      ]
+     },
+     "src": [
+      "https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=156895"
+     ]
+    },
+    {
+     "y": 2013,
+     "fish": null,
+     "plants": 1,
+     "sp": {
+      "Trout": [
+       null,
+       1
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20130602052714/https://nrm.dfg.ca.gov/FishPlants/Default.aspx"
+     ]
+    },
+    {
+     "y": 2012,
+     "fish": null,
+     "plants": 5,
+     "sp": {
+      "Trout": [
+       null,
+       5
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20120325013156/http://nrm.dfg.ca.gov:80/FishPlants/",
+      "https://web.archive.org/web/20120501131602/http://nrm.dfg.ca.gov/FishPlants/",
+      "https://web.archive.org/web/20120514192628/http://nrm.dfg.ca.gov/FishPlants/"
+     ]
+    },
+    {
+     "y": 2011,
+     "fish": null,
+     "plants": 2,
+     "sp": {
+      "Trout": [
+       null,
+       2
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20110518155023/http://www.dfg.ca.gov:80/fish/Hatcheries/FishPlanting/Northern.asp"
+     ]
+    },
+    {
+     "y": 2010,
+     "fish": null,
+     "plants": 3,
+     "sp": {
+      "Trout": [
+       null,
+       3
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20100522070434/http://www.dfg.ca.gov/fish/Hatcheries/FishPlanting/Northern.asp",
+      "https://web.archive.org/web/20100530050805/http://www.dfg.ca.gov/fish/Hatcheries/FishPlanting/Northern.asp"
+     ]
+    },
+    {
+     "y": 2009,
+     "fish": null,
+     "plants": 2,
+     "sp": {
+      "Trout": [
+       null,
+       2
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20090411052155/http://www.dfg.ca.gov/fish/Hatcheries/FishPlanting/Northern.asp",
+      "https://web.archive.org/web/20090509175313/http://www.dfg.ca.gov/fish/Hatcheries/FishPlanting/Northern.asp"
+     ]
+    },
+    {
+     "y": 2008,
+     "fish": null,
+     "plants": 1,
+     "sp": {
+      "Trout": [
+       null,
+       1
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20080426041426/http://www.dfg.ca.gov:80/fish/Hatcheries/FishPlanting/Northern.asp"
+     ]
+    }
+   ]
+  },
+  "note": "CDFW publishes the week and species, not counts. History grows each night from the public schedule."
+ },
+ "introductions": [],
+ "rules": {
+  "source": null,
+  "booklet": "https://wildlife.ca.gov/Regulations",
+  "updatedAt": "2026-10-27T15:56:38.040Z",
+  "county": "Del Norte",
+  "special": []
+ },
+ "advisories": {
+  "algae": [],
+  "eating": [],
+  "eatingSource": "https://oehha.ca.gov/fish/advisories"
+ },
+ "sources": [
+  {
+   "label": "CDFW stocking schedule",
+   "url": "https://nrm.dfg.ca.gov/FishPlants/",
+   "fetchedAt": "2026-10-27T02:03:30.225Z"
+  },
+  {
+   "label": "CDFW page for the water",
+   "url": "https://apps.wildlife.ca.gov/fishing/?stockid=175",
+   "fetchedAt": "2026-10-27T17:36:38.426Z"
+  },
+  {
+   "label": "USGS National Hydrography Dataset (data/ca/lakes.json, rivers.json)",
+   "url": "https://www.usgs.gov/national-hydrography/national-hydrography-dataset",
+   "fetchedAt": "2026-10-27T17:36:38.426Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved Mar 31, 2026 (Internet Archive)",
+   "url": "https://web.archive.org/web/20260331114648/https://nrm.dfg.ca.gov/FishPlants/PublicPlantSearch",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved Apr 30, 2025 (Internet Archive)",
+   "url": "https://web.archive.org/web/20250430002817/https://nrm.dfg.ca.gov/FishPlants/PublicPlantSearch",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved May 20, 2024 (Internet Archive)",
+   "url": "https://web.archive.org/web/20240520100042/https://www.nrm.dfg.ca.gov/FishPlants/",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved Apr 28, 2022 (Internet Archive)",
+   "url": "https://web.archive.org/web/20220428125947/https://nrm.dfg.ca.gov/FishPlants/",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW anadromous hatchery releases, 2001–2017",
+   "url": "https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=156895",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved Jun 2, 2013 (Internet Archive)",
+   "url": "https://web.archive.org/web/20130602052714/https://nrm.dfg.ca.gov/FishPlants/Default.aspx",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved Mar 25, 2012 (Internet Archive)",
+   "url": "https://web.archive.org/web/20120325013156/http://nrm.dfg.ca.gov:80/FishPlants/",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved May 1, 2012 (Internet Archive)",
+   "url": "https://web.archive.org/web/20120501131602/http://nrm.dfg.ca.gov/FishPlants/",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved May 14, 2012 (Internet Archive)",
+   "url": "https://web.archive.org/web/20120514192628/http://nrm.dfg.ca.gov/FishPlants/",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved May 18, 2011 (Internet Archive)",
+   "url": "https://web.archive.org/web/20110518155023/http://www.dfg.ca.gov:80/fish/Hatcheries/FishPlanting/Northern.asp",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved May 22, 2010 (Internet Archive)",
+   "url": "https://web.archive.org/web/20100522070434/http://www.dfg.ca.gov/fish/Hatcheries/FishPlanting/Northern.asp",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved May 30, 2010 (Internet Archive)",
+   "url": "https://web.archive.org/web/20100530050805/http://www.dfg.ca.gov/fish/Hatcheries/FishPlanting/Northern.asp",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved Apr 11, 2009 (Internet Archive)",
+   "url": "https://web.archive.org/web/20090411052155/http://www.dfg.ca.gov/fish/Hatcheries/FishPlanting/Northern.asp",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved May 9, 2009 (Internet Archive)",
+   "url": "https://web.archive.org/web/20090509175313/http://www.dfg.ca.gov/fish/Hatcheries/FishPlanting/Northern.asp",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved Apr 26, 2008 (Internet Archive)",
+   "url": "https://web.archive.org/web/20080426041426/http://www.dfg.ca.gov:80/fish/Hatcheries/FishPlanting/Northern.asp",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  }
+ ],
+ "notes": [],
+ "manual": {},
+ "changes": [
+  {
+   "date": "2026-10-27",
+   "text": "added to the corpus"
+  }
+ ]
+}

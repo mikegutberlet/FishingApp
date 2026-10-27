@@ -1,0 +1,33 @@
+{
+ "updatedAt": "2026-10-27T17:36:38.489Z",
+ "count": 2,
+ "stocked": 536,
+ "waters": [
+  {
+   "id": "27443",
+   "name": "Carr Park Lake",
+   "county": "Orange",
+   "lat": 33.72151,
+   "lon": -118.02339,
+   "checkedAt": "2026-10-27T17:36:38.477Z",
+   "updatedAt": "2026-10-27T17:32:56.935Z",
+   "verdict": null,
+   "camps": null,
+   "years": "2007–2026 (18 years)",
+   "notes": 0
+  },
+  {
+   "id": "175",
+   "name": "Dry Lake",
+   "county": "Del Norte",
+   "lat": 41.74244,
+   "lon": -123.8767,
+   "checkedAt": "2026-10-27T17:36:38.426Z",
+   "updatedAt": "2026-10-27T17:32:56.841Z",
+   "verdict": null,
+   "camps": null,
+   "years": "2008–2026 (11 years)",
+   "notes": 0
+  }
+ ]
+}

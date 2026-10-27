@@ -5,6 +5,7 @@ import { db } from './db.js';
 import { forLake } from './states/index.js';
 import { $, esc, fmtDate, status, showView, onShow, icon } from './ui.js';
 import { map, baseLayers } from './map.js';
+import { corpusUrl } from './corpus.js';
 
 const PREFIX = 'offline-';
 const META = 'offline-meta.json'; // each pack's cache describes itself at this key
@@ -203,7 +204,7 @@ export async function runPack(lake, pl, { existing = null, signal, onProgress = 
   const surveys = await S?.bathymetryFor(lake).catch(() => []) ?? [];
   const areas = [...pl.kept, pl.here, ...pl.route];
   const all = areas.reduce((u, a) => u.extend(box(a.bounds)), box(pl.here.bounds));
-  const data = [...stateFiles(S), ...surveys.map(s => S.bathymetryUrl(s.id))];
+  const data = [...stateFiles(S), ...surveys.map(s => S.bathymetryUrl(s.id)), ...(corpusUrl(lake) ? [corpusUrl(lake)] : [])]; // the water's archived copy too
   const urls = [...data, ...new Set(areas.flatMap(areaTiles))];
   const pack = { id, nhdId: lake.nhdId ?? null, lakeId: lake.unsaved ? null : lake.id, name: lake.name, layers: [...new Set(areas.flatMap(a => a.layers ?? ['Satellite']))], areas,
     zMin: Math.min(...areas.map(a => a.zMin)), zMax: Math.max(...areas.map(a => a.zMax)), routes: pl.route.length,
