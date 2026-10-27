@@ -2,7 +2,7 @@
 // (data/corpus/<st>/<id>.json, see docs/corpus/README.md). When a live source doesn't answer, or you're offline
 // with nothing kept on the phone yet, Getting there and Camping fill in from it and say so with its date.
 import { forLake, stockIdOf } from './states/index.js';
-import { fmtDate } from './ui.js';
+// No ui.js here: the nightly job imports this module in Node, where there is no document.
 
 const files = {};
 export const corpusUrl = lake => {
@@ -80,5 +80,5 @@ export async function fillCamping(lake, data) {
 export function archiveLine(data) {
   const ar = data.archive;
   if (!ar) return '';
-  return ` <b>${ar.all ? 'Shown from the archive' : `Filled in from the archive for ${ar.sources.join(', ')}`}</b> (the copy kept in the app’s repo, fetched ${fmtDate(ar.date)}; see Info → In the archive).`;
+  return ` <b>${ar.all ? 'Shown from the archive' : `Filled in from the archive for ${ar.sources.join(', ')}`}</b> (the copy kept in the app’s repo, fetched ${new Date(ar.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}; see Info → In the archive).`;
 }
