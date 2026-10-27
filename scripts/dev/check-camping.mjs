@@ -35,6 +35,7 @@ for (const w of WATERS) {
     console.log(`      water=${s.water ?? ''}(${(s.waterText ?? '').slice(0, 40)}) toilets=${s.toilets ?? ''} showers=${s.showers ?? ''} dump=${s.dump ?? ''} hookups=${s.hookups ?? ''} res=${s.reservable ?? ''} firstCome=${s.firstCome ?? ''} recgov=${s.recgovId ?? ''} len=${s.maxLength ?? ''} alert=${(s.alert ?? '').slice(0, 60)} resv=${(s.reservations ?? '').slice(0, 60)}`);
     console.log(`      ${s.sources.map(x => x.label).join(' + ')} info=${s.infoUrl ?? ''} book=${s.bookUrl ?? ''}`);
   }
+  if (w.name === 'Caples Lake' || w.name === 'Wilson Reservoir') console.log(`DATA ${w.name} ${JSON.stringify(d)}`);
   const r = d.sites.find(s => s.recgovId);
   if (r) {
     try { console.log('AVAILABILITY', r.name, JSON.stringify(await weekendAvailability(r.recgovId))); } catch (e) { console.log('AVAILABILITY failed', e.message); }
