@@ -1,0 +1,50 @@
+/* Before you go, bag count, troll readout, lost lures, debrief, lookalike tips and report lines (batch 4). */
+.bag-bar { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; margin-bottom: 12px; }
+.bag-row { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; padding: 2px 0; }
+.bag-row b { min-width: 7em; }
+.bag-row.warn { color: #5c4300; } .bag-row.warn b::after { content: ' · at the limit'; font-weight: 500; font-size: 13px; }
+.bag-row.bad { color: var(--danger); } .bag-row.bad b::after { content: ' · over the limit'; font-weight: 500; font-size: 13px; }
+@media (prefers-color-scheme: dark) { .bag-row.warn { color: #f2c94c; } .bag-row.bad { color: #ff8a80; } }
+.bag-bar details { margin-top: 4px; }
+
+.quick-more { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: -2px 0 12px; }
+.quick-more button { min-height: 48px; font-weight: 600; border-radius: 12px; }
+.quick-more button.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.troll { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.troll-big { background: var(--card); border: 2px solid var(--accent); border-radius: 16px; text-align: center; padding: 8px 4px; }
+.troll-big b { display: block; font-size: 56px; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.troll-big span { font-size: 15px; color: var(--muted); font-weight: 600; }
+.troll-note { grid-column: 1 / -1; text-align: center; margin-top: -4px; }
+.species-grid button small { font-weight: 400; color: var(--muted); }
+
+.next-time { background: rgba(63,176,212,.12); border-left: 3px solid var(--accent); border-radius: 8px; padding: 8px 10px; margin: 0 0 10px; }
+.next-wrap { position: relative; } .next-wrap > a { position: absolute; right: 8px; top: 6px; }
+
+.debrief summary { cursor: pointer; display: flex; flex-direction: column; gap: 2px; }
+.debrief .form { margin-top: 10px; }
+.debrief .pick-chips { margin: -4px 0 10px; }
+.share-card-dlg { max-width: min(92vw, 420px); border: 0; border-radius: 16px; padding: 16px; background: var(--card); color: var(--text); }
+.share-card-dlg img { width: 100%; border-radius: 10px; aspect-ratio: 4 / 5; background: var(--bg); display: block; margin-bottom: 8px; }
+
+.restock-row { display: flex; gap: 8px; align-items: center; padding: 6px 0; border-top: 1px solid var(--line); }
+.restock-row:first-of-type { border-top: 0; }
+.restock-row form { margin: 0; flex-shrink: 0; }
+
+.lookalike details { background: rgba(63,176,212,.10); border-radius: 10px; padding: 6px 10px; margin: 4px 0 10px; }
+.lookalike summary { cursor: pointer; font-size: 14px; }
+.lookalike p { margin: 6px 0 0; }
+
+.go-head .row { flex-wrap: wrap; }
+.go-sec h3 { margin-bottom: 6px; }
+.go-item { display: flex; gap: 10px; align-items: flex-start; padding: 7px 0; border-top: 1px solid var(--line); line-height: 1.35; }
+.go-item:first-of-type { border-top: 0; }
+.go-item input { width: 22px; height: 22px; flex-shrink: 0; margin-top: 1px; }
+.go-item.warn > span { color: #5c4300; } .go-item.good > span { color: #0d5a2c; } .go-item.info > span { color: var(--muted); }
+@media (prefers-color-scheme: dark) { .go-item.warn > span { color: #f2c94c; } .go-item.good > span { color: #7fd8a4; } }
+.go-sec form.row { margin-top: 8px; gap: 6px; } .go-sec form.row select { width: auto; }
+.go-sec .pick-chips { margin: 8px 0 0; }
+
+.report-line { margin-top: 6px; line-height: 1.35; }
+.today-lake .report-line { padding: 0 2px; }
+.report-line.old b { color: var(--muted); }
+.plan-item [data-go-check] { display: inline-block; margin-top: 6px; }
