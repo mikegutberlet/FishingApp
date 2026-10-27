@@ -1,0 +1,50 @@
+tide-stations.json: wrote 240
+CA MPAs: 155; fields of the first: {"OBJECTID":1,"NAME":"Pyramid Point SMCA","CCR":"Section 632 (b) (1)","Area_sq_mi":13.9935561047,"Study_Regi":"NCSR","FULLNAME":"Pyramid Point State Marine Conservation Area","Type":"SMCA","CCR_Int":1,"SHORTNAME":"Pyramid Point","Acres":8955.91152252,"Hectares":3624.32880634,"Shape__Area":65634640.4609375,"Shape__Length":36841.209956369086}
+OR layers [[0,"MR and MPA Boundaries, ODFW, 2015","esriGeometryPolygon"]]
+OR layer 0 MR and MPA Boundaries, ODFW, 2015: 14; first: {"OBJECTID":1,"Name":"Cape Falcon West Marine Protected Area","Shape_Peri":19723.8023948,"Label":"MPA","AREA_SQ_MI":7.36898420028,"AREA_SQ_KM":19.0855814615,"Descr":"Allowed take: salmon by troll, crab."}
+MPA types {"CA SMCA":61,"CA Special Closure":14,"CA SMR":49,"CA SMRMA":5,"CA SMP":7,"CA SMCA (No-Take)":10,"CA FMR":8,"CA FMCA":1,"OR Marine Protected Area":8,"OR Marine Reserve":5,"OR Seabird Protection Area":1}
+mpas.json: wrote 169
+band 32.5–33.5: 229 elements, kept 128
+  band 33.5–34.5 try 1: 502
+band 33.5–34.5: 234 elements, kept 174
+  band 34.5–35.5 try 1: 502
+band 34.5–35.5: 33 elements, kept 28
+  band 35.5–36.5 try 1: 502
+band 35.5–36.5: 7 elements, kept 7
+  band 36.5–37.5 try 1: 502
+  band 36.5–37.5 try 2: 502
+  band 36.5–37.5 try 3: 502
+  band 36.5–37.5 try 4: 502
+band 36.5–37.5 failed (502); keeping 0 spots from the last run
+band 37.5–38.5: 397 elements, kept 161
+  band 38.5–39.5 try 1: 502
+  band 38.5–39.5 try 2: 502
+  band 38.5–39.5 try 3: 502
+band 38.5–39.5: 33 elements, kept 33
+band 39.5–40.5: 10 elements, kept 10
+  band 40.5–41.5 try 1: 502
+  band 40.5–41.5 try 2: 502
+  band 40.5–41.5 try 3: 502
+  band 40.5–41.5 try 4: 502
+band 40.5–41.5 failed (502); keeping 0 spots from the last run
+band 41.5–42.5: 46 elements, kept 20
+  band 42.5–43.5 try 1: 502
+  band 42.5–43.5 try 2: 502
+band 42.5–43.5: 21 elements, kept 20
+  band 43.5–44.5 try 1: 502
+  band 43.5–44.5 try 2: 502
+  band 43.5–44.5 try 3: 502
+  band 43.5–44.5 try 4: 502
+band 43.5–44.5 failed (502); keeping 0 spots from the last run
+  band 44.5–45.5 try 1: 502
+  band 44.5–45.5 try 2: 502
+  band 44.5–45.5 try 3: 502
+band 44.5–45.5: 34 elements, kept 27
+  band 45.5–46.3 try 1: 502
+  band 45.5–46.3 try 2: 502
+  band 45.5–46.3 try 3: 504
+band 45.5–46.5: 78 elements, kept 37
+spots by state and kind {"CA pier":79,"OR pier":4,"CA jetty":15,"OR jetty":14,"CA spot":5,"CA surf":16,"OR surf":7,"CA beach":401,"OR beach":60}
+sample piers [["Imperial Beach Pier","CA",null],["Green Pleasure Pier","CA",null],["Shelter Island Pier","CA",null],["San Clemente Pier","CA",null],["Ski Beach Pier","CA",null],["Broadway Pier","CA",null],["Market Street Pier","CA",null],["South Embarcadero Pier","CA",null],["Oceanside Pier","CA",null],["Sportfishing Docks","CA",null],["Oceanside Harbor Fishing Pier","CA",null],["Bayside Park Pier","CA",null],["Ocean Beach Fishing Pier","CA",null],["Scripps Pier","CA",null],["B Street Pier","CA",null],["Portside Pier","CA",null],["Fishing Pier","CA",null],["Grape Street 1 Pier","CA",null],["Scripps Pier","CA",null],["Port Hueneme Fishing Pier","CA",null],["Newport Pier","CA",null],["Santa Monica Pier","CA",null],["Seal Beach Municipal Pier","CA",null],["Richfield Pier","CA",null],["Stearns Wharf","CA",null]]
+spots.json: wrote 601
+done all parts (spots file has 601)
