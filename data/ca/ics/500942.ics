@@ -9,23 +9,6 @@ X-WR-CALDESC:CDFW fish planting schedule for Merced River\, Section I. Plan
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H
 BEGIN:VEVENT
-UID:2025-10-26-500942-trout@tackle-box
-DTSTAMP:20251026T000000Z
-DTSTART;VALUE=DATE:20251026
-DTEND;VALUE=DATE:20251102
-TRANSP:TRANSPARENT
-SUMMARY:🐟 Trout plant: Merced River\, Section I
-DESCRIPTION:CDFW plans to plant Trout at Merced River\, Section I (Merced C
- ounty) the week of 2025-10-26. Plants are subject to change.
-URL:https://apps.wildlife.ca.gov/fishing/?stockid=500942
-GEO:37.52341;-120.32484
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:Trout plant this week at Merced River\, Section I
-TRIGGER:-PT12H
-END:VALARM
-END:VEVENT
-BEGIN:VEVENT
 UID:2025-11-16-500942-trout@tackle-box
 DTSTAMP:20251116T000000Z
 DTSTART;VALUE=DATE:20251116

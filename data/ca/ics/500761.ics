@@ -9,23 +9,6 @@ X-WR-CALDESC:CDFW fish planting schedule for Kern River\, Section 4. Plants
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H
 BEGIN:VEVENT
-UID:2025-10-26-500761-trout@tackle-box
-DTSTAMP:20251026T000000Z
-DTSTART;VALUE=DATE:20251026
-DTEND;VALUE=DATE:20251102
-TRANSP:TRANSPARENT
-SUMMARY:🐟 Trout plant: Kern River\, Section 4
-DESCRIPTION:CDFW plans to plant Trout at Kern River\, Section 4 (Kern Count
- y) the week of 2025-10-26. Plants are subject to change.
-URL:https://apps.wildlife.ca.gov/fishing/?stockid=500761
-GEO:35.73109;-118.42381
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:Trout plant this week at Kern River\, Section 4
-TRIGGER:-PT12H
-END:VALARM
-END:VEVENT
-BEGIN:VEVENT
 UID:2025-11-02-500761-trout@tackle-box
 DTSTAMP:20251102T000000Z
 DTSTART;VALUE=DATE:20251102

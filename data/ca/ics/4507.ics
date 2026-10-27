@@ -9,23 +9,6 @@ X-WR-CALDESC:CDFW fish planting schedule for Pleasant Valley Reservoir. Pla
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H
 BEGIN:VEVENT
-UID:2025-10-26-4507-trout@tackle-box
-DTSTAMP:20251026T000000Z
-DTSTART;VALUE=DATE:20251026
-DTEND;VALUE=DATE:20251102
-TRANSP:TRANSPARENT
-SUMMARY:🐟 Trout plant: Pleasant Valley Reservoir
-DESCRIPTION:CDFW plans to plant Trout at Pleasant Valley Reservoir (Inyo Co
- unty) the week of 2025-10-26. Plants are subject to change.
-URL:https://apps.wildlife.ca.gov/fishing/?stockid=4507
-GEO:37.42303;-118.53697
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:Trout plant this week at Pleasant Valley Reservoir
-TRIGGER:-PT12H
-END:VALARM
-END:VEVENT
-BEGIN:VEVENT
 UID:2025-12-14-4507-trout@tackle-box
 DTSTAMP:20251214T000000Z
 DTSTART;VALUE=DATE:20251214

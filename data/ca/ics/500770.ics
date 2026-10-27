@@ -9,23 +9,6 @@ X-WR-CALDESC:CDFW fish planting schedule for Kings River\, Below Pine Flat
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H
 BEGIN:VEVENT
-UID:2025-10-26-500770-trout@tackle-box
-DTSTAMP:20251026T000000Z
-DTSTART;VALUE=DATE:20251026
-DTEND;VALUE=DATE:20251102
-TRANSP:TRANSPARENT
-SUMMARY:🐟 Trout plant: Kings River\, Below Pine Flat Dam
-DESCRIPTION:CDFW plans to plant Trout at Kings River\, Below Pine Flat Dam 
- (Fresno County) the week of 2025-10-26. Plants are subject to change.
-URL:https://apps.wildlife.ca.gov/fishing/?stockid=500770
-GEO:36.80211;-119.39071
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:Trout plant this week at Kings River\, Below Pine Flat Dam
-TRIGGER:-PT12H
-END:VALARM
-END:VEVENT
-BEGIN:VEVENT
 UID:2025-11-02-500770-trout@tackle-box
 DTSTAMP:20251102T000000Z
 DTSTART;VALUE=DATE:20251102
