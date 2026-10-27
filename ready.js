@@ -2,6 +2,7 @@
 // gone: the forecast (kept with its age, see forecast.js), weather alerts, Getting there with the walk in, snow and
 // fires, Camping, and the offline map pack (satellite + USGS topo, along the walk in and your GPX routes, plus the
 // state's regs, stocking and depth data). Each part is the same lookup the water's page makes; nothing new is sent.
+import { isCoast, nearestTideStation, tidesFor, marineFor, marineZoneNear, zoneForecast, mpas } from './coast.js';
 import { db } from './db.js';
 import { $, esc, status, showView } from './ui.js';
 import { weatherFor, fetchAlerts } from './forecast.js';
@@ -34,6 +35,13 @@ export async function saveInfo(lake, { signal, onStep = () => {} } = {}) {
   else await part('Getting there', async () => (await lookupAccess(lake)).failed.length < 6);
   await part('snow and fires', async () => (await lookupNow(+lake.lat, +lake.lon, { elevFt: lake.elevationFt ?? null })).failed.length < 3);
   await part('Camping', async () => (await lookupCamping(lake)).failed.length < 6);
+  // Ocean spots: a week of tides, waves and swell, the zone's marine forecast, and the MPA lines (kept by the app's cache).
+  if (isCoast(lake)) {
+    await part('tides', async () => { const st = await nearestTideStation(lake.lat, lake.lon); return !!st && !(await tidesFor(st.id)).savedAt; });
+    await part('waves', async () => !(await marineFor(lake.lat, lake.lon)).savedAt);
+    await part('marine forecast', async () => { const z = await marineZoneNear(lake.lat, lake.lon); return !!z && !(await zoneForecast(z.id, z.office)).savedAt; });
+    await part('marine protected areas', async () => (await mpas()).length > 0);
+  }
   return { saved, failed, skipped };
 }
 

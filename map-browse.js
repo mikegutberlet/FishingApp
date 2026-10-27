@@ -6,6 +6,7 @@ import { selected, forLake, stockIdOf } from './states/index.js';
 import { $, esc, fmtDate, icon, showView, status } from './ui.js';
 import { openWater, openLake, waterRecord } from './views/lake.js';
 import { directionsUrl } from './views/access.js';
+import { coastSpots } from './coast.js';
 
 const view = $('#view-map'), search = $('#map-search'), results = $('#map-results'), sheet = $('#water-sheet');
 const km = (a, b) => { const r = Math.PI / 180, x = (b.lon - a.lon) * r * Math.cos((a.lat + b.lat) / 2 * r), y = (b.lat - a.lat) * r; return Math.hypot(x, y) * 6371; };
@@ -22,7 +23,9 @@ async function draw() {
   if (search.value.trim().toLowerCase() !== q || !statewide) return;
   const c = map.getCenter(), from = { lat: c.lat, lon: c.lng };
   const rivers = [...new Map(statewide.riverLabels.map(r => [r.id, r])).values()];
-  hits = [...statewide.lakes, ...rivers].filter(w => w.name.toLowerCase().includes(q))
+  const coast = await coastSpots();
+  if (search.value.trim().toLowerCase() !== q) return;
+  hits = [...statewide.lakes, ...rivers, ...coast].filter(w => w.name.toLowerCase().includes(q))
     .sort((a, b) => (a.name.toLowerCase().startsWith(q) ? 0 : 1) - (b.name.toLowerCase().startsWith(q) ? 0 : 1) || km(from, a) - km(from, b)).slice(0, 30);
   results.innerHTML = hits.length ? hits.map((w, i) => `<button type="button" data-i="${i}"><b>${esc(w.name)}</b><span class="muted small">${esc(summary(w))}${here ? ` · ${mi(km(here, w))} away` : ''}</span></button>`).join('')
     : '<div class="muted small" style="padding:10px">No matches. Try another spelling, or pick the state under Lakes.</div>';
@@ -35,7 +38,7 @@ results.onclick = e => {
   if (!b) return;
   const w = hits[+b.dataset.i];
   results.classList.add('hidden'); search.blur();
-  map.setView([w.lat, w.lon], w.kind === 'river' ? 11 : 13);
+  map.setView([w.lat, w.lon], w.kind === 'river' ? 11 : w.kind === 'coast' ? 15 : 13);
   preview(w);
 };
 $('#map-search-clear').onclick = () => { search.value = ''; results.innerHTML = ''; results.classList.add('hidden'); };
@@ -88,7 +91,7 @@ export async function preview(w) {
   // Last plant from the state's stocking list, when the water is on it.
   const S = forLake(lake), stockEl = $('#sheet-stock');
   try {
-    const id = saved ? stockIdOf(saved) : (await S?.matchStockedWater(w))?.id;
+    const id = lake.kind === 'coast' ? null : saved ? stockIdOf(saved) : (await S?.matchStockedWater(w))?.id;
     const st = id != null && (await S.waters()).find(x => String(x.id) === String(id));
     if (shown !== w || !stockEl.isConnected) return;
     if (!st) stockEl.remove();
