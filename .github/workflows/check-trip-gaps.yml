@@ -9,6 +9,8 @@ on:
       - roads.js
       - supplies.js
       - .github/workflows/check-trip-gaps.yml
+permissions:
+  contents: read
 jobs:
   check:
     runs-on: ubuntu-latest

@@ -8,6 +8,8 @@ on:
       - camping.js
       - camping-rules.js
       - .github/workflows/check-camping.yml
+permissions:
+  contents: read
 jobs:
   check:
     runs-on: ubuntu-latest
