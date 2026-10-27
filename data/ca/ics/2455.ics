@@ -25,21 +25,4 @@ DESCRIPTION:Trout plant this week at Lake Berryessa
 TRIGGER:-PT12H
 END:VALARM
 END:VEVENT
-BEGIN:VEVENT
-UID:2026-10-25-2455-trout@tackle-box
-DTSTAMP:20261025T000000Z
-DTSTART;VALUE=DATE:20261025
-DTEND;VALUE=DATE:20261101
-TRANSP:TRANSPARENT
-SUMMARY:🐟 Trout plant: Lake Berryessa
-DESCRIPTION:CDFW plans to plant Trout at Lake Berryessa (Napa County) the w
- eek of 2026-10-25. Plants are subject to change.
-URL:https://apps.wildlife.ca.gov/fishing/?stockid=2455
-GEO:38.59192;-122.25438
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:Trout plant this week at Lake Berryessa
-TRIGGER:-PT12H
-END:VALARM
-END:VEVENT
 END:VCALENDAR
