@@ -26,8 +26,12 @@ async function draw() {
   const rivers = [...new Map(statewide.riverLabels.map(r => [r.id, r])).values()];
   const coast = await coastSpots();
   if (search.value.trim().toLowerCase() !== q) return;
+  // Names that start with what you typed first, then nearest, with distance shrunk for big waters (a 10,000-acre lake
+  // counts as a ninth as far), so Oregon's Crater Lake beats far-off ponds of the same name but not the one next door.
+  const size = w => w.acres || (w.km ? w.km * 20 : 0);
   hits = [...statewide.lakes, ...rivers, ...coast].filter(w => w.name.toLowerCase().includes(q))
-    .sort((a, b) => (a.name.toLowerCase().startsWith(q) ? 0 : 1) - (b.name.toLowerCase().startsWith(q) ? 0 : 1) || km(from, a) - km(from, b)).slice(0, 30);
+    .map(w => [(w.name.toLowerCase().startsWith(q) ? 0 : 1e9) + km(from, w) / (1 + Math.log10(Math.max(1, size(w) / 100))) ** 2, w])
+    .sort((a, b) => a[0] - b[0]).map(([, w]) => w).slice(0, 30);
   results.innerHTML = hits.length ? hits.map((w, i) => `<button type="button" data-i="${i}"><b>${esc(w.name)}</b><span class="muted small">${esc([summary(w), w.kind === 'coast' ? '' : forLake(w)?.code].filter(Boolean).join(' · '))}${here ? ` · ${mi(km(here, w))} away` : ''}</span></button>`).join('')
     : '<div class="muted small" style="padding:10px">No matches in California, Nevada or Oregon. Try another spelling, or a shorter part of the name.</div>';
   results.classList.remove('hidden');
