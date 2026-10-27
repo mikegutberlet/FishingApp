@@ -15,6 +15,7 @@ const SCHEMA = {
   tempProfiles: ['lakeId'],
   crew: ['lakeId'],
   licenses: [],
+  routes: ['lakeId'],
 };
 export const STORES = Object.keys(SCHEMA);
 const DB_VERSION = STORES.reduce((n, name) => n + 1 + SCHEMA[name].length, 0) - 8;
