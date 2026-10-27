@@ -7,6 +7,7 @@ import { weatherFor, localKey, addDays, levelChange } from '../forecast.js';
 import { solunar, dayRating, stars, windowSpan, windowLabel } from '../solunar.js';
 import { $, esc, fmtDate, showView, onShow } from '../ui.js';
 import { openLake } from './lake.js';
+import { fillReportLines } from '../report-line.js';
 
 const DAY = 864e5;
 let picked = 0; // days from today
@@ -94,8 +95,15 @@ export async function renderPlanner() {
       <div class="plan-head"><span class="rank">${n + 1}</span><div style="flex:1"><b>${esc(r.lake.name)}</b>${r.lake.favorite ? ' ★' : ''}<div class="muted small">${esc(r.summary)}</div></div>
         <div class="score"><b>${r.score.toFixed(1)}</b><div class="meter"><i style="width:${r.score * 10}%"></i></div></div></div>
       ${r.best ? `<div class="small">Best time: <b>${windowSpan(r.best)}</b>, ${windowLabel(r.best).toLowerCase()}</div>` : ''}
-      <div class="chips">${r.reasons.map(x => `<span class="chip ${x.tone}">${esc(x.text)}</span>`).join('')}</div></div>`).join('');
+      <div class="chips">${r.reasons.map(x => `<span class="chip ${x.tone}">${esc(x.text)}</span>`).join('')}</div>
+      <div data-report-for="${esc(r.lake.id)}"></div>
+      <a href="#" class="small" data-go-check="${esc(r.lake.id)}">📋 Before you go</a></div>`).join('');
   $('#plan-list').querySelectorAll('.plan-item').forEach(c => c.onclick = () => openLake(c.dataset.id));
+  $('#plan-list').querySelectorAll('[data-go-check]').forEach(a => a.onclick = e => {
+    e.preventDefault(); e.stopPropagation();
+    import('./before-go.js').then(m => m.openChecklist(a.dataset.goCheck, date, { from: 'planner' }));
+  });
+  fillReportLines($('#plan-list'), lakes);
 }
 
 onShow('planner', renderPlanner);
