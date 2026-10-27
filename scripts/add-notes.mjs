@@ -5,6 +5,9 @@
 //
 //   node scripts/add-notes.mjs notes.json
 //   node scripts/add-notes.mjs --find "convict"      which waters match a name, with the ids to use
+//   CORPUS_DIR=/path/to/private node scripts/add-notes.mjs notes.json
+//                                                   the private archive on the NAS (scripts/pack-private-corpus.mjs):
+//                                                   there a note may also carry "excerpt", the passage itself
 //
 //   notes.json: [{ "water": "ca:175" or "ca:Convict Lake", "text": "…", "by": "Goobs", "date": "2026-10-27",
 //                  "source": { "title": "…", "author": "…", "page": "112", "url": "https://…", "read": "2026-10-27" } }]
@@ -17,6 +20,8 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 
 const ROOT = new URL('../', import.meta.url).pathname;
+const DIR = process.env.CORPUS_DIR ? path.resolve(process.env.CORPUS_DIR) : path.join(ROOT, 'data/corpus');
+const PRIVATE = !!process.env.CORPUS_DIR;
 const MAX_CHARS = 400;
 const today = new Date().toISOString().slice(0, 10);
 const readJson = async p => { try { return JSON.parse(await readFile(path.join(ROOT, p), 'utf8')); } catch { return null; } };
@@ -55,24 +60,28 @@ for (const [i, n] of notes.entries()) {
     if (!s.title && !s.url) throw new Error('source needs a title or a url');
     if (s.url && !/^https?:\/\/\S+$/.test(s.url)) throw new Error(`source url "${s.url}" must start with http:// or https://`);
     const source = Object.fromEntries(Object.entries({ title: s.title, author: s.author, page: s.page != null ? String(s.page) : undefined, url: s.url, read: s.read ?? (s.url ? today : undefined) }).filter(([, v]) => v));
-    const file = `data/corpus/${st}/${encodeURIComponent(String(w.id))}.json`;
+    if (n.excerpt && !PRIVATE) throw new Error('an excerpt (the passage itself) goes only in the private archive: set CORPUS_DIR');
+    const file = path.join(DIR, st, `${encodeURIComponent(String(w.id))}.json`);
     if (!byFile.has(file)) byFile.set(file, { st, w, add: [] });
-    byFile.get(file).add.push({ date: n.date ?? today, by: n.by ?? 'Goobs', text, source });
+    byFile.get(file).add.push({ date: n.date ?? today, by: n.by ?? 'Goobs', text, source, excerpt: n.excerpt ? String(n.excerpt).trim() : undefined });
   } catch (e) { bad.push(`#${i + 1}: ${e.message}`); }
 }
 if (bad.length) { console.error(bad.join('\n')); process.exit(1); }
 
 let added = 0, skipped = 0;
 for (const [file, { st, w, add }] of byFile) {
-  const f = await readJson(file) ?? { id: String(w.id), state: st.toUpperCase(), name: w.name, notes: [], manual: {} };
+  let f = null; try { f = JSON.parse(await readFile(file, 'utf8')); } catch {}
+  f ??= { id: String(w.id), state: st.toUpperCase(), name: w.name, notes: [], manual: {} };
   f.notes ??= [];
   for (const n of add) {
     if (f.notes.some(o => key(o.text) === key(n.text))) { skipped++; continue; }
-    f.notes.push(n); added++;
+    // In the private archive the passage is kept beside the note, as an excerpt the app shows under "From your books".
+    if (n.excerpt) (f.excerpts ??= []).push({ text: n.excerpt, source: n.source });
+    delete n.excerpt; f.notes.push(n); added++;
   }
-  await mkdir(path.dirname(path.join(ROOT, file)), { recursive: true });
+  await mkdir(path.dirname(file), { recursive: true });
   // Built files are compact; a notes-only file is small and stays readable.
-  await writeFile(path.join(ROOT, file), JSON.stringify(f, null, f.checkedAt ? 0 : 1) + '\n');
-  console.log(`${file} ${w.name}: ${f.notes.length} notes${f.checkedAt ? '' : ' (not built yet; the nightly job fills in the rest)'}`);
+  await writeFile(file, JSON.stringify(f, null, f.checkedAt ? 0 : 1) + '\n');
+  console.log(`${path.relative(process.cwd(), file)} ${w.name}: ${f.notes.length} notes${f.excerpts?.length ? `, ${f.excerpts.length} excerpts` : ''}${f.checkedAt || PRIVATE ? '' : ' (not built yet; the nightly job fills in the rest)'}`);
 }
 console.log(`${added} added, ${skipped} already there`);

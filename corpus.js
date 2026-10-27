@@ -2,6 +2,7 @@
 // (data/corpus/<st>/<id>.json, see docs/corpus/README.md). When a live source doesn't answer, or you're offline
 // with nothing kept on the phone yet, Getting there and Camping fill in from it and say so with its date.
 import { forLake, stockIdOf } from './states/index.js';
+import { db } from './db.js';
 // No ui.js here: the nightly job imports this module in Node, where there is no document.
 
 const files = {};
@@ -10,10 +11,16 @@ export const corpusUrl = lake => {
   return S && id != null && id !== '' ? `data/corpus/${S.code.toLowerCase()}/${encodeURIComponent(String(id))}.json` : null;
 };
 // A missing file (a water the job hasn't reached yet, or offline before it was ever seen) is asked for again after 30 s.
+// Your private archive (private-corpus.js), imported into this phone's own storage, is laid over the repo's copy:
+// its notes and book excerpts never leave the phone.
 export async function corpusFor(lake) {
   const url = corpusUrl(lake);
   if (!url) return null;
-  return files[url] ??= fetch(url).then(r => r.ok ? r.json() : null).catch(() => null).then(f => { if (!f) setTimeout(() => delete files[url], 30e3); return f; });
+  const pub = await (files[url] ??= fetch(url).then(r => r.ok ? r.json() : null).catch(() => null).then(f => { if (!f) setTimeout(() => delete files[url], 30e3); return f; }));
+  const priv = await db.get('corpusPrivate', url.slice('data/corpus/'.length, -'.json'.length)).catch(() => null);
+  if (!priv) return pub;
+  const seen = new Set((priv.notes ?? []).map(n => n.text));
+  return { ...pub, ...priv, notes: [...(priv.notes ?? []), ...(pub?.notes ?? []).filter(n => !seen.has(n.text))], manual: { ...pub?.manual, ...priv.manual }, private: true };
 }
 // The state's catalogue page (docs/corpus/<st>.md): its contents list links to every water's section.
 export const catalogueUrl = f => `https://github.com/mikegutberlet/FishingApp/blob/main/docs/corpus/${f.state.toLowerCase()}.md`;

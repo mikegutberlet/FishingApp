@@ -21,6 +21,7 @@ const SCHEMA = {
   campsites: ['lakeId'],
   iceLogs: ['lakeId'],
   crewPlans: [],
+  corpusPrivate: [],
 };
 export const STORES = Object.keys(SCHEMA);
 const DB_VERSION = STORES.reduce((n, name) => n + 1 + SCHEMA[name].length, 0) - 8;

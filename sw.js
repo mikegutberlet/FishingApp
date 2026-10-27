@@ -162,6 +162,7 @@ const SHELL = [
   'share-water.js',
   'guide.html',
   'corpus.js',
+  'private-corpus.js',
   'views/corpus-card.js',
 ];
 
