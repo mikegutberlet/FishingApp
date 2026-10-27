@@ -17,6 +17,25 @@ async function get(url, { show = 600, grep = null, links = null, method = 'GET',
   } catch (e) { console.log(`\n### ${url}\nFAILED ${e.message}`); }
 }
 const part = process.argv[2] ?? 'all';
+if (part === 'round2') {
+  await get('https://wildlife.ca.gov/Regulations', { show: 0, links: 'FileHandler|pdf|Sport-Fishing|freshwater', grep: 'Freshwater Sport Fishing Regulations.{0,200}' });
+  await get('https://wildlife.ca.gov/Regulations', { show: 0, grep: 'DocumentID=\\d+[^"]{0,30}"[^>]*>[^<]{0,80}' });
+  await get('https://www.ndow.org/rules-regulations/', { show: 0, links: 'pdf|fish|eregulations' });
+  await get('https://www.eregulations.com/oregon/fishing/pdf', { show: 0, links: 'pdf' });
+  await get('https://www.eregulations.com/nevada/fishing/pdf', { show: 0, links: 'pdf' });
+  await get('https://www.eregulations.com/california/fishing/pdf', { show: 0, links: 'pdf' });
+  await get('https://www.parks.ca.gov/?page_id=31951', { show: 0, grep: '(ramp|launch|lane).{0,160}(feet|ft\\b|elevation|msl)|elevation.{0,160}' });
+  await get('https://www.parks.ca.gov/post/140', { show: 0, grep: '(ramp|launch|lane).{0,160}(feet|ft\\b|elevation|msl)|elevation.{0,160}' });
+  await get('https://www.parks.ca.gov/?page_id=28411', { show: 0, grep: '(ramp|launch|lane).{0,160}(feet|ft\\b|elevation|msl)|elevation.{0,160}' });
+  await get('https://www.usbr.gov/mp/ccao/newmelones/planning-visit/boating-fishing.html', { show: 0, grep: '(ramp|launch).{0,160}(feet|ft\\b|elevation)|elevation.{0,160}', links: 'ramp|launch' });
+  await get('https://www.nps.gov/lake/planyourvisit/launchramps.htm', { show: 0, grep: '(ramp|launch).{0,160}(feet|ft\\b|elevation)' });
+  await get('https://www.nps.gov/lake/planyourvisit/lake-levels.htm', { show: 0, grep: '(ramp|launch).{0,160}(feet|ft\\b|elevation)' });
+  await get('https://www.nps.gov/lake/index.htm', { show: 0, links: 'ramp|launch|level|boat' });
+  await get('https://www.nwd-wc.usace.army.mil/nwp/teacup/willamette/', { show: 0, grep: 'ramp.{0,160}' });
+  await get('https://www.fs.usda.gov/r05/shasta-trinity', { show: 0, links: 'ramp|launch|lake level|boat' });
+  await get('https://www.oregon.gov/osmb/Pages/index.aspx', { show: 0, links: 'ramp|reservoir|level|access' });
+  await get('https://www.berryessa.com/', { show: 0, grep: 'ramp.{0,160}(feet|ft\\b|elevation)' });
+}
 if (part === 'all' || part === 'roads') {
   for (const d of ['02', '03', '06', '08', '09', '10']) await get(`https://cwwp2.dot.ca.gov/data/d${+d}/cc/ccStatusD${d}.json`, { show: 900 });
   await get('https://cwwp2.dot.ca.gov/data/d3/lcs/lcsStatusD03.json', { show: 1500 });
