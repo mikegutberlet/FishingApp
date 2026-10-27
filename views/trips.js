@@ -467,7 +467,7 @@ function drawTripMap(t, lake, catches, events) {
   const div = $('#trip-map');
   if (!div) return;
   miniMap = L.map(div, { zoomControl: false, attributionControl: false });
-  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19 }).addTo(miniMap);
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, crossOrigin: true }).addTo(miniMap);
   const pts = [];
   const track = trackOf(t);
   if (track.length) {

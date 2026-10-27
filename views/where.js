@@ -347,7 +347,7 @@ async function renderTruck(body) {
   $('#wh-pick').onclick = e => { e.preventDefault(); pickTruck(); };
   $('#wh-clear').onclick = e => { e.preventDefault(); if (confirm('Clear the truck spot?')) { write(TRUCK, null); render(); } };
   miniMap = L.map($('#wh-map'), { zoomControl: false, attributionControl: false });
-  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19 }).addTo(miniMap);
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, crossOrigin: true }).addTo(miniMap);
   const truckMark = L.marker([t.lat, t.lon], { icon: L.divIcon({ className: 'wh-truck-pin', html: '🚙', iconSize: [28, 28] }) }).addTo(miniMap);
   const youMark = L.circleMarker([t.lat, t.lon], { radius: 7, color: '#fff', weight: 2, fillColor: '#1f78c8', fillOpacity: 1 });
   const line = L.polyline([], { color: '#f2d028', weight: 3, dashArray: '6 6' }).addTo(miniMap);

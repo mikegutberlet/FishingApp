@@ -236,7 +236,7 @@ const list = items => {
     try { draw(lake, await lookupAccess(lake, { spot: data.spot, force: true, onPartial: d => el.isConnected && draw(lake, d, el, ctx) }), el, ctx); } catch (err) { el.querySelector('.gt-head').textContent = `Couldn’t refresh: ${err.message}`; }
   };
   // Permits and quotas, trailheads and parking, and the GPX of it all (views/tabs/access-more.js).
-  if (!dead) import('./access-more.js').then(m => m.renderAccessMore(lake, data, s, el.parentNode?.querySelector('#gt-more'))).catch(e => console.warn('access more:', e.message));
+  import('./access-more.js').then(m => dead ? m.clearAccessMore(el.parentNode?.querySelector('#gt-more')) : m.renderAccessMore(lake, data, s, el.parentNode?.querySelector('#gt-more'))).catch(e => console.warn('access more:', e.message));
   el.querySelectorAll('[data-gt-map]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); showRoutes(lake, s, hike); }));
   el.querySelector('[data-gt-gpx]')?.addEventListener('click', e => { e.preventDefault(); exportWalkIn(lake, hike); });
 }

@@ -12,28 +12,31 @@ import { showPoints } from '../../access-points.js';
 const a = (s, text = 'source') => s?.url ? `<a ${text === 'source' ? 'class="gt-src" ' : ''}href="${esc(s.url)}" target="_blank" rel="noopener" title="${esc(s.label ?? '')}">${esc(text)} ↗</a>` : '';
 const slots = new WeakMap();
 // data, s: the road lookup and its summary, as the main card has them. Called again whenever that card redraws.
+// The main card found nothing to show: empty the cards, and forget the lookup so it can't paint them back.
+export const clearAccessMore = el => { if (el) { slots.delete(el); el.replaceChildren(); } };
 export function renderAccessMore(lake, data, s, el) {
   if (!el?.isConnected) return;
   const S = forLake(lake);
   const r = rulesFor(lake, { lat: data.lat, lon: data.lon, parcels: data.land?.parcels ?? [], state: S?.code ?? null });
   const km = pointsKm(data), trailKm = trailheadKm(data, s);
   let st = slots.get(el);
-  if (!st || st.key !== `${data.lat},${data.lon},${trailKm}`) { st = { key: `${data.lat},${data.lon},${trailKm}`, points: null, error: null, loading: false }; slots.set(el, st); }
-  const paint = () => {
-    if (!el.isConnected) return;
+  if (!st || st.key !== `${data.lat},${data.lon},${km},${trailKm}`) { st = { key: `${data.lat},${data.lon},${km},${trailKm}`, points: null, error: null, loading: false }; slots.set(el, st); }
+  // The lookup below paints with whatever the latest redraw had, and not at all once another spot has the slot.
+  const paint = st.paint = () => {
+    if (!el.isConnected || slots.get(el) !== st) return;
     el.innerHTML = rulesCard(lake, r, S) + pointsCard(st, km, trailKm);
-    wire(lake, data, s, el, st, km, trailKm, paint);
+    wire(lake, data, s, el, st, km, trailKm);
   };
   paint();
   if (st.points || st.loading) return;
   st.loading = true;
   (async () => {
     const have = await cachedPoints(data.lat, data.lon, km, trailKm);
-    if (have) { st.points = have; paint(); if (!have.stale) { st.loading = false; return; } }
-    if (navigator.onLine === false) { st.loading = false; if (!have) { st.error = 'offline'; paint(); } return; }
+    if (have) { st.points = have; st.paint(); if (!have.stale) { st.loading = false; return; } }
+    if (navigator.onLine === false) { st.loading = false; if (!have) { st.error = 'offline'; st.paint(); } return; }
     try { st.points = await nearbyPoints(data.lat, data.lon, km, { trailKm }); st.error = st.points.error ?? null; }
     catch (e) { st.error = e.message; }
-    st.loading = false; paint();
+    st.loading = false; st.paint();
   })();
 }
 
@@ -51,7 +54,7 @@ function rulesCard(lake, r, S) {
   }
   for (const t of r.passes) items.push(`<div class="gt-chip"><span>🅿️</span><div><b>Parking pass</b><div class="small">${esc(t)}</div>
     <div class="muted small">${a(PASS_SRC[/adventure pass/i.test(t) ? 'CA' : 'OR'], PASS_SRC[/adventure pass/i.test(t) ? 'CA' : 'OR'].label)}</div></div></div>`);
-  if (r.boat && lake.kind !== 'ocean') {
+  if (r.boat && lake.kind !== 'coast') {
     const src = /tahoe/i.test(lake.name ?? '') && r.boatHere ? TAHOE_SRC : BOAT_SRC[S?.code];
     items.push(`<div class="gt-chip"><span>🚤</span><div><b>${r.boatHere ? 'Boat inspection here' : 'Bringing a boat'}</b><div class="small">${esc(r.boat)}</div>${src ? `<div class="muted small">${a(src, src.label)}</div>` : ''}</div></div>`);
   }
@@ -79,11 +82,11 @@ function pointsCard(st, km, trailKm) {
     <p class="muted small" style="margin-top:6px">${within}, from OpenStreetMap (volunteer-mapped: fees and hours are as mappers last saw them). “Go” opens directions in Google Maps. The GPX holds every road and trail on this tab, the walk in, trailheads, parking and gates, for Gaia GPS, CalTopo or onX with no signal.${st.points?.fetchedAt ? ` Looked up ${fmtDate(st.points.fetchedAt)}.` : ''}</p></div>`;
 }
 
-function wire(lake, data, s, el, st, km, trailKm, paint) {
+function wire(lake, data, s, el, st, km, trailKm) {
   el.querySelector('[data-pt-retry]')?.addEventListener('click', async e => {
-    e.preventDefault(); st.error = null; st.loading = true; paint();
+    e.preventDefault(); st.error = null; st.loading = true; st.paint();
     try { st.points = await nearbyPoints(data.lat, data.lon, km, { force: true, trailKm }); } catch (err) { st.error = err.message; }
-    st.loading = false; paint();
+    st.loading = false; st.paint();
   });
   el.querySelector('[data-pt-map]')?.addEventListener('click', () => {
     showPoints(st.points.points);

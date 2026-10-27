@@ -21,7 +21,8 @@ async function draw() {
   if (q.length < 2) { results.innerHTML = ''; results.classList.add('hidden'); return; }
   // Every state, not just the one picked under Lakes: a search for Crater Lake should find Oregon's too.
   await Promise.all(Object.values(STATES).map(loadState));
-  if (search.value.trim().toLowerCase() !== q || !statewide) return;
+  if (search.value.trim().toLowerCase() !== q) return;
+  if (!statewide) { hits = []; results.textContent = 'The water lists didn’t download. Check your signal and try again.'; results.classList.remove('hidden'); return; }
   const c = map.getCenter(), from = { lat: c.lat, lon: c.lng };
   const rivers = [...new Map(statewide.riverLabels.map(r => [r.id, r])).values()];
   const coast = await coastSpots();
@@ -115,7 +116,7 @@ let mini = null;
 export async function mountTodayMap(el) {
   if (mini) { mini.remove(); mini = null; }
   mini = L.map(el, { zoomControl: false, dragging: false, scrollWheelZoom: false, doubleClickZoom: false, touchZoom: false, boxZoom: false, keyboard: false, attributionControl: false });
-  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19 }).addTo(mini);
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, crossOrigin: true }).addTo(mini);
   const lakes = (await db.all('lakes')).filter(l => Number.isFinite(l.lat) && Number.isFinite(l.lon));
   const favs = lakes.filter(l => l.favorite), focus = favs.length ? favs : lakes;
   for (const l of lakes) L.circleMarker([l.lat, l.lon], { radius: l.favorite ? 7 : 5, color: '#fff', weight: 2, fillColor: l.favorite ? '#f2b928' : '#3fb0d4', fillOpacity: 1 }).bindTooltip(l.name, { permanent: focus.length <= 4 && focus.includes(l), direction: 'top', className: 'mini-tip' }).addTo(mini);

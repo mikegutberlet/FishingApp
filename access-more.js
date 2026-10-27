@@ -17,7 +17,7 @@ async function cacheGet(kind, key, maxDays) {
   } catch { return null; }
 }
 async function cachePut(kind, key, data) { try { await (await caches.open(CACHE)).put(cacheUrl(kind, key), new Response(JSON.stringify(data), { headers: { 'Content-Type': 'application/json' } })); } catch {} }
-const pointKey = (lat, lon, km, trailKm = km) => `${(+lat).toFixed(3)},${(+lon).toFixed(3)},${Math.round(km)}${trailKm > km ? `,t${Math.round(trailKm)}` : ''}`;
+const pointKey = (lat, lon, km, trailKm = km) => `${(+lat).toFixed(3)},${(+lon).toFixed(3)},${Math.round(km * 10) / 10}${trailKm > km ? `,t${Math.round(trailKm * 10) / 10}` : ''}`;
 
 // ---------- Permits and quotas ----------
 // Wildernesses and parks in the three states where a permit is needed to go in, matched on the land unit at the
@@ -132,9 +132,9 @@ export async function overpassPoints(bbox, trailBbox = bbox) {
     try {
       const r = await fetch(OVERPASS, { method: 'POST', body: new URLSearchParams({ data: pointsQuery(bbox, trailBbox) }), signal: AbortSignal.timeout(50000) });
       if (r.status === 429 || r.status >= 500) { last = new Error(`${r.status}: server busy`); continue; }
-      if (!r.ok) throw new Error(`${r.status}`);
+      if (!r.ok) { last = new Error(`${r.status}`); break; } // a bad request won't get better by asking again
       const j = await r.json();
-      if (j.remark && !j.elements?.length) throw new Error(j.remark);
+      if (j.remark && !j.elements?.length) throw new Error(j.remark); // Overpass busy or timed out: worth one more try
       return (j.elements ?? []).map(osmPoint).filter(Boolean);
     } catch (e) { last = e; if (e.name === 'TimeoutError' || globalThis.navigator?.onLine === false) break; }
   }
