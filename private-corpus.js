@@ -1,6 +1,6 @@
-// Your private archive: notes and book excerpts kept on your NAS and Google Drive (scripts/private-corpus/), packed
-// into one file and imported here into this phone's own storage. corpus.js lays it over the repo's public copy of
-// each water, so the Info tab shows both. Nothing in it is ever fetched from, or sent to, a server.
+// Your private archive: every stocked water's record, your notes and book excerpts, built nightly into a folder on
+// your NAS and Google Drive (scripts/build-corpus.mjs, docs/corpus/README.md) and imported here from its pack file
+// into this phone's own storage. corpus.js reads it from there. Nothing in it is ever fetched from, or sent to, a server.
 import { db } from './db.js';
 import { $, esc, fmtDate, status, onShow } from './ui.js';
 
@@ -24,7 +24,7 @@ function renderCard() {
   if (!el) return;
   let m = null; try { m = JSON.parse(localStorage.getItem(META)); } catch {}
   el.innerHTML = `<h3>Your private archive</h3>
-    <p class="small">${m ? `${m.waters} waters with your notes and book excerpts${m.library ? `, ${m.library} books` : ''} · built ${fmtDate(m.builtAt)} · imported ${fmtDate(m.importedAt)}` : 'Notes and excerpts from your own books, sites and blogs, kept on your NAS and Google Drive. Import the pack file with the button above; it stays on this phone only.'}</p>
+    <p class="small">${m ? `${m.waters} waters with their records, your notes and book excerpts${m.library ? `, ${m.library} books` : ''} · built ${fmtDate(m.builtAt)} · imported ${fmtDate(m.importedAt)}` : 'Every stocked water’s record plus notes and excerpts from your own books, sites and blogs, built nightly into your private folder. Import its pack file (tackle-box-private-corpus.json) with the button above; it stays on this phone only.'}</p>
     ${m ? `<button class="danger" id="private-corpus-clear">Remove from this phone</button>` : ''}`;
   $('#private-corpus-clear', el)?.addEventListener('click', async () => { if (!confirm('Remove your private archive from this phone? (The pack on your NAS and Drive stays.)')) return; await db.clear('corpusPrivate'); localStorage.removeItem(META); renderCard(); });
 }

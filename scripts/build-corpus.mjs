@@ -1,12 +1,12 @@
 // The corpus: a durable copy of what the app knows about each stocked water, kept in the repo so the knowledge
-// survives if a public service goes away. One file per water, data/corpus/<st>/<id>.json, built from the state
+// survives if a public service goes away. One file per water, <CORPUS_DIR>/<st>/<id>.json, built from the state
 // data files the other jobs write (stocking, regulations, advisories, introductions, size and depth) and from the
 // same live lookups the app runs on the phone (roads, trails, gates, the walk in, land manager, Wikipedia,
 // campgrounds). Every fact keeps the link to the record it came from and the date it was fetched.
-// Runs nightly (see .github/workflows/build-corpus.yml) within a time budget, oldest files first, so the first full
+// Runs nightly on Goobs's Mac (docs/corpus/README.md) within a time budget, oldest files first, so the first full
 // pass takes several nights and after that each water is refreshed about every CORPUS_REFRESH_DAYS days.
 //
-//   data/corpus/<st>/<id>.json {
+//   <CORPUS_DIR>/<st>/<id>.json {
 //     id, state, name, lat, lon, county, kind, firstSeen, checkedAt, updatedAt,
 //     agency:   { name, url, about, lastYearStocked }         the state agency's page and write-up for the water
 //     facts:    { type, acres, elevationFt, maxDepthFt, meanDepthFt, depthSource, nhdId, hydro, surveys }
@@ -20,14 +20,15 @@
 //     advisories: { algae: [...], eating: [...] }           what was in force when the file was built
 //     sources:  [{ label, url, fetchedAt }]                  every source touched for this file
 //     notes:    [{ date, by, text, source }]                 HAND-KEPT: the job never changes this list (scripts/add-notes.mjs)
+//     excerpts: [{ text, source }]                           HAND-KEPT: passages from your own books, with the page
 //     manual:   { ... }                                       HAND-KEPT: values here override the job's facts in the app
 //     changes:  [{ date, text }]                             what the job saw change, newest first (last 50)
 //   }
-//   data/corpus/<st>/index.json  { updatedAt, count, waters: [{ id, name, county, lat, lon, checkedAt, verdict, camps, years, notes }] }
-//   docs/corpus/<st>.md          the catalogue, one section per water, generated from the files
-//   docs/corpus/CHANGELOG.md     one entry per run
+//   <CORPUS_DIR>/<st>/index.json  { updatedAt, count, waters: [{ id, name, county, lat, lon, checkedAt, verdict, camps, years, notes }] }
+//   <CORPUS_DIR>/docs/<st>.md    the catalogue, one section per water, generated from the files
+//   <CORPUS_DIR>/docs/CHANGELOG.md  one entry per run
 //
-// Env: CORPUS_MINUTES (time budget, default 300), CORPUS_MAX (waters per run), CORPUS_REFRESH_DAYS (default 120),
+// Env: CORPUS_DIR (required), CORPUS_MINUTES (time budget, default 300), CORPUS_MAX (waters per run), CORPUS_REFRESH_DAYS (default 120),
 // CORPUS_ONLY (comma list of st:id to build, e.g. "ca:175,or:ALDER_LK"), CORPUS_DOCS_ONLY=1 (rebuild docs only),
 // CORPUS_NO_LIVE=1 (skip the live lookups: rebuild the parts that come from the repo's own files).
 
@@ -37,7 +38,13 @@ import path from 'node:path';
 
 const ROOT = new URL('../', import.meta.url);
 const rootPath = p => path.join(ROOT.pathname, p);
-const DATA = 'data/corpus', DOCS = 'docs/corpus';
+// Everything the job writes goes to the private archive folder, outside this public repo (CORPUS_DIR, e.g. a NAS
+// folder synced to Google Drive): <dir>/<st>/<id>.json, <dir>/<st>/index.json, <dir>/docs/ catalogue and changelog,
+// and <dir>/tackle-box-private-corpus.json, the pack the app imports (⚙️ gear → Import; private-corpus.js).
+const OUT = process.env.CORPUS_DIR ? path.resolve(process.env.CORPUS_DIR) : null;
+if (!OUT) { console.error('CORPUS_DIR=<private archive folder> is required: the corpus is not kept in the repo.'); process.exit(1); }
+const outPath = p => path.join(OUT, p);
+const DATA = '.', DOCS = 'docs';
 const STATES = ['CA', 'NV', 'OR'];
 const MINUTES = +(process.env.CORPUS_MINUTES || 300);
 const MAX = process.env.CORPUS_MAX ? +process.env.CORPUS_MAX : Infinity;
@@ -83,9 +90,9 @@ const { haversineKm } = await import('../data-sources.js');
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const minutesLeft = () => MINUTES - (Date.now() - started) / 60000;
 const fileOf = (st, id) => `${DATA}/${st.toLowerCase()}/${encodeURIComponent(String(id))}.json`;
-async function readJson(p) { try { return JSON.parse(await readFile(rootPath(p), 'utf8')); } catch { return null; } }
+async function readJson(p) { try { return JSON.parse(await readFile(outPath(p), 'utf8')); } catch { return null; } }
 // Water files are written compact (road geometry pretty-printed is three times the size); the small index stays readable.
-async function writeJson(p, v, pretty = false) { await mkdir(path.dirname(rootPath(p)), { recursive: true }); await writeFile(rootPath(p), JSON.stringify(v, null, pretty ? 1 : 0) + '\n'); }
+async function writeJson(p, v, pretty = false) { await mkdir(path.dirname(outPath(p)), { recursive: true }); await writeFile(outPath(p), JSON.stringify(v, null, pretty ? 1 : 0) + '\n'); }
 const round = (n, d = 4) => n == null ? null : +(+n).toFixed(d);
 
 // ---------- Which water, and what the app would know about it ----------
@@ -249,7 +256,7 @@ async function buildWater(S, w, prev, { live }) {
     introductions: (intro?.local ?? []).map(x => ({ year: x.year, text: x.text })),
     rules, advisories,
     sources: [...sources.values()],
-    notes: prev?.notes ?? [], manual: prev?.manual ?? {},
+    notes: prev?.notes ?? [], excerpts: prev?.excerpts ?? [], manual: prev?.manual ?? {},
     changes: prev?.changes ?? [],
   };
   return file;
@@ -317,6 +324,7 @@ function waterSection(S, f) {
   if (f.advisories.algae.length) lines.push(`- **Toxic algae** (${f.checkedAt.slice(0, 10)}): ${f.advisories.algae.map(a => `${a.advisory ?? a.level}${a.date ? ` since ${a.date}` : ''}`).join('; ')}`);
   if (f.advisories.eating.length) lines.push(`- **Eating the fish**: ${f.advisories.eating.map(a => link(a.name, a.url)).join('; ')}`);
   for (const n of f.notes) lines.push(`- 📝 **Note** (${n.date}${n.by ? `, ${n.by}` : ''}): ${n.text}${n.source ? ` (${noteSource(n.source)})` : ''}`);
+  for (const x of f.excerpts ?? []) lines.push(`- 📖 **From your books**: “${x.text}”${x.source ? ` (${noteSource(x.source)})` : ''}`);
   lines.push(`- ${f.sources.length} sources · first seen ${f.firstSeen} · last checked ${f.checkedAt.slice(0, 10)}`);
   return lines.join('\n');
 }
@@ -334,32 +342,32 @@ async function writeDocs(S, files) {
   const sections = Object.fromEntries(counties.map(c => [c, byCounty[c].map(f => waterSection(S, f) + '\n').join('\n')]));
   for (const c of counties) { if (size + sections[c].length > 250000 && pages.at(-1).length) { pages.push([]); size = 0; } pages.at(-1).push(c); size += sections[c].length; }
   const pageOf = c => pages.length === 1 ? '' : `${st}-${pages.findIndex(pg => pg.includes(c)) + 1}.md`;
-  const head = `Generated by \`scripts/build-corpus.mjs\` from \`${DATA}/${st}/\`; do not edit by hand (put notes in a water's JSON file under \`notes\`, and they show up here on the next run). See the [README](README.md) for how the corpus is built and kept.`;
+  const head = `Generated by \`scripts/build-corpus.mjs\` from \`${st}/\`; do not edit by hand (put notes in a water's JSON file under \`notes\`, and they show up here on the next run). See the [README](README.md) for how the corpus is built and kept.`;
   const md = [`# ${S.name} waters: the corpus`, '', `Every ${S.agency} stocked water with a map point, with what Tackle Box knows about it. ${head}`, '',
     `**${sorted.length} waters** · getting there recorded for ${withAccess} · camping for ${withCamp} · multi-year stocking history for ${withHist} · hand notes on ${withNotes} · last run ${today}`, '',
     '## Contents', '', ...counties.map(c => `- **${pages.length === 1 ? c : `[${c}](${pageOf(c)}#${c.toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-')})`}**: ${byCounty[c].map(f => `[${f.name}](${pageOf(c)}#${slug(f)})`).join(' · ')}`), '',
     ...(pages.length === 1 ? counties.flatMap(c => [`## ${c}`, '', sections[c]]) : [`The waters are on ${pages.length} pages: ${pages.map((pg, i) => `[${pg[0]} – ${pg.at(-1)}](${st}-${i + 1}.md)`).join(' · ')}.`]),
   ].join('\n');
-  await mkdir(rootPath(DOCS), { recursive: true });
-  await writeFile(rootPath(`${DOCS}/${st}.md`), md);
-  const stale = (await readdir(rootPath(DOCS))).filter(n => new RegExp(`^${st}-\\d+\\.md$`).test(n));
-  for (const n of stale) await writeFile(rootPath(`${DOCS}/${n}`), ''); // rewritten below or left empty to be removed
+  await mkdir(outPath(DOCS), { recursive: true });
+  await writeFile(outPath(`${DOCS}/${st}.md`), md);
+  const stale = (await readdir(outPath(DOCS))).filter(n => new RegExp(`^${st}-\\d+\\.md$`).test(n));
+  for (const n of stale) await writeFile(outPath(`${DOCS}/${n}`), ''); // rewritten below or left empty to be removed
   if (pages.length > 1) for (const [i, pg] of pages.entries()) {
-    await writeFile(rootPath(`${DOCS}/${st}-${i + 1}.md`), [`# ${S.name} waters: ${pg[0]} – ${pg.at(-1)}`, '', `Part ${i + 1} of ${pages.length} of the [${S.name} catalogue](${st}.md). ${head}`, '', ...pg.flatMap(c => [`## ${c}`, '', sections[c]])].join('\n'));
+    await writeFile(outPath(`${DOCS}/${st}-${i + 1}.md`), [`# ${S.name} waters: ${pg[0]} – ${pg.at(-1)}`, '', `Part ${i + 1} of ${pages.length} of the [${S.name} catalogue](${st}.md). ${head}`, '', ...pg.flatMap(c => [`## ${c}`, '', sections[c]])].join('\n'));
   }
-  for (const n of stale) if (!(await readFile(rootPath(`${DOCS}/${n}`), 'utf8')).length) await unlink(rootPath(`${DOCS}/${n}`));
+  for (const n of stale) if (!(await readFile(outPath(`${DOCS}/${n}`), 'utf8')).length) await unlink(outPath(`${DOCS}/${n}`));
 }
 
 async function appendChangelog(runs) {
   const p = `${DOCS}/CHANGELOG.md`;
-  let old = existsSync(rootPath(p)) ? await readFile(rootPath(p), 'utf8') : '# Corpus changelog\n\nOne entry per run of `scripts/build-corpus.mjs`, newest first: how many waters were checked and what changed. A water\'s own `changes` list in its JSON file has the same lines.\n';
+  let old = existsSync(outPath(p)) ? await readFile(outPath(p), 'utf8') : '# Corpus changelog\n\nOne entry per run of `scripts/build-corpus.mjs`, newest first: how many waters were checked and what changed. A water\'s own `changes` list in its JSON file has the same lines.\n';
   const total = runs.reduce((n, r) => n + r.checked, 0);
   if (!runs.some(r => r.added || r.changed)) return; // a run that only confirmed what was there isn't news
   const lines = [`## ${new Date().toISOString().replace('T', ' ').slice(0, 16)} UTC`, '',
     `Checked ${total} water${total === 1 ? '' : 's'} in ${((Date.now() - started) / 60000).toFixed(0)} min: ${runs.map(r => `${r.state} ${r.checked} (${r.added} new, ${r.changed} changed, ${r.kept} unchanged${r.live ? '' : ', no live lookups'})`).join(' · ')}.`, ''];
   for (const r of runs) for (const [name, ch] of r.changes) lines.push(`- ${r.state} ${name}: ${ch.join('; ')}`);
   const [head, ...rest] = old.split(/\n(?=## )/);
-  await writeFile(rootPath(p), [head.trimEnd(), '', lines.join('\n'), '', ...rest].join('\n').replace(/\n{3,}/g, '\n\n'));
+  await writeFile(outPath(p), [head.trimEnd(), '', lines.join('\n'), '', ...rest].join('\n').replace(/\n{3,}/g, '\n\n'));
 }
 
 // ---------- Main ----------
@@ -400,7 +408,7 @@ for (const code of STATES) {
   runs.push(run);
   // The index and the catalogue cover every file in the folder, not just this run's.
   const files = [];
-  if (existsSync(rootPath(dir))) for (const name of await readdir(rootPath(dir))) if (name.endsWith('.json') && name !== 'index.json') { const f = await readJson(`${dir}/${name}`); if (f?.checkedAt) files.push(f); }
+  if (existsSync(outPath(dir))) for (const name of await readdir(outPath(dir))) if (name.endsWith('.json') && name !== 'index.json') { const f = await readJson(`${dir}/${name}`); if (f?.checkedAt) files.push(f); }
   const byId = new Map(waters.map(w => [String(w.id), w]));
   await writeJson(`${dir}/index.json`, {
     updatedAt: new Date().toISOString(), count: files.length, stocked: waters.length,
@@ -411,4 +419,12 @@ for (const code of STATES) {
   console.log(`${code}: ${run.checked} checked (${run.added} new, ${run.changed} changed, ${run.kept} unchanged); ${files.length} files in the corpus`);
 }
 await appendChangelog(runs);
+// The pack the app imports: every water's file, keyed st/id, plus the books in <dir>/library by file name.
+{
+  const waters = {};
+  for (const code of STATES) { const st = code.toLowerCase(); if (!existsSync(outPath(st))) continue; for (const name of await readdir(outPath(st))) if (name.endsWith('.json') && name !== 'index.json') { const f = await readJson(`${st}/${name}`); if (f) waters[`${st}/${name.slice(0, -5)}`] = f; } }
+  const library = existsSync(outPath('library')) ? (await readdir(outPath('library'))).filter(n => !n.startsWith('.')).sort() : [];
+  await writeJson('tackle-box-private-corpus.json', { app: 'tackle-box', kind: 'private-corpus', builtAt: new Date().toISOString(), waters, library });
+  console.log(`pack: ${Object.keys(waters).length} waters, ${library.length} books → ${outPath('tackle-box-private-corpus.json')}`);
+}
 console.log(`\ndone in ${((Date.now() - started) / 60000).toFixed(1)} min`);

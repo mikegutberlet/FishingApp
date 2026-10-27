@@ -1,27 +1,23 @@
-// Files hand notes onto waters in the corpus (data/corpus/<st>/<id>.json, see docs/corpus/README.md), each with
-// the book, page or web page it came from. The notes are written from Goobs's own sources (books he owns, sites and
-// blogs); the sources themselves stay out of this public repo, and a note is a short fact in our own words, never a
-// copied passage.
+// Files hand notes onto waters in the private archive (<CORPUS_DIR>/<st>/<id>.json, see docs/corpus/README.md), each
+// with the book, page or web page it came from, and optionally the passage itself as an excerpt. The archive lives
+// outside this public repo, so a note may quote Goobs's own books freely.
 //
-//   node scripts/add-notes.mjs notes.json
+//   CORPUS_DIR=/path/to/archive node scripts/add-notes.mjs notes.json
 //   node scripts/add-notes.mjs --find "convict"      which waters match a name, with the ids to use
-//   CORPUS_DIR=/path/to/private node scripts/add-notes.mjs notes.json
-//                                                   the private archive on the NAS (scripts/pack-private-corpus.mjs):
-//                                                   there a note may also carry "excerpt", the passage itself
 //
 //   notes.json: [{ "water": "ca:175" or "ca:Convict Lake", "text": "…", "by": "Goobs", "date": "2026-10-27",
+//                  "excerpt": "the passage, when worth keeping whole",
 //                  "source": { "title": "…", "author": "…", "page": "112", "url": "https://…", "read": "2026-10-27" } }]
 //
 // A water the nightly job hasn't reached yet gets a file holding only its notes; the job builds the rest of it
-// on its next visit and keeps the notes (and only then lists the water in the index and catalogue). For a built
-// water, CORPUS_DOCS_ONLY=1 node scripts/build-corpus.mjs refreshes the catalogue pages straight away.
+// on its next visit and keeps the notes (and only then lists the water in the index and catalogue). Run
+// CORPUS_DOCS_ONLY=1 node scripts/build-corpus.mjs afterwards to refresh the catalogue and the pack the app imports.
 
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 
 const ROOT = new URL('../', import.meta.url).pathname;
-const DIR = process.env.CORPUS_DIR ? path.resolve(process.env.CORPUS_DIR) : path.join(ROOT, 'data/corpus');
-const PRIVATE = !!process.env.CORPUS_DIR;
+const DIR = process.env.CORPUS_DIR ? path.resolve(process.env.CORPUS_DIR) : null;
 const MAX_CHARS = 400;
 const today = new Date().toISOString().slice(0, 10);
 const readJson = async p => { try { return JSON.parse(await readFile(path.join(ROOT, p), 'utf8')); } catch { return null; } };
@@ -47,7 +43,7 @@ if (process.argv[2] === '--find') {
   process.exit(0);
 }
 
-if (!process.argv[2]) { console.error('usage: node scripts/add-notes.mjs notes.json | --find "name"'); process.exit(1); }
+if (!process.argv[2] || !DIR) { console.error('usage: CORPUS_DIR=<private archive folder> node scripts/add-notes.mjs notes.json | --find "name"'); process.exit(1); }
 const notes = JSON.parse(await readFile(process.argv[2], 'utf8'));
 const bad = [], byFile = new Map();
 for (const [i, n] of notes.entries()) {
@@ -60,7 +56,6 @@ for (const [i, n] of notes.entries()) {
     if (!s.title && !s.url) throw new Error('source needs a title or a url');
     if (s.url && !/^https?:\/\/\S+$/.test(s.url)) throw new Error(`source url "${s.url}" must start with http:// or https://`);
     const source = Object.fromEntries(Object.entries({ title: s.title, author: s.author, page: s.page != null ? String(s.page) : undefined, url: s.url, read: s.read ?? (s.url ? today : undefined) }).filter(([, v]) => v));
-    if (n.excerpt && !PRIVATE) throw new Error('an excerpt (the passage itself) goes only in the private archive: set CORPUS_DIR');
     const file = path.join(DIR, st, `${encodeURIComponent(String(w.id))}.json`);
     if (!byFile.has(file)) byFile.set(file, { st, w, add: [] });
     byFile.get(file).add.push({ date: n.date ?? today, by: n.by ?? 'Goobs', text, source, excerpt: n.excerpt ? String(n.excerpt).trim() : undefined });
@@ -75,13 +70,13 @@ for (const [file, { st, w, add }] of byFile) {
   f.notes ??= [];
   for (const n of add) {
     if (f.notes.some(o => key(o.text) === key(n.text))) { skipped++; continue; }
-    // In the private archive the passage is kept beside the note, as an excerpt the app shows under "From your books".
+    // The passage is kept beside the note, as an excerpt the app shows under "From your books".
     if (n.excerpt) (f.excerpts ??= []).push({ text: n.excerpt, source: n.source });
     delete n.excerpt; f.notes.push(n); added++;
   }
   await mkdir(path.dirname(file), { recursive: true });
   // Built files are compact; a notes-only file is small and stays readable.
   await writeFile(file, JSON.stringify(f, null, f.checkedAt ? 0 : 1) + '\n');
-  console.log(`${path.relative(process.cwd(), file)} ${w.name}: ${f.notes.length} notes${f.excerpts?.length ? `, ${f.excerpts.length} excerpts` : ''}${f.checkedAt || PRIVATE ? '' : ' (not built yet; the nightly job fills in the rest)'}`);
+  console.log(`${path.relative(process.cwd(), file)} ${w.name}: ${f.notes.length} notes${f.excerpts?.length ? `, ${f.excerpts.length} excerpts` : ''}${f.checkedAt ? '' : ' (not built yet; the nightly job fills in the rest)'}`);
 }
 console.log(`${added} added, ${skipped} already there`);
