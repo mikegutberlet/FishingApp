@@ -332,9 +332,9 @@ async function padus(lat, lon, shore) {
 
 // ---------- Merging ----------
 // The same campground is often in several lists (the Forest Service inventory, its web page, Recreation.gov and
-// OpenStreetMap). Records whose names share their distinctive words and lie within 1.5 km, or any two within 150 m,
+// OpenStreetMap). Records with the same distinctive name within 3 km (one name inside the other: 600 m), or any two within 150 m,
 // become one: agency facts first, then Recreation.gov's booking facts, then what OpenStreetMap mappers added.
-const GENERIC = new Set(['campground', 'camp', 'cg', 'campsite', 'campsites', 'camping', 'area', 'site', 'sites', 'the', 'and', 'of', 'at', 'rv', 'park', 'group', 'family', 'lake', 'reservoir', 'river', 'creek', 'loop', 'unit', 'state', 'recreation', 'overflow', 'upper', 'lower', 'north', 'south', 'east', 'west', 'dispersed', 'boat', 'in']);
+const GENERIC = new Set(['campground', 'camp', 'cg', 'campsite', 'campsites', 'camping', 'area', 'site', 'sites', 'the', 'and', 'of', 'at', 'rv', 'park', 'family', 'lake', 'reservoir', 'river', 'creek', 'loop', 'unit', 'state', 'recreation', 'dispersed', 'in']);
 const words = n => String(n ?? '').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter(w => w.length > 1 && !GENERIC.has(w));
 function same(a, b) {
   const d = haversineKm(a.lat, a.lon, b.lat, b.lon);
@@ -346,8 +346,9 @@ function same(a, b) {
   if (!wa.length || !wb.length) return d < 0.3;
   const shared = wa.filter(w => wb.includes(w)).length;
   // The same distinctive name up to 3 km apart (agencies and mappers put the point at the gate, the office or the
-  // middle of the loops); one name inside the other only within 1.5 km.
-  return shared === wa.length && shared === wb.length ? true : shared >= Math.min(wa.length, wb.length) && d <= 1.5;
+  // middle of the loops); one name inside the other only close by, since "Silver Lake East" and "West", or a group
+  // camp next to the family one, are different places.
+  return shared === wa.length && shared === wb.length ? true : shared >= Math.min(wa.length, wb.length) && d <= 0.6;
 }
 const keep = o => Object.fromEntries(Object.entries(o).filter(([, v]) => v != null && v !== ''));
 function merge(records, pages) {
