@@ -116,7 +116,7 @@ let mini = null;
 export async function mountTodayMap(el) {
   if (mini) { mini.remove(); mini = null; }
   mini = L.map(el, { zoomControl: false, dragging: false, scrollWheelZoom: false, doubleClickZoom: false, touchZoom: false, boxZoom: false, keyboard: false, attributionControl: false });
-  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19 }).addTo(mini);
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, crossOrigin: true }).addTo(mini);
   const lakes = (await db.all('lakes')).filter(l => Number.isFinite(l.lat) && Number.isFinite(l.lon));
   const favs = lakes.filter(l => l.favorite), focus = favs.length ? favs : lakes;
   for (const l of lakes) L.circleMarker([l.lat, l.lon], { radius: l.favorite ? 7 : 5, color: '#fff', weight: 2, fillColor: l.favorite ? '#f2b928' : '#3fb0d4', fillOpacity: 1 }).bindTooltip(l.name, { permanent: focus.length <= 4 && focus.includes(l), direction: 'top', className: 'mini-tip' }).addTo(mini);

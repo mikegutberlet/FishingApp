@@ -13,10 +13,12 @@ export const map = L.map('map', { zoomControl: false });
 map.on('moveend', () => { try { const c = map.getCenter(); localStorage.setItem(VIEW_KEY, JSON.stringify({ lat: +c.lat.toFixed(4), lon: +c.lng.toFixed(4), z: map.getZoom() })); } catch {} });
 L.control.zoom({ position: 'topleft' }).addTo(map);
 const BASE_KEY = 'tackle-box-map-base';
-const street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' });
-const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: 'Esri' });
+// crossOrigin: tiles are fetched with CORS (all three servers allow it), so the copies sw.js keeps count at their real size.
+// Without it Chrome counts each kept tile as ~7 MB of the storage allowance, and a full allowance can clear the app's data.
+const street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, crossOrigin: true, attribution: '© OpenStreetMap' });
+const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, crossOrigin: true, attribution: 'Esri' });
 // USGS topo: contours, trails and Forest Service roads. Public domain, and the service allows tiles to be saved offline.
-const topo = L.tileLayer('https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, maxNativeZoom: 16, attribution: 'USGS The National Map' });
+const topo = L.tileLayer('https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, maxNativeZoom: 16, crossOrigin: true, attribution: 'USGS The National Map' });
 try { ({ Topo: topo, Streets: street }[localStorage.getItem(BASE_KEY)] ?? satellite).addTo(map); } catch { satellite.addTo(map); }
 export const baseLayers = { Satellite: satellite, Topo: topo, Streets: street };
 const lakeLayer = L.layerGroup().addTo(map);

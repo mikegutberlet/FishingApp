@@ -101,7 +101,7 @@ function drawPin(c) {
   const div = $('#c-map');
   if (!div || typeof L === 'undefined') return;
   pin = L.map(div, { zoomControl: false, attributionControl: false }).setView([c.lat, c.lon], 15);
-  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19 }).addTo(pin);
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, crossOrigin: true }).addTo(pin);
   L.circleMarker([c.lat, c.lon], { radius: 8, color: '#fff', weight: 2, fillColor: '#f28c28', fillOpacity: 1 }).addTo(pin);
 }
 
