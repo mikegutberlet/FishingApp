@@ -1,0 +1,1010 @@
+{
+ "id": "wildhorse-reservoir",
+ "state": "NV",
+ "name": "Wildhorse Reservoir",
+ "lat": 41.67469,
+ "lon": -115.81155,
+ "county": "Elko",
+ "kind": "lake",
+ "firstSeen": "2026-10-27",
+ "checkedAt": "2026-10-27T17:36:38.531Z",
+ "updatedAt": "2026-10-27T17:32:57.052Z",
+ "agency": {
+  "name": "NDOW",
+  "url": "https://www.ndow.org/waters/wildhorse-reservoir/",
+  "about": "At maximum capacity, the reservoir covers 2,830 acres, has a maximum depth of 70 feet, and an average depth of 40 feet. It has a coldwater, put-grow-take trout fishery and a self-sustaining warmwater fishery. Coldwater game species include rainbow, brown, bowcutt (rainbow x cutthroat hybrid), and tiger trout (brown x brook trout hybrid). Warmwater game species consists of smallmouth bass, largemouth bass, channel catfish, wipers (white bass x striper hybrid), and yellow perch. Harvest lengths of larger than 16 inches usually occur for rainbow trout and 19 inches for bowcutt trout. Wipers generally range from 14 to 25 inches, channel catfish from 14 to 28 inches, and black bass from 8 to 17 inches. Lures are best for trout from May through June and mid-September through October, and nightcrawlers, salmon eggs, corn, and Power Bait during December through February while ice fishing. Fly-fishing is popular in early spring and late fall. Shore and still fishing from a boat are successful; however, trolling is more productive in summer. Spring and early summer are best for bass using crankbaits and rubber worms, and for catfish using stink baits and liver. Use small jigs and worms for yellow perch. Wild Horse State Recreation Area has day use, camping, and a boat ramp and BLM has a day use and campground area near the north end of the reservoir. Wild Horse Resort has a motel, RV hookup, restaurant, bar, and a convenience store. Duck Valley Indian Reservation provides campsites and a boat launch.",
+  "lastYearStocked": 2026,
+  "region": "Eastern"
+ },
+ "facts": {
+  "type": "Lake",
+  "acres": 1315,
+  "elevationFt": 6178,
+  "maxDepthFt": null,
+  "meanDepthFt": null,
+  "depthSource": null,
+  "lengthKm": null,
+  "nhdId": "00862000",
+  "hydro": {
+   "acres": 2481,
+   "meanDepthFt": 38.4,
+   "volumeAcreFt": 95257,
+   "shoreKm": null,
+   "source": "HydroLAKES estimate"
+  },
+  "surveys": []
+ },
+ "about": null,
+ "access": null,
+ "camping": null,
+ "stocking": {
+  "recent": [
+   {
+    "year": 2026,
+    "species": "Brown Trout",
+    "plants": 2,
+    "fish": 6416
+   },
+   {
+    "year": 2026,
+    "species": "Rainbow Trout",
+    "plants": 14,
+    "fish": 79555
+   },
+   {
+    "year": 2026,
+    "species": "Tiger Trout",
+    "plants": 2,
+    "fish": 8156
+   },
+   {
+    "year": 2026,
+    "species": "Wiper",
+    "plants": 1,
+    "fish": 1130
+   },
+   {
+    "year": 2025,
+    "species": "Brown Trout",
+    "plants": 3,
+    "fish": 10799
+   },
+   {
+    "year": 2025,
+    "species": "Channel Catfish",
+    "plants": 1,
+    "fish": 5000
+   },
+   {
+    "year": 2025,
+    "species": "Cutbow Trout",
+    "plants": 4,
+    "fish": 14749
+   },
+   {
+    "year": 2025,
+    "species": "Rainbow Trout",
+    "plants": 19,
+    "fish": 80024
+   },
+   {
+    "year": 2025,
+    "species": "Tiger Trout",
+    "plants": 6,
+    "fish": 15297
+   },
+   {
+    "year": 2025,
+    "species": "Wiper",
+    "plants": 1,
+    "fish": 1000
+   },
+   {
+    "year": 2024,
+    "species": "Brown Trout",
+    "plants": 1,
+    "fish": 7168
+   },
+   {
+    "year": 2024,
+    "species": "Channel Catfish",
+    "plants": 1,
+    "fish": 5000
+   },
+   {
+    "year": 2024,
+    "species": "Rainbow Trout",
+    "plants": 11,
+    "fish": 73886
+   },
+   {
+    "year": 2024,
+    "species": "Tiger Trout",
+    "plants": 1,
+    "fish": 6913
+   },
+   {
+    "year": 2024,
+    "species": "Wiper",
+    "plants": 1,
+    "fish": 546
+   },
+   {
+    "year": 2023,
+    "species": "Brown Trout",
+    "plants": 2,
+    "fish": 7097
+   },
+   {
+    "year": 2023,
+    "species": "Channel Catfish",
+    "plants": 1,
+    "fish": 16000
+   },
+   {
+    "year": 2023,
+    "species": "Rainbow Trout",
+    "plants": 10,
+    "fish": 61109
+   },
+   {
+    "year": 2023,
+    "species": "Tiger Trout",
+    "plants": 2,
+    "fish": 7801
+   },
+   {
+    "year": 2023,
+    "species": "Wiper",
+    "plants": 1,
+    "fish": 675
+   }
+  ],
+  "history": {
+   "names": [
+    "Wildhorse Reservoir"
+   ],
+   "years": [
+    {
+     "y": 2026,
+     "fish": 95257,
+     "plants": 19,
+     "sp": {
+      "Rainbow Trout": [
+       79555,
+       14
+      ],
+      "Tiger Trout": [
+       8156,
+       2
+      ],
+      "Wiper": [
+       1130,
+       1
+      ],
+      "Brown Trout": [
+       6416,
+       2
+      ]
+     },
+     "src": [
+      "https://www.ndow.org/get-outside/fishing-stocking-reports/"
+     ]
+    },
+    {
+     "y": 2025,
+     "fish": 126869,
+     "plants": 34,
+     "sp": {
+      "Rainbow Trout": [
+       80024,
+       19
+      ],
+      "Cutbow Trout": [
+       14749,
+       4
+      ],
+      "Tiger Trout": [
+       15297,
+       6
+      ],
+      "Brown Trout": [
+       10799,
+       3
+      ],
+      "Wiper": [
+       1000,
+       1
+      ],
+      "Channel Catfish": [
+       5000,
+       1
+      ]
+     },
+     "src": [
+      "https://www.ndow.org/get-outside/fishing-stocking-reports/"
+     ]
+    },
+    {
+     "y": 2024,
+     "fish": 93513,
+     "plants": 15,
+     "sp": {
+      "Rainbow Trout": [
+       73886,
+       11
+      ],
+      "Tiger Trout": [
+       6913,
+       1
+      ],
+      "Brown Trout": [
+       7168,
+       1
+      ],
+      "Channel Catfish": [
+       5000,
+       1
+      ],
+      "Wiper": [
+       546,
+       1
+      ]
+     },
+     "src": [
+      "https://www.ndow.org/get-outside/fishing-stocking-reports/"
+     ]
+    },
+    {
+     "y": 2023,
+     "fish": 92682,
+     "plants": 16,
+     "sp": {
+      "Rainbow Trout": [
+       61109,
+       10
+      ],
+      "Brown Trout": [
+       7097,
+       2
+      ],
+      "Tiger Trout": [
+       7801,
+       2
+      ],
+      "Wiper": [
+       675,
+       1
+      ],
+      "Channel Catfish": [
+       16000,
+       1
+      ]
+     },
+     "src": [
+      "https://www.ndow.org/get-outside/fishing-stocking-reports/"
+     ]
+    },
+    {
+     "y": 2021,
+     "fish": 100688,
+     "plants": 1,
+     "sp": {
+      "Rainbow": [
+       1304,
+       1
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20210125205043/http://www.ndow.org/Fish/Stocking_Updates/Eastern_Nevada/",
+      "https://web.archive.org/web/20210419223337/http://www.ndow.org/Fish/Stocking_Updates/Eastern_Nevada/",
+      "https://web.archive.org/web/20210426025603/http://www.ndow.org/Fish/Stocking_Updates/Eastern_Nevada/"
+     ]
+    },
+    {
+     "y": 2020,
+     "fish": 211883,
+     "plants": 4,
+     "sp": {
+      "Rainbow": [
+       27642,
+       3
+      ],
+      "Brown": [
+       5520,
+       1
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20200201021030/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+      "https://web.archive.org/web/20200226093708/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+      "https://web.archive.org/web/20200430220054/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/"
+     ]
+    },
+    {
+     "y": 2019,
+     "fish": 275215,
+     "plants": 4,
+     "sp": {
+      "Tiger": [
+       6174,
+       1
+      ],
+      "Rainbow": [
+       11893,
+       2
+      ],
+      "Brown": [
+       15090,
+       1
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20190108131006/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+      "https://web.archive.org/web/20190110072530/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+      "https://web.archive.org/web/20190209012110/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/"
+     ]
+    },
+    {
+     "y": 2018,
+     "fish": 307572,
+     "plants": 3,
+     "sp": {
+      "Catfish": [
+       14250,
+       1
+      ],
+      "Rainbow": [
+       14680,
+       1
+      ],
+      "Bowcut": [
+       2816,
+       1
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20180104161236/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+      "https://web.archive.org/web/20180505193910/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+      "https://web.archive.org/web/20180605180742/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/"
+     ]
+    },
+    {
+     "y": 2017,
+     "fish": 190956,
+     "plants": 5,
+     "sp": {
+      "Rainbow": [
+       43822,
+       5
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20170305040420/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+      "https://web.archive.org/web/20170430024531/http://www.ndow.org/Fish/Stocking_Updates/Eastern_Nevada/",
+      "https://web.archive.org/web/20170528060323/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/"
+     ]
+    },
+    {
+     "y": 2016,
+     "fish": 222054,
+     "plants": 4,
+     "sp": {
+      "Rainbow": [
+       35508,
+       3
+      ],
+      "Brown": [
+       16384,
+       1
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20160702061713/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+      "https://web.archive.org/web/20160901101315/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+      "https://web.archive.org/web/20161102003902/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/"
+     ]
+    },
+    {
+     "y": 2015,
+     "fish": null,
+     "plants": 2,
+     "sp": {
+      "Rainbow Trout": [
+       null,
+       1
+      ],
+      "Rainbow": [
+       null,
+       1
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20150629073648/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+      "https://web.archive.org/web/20150708015818/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/"
+     ]
+    },
+    {
+     "y": 2014,
+     "fish": null,
+     "plants": 1,
+     "sp": {
+      "Rainbow Trout": [
+       null,
+       1
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20141123000458/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/"
+     ]
+    },
+    {
+     "y": 2012,
+     "fish": 80330,
+     "plants": 12,
+     "sp": {
+      "RB": [
+       66510,
+       9
+      ],
+      "TT": [
+       8645,
+       2
+      ],
+      "BC": [
+       5175,
+       1
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20120812031144/http://ndow.org:80/fish/stocking/east.shtm",
+      "https://web.archive.org/web/20121114045923/http://ndow.org:80/fish/stocking/east.shtm"
+     ]
+    },
+    {
+     "y": 2011,
+     "fish": 172549,
+     "plants": 22,
+     "sp": {
+      "RB": [
+       92504,
+       13
+      ],
+      "TT": [
+       5940,
+       1
+      ],
+      "BN": [
+       54500,
+       5
+      ],
+      "BC": [
+       19605,
+       3
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20110611142517/http://www.ndow.org:80/fish/stocking/east.shtm",
+      "https://web.archive.org/web/20110813190117/http://ndow.org/fish/stocking/east.shtm",
+      "https://web.archive.org/web/20111029235546/http://www.ndow.org:80/fish/stocking/east.shtm"
+     ]
+    },
+    {
+     "y": 2010,
+     "fish": 89670,
+     "plants": 11,
+     "sp": {
+      "Rainbow Trout": [
+       63400,
+       8
+      ],
+      "Tiger Trout": [
+       8670,
+       1
+      ],
+      "Bowcutt Trout": [
+       17600,
+       2
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20100522032759/http://www.ndow.org/fish/stocking/east.shtm",
+      "https://web.archive.org/web/20100729100645/http://www.ndow.org/fish/stocking/east.shtm",
+      "https://web.archive.org/web/20100810080758/http://ndow.org/fish/stocking/east.shtm"
+     ]
+    },
+    {
+     "y": 2009,
+     "fish": 138330,
+     "plants": 19,
+     "sp": {
+      "Rainbow Trout": [
+       99130,
+       14
+      ],
+      "BN": [
+       7200,
+       1
+      ],
+      "Brown Trout": [
+       5600,
+       1
+      ],
+      "Bowcutt Trout": [
+       26400,
+       3
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20090528085325/http://ndow.org/fish/stocking/east.shtm",
+      "https://web.archive.org/web/20090605003415/http://www.ndow.org:80/fish/stocking/east.shtm",
+      "https://web.archive.org/web/20091007210333/http://ndow.org/fish/stocking/east.shtm"
+     ]
+    },
+    {
+     "y": 2008,
+     "fish": 48715,
+     "plants": 7,
+     "sp": {
+      "Bowcutt Trout": [
+       33437,
+       5
+      ],
+      "Rainbow Trout": [
+       15278,
+       2
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20080708051218/http://ndow.org/fish/stocking/east.shtm",
+      "https://web.archive.org/web/20081205063122/http://ndow.org/fish/stocking/east.shtm"
+     ]
+    },
+    {
+     "y": 2007,
+     "fish": 94299,
+     "plants": 15,
+     "sp": {
+      "Tiger Trout": [
+       8608,
+       2
+      ],
+      "Rainbow Trout": [
+       51500,
+       7
+      ],
+      "Bowcutt Trout": [
+       34191,
+       6
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20070426041527/http://ndow.org/fish/stocking/east.shtm",
+      "https://web.archive.org/web/20070601002729/http://ndow.org/fish/stocking/east.shtm",
+      "https://web.archive.org/web/20070829225300/http://ndow.org/fish/stocking/east.shtm"
+     ]
+    },
+    {
+     "y": 2006,
+     "fish": 281768,
+     "plants": 21,
+     "sp": {
+      "Tiger Trout": [
+       7000,
+       1
+      ],
+      "Rainbow Trout": [
+       244809,
+       15
+      ],
+      "Bowcutt Trout": [
+       29959,
+       5
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20060429023039/http://ndow.org/fish/stocking/east.shtm",
+      "https://web.archive.org/web/20060516030329/http://www.ndow.org/fish/stocking/east.shtm",
+      "https://web.archive.org/web/20060622232629/http://www.ndow.org:80/fish/stocking/east.shtm"
+     ]
+    },
+    {
+     "y": 2005,
+     "fish": 336998,
+     "plants": 4,
+     "sp": {
+      "Rainbow Trout": [
+       336998,
+       4
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20060220061711/http://ndow.org:80/fish/stocking/east.shtm"
+     ]
+    },
+    {
+     "y": 2004,
+     "fish": 115990,
+     "plants": 15,
+     "sp": {
+      "Brown Trout": [
+       46350,
+       3
+      ],
+      "Rainbow Trout": [
+       45333,
+       8
+      ],
+      "Rainbow": [
+       7684,
+       1
+      ],
+      "Wiper": [
+       1630,
+       1
+      ],
+      "Cuthroat Trout": [
+       10980,
+       1
+      ],
+      "Tiger Trout": [
+       4013,
+       1
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20040615161923/http://ndow.org:80/fish/stocking/east.shtm",
+      "https://web.archive.org/web/20040808141434/http://www.ndow.org:80/fish/stocking/east.shtm",
+      "https://web.archive.org/web/20041013131902/http://ndow.org:80/fish/stocking/east.shtm"
+     ]
+    },
+    {
+     "y": 2003,
+     "fish": 102101,
+     "plants": 10,
+     "sp": {
+      "Rainbow Trout": [
+       99101,
+       9
+      ],
+      "Wiper": [
+       3000,
+       1
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20030422120148/http://ndow.org:80/fish/stocking/east.shtm",
+      "https://web.archive.org/web/20030605201219/http://www.ndow.org:80/fish/stocking/east.shtm",
+      "https://web.archive.org/web/20030609105227/http://ndow.org:80/fish/stocking/east.shtm"
+     ]
+    }
+   ]
+  },
+  "note": "NDOW reports each stocking with the number and average length of the fish. History grows each night from the NDOW water pages."
+ },
+ "introductions": [
+  {
+   "year": "1954",
+   "text": "Sockeye Salmon (Wildhorse Reservoir on the Owyhee River's East Fork) · established"
+  },
+  {
+   "year": "1956",
+   "text": "Rainbow Trout (Wildhorse Reservoir on the Owyhee River's East Fork) · established"
+  },
+  {
+   "year": "2001",
+   "text": "Rainbow Trout (Wild Horse Reservoir) · established"
+  }
+ ],
+ "rules": {
+  "source": "Nevada Fishing Regulations (NDOW Commission Regulation), published on eRegulations",
+  "booklet": "https://www.eregulations.com/nevada/fishing",
+  "updatedAt": "2026-10-27T03:28:42.770Z",
+  "county": "Elko",
+  "region": "Eastern",
+  "special": [
+   {
+    "name": "Wildhorse Reservoir and all inlet and outlet streams including Penrod Creek up to the bridge below the Gold Creek Ranger Station",
+    "aliases": [
+     "Wildhorse Reservoir",
+     "Penrod Creek"
+    ],
+    "region": "Eastern",
+    "county": "Elko",
+    "season": "Year round; any hour of the day or night. Exception: March 1 - June 30, catch and release fishing only for black bass.",
+    "limit": "5 trout, 1 black bass, 1 white bass hybrid (wiper) and 5 channel catfish. Minimum size for black bass and white bass hybrids is 15 inches total length. No limit on yellow perch (unlimited possession).",
+    "notes": []
+   }
+  ],
+  "closedHere": [],
+  "tribal": null
+ },
+ "advisories": {
+  "algae": [
+   {
+    "name": "Wild Horse Reservoir",
+    "level": "caution",
+    "advisory": "HAB Watch",
+    "date": "2026-08-13",
+    "detail": "Wild Horse Reservoir has been placed on a HAB Watch advisory as of 8/13/2026 following visual observation. Hazardous conditions are possible or present. People and pets should use caution when in contact with water and avoid areas of algae accumulation."
+   }
+  ],
+  "eating": [],
+  "eatingSource": "https://www.ndow.org/blog/mercury-in-fish/"
+ },
+ "sources": [
+  {
+   "label": "NDOW stocking schedule",
+   "url": "https://www.ndow.org/get-outside/fishing-stocking-reports/",
+   "fetchedAt": "2026-10-27T02:03:36.328Z"
+  },
+  {
+   "label": "NDOW page for the water",
+   "url": "https://www.ndow.org/waters/wildhorse-reservoir/",
+   "fetchedAt": "2026-10-27T17:36:38.531Z"
+  },
+  {
+   "label": "USGS National Hydrography Dataset (data/nv/lakes.json, rivers.json)",
+   "url": "https://www.usgs.gov/national-hydrography/national-hydrography-dataset",
+   "fetchedAt": "2026-10-27T17:36:38.531Z"
+  },
+  {
+   "label": "HydroLAKES v1.0 (modelled depth and volume)",
+   "url": "https://www.hydrosheds.org/products/hydrolakes",
+   "fetchedAt": "2026-10-27T17:36:38.531Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Jan 25, 2021 (Internet Archive)",
+   "url": "https://web.archive.org/web/20210125205043/http://www.ndow.org/Fish/Stocking_Updates/Eastern_Nevada/",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Apr 19, 2021 (Internet Archive)",
+   "url": "https://web.archive.org/web/20210419223337/http://www.ndow.org/Fish/Stocking_Updates/Eastern_Nevada/",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Apr 26, 2021 (Internet Archive)",
+   "url": "https://web.archive.org/web/20210426025603/http://www.ndow.org/Fish/Stocking_Updates/Eastern_Nevada/",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Feb 1, 2020 (Internet Archive)",
+   "url": "https://web.archive.org/web/20200201021030/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Feb 26, 2020 (Internet Archive)",
+   "url": "https://web.archive.org/web/20200226093708/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Apr 30, 2020 (Internet Archive)",
+   "url": "https://web.archive.org/web/20200430220054/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Jan 8, 2019 (Internet Archive)",
+   "url": "https://web.archive.org/web/20190108131006/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Jan 10, 2019 (Internet Archive)",
+   "url": "https://web.archive.org/web/20190110072530/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Feb 9, 2019 (Internet Archive)",
+   "url": "https://web.archive.org/web/20190209012110/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Jan 4, 2018 (Internet Archive)",
+   "url": "https://web.archive.org/web/20180104161236/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved May 5, 2018 (Internet Archive)",
+   "url": "https://web.archive.org/web/20180505193910/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Jun 5, 2018 (Internet Archive)",
+   "url": "https://web.archive.org/web/20180605180742/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Mar 5, 2017 (Internet Archive)",
+   "url": "https://web.archive.org/web/20170305040420/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Apr 30, 2017 (Internet Archive)",
+   "url": "https://web.archive.org/web/20170430024531/http://www.ndow.org/Fish/Stocking_Updates/Eastern_Nevada/",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved May 28, 2017 (Internet Archive)",
+   "url": "https://web.archive.org/web/20170528060323/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Jul 2, 2016 (Internet Archive)",
+   "url": "https://web.archive.org/web/20160702061713/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Sep 1, 2016 (Internet Archive)",
+   "url": "https://web.archive.org/web/20160901101315/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Nov 2, 2016 (Internet Archive)",
+   "url": "https://web.archive.org/web/20161102003902/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Jun 29, 2015 (Internet Archive)",
+   "url": "https://web.archive.org/web/20150629073648/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Jul 8, 2015 (Internet Archive)",
+   "url": "https://web.archive.org/web/20150708015818/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Nov 23, 2014 (Internet Archive)",
+   "url": "https://web.archive.org/web/20141123000458/http://www.ndow.org:80/Fish/Stocking_Updates/Eastern_Nevada/",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Aug 12, 2012 (Internet Archive)",
+   "url": "https://web.archive.org/web/20120812031144/http://ndow.org:80/fish/stocking/east.shtm",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Nov 14, 2012 (Internet Archive)",
+   "url": "https://web.archive.org/web/20121114045923/http://ndow.org:80/fish/stocking/east.shtm",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Jun 11, 2011 (Internet Archive)",
+   "url": "https://web.archive.org/web/20110611142517/http://www.ndow.org:80/fish/stocking/east.shtm",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Aug 13, 2011 (Internet Archive)",
+   "url": "https://web.archive.org/web/20110813190117/http://ndow.org/fish/stocking/east.shtm",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Oct 29, 2011 (Internet Archive)",
+   "url": "https://web.archive.org/web/20111029235546/http://www.ndow.org:80/fish/stocking/east.shtm",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved May 22, 2010 (Internet Archive)",
+   "url": "https://web.archive.org/web/20100522032759/http://www.ndow.org/fish/stocking/east.shtm",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Jul 29, 2010 (Internet Archive)",
+   "url": "https://web.archive.org/web/20100729100645/http://www.ndow.org/fish/stocking/east.shtm",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Aug 10, 2010 (Internet Archive)",
+   "url": "https://web.archive.org/web/20100810080758/http://ndow.org/fish/stocking/east.shtm",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved May 28, 2009 (Internet Archive)",
+   "url": "https://web.archive.org/web/20090528085325/http://ndow.org/fish/stocking/east.shtm",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Jun 5, 2009 (Internet Archive)",
+   "url": "https://web.archive.org/web/20090605003415/http://www.ndow.org:80/fish/stocking/east.shtm",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Oct 7, 2009 (Internet Archive)",
+   "url": "https://web.archive.org/web/20091007210333/http://ndow.org/fish/stocking/east.shtm",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Jul 8, 2008 (Internet Archive)",
+   "url": "https://web.archive.org/web/20080708051218/http://ndow.org/fish/stocking/east.shtm",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Dec 5, 2008 (Internet Archive)",
+   "url": "https://web.archive.org/web/20081205063122/http://ndow.org/fish/stocking/east.shtm",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Apr 26, 2007 (Internet Archive)",
+   "url": "https://web.archive.org/web/20070426041527/http://ndow.org/fish/stocking/east.shtm",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Jun 1, 2007 (Internet Archive)",
+   "url": "https://web.archive.org/web/20070601002729/http://ndow.org/fish/stocking/east.shtm",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Aug 29, 2007 (Internet Archive)",
+   "url": "https://web.archive.org/web/20070829225300/http://ndow.org/fish/stocking/east.shtm",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Apr 29, 2006 (Internet Archive)",
+   "url": "https://web.archive.org/web/20060429023039/http://ndow.org/fish/stocking/east.shtm",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved May 16, 2006 (Internet Archive)",
+   "url": "https://web.archive.org/web/20060516030329/http://www.ndow.org/fish/stocking/east.shtm",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Jun 22, 2006 (Internet Archive)",
+   "url": "https://web.archive.org/web/20060622232629/http://www.ndow.org:80/fish/stocking/east.shtm",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Feb 20, 2006 (Internet Archive)",
+   "url": "https://web.archive.org/web/20060220061711/http://ndow.org:80/fish/stocking/east.shtm",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Jun 15, 2004 (Internet Archive)",
+   "url": "https://web.archive.org/web/20040615161923/http://ndow.org:80/fish/stocking/east.shtm",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Aug 8, 2004 (Internet Archive)",
+   "url": "https://web.archive.org/web/20040808141434/http://www.ndow.org:80/fish/stocking/east.shtm",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Oct 13, 2004 (Internet Archive)",
+   "url": "https://web.archive.org/web/20041013131902/http://ndow.org:80/fish/stocking/east.shtm",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Apr 22, 2003 (Internet Archive)",
+   "url": "https://web.archive.org/web/20030422120148/http://ndow.org:80/fish/stocking/east.shtm",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Jun 5, 2003 (Internet Archive)",
+   "url": "https://web.archive.org/web/20030605201219/http://www.ndow.org:80/fish/stocking/east.shtm",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "NDOW eastern Nevada stocking report, saved Jun 9, 2003 (Internet Archive)",
+   "url": "https://web.archive.org/web/20030609105227/http://ndow.org:80/fish/stocking/east.shtm",
+   "fetchedAt": "2026-10-27T14:33:35.784Z"
+  },
+  {
+   "label": "USGS Nonindigenous Aquatic Species database",
+   "url": "https://nas.er.usgs.gov/",
+   "fetchedAt": "2026-10-27T17:36:38.531Z"
+  },
+  {
+   "label": "Nevada fishing regulations",
+   "url": "https://www.eregulations.com/nevada/fishing",
+   "fetchedAt": "2026-10-27T03:28:42.770Z"
+  }
+ ],
+ "notes": [],
+ "manual": {},
+ "changes": [
+  {
+   "date": "2026-10-27",
+   "text": "added to the corpus"
+  }
+ ]
+}

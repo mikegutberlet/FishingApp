@@ -1,0 +1,20 @@
+{
+ "updatedAt": "2026-10-27T23:24:14.727Z",
+ "count": 1,
+ "stocked": 497,
+ "waters": [
+  {
+   "id": "wildhorse-reservoir",
+   "name": "Wildhorse Reservoir",
+   "county": "Elko",
+   "lat": 41.67469,
+   "lon": -115.81155,
+   "checkedAt": "2026-10-27T17:36:38.531Z",
+   "updatedAt": "2026-10-27T17:32:57.052Z",
+   "verdict": null,
+   "camps": null,
+   "years": "2003–2026 (22 years)",
+   "notes": 0
+  }
+ ]
+}

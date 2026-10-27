@@ -1,5 +1,5 @@
 // Caches the app shell so it opens with no signal on the water. Your data is in IndexedDB, not here.
-const CACHE = 'tackle-box-v37';
+const CACHE = 'tackle-box-v38';
 // One file per line. Add new files here and bump CACHE.
 const SHELL = [
   './',
@@ -161,6 +161,8 @@ const SHELL = [
   'welcome.js',
   'share-water.js',
   'guide.html',
+  'corpus.js',
+  'views/corpus-card.js',
 ];
 
 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())));

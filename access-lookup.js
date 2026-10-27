@@ -9,6 +9,7 @@
 //   OpenStreetMap via the Overpass API (every road and path, with surface and access tags where mappers added them)
 //   Wikipedia (a short description of the water, when it has an article)
 import { searchKm, shoreKm, summarize, hikeRoute, crowLine, samplePath, hikeStats } from './access-rules.js';
+import { fillAccess } from './corpus.js';
 
 const FS = 'https://apps.fs.usda.gov/arcx/rest/services/EDW';
 const BLM = 'https://gis.blm.gov/arcgis/rest/services/transportation/BLM_Natl_GTLF_Public_Display/MapServer';
@@ -64,6 +65,7 @@ export async function lookupAccess(lake, { spot = null, force = false, onPartial
   if (!osmFinished && onPartial) onPartial(snapshot(['OpenStreetMap']));
   await osmDone;
   const data = snapshot([]);
+  if (failed.length) await fillAccess(lake, data); // the repo's archived copy stands in for a source that didn't answer
   // A lookup where nothing answered isn't worth keeping: offline, or every service down.
   if (failed.length < 6) await withHike(lake, spot, data);
   return data;

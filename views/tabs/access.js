@@ -13,6 +13,7 @@ import { myAccessNote, crewAccessNotes, noteCard, noteForm, wireNoteCards, signa
 import { openComposer } from '../../crew.js';
 import { renderAccess, directionsUrl } from '../access.js';
 import { renderRoutesCard, exportWalkIn } from '../../routes.js';
+import { archiveAccess, archiveLine } from '../../corpus.js';
 
 const SOURCES = ['USFS MVUM', 'USFS roads', 'USFS trails', 'BLM routes', 'PAD-US', 'OpenStreetMap', 'Wikipedia'];
 const src = s => s?.url ? `<a class="gt-src" href="${esc(s.url)}" target="_blank" rel="noopener" title="${esc(s.label)}">source ↗</a>` : '';
@@ -124,11 +125,13 @@ export async function renderGettingThere(lake, body) {
     loadNow();
     if (big && !spot) { el.innerHTML = `<div class="card"><h3>Getting there</h3><p class="muted small">Pick a ramp above or a spot on the map, and the roads, trails and land records around it are checked.</p></div>`; return; }
     const have = await cached(lake, spot);
+    const archive = have || spot ? null : await archiveAccess(lake); // nothing kept yet: the repo's archived copy shows while the live lookup runs
     if (!el.isConnected) return;
+    if (archive) { last = archive; draw(lake, archive, el, ctx); }
     // A lookup saved before the walk-in profile existed gets one now.
     if (isFresh(have) && !('hike' in have) && navigator.onLine !== false) withHike(lake, spot, have).then(d => { if (el.isConnected) { last = d; draw(lake, d, el, ctx); } });
     if (!isFresh(have)) {
-      el.innerHTML = `<div class="card"><h3>Getting there</h3><p class="muted small">${navigator.onLine === false ? 'You’re offline and this spot’s roads and trails haven’t been looked up yet. Open this tab once with signal and they’ll be kept on your phone.' : 'Looking up roads, motor-vehicle maps, trails and land records around this water…'}</p></div>`;
+      if (!archive) el.innerHTML = `<div class="card"><h3>Getting there</h3><p class="muted small">${navigator.onLine === false ? 'You’re offline and this spot’s roads and trails haven’t been looked up yet. Open this tab once with signal and they’ll be kept on your phone.' : 'Looking up roads, motor-vehicle maps, trails and land records around this water…'}</p></div>`;
       if (navigator.onLine === false) { if (have) { last = have; draw(lake, have, el, ctx); } return; }
     }
     try {
@@ -211,7 +214,7 @@ const list = items => {
     ${data.pending?.length ? `<p class="small gt-season">⏳ Still waiting on ${esc(data.pending.join(', '))} (its server is slow, up to a minute): dirt roads, tracks, paths and gates may add to this.</p>` : ''}
     ${dead ? '' : `<div class="gt-chips">${chips.join('')}</div>`}
     ${s.roads.length || s.trails.length ? `<button data-gt-map class="small">Show roads & trails on map</button> <span class="muted small">blue paved · tan dirt/gravel · orange high clearance · red OHV; dashed trails: green bikes OK, red motorised, purple on foot</span>` : ''}
-    <p class="muted small" style="margin-top:8px">${dead ? '' : `Worked out from public road, trail and land records within ${fmtMi(data.searchKm)} of ${data.spot ? 'the spot you picked' : 'the water’s map point'}${data.shoreKm > 0.15 ? ` (shore about ${fmtMi(data.shoreKm)} from it)` : ''}: ${SOURCES.filter(n => !data.failed.includes(n)).join(', ')}.`}${data.failed.length ? ` <b>Didn’t answer: ${esc(data.failed.join(', '))}.</b>` : ''}
+    <p class="muted small" style="margin-top:8px">${dead ? '' : `Worked out from public road, trail and land records within ${fmtMi(data.searchKm)} of ${data.spot ? 'the spot you picked' : 'the water’s map point'}${data.shoreKm > 0.15 ? ` (shore about ${fmtMi(data.shoreKm)} from it)` : ''}: ${SOURCES.filter(n => !data.failed.includes(n)).join(', ')}.`}${data.failed.length ? ` <b>Didn’t answer: ${esc(data.failed.join(', '))}.</b>` : ''}${archiveLine(data)}
       Conditions change with weather, fire and snow: the linked records and the agency’s own page are the word to go by. Looked up ${fmtDate(data.fetchedAt)} · <a href="#" data-gt-refresh>${dead ? 'try again' : 'refresh'}</a></p></div>
 
   ${walk && hike ? hikeCard(hike) : ''}

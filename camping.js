@@ -12,6 +12,7 @@
 //   USGS PAD-US (who manages the land around the water)
 import { haversineKm } from './data-sources.js';
 import { shoreKm } from './access-rules.js';
+import { fillCamping } from './corpus.js';
 
 const FS = 'https://apps.fs.usda.gov/arcx/rest/services/EDW';
 const INFRA = `${FS}/EDW_InfraRecreationSites_01/MapServer/0`;
@@ -67,6 +68,7 @@ export async function lookupCamping(lake, { force = false, onPartial = null } = 
   if (!osmFinished && onPartial) onPartial(snapshot(['OpenStreetMap']));
   await osmDone;
   const data = snapshot([]);
+  if (failed.length) await fillCamping(lake, data); // the repo's archived copy stands in for a source that didn't answer
   if (failed.length < SOURCES.length - 1) await store(lake, data);
   return data;
 }

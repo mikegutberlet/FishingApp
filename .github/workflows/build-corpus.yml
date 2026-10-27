@@ -1,0 +1,56 @@
+name: Build water corpus
+
+# A durable copy of what the app knows about each stocked water (scripts/build-corpus.mjs): the state data files
+# plus the live road, trail, land, Wikipedia and campground lookups, one JSON file per water under data/corpus/,
+# with a readable catalogue and changelog under docs/corpus/. Nightly, oldest waters first, within a time budget.
+on:
+  schedule:
+    - cron: '41 8 * * *' # nightly, after the state data jobs
+  workflow_dispatch:
+  push:
+    paths:
+      - scripts/build-corpus.mjs
+      - .github/workflows/build-corpus.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The branch as it is when the job starts, not the commit that queued the run, so a run that waited behind
+          # another builds on that run's commit instead of conflicting with it.
+          ref: ${{ github.ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build the corpus
+        continue-on-error: true
+        timeout-minutes: 330
+        env:
+          # The public road and trail services take 30–90 s per water, so a run covers a few hundred waters; the first
+          # full pass takes several nights. A branch run is short, to show the job works.
+          CORPUS_MINUTES: ${{ github.ref_name == 'main' && '300' || '150' }}
+        run: |
+          mkdir -p data/corpus/logs
+          node scripts/build-corpus.mjs 2>&1 | tee data/corpus/logs/build-corpus.log
+          exit ${PIPESTATUS[0]}
+      - name: Commit changes
+        run: |
+          git add data/corpus docs/corpus
+          if git diff --cached --quiet; then echo "No data changes"; exit 0; fi
+          # This job is the only writer of data/corpus and docs/corpus, so a branch run can keep its own commit too
+          # (which is how a pull request shows the corpus it would add).
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update water corpus"
+          for i in 1 2 3; do if git pull --rebase origin "${GITHUB_REF_NAME}" && git push; then exit 0; fi; git rebase --abort 2>/dev/null || true; sleep 10; done
+          echo "push failed"; exit 1

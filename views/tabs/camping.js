@@ -10,6 +10,7 @@ import { lookupCamping, cached, isFresh, weekendAvailability, SOURCES } from '..
 import { dispersedSummary, FIRE, KIND_TEXT, LNT_URL, BLM_STAY, FS_STAY } from '../../camping-rules.js';
 import { MANAGERS, DESIGNATIONS, fmtMi } from '../../access-rules.js';
 import { forestAlerts } from '../../access-now.js';
+import { archiveCamping, archiveLine } from '../../corpus.js';
 
 const src = s => s?.url ? `<a class="gt-src" href="${esc(s.url)}" target="_blank" rel="noopener" title="${esc(s.label)}">source ↗</a>` : '';
 const SHORT = { 'USFS recreation sites (INFRA)': 'FS sites', 'USFS recreation opportunities': 'FS page', 'Recreation.gov': 'Rec.gov', 'BLM recreation sites': 'BLM', 'BLM camping facilities': 'BLM', 'California State Parks campgrounds': 'State Parks', OpenStreetMap: 'OSM' };
@@ -37,19 +38,20 @@ export async function renderCamping(lake, body) {
   const el = body.querySelector('#cp');
   const ctx = { filter: 'all' };
   const have = await cached(lake);
+  const archive = have ? null : await archiveCamping(lake); // nothing kept yet: the repo's archived copy shows while the live lookup runs
   if (!el.isConnected) return;
-  if (have) draw(lake, have, el, ctx);
+  if (have ?? archive) draw(lake, have ?? archive, el, ctx);
   if (isFresh(have)) return;
   if (navigator.onLine === false) {
-    if (!have) el.innerHTML = `<div class="card"><h3>Camping</h3><p class="muted small">You’re offline and camping around this water hasn’t been looked up yet. Open this tab once with signal and it’ll be kept on your phone.</p></div>`;
+    if (!have && !archive) el.innerHTML = `<div class="card"><h3>Camping</h3><p class="muted small">You’re offline and camping around this water hasn’t been looked up yet. Open this tab once with signal and it’ll be kept on your phone.</p></div>`;
     return;
   }
-  if (!have) el.innerHTML = `<div class="card"><h3>Camping</h3><p class="muted small">Looking up campgrounds, Forest Service and BLM sites, Recreation.gov and land records around this water…</p></div>`;
+  if (!have && !archive) el.innerHTML = `<div class="card"><h3>Camping</h3><p class="muted small">Looking up campgrounds, Forest Service and BLM sites, Recreation.gov and land records around this water…</p></div>`;
   try {
     const data = await lookupCamping(lake, { force: !!have, onPartial: d => el.isConnected && draw(lake, d, el, ctx) });
     if (el.isConnected) draw(lake, data, el, ctx);
   } catch (e) {
-    if (!el.isConnected || have) return;
+    if (!el.isConnected || have || archive) return;
     el.innerHTML = `<div class="card"><h3>Camping</h3><p class="muted small">Couldn’t reach the campground services (${esc(e.message)}). Try again with better signal.</p><button data-cp-retry>Try again</button></div>`;
     el.querySelector('[data-cp-retry]').onclick = () => renderCamping(lake, body);
   }
@@ -147,7 +149,7 @@ function draw(lake, data, el, ctx) {
     <p class="muted small">Land manager from the USGS Protected Areas Database within about 2 miles of the shore. These are the general rules: a closure order, fire restriction or sign on the ground overrides them.</p></div>
 
   <div class="card"><h3>Plan & book</h3><p class="small">${book.map(([l, u]) => link(l, u)).join('<br>')}</p>
-    <p class="muted small">Looked up ${fmtDate(data.fetchedAt)} from ${SOURCES.filter(n => !data.failed.includes(n) && !data.pending?.includes(n)).join(', ')}.${data.failed.length ? ` <b>Didn’t answer: ${esc(data.failed.join(', '))}.</b>` : ''}
+    <p class="muted small">Looked up ${fmtDate(data.fetchedAt)} from ${SOURCES.filter(n => !data.failed.includes(n) && !data.pending?.includes(n)).join(', ')}.${data.failed.length ? ` <b>Didn’t answer: ${esc(data.failed.join(', '))}.</b>` : ''}${archiveLine(data)}
       Only the water’s location is sent. <a href="#" data-cp-refresh>refresh</a></p></div>`;
 
   el.querySelectorAll('[data-cp-filter]').forEach(b => b.onclick = () => { ctx.filter = b.dataset.cpFilter; draw(lake, data, el, ctx); });
