@@ -20,6 +20,7 @@ import './wind-layer.js';
 import { addSafetyLayers } from './safety-map.js';
 import './views/today.js';
 import './views/planner.js';
+import './views/where.js';
 import { initOffline } from './offline.js';
 import { initWaypoints } from './waypoints.js';
 import { initHeatmap } from './heatmap.js';

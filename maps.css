@@ -48,3 +48,4 @@ svg.chart polyline.older { stroke: var(--muted); opacity: .45; }
 .today-head .row { gap: 6px; flex-wrap: nowrap; }
 .rt-import { margin-top: 8px; }
 .trip-saver { font-size: 12px; }
+.plan-head .saved-wx { display: inline-block; margin: 4px 0 0; padding: 2px 8px; }

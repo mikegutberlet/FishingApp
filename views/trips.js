@@ -9,6 +9,8 @@ import { openViewer } from './catch.js';
 import { renderCatchCards, snapshotConditions, shrinkPhoto, editCatch, weightText } from './log.js';
 import { fmtLen, fromLen, units } from '../units.js';
 import { estimateWeight } from '../weight.js';
+import { noteFix } from '../signal.js';
+import { openWhere } from './where.js';
 import { tripWatch } from './day-plan.js';
 import { forLake } from '../states/index.js';
 import { isRiver } from '../states/common.js';
@@ -133,6 +135,7 @@ function onFix(p) {
   feedFix(p);
   const { latitude: lat, longitude: lon, accuracy } = p.coords;
   lastFix = { lat, lon, accuracy, time: p.timestamp };
+  noteFix(lat, lon, accuracy);
   const gps = $('#trip-gps');
   if (gps) gps.textContent = `GPS ±${Math.round(accuracy)} m · ${trip.track.length} track points`;
   if (accuracy > 50) return;
@@ -246,6 +249,7 @@ async function renderLive(t) {
       <button class="q-bite" id="q-bite">💥<span>Bite</span></button>
       <button class="q-lost" id="q-lost">💨<span>Lost</span></button>
     </div>
+    <div class="wh-links trip-where"><button type="button" data-wh-open="plan">📨 Check in</button><button type="button" data-wh-open="truck">🚙 Truck</button><button type="button" data-wh-open="sos">🆘 SOS</button></div>
     <div class="quick-more"><button id="q-lure">🪝 Lost lure</button>${t.saver ? '' : `<button id="q-troll" class="${trollOn() ? 'on' : ''}" aria-pressed="${trollOn()}">🧭 Troll / drift ${trollOn() ? 'on' : 'off'}</button>`}</div>
     <div id="quick-sheet"></div>
     <div class="card small">${log.length ? log.map(x => `<div class="row trip-log"><span class="muted">${new Date(x.time).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}</span><span style="flex:1">${x.html}</span>
@@ -269,6 +273,7 @@ async function renderLive(t) {
     renderLive(t);
   });
   $('#trip-end').onclick = () => endTrip(t);
+  el.querySelectorAll('[data-wh-open]').forEach(b => b.onclick = () => openWhere(b.dataset.whOpen));
   if (lake) tripWatch(t, lake, $('#trip-wx'));
   $('#trip-saver').onclick = async e => { e.preventDefault(); await setSaver(t, !t.saver); };
   updatePill();

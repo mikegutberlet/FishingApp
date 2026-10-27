@@ -33,6 +33,7 @@ export async function renderToday() {
   const favs = lakes.filter(l => l.favorite);
   el.innerHTML = `<div class="today-head"><h2>${new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}</h2>
       <div class="row"><button id="go-ready" title="Save forecast, maps and lookups for no signal">📴 Ready</button><button id="go-plan">${icon('calendar')}Plan a trip</button></div></div>
+    <div id="today-where"></div>
     <div id="today-insight" class="card hidden" data-slot="days-like-today"></div>
     <div id="today-camp" class="card hidden"></div>
     ${!lakes.length ? emptyState('🎣', 'Welcome! Find a water you fish, save it, and star it with ☆ to see its wind, bite windows, level and plants here every day.', ['🔎 Find a water', 'lakes'], ['🗺️ Open the map', 'map'])
@@ -47,6 +48,7 @@ export async function renderToday() {
         <p class="small"><a href="#" id="fav-edit">Change favorites</a></p>`}
     <div class="card map-card"><div class="map-card-head"><b>Map</b><span class="muted small">${lakes.length ? 'Your waters · tap to browse' : 'Tap to browse lakes and rivers'}</span><span>›</span></div><div id="today-map"></div></div>`;
   import('../map-browse.js').then(m => m.mountTodayMap($('#today-map', el))); // dynamic: map-browse pulls in the map, which pulls in this view
+  import('./where.js').then(m => m.renderWhereCard($('#today-where', el))); // dynamic too: where.js pulls in the map
   import('./camp.js').then(m => m.todayCamp($('#today-camp', el))).catch(() => {}); // the camp trip you're on, or the next one
   $('#go-plan').onclick = () => showView('planner');
   $('#go-ready').onclick = () => import('../ready.js').then(m => m.readyDialog());

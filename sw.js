@@ -1,5 +1,5 @@
 // Caches the app shell so it opens with no signal on the water. Your data is in IndexedDB, not here.
-const CACHE = 'tackle-box-v24';
+const CACHE = 'tackle-box-v25';
 // One file per line. Add new files here and bump CACHE.
 const SHELL = [
   './',
@@ -103,6 +103,11 @@ const SHELL = [
   'catch-csv.js',
   'views/calendar.js',
   'safety-map.js',
+  'where.css',
+  'views/where.js',
+  'coords.js',
+  'help.js',
+  'signal.js',
   'bag.js',
   'troll.js',
   'lost-lure.js',
@@ -131,15 +136,17 @@ const SHELL = [
 ];
 
 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())));
-// Drop old app-shell caches, but keep the map tiles you've already viewed and lakes saved for offline (offline.js).
+// Drop old app-shell caches, but keep the map tiles you've already viewed, lakes saved for offline (offline.js),
+// Getting there answers (access-lookup.js) and the SOS card's numbers (help.js).
 self.addEventListener('activate', e => e.waitUntil(
-  caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE && k !== 'tiles' && k !== 'tb-access' && k !== 'tb-forecast' && !k.startsWith('offline-')).map(k => caches.delete(k)))).then(() => self.clients.claim())));
+  caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE && k !== 'tiles' && k !== 'tb-access' && k !== 'tb-forecast' && k !== 'tb-help' && !k.startsWith('offline-')).map(k => caches.delete(k)))).then(() => self.clients.claim())));
 
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   const isTile = /tile\.openstreetmap\.org|arcgisonline\.com|basemap\.nationalmap\.gov/.test(url.host);
   const isShell = url.origin === location.origin;
   if (url.hash === '#offline') return; // offline.js saving a lake: it keeps its own copy
+  if (url.searchParams.has('tb-ping')) return; // signal.js asking whether there's signal: only the network can answer
   if (isTile) {
     // Map tiles: from a saved offline lake or what you've viewed before, otherwise fetch and keep a copy.
     e.respondWith(caches.open('tiles').then(async c => (await caches.match(e.request)) || fetch(e.request).then(r => { if (r.ok || r.type === 'opaque') c.put(e.request, r.clone()); return r; })));
