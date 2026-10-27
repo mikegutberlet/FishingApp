@@ -39,7 +39,6 @@ jobs:
           # The public road and trail services take 30–90 s per water, so a run covers a few hundred waters; the first
           # full pass takes several nights. A branch run is short, to show the job works.
           CORPUS_MINUTES: ${{ github.ref_name == 'main' && '300' || '150' }}
-          CORPUS_MAX: ${{ github.ref_name == 'main' && '' || '12' }} # TEMP: a short first run on the branch
         run: |
           mkdir -p data/corpus/logs
           node scripts/build-corpus.mjs 2>&1 | tee data/corpus/logs/build-corpus.log

@@ -82,7 +82,8 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const minutesLeft = () => MINUTES - (Date.now() - started) / 60000;
 const fileOf = (st, id) => `${DATA}/${st.toLowerCase()}/${encodeURIComponent(String(id))}.json`;
 async function readJson(p) { try { return JSON.parse(await readFile(rootPath(p), 'utf8')); } catch { return null; } }
-async function writeJson(p, v) { await mkdir(path.dirname(rootPath(p)), { recursive: true }); await writeFile(rootPath(p), JSON.stringify(v, null, 1) + '\n'); }
+// Water files are written compact (road geometry pretty-printed is three times the size); the small index stays readable.
+async function writeJson(p, v, pretty = false) { await mkdir(path.dirname(rootPath(p)), { recursive: true }); await writeFile(rootPath(p), JSON.stringify(v, null, pretty ? 1 : 0) + '\n'); }
 const round = (n, d = 4) => n == null ? null : +(+n).toFixed(d);
 
 // ---------- Which water, and what the app would know about it ----------
@@ -111,8 +112,8 @@ async function lakeRecord(S, w) {
   return lake;
 }
 
-// Keep a feature's shape but not every vertex: 4 decimals (~10 m) and at most 30 points per path.
-function thinPaths(paths, max = 30) {
+// Keep a feature's shape but not every vertex: 4 decimals (~10 m) and at most 20 points per path.
+function thinPaths(paths, max = 20) {
   return (paths ?? []).map(p => {
     const step = Math.max(1, Math.ceil(p.length / max));
     const out = p.filter((_, i) => i % step === 0);
@@ -123,6 +124,15 @@ function thinPaths(paths, max = 30) {
 const compactFeature = f => ({ kind: f.kind, name: f.name ?? null, ref: f.ref ?? null, ...(f.lat != null && { lat: round(f.lat, 5), lon: round(f.lon, 5) }), paths: thinPaths(f.paths),
   tags: Object.fromEntries(Object.entries(f.tags ?? {}).filter(([, v]) => v !== false && !(v && typeof v === 'object' && !Object.keys(v).length))), // null stays: roadClass reads it as "not recorded"
   source: f.source, ...(f.sources?.length > 1 && { sources: f.sources }) });
+
+// The records worth keeping: the tab shows the 40 nearest roads and trails, so the archive keeps the 60 nearest of
+// each (a big lake's lookup can return 400 records of a town's streets), and every gate and cell mast.
+function keepFeatures(data) {
+  const s = summarize({ lat: data.lat, lon: data.lon }, data.shoreKm, data.features, { land: data.land });
+  const near = new Map([...s.roads, ...s.trails].map(f => [f.source.id, f.shoreKm]));
+  const byKind = kind => data.features.filter(f => f.kind === kind).sort((a, b) => (near.get(a.source.id) ?? Infinity) - (near.get(b.source.id) ?? Infinity));
+  return [...byKind('road').slice(0, 60), ...byKind('trail').slice(0, 60), ...data.features.filter(f => f.kind !== 'road' && f.kind !== 'trail')];
+}
 
 // The Getting there verdict, in the words the tab uses, so the catalogue can show it without recomputing.
 function accessSummary(data) {
@@ -183,7 +193,8 @@ async function buildWater(S, w, prev, { live }) {
   const lake = await lakeRecord(S, w);
   const now = new Date().toISOString();
   const sources = new Map();
-  const cite = (label, url, fetchedAt = now) => { if (url && !sources.has(url)) sources.set(url, { label, url, fetchedAt }); };
+  // One entry per source (the records themselves keep their own links); a forest's MVUM counts as one source.
+  const cite = (label, url, fetchedAt = now) => { const k = String(label ?? url).split(' · ')[0]; if (url && label && !sources.has(k)) sources.set(k, { label: k, url, fetchedAt }); };
   const [hydro, surveys, recent, history, intro, rules, advisories] = await Promise.all([
     S.hydroFor(lake).catch(() => null), S.bathymetryFor(lake).catch(() => []), recentPlants(S, w.id), stockHistoryFor(lake).catch(() => null),
     S.historyFor(lake).catch(() => null), rulesFor(S, lake), advisoriesFor(S, lake),
@@ -205,7 +216,7 @@ async function buildWater(S, w, prev, { live }) {
     const a = await lookupAccess(lake, { force: true }).catch(e => { console.warn(`access ${lake.name}:`, e.message); return null; });
     if (a && a.failed.length < 6) {
       access = { fetchedAt: a.fetchedAt, lat: round(a.lat, 5), lon: round(a.lon, 5), searchKm: round(a.searchKm, 2), shoreKm: round(a.shoreKm, 2), summary: accessSummary(a),
-        features: a.features.map(compactFeature), land: a.land, hike: a.hike ? { ...a.hike, coords: thinPaths([a.hike.coords ?? []])[0] ?? [], profile: undefined } : null, failed: a.failed };
+        features: keepFeatures(a).map(compactFeature), land: a.land, hike: a.hike ? { ...a.hike, coords: thinPaths([a.hike.coords ?? []])[0] ?? [], profile: undefined } : null, failed: a.failed };
       if (a.about) about = { ...a.about, fetchedAt: a.fetchedAt };
       else if (!a.failed.includes('Wikipedia')) about = null;
     } else if (a) console.warn(`access ${lake.name}: nothing answered (${a.failed.join(', ')}), keeping the previous copy`);
@@ -374,7 +385,7 @@ for (const code of STATES) {
     updatedAt: new Date().toISOString(), count: files.length, stocked: waters.length,
     waters: files.sort((a, b) => a.name.localeCompare(b.name)).map(f => ({ id: f.id, name: f.name, county: f.county, lat: f.lat, lon: f.lon, checkedAt: f.checkedAt, updatedAt: f.updatedAt,
       verdict: f.access?.summary?.verdict ?? null, camps: f.camping?.sites?.length ?? null, years: yearsSpan(f), notes: f.notes.length, dropped: !byId.has(f.id) || undefined })),
-  });
+  }, true);
   await writeDocs(S, files);
   console.log(`${code}: ${run.checked} checked (${run.added} new, ${run.changed} changed, ${run.kept} unchanged); ${files.length} files in the corpus`);
 }
