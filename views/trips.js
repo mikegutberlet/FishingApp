@@ -8,12 +8,19 @@ import { openViewer } from './catch.js';
 import { renderCatchCards, snapshotConditions, shrinkPhoto, editCatch, weightText } from './log.js';
 import { fmtLen, fromLen, units } from '../units.js';
 import { estimateWeight } from '../weight.js';
+import { forLake } from '../states/index.js';
+import { isRiver } from '../states/common.js';
+import { renderBagBar } from '../bag.js';
+import { feedFix, trollOn, setTroll, mountReadout, snapshot, resetReadout, speedSummary } from '../troll.js';
+import { lostLureSheet, undoLostLure } from '../lost-lure.js';
+import { lookalikesFor, lookalikeHtml } from '../lookalikes.js';
+import { renderDebrief, lastNextTime, nextTimeHtml } from './debrief.js';
 
 const KEY = 'tackle-box-active-trip';
 const SCREEN_KEY = 'tackle-box-keep-screen-on';
 let trip = null;          // the active trip record
 let watchId = null, lastFix = null, dirty = 0, flushTimer = null, tick = null, wakeLock = null;
-let miniMap = null;
+let miniMap = null, stopReadout = null;
 
 export async function activeTrip() {
   const id = localStorage.getItem(KEY);
@@ -52,17 +59,23 @@ export async function startTripFlow() {
   el.innerHTML = `<h2>Start a trip</h2><form class="card form" id="trip-start">
       <label>Where <select name="lakeId">${lakes.map(l => `<option value="${esc(l.id)}">${esc(l.name)}</option>`).join('')}</select></label>
       <label class="check"><input type="checkbox" name="screen" ${localStorage.getItem(SCREEN_KEY) !== '0' ? 'checked' : ''}> Keep the screen on during the trip</label>
+      <div id="trip-next"></div>
       <button class="primary big">▶ Start trip</button>
+      <a href="#" id="trip-go" class="small">📋 Before you go: license, passes, layers, lures…</a>
       <p class="muted small">Your GPS track is recorded only while Tackle Box is open on screen. iPhones stop location updates as soon as the screen locks or you switch apps,
         so leave “Keep the screen on” ticked for a full track (it uses more battery). The track stays on this device.</p>
     </form>`;
   // Pick the saved water closest to where you are, unless you've already picked one.
   const form = $('#trip-start');
   let picked = false;
+  const showNext = async () => { const n = await lastNextTime(form.lakeId.value); if (form.isConnected) $('#trip-next').innerHTML = nextTimeHtml(n); };
+  form.lakeId.addEventListener('change', showNext);
+  showNext();
+  $('#trip-go').onclick = e => { e.preventDefault(); import('./before-go.js').then(m => m.openChecklist(form.lakeId.value, undefined, { from: 'log' })); };
   form.lakeId.onchange = () => { picked = true; };
   navigator.geolocation?.getCurrentPosition(p => {
     const near = lakes.map(l => [l, haversineKm(p.coords.latitude, p.coords.longitude, l.lat, l.lon)]).sort((a, b) => a[1] - b[1])[0];
-    if (near && near[1] < 25 && !picked && form.isConnected) form.lakeId.value = near[0].id;
+    if (near && near[1] < 25 && !picked && form.isConnected) { form.lakeId.value = near[0].id; showNext(); }
   }, () => {}, { timeout: 8000 });
   let starting = false;
   form.onsubmit = async e => {
@@ -112,6 +125,7 @@ document.addEventListener('visibilitychange', () => { if (document.visibilitySta
 // Keep a point when it's accurate and you've moved 10 m, or a minute has passed.
 function onFix(p) {
   if (!trip) return;
+  feedFix(p);
   const { latitude: lat, longitude: lon, accuracy } = p.coords;
   lastFix = { lat, lon, accuracy, time: p.timestamp };
   const gps = $('#trip-gps');
@@ -186,16 +200,22 @@ async function renderLive(t) {
   const [lake, catches, events] = await Promise.all([db.get('lakes', t.lakeId), tripCatches(t), tripEvents(t)]);
   const el = $('#trip');
   const bites = events.filter(e => e.kind === 'bite').length, lost = events.filter(e => e.kind === 'lost').length;
-  const log = [...catches.map(c => ({ time: c.time, html: `🐟 <b>${esc(c.species)}</b> ${fmtLen(c.length)} ${weightText(c)}`, catchId: c.id })),
-    ...events.map(e => ({ time: e.time, html: e.kind === 'bite' ? '💥 Bite' : '💨 Lost fish', eventId: e.id }))].sort((a, b) => b.time.localeCompare(a.time));
+  const speed = x => Number.isFinite(x.trollMph) && x.trollMph >= 0.3 ? ` <span class="muted">${speedSummary([x])}</span>` : '';
+  const log = [...catches.map(c => ({ time: c.time, html: `🐟 <b>${esc(c.species)}</b> ${fmtLen(c.length)} ${weightText(c)}${c.released === false ? ' <span class="pill">kept</span>' : ''}${speed(c)}`, catchId: c.id })),
+    ...events.map(e => ({ time: e.time, html: e.kind === 'bite' ? `💥 Bite${speed(e)}` : e.kind === 'lure' ? `🪝 Lost ${esc(e.lure || 'a lure')}` : '💨 Lost fish', eventId: e.id }))].sort((a, b) => b.time.localeCompare(a.time));
+  const next = await lastNextTime(t.lakeId, t.id);
   el.innerHTML = `<div class="trip-head"><div><b>${esc(lake?.name ?? 'Trip')}</b><div class="muted small" id="trip-gps">${lastFix ? `GPS ±${Math.round(lastFix.accuracy)} m · ${t.track.length} track points` : 'Waiting for GPS…'}</div></div>
       <div class="trip-clock" id="trip-clock">${clock(Date.now() - Date.parse(t.start))}</div></div>
+    ${next && !sessionStorage.getItem(`tb-next-seen-${t.id}`) ? `<div class="next-wrap">${nextTimeHtml(next)}<a href="#" class="small" id="next-hide">hide</a></div>` : ''}
     <div class="grid trip-stats"><div class="stat"><b>${catches.length}</b><span>Fish</span></div><div class="stat"><b>${bites}</b><span>Bites</span></div><div class="stat"><b>${lost}</b><span>Lost</span></div></div>
+    <div id="trip-bag"></div>
+    <div id="troll-panel" class="troll ${trollOn() ? '' : 'hidden'}"></div>
     <div class="quick">
       <button class="q-catch" id="q-catch">🐟<span>Catch</span></button>
       <button class="q-bite" id="q-bite">💥<span>Bite</span></button>
       <button class="q-lost" id="q-lost">💨<span>Lost</span></button>
     </div>
+    <div class="quick-more"><button id="q-lure">🪝 Lost lure</button><button id="q-troll" class="${trollOn() ? 'on' : ''}" aria-pressed="${trollOn()}">🧭 Troll / drift ${trollOn() ? 'on' : 'off'}</button></div>
     <div id="quick-sheet"></div>
     <div class="card small">${log.length ? log.map(x => `<div class="row trip-log"><span class="muted">${new Date(x.time).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}</span><span style="flex:1">${x.html}</span>
       ${x.catchId ? `<a href="#" data-edit="${esc(x.catchId)}">details</a>` : `<a href="#" class="danger" data-undo="${esc(x.eventId)}">undo</a>`}</div>`).join('') : '<span class="muted">Tap Catch, Bite or Lost as it happens. Each one is stamped with the time and your GPS spot.</span>'}</div>
@@ -204,15 +224,25 @@ async function renderLive(t) {
   $('#q-catch').onclick = () => speciesPicker(t, lake);
   $('#q-bite').onclick = () => addEvent(t, 'bite');
   $('#q-lost').onclick = () => addEvent(t, 'lost');
+  $('#q-lure').onclick = async () => lostLureSheet(t, $('#quick-sheet'), await here(t), () => renderLive(t));
+  $('#q-troll').onclick = () => { setTroll(!trollOn()); if (trollOn()) resetReadout(); renderLive(t); };
+  $('#next-hide')?.addEventListener('click', e => { e.preventDefault(); sessionStorage.setItem(`tb-next-seen-${t.id}`, '1'); e.target.parentNode.remove(); });
+  stopReadout?.(); stopReadout = trollOn() ? mountReadout($('#troll-panel')) : null;
+  renderBagBar($('#trip-bag'), lake);
   el.querySelectorAll('[data-edit]').forEach(a => a.onclick = e => { e.preventDefault(); editCatch(a.dataset.edit); });
-  el.querySelectorAll('[data-undo]').forEach(a => a.onclick = async e => { e.preventDefault(); await db.del('events', a.dataset.undo); renderLive(t); });
+  el.querySelectorAll('[data-undo]').forEach(a => a.onclick = async e => {
+    e.preventDefault();
+    const ev = events.find(x => x.id === a.dataset.undo);
+    if (ev?.kind === 'lure') await undoLostLure(ev); else await db.del('events', a.dataset.undo);
+    renderLive(t);
+  });
   $('#trip-end').onclick = () => endTrip(t);
   updatePill();
 }
 
 async function addEvent(t, kind) {
   navigator.vibrate?.(30);
-  await db.put('events', { tripId: t.id, lakeId: t.lakeId, kind, time: new Date().toISOString(), ...await here(t) });
+  await db.put('events', { tripId: t.id, lakeId: t.lakeId, kind, time: new Date().toISOString(), ...await here(t), ...snapshot() });
   status(kind === 'bite' ? 'Bite logged' : 'Lost fish logged');
   renderLive(t);
 }
@@ -235,7 +265,7 @@ async function quickCatch(t, species) {
   const time = new Date().toISOString();
   const pos = await here(t);
   const c = await db.put('catches', { lakeId: t.lakeId, tripId: t.id, species, time, length: null, weight: null, depth: null, waterTemp: null,
-    lure: '', technique: '', notes: '', released: true, ...pos, photo: null, moon: moonPhase(new Date(time)).name });
+    lure: '', technique: snapshot().trollMph >= 0.3 ? 'trolling' : '', notes: '', released: true, ...pos, ...snapshot(), photo: null, moon: moonPhase(new Date(time)).name });
   status(`${species} logged 🎣`);
   refreshMap();
   renderLive(t).then(() => sizeSheet(t, c));
@@ -244,14 +274,18 @@ async function quickCatch(t, species) {
   if (lake) snapshotConditions(lake.lat, lake.lon).then(async cond => { if (cond) { const saved = await db.get('catches', c.id); if (saved) await db.put('catches', { ...saved, conditions: cond }); } });
 }
 
-function sizeSheet(t, c) {
+async function sizeSheet(t, c) {
   const sheet = $('#quick-sheet');
+  const lake = await db.get('lakes', t.lakeId);
+  const look = (length = null) => lookalikeHtml(lookalikesFor(c.species, { stateCode: forLake(lake)?.code, river: lake ? isRiver(lake) : false, length }));
   sheet.innerHTML = `<form class="card form" id="size-form"><h3>${esc(c.species)}: anything to add?</h3>
+    <div id="size-look">${look()}</div>
     <label>Length (${units().length}) <input name="length" type="number" step="any" min="0" inputmode="decimal" class="big-input"></label>
     <div class="row"><label class="check"><input type="checkbox" name="released" checked> Released</label><label>Photo <input name="photo" type="file" accept="image/*" capture="environment"></label></div>
     <div class="row"><button class="primary">Save</button><button type="button" id="size-skip">Skip</button></div>
     <a href="#" id="size-full" class="small">Full form (lure, depth, notes…)</a></form>`;
   const form = $('#size-form');
+  form.length.oninput = () => { const v = form.length.value === '' ? null : fromLen(+form.length.value); $('#size-look').innerHTML = look(v); };
   form.onsubmit = async e => {
     e.preventDefault();
     const length = form.length.value === '' ? null : fromLen(+form.length.value);
@@ -270,7 +304,7 @@ async function endTrip(t) {
   const running = trip?.id === t.id;
   if (running) await flush();
   const saved = await db.get('trips', t.id);
-  if (running) { trip = null; if (localStorage.getItem(KEY) === t.id) localStorage.removeItem(KEY); stopTracking(); updatePill(); }
+  if (running) { trip = null; if (localStorage.getItem(KEY) === t.id) localStorage.removeItem(KEY); stopTracking(); updatePill(); stopReadout?.(); stopReadout = null; }
   if (!saved) return showView('journal'); // removed meanwhile, e.g. by restoring a backup
   if (saved.end && !running) return renderSummary(saved); // already ended in another tab: keep its end time
   const ended = await db.put('trips', { ...(running ? withTrack(saved, t.track) : saved), end: new Date().toISOString() });
@@ -293,6 +327,7 @@ async function renderSummary(t) {
   const bySpecies = Object.entries(catches.reduce((m, c) => (m[c.species] = (m[c.species] || 0) + 1, m), {})).sort((a, b) => b[1] - a[1]);
   const biggest = catches.filter(c => c.length).sort((a, b) => b.length - a.length)[0];
   const el = $('#trip');
+  const lostLures = events.filter(e => e.kind === 'lure'), speeds = speedSummary(catches);
   el.innerHTML = `<button id="trip-back">‹ Journal</button>
     <h2>${esc(lake?.name ?? 'Trip')}</h2>
     <div class="muted small">${fmtDate(t.start)} · ${new Date(t.start).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}–${new Date(t.end).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}</div>
@@ -305,6 +340,8 @@ async function renderSummary(t) {
       ${biggest ? `<div class="stat"><b>${fmtLen(biggest.length)}</b><span>Biggest · ${esc(biggest.species)}</span></div>` : ''}
     </div>
     ${bySpecies.length ? `<div class="small" style="margin-bottom:12px">${bySpecies.map(([s, n]) => `${esc(s)} ×${n}`).join(' · ')}</div>` : ''}
+    ${speeds || lostLures.length ? `<div class="small" style="margin-bottom:12px">${[speeds && `🧭 Fish came trolling ${speeds}`, lostLures.length && `🪝 Lost ${lostLures.map(e => esc(e.lure || 'a lure')).join(', ')}`].filter(Boolean).join(' · ')}</div>` : ''}
+    <div id="trip-debrief"></div>
     ${track.length || catches.length || events.length ? '<div id="trip-map" class="trip-map"></div>' : ''}
     <h2>Journal</h2>
     <form class="card form" id="journal-form">
@@ -347,6 +384,7 @@ async function renderSummary(t) {
     showView('journal');
   };
   renderCatchCards([...catches].reverse(), $('#trip-catches'));
+  renderDebrief($('#trip-debrief'), t, lake, catches, events, next => renderSummary(next));
   drawTripMap(t, lake, catches, events);
 }
 
@@ -365,7 +403,7 @@ function drawTripMap(t, lake, catches, events) {
     pts.push(...line);
   }
   for (const c of catches) if (c.lat != null) { L.circleMarker([c.lat, c.lon], { radius: 7, color: '#fff', weight: 2, fillColor: '#f28c28', fillOpacity: 1 }).bindTooltip(`${esc(c.species)} ${fmtLen(c.length)}`).addTo(miniMap); pts.push([c.lat, c.lon]); }
-  for (const e of events) if (e.lat != null) { L.circleMarker([e.lat, e.lon], { radius: 5, color: '#fff', weight: 1, fillColor: e.kind === 'bite' ? '#f2d028' : '#b3261e', fillOpacity: 1 }).bindTooltip(e.kind === 'bite' ? 'Bite' : 'Lost').addTo(miniMap); pts.push([e.lat, e.lon]); }
+  for (const e of events) if (e.lat != null) { L.circleMarker([e.lat, e.lon], { radius: 5, color: '#fff', weight: 1, fillColor: e.kind === 'bite' ? '#f2d028' : e.kind === 'lure' ? '#8a8f98' : '#b3261e', fillOpacity: 1 }).bindTooltip(e.kind === 'bite' ? 'Bite' : e.kind === 'lure' ? `Lost ${esc(e.lure || 'lure')}` : 'Lost').addTo(miniMap); pts.push([e.lat, e.lon]); }
   if (!pts.length && lake) pts.push([lake.lat, lake.lon]);
   miniMap.fitBounds(L.latLngBounds(pts).pad(0.2), { maxZoom: 16 });
 }

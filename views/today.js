@@ -8,6 +8,7 @@ import { solunar, dayRating, stars, nextWindow, shortTime } from '../solunar.js'
 import { windOnWater, bankName } from '../wind.js';
 import { $, esc, fmtDate, arrow, showView, onShow, emptyState, icon } from '../ui.js';
 import { openLake } from './lake.js';
+import { fillReportLines } from '../report-line.js';
 
 // Slot for the "days like today" insight (workstream E). Register a renderer:
 //   registerTodayInsight(async el => { el.innerHTML = '…'; return true; })  // return false to keep the card hidden
@@ -39,7 +40,7 @@ export async function renderToday() {
       : `<div class="today-carousel${favs.length > 1 ? ' multi' : ''}">${favs.map(l => `<div class="card today-lake" data-id="${esc(l.id)}">
           <div class="hero sky-clear"><div class="today-title"><b>${esc(l.name)}</b><span class="today-alert"></span><span>›</span></div>
             <div class="hero-now"><span class="hero-temp">–</span><div><div class="hero-sky">Loading forecast…</div><div class="hero-wind"></div></div></div></div>
-          <div class="grid today-grid"></div></div>`).join('')}</div>
+          <div class="grid today-grid"></div><div data-report-for="${esc(l.id)}"></div></div>`).join('')}</div>
         ${favs.length > 1 ? `<div class="dots-row">${favs.map((_, i) => `<i class="${i ? '' : 'on'}"></i>`).join('')}</div>` : ''}
         <p class="small"><a href="#" id="fav-edit">Change favorites</a></p>`}
     <div class="card map-card"><div class="map-card-head"><b>Map</b><span class="muted small">${lakes.length ? 'Your waters · tap to browse' : 'Tap to browse lakes and rivers'}</span><span>›</span></div><div id="today-map"></div></div>`;
@@ -49,6 +50,7 @@ export async function renderToday() {
   const done = $('#fav-done'), edit = $('#fav-edit');
   if (done) done.onclick = () => { editing = false; renderToday(); };
   if (edit) edit.onclick = e => { e.preventDefault(); editing = true; renderToday(); };
+  if (!editing) fillReportLines(el, favs);
   if (!editing) el.querySelectorAll('.today-lake').forEach(card => {
     card.onclick = () => openLake(card.dataset.id);
     fillCard(card, favs.find(l => l.id === card.dataset.id));
