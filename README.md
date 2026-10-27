@@ -15,7 +15,7 @@ A Fish Deeper–style app that keeps all of your data on your own device. No acc
 | Depth charts | Import your Deeper soundings (CSV, GPX, KML) and see them as a colored depth map | Your own exports |
 | Stocking | Stocking history per lake, totals by year, CSV import, link to the state report | You / state DNR downloads |
 | Lake info | Acres, max depth, clarity, species, regulations, access, DNR links | You / state DNR pages |
-| Catch log | Species, length, weight, depth, water temp, lure, technique, photo, GPS spot, released. Weather, wind, pressure trend and moon are captured automatically | Device |
+| Catch log | Species, length, weight, depth, water temp, lure, technique, photos, GPS spot, released. Weather, wind, pressure trend and moon are captured automatically, also for catches logged later | Device |
 | Notes | Per-lake notes, optionally pinned to a spot | Device |
 | Stats | By species, lake, lure, hour, pressure trend, moon phase, depth band | Device |
 | Backup | Export/import one JSON file (photos included), optionally password-encrypted, to move devices or keep a copy | Device |
@@ -36,6 +36,10 @@ It is a PWA: open it once in Safari/Chrome, choose **Add to Home Screen**, and i
 
 * **Trip mode** (Journal → Start a trip, or the Log view): records your GPS track while the app is open, with big one-tap **Catch / Bite / Lost** buttons and a species picker built from your recent catches. Each tap is stamped with the time and your spot; add a length and photo right away or later. iPhones stop location updates when the screen locks, so trip mode keeps the screen on by default. The end-of-trip page shows time on the water, fish per hour, bites and lost fish, distance, and the track with every catch on a map.
 * **Journal**: a rating, who you fished with, a write-up and photos for each trip, or for a past day without trip mode. The timeline lists trips, catches and notes newest first.
+* **Search and filters** (Journal → Timeline): search species, lures, notes and waters, and filter by species, water, kept or released and dates; matching catches are listed whether or not they were on a trip.
+* **Catch page**: tap any catch for its photos large (swipe, tap for full screen), size, water, lure, conditions and moon, a pin on the map, older/newer, and Edit / Share / Delete (`views/catch.js`).
+* **Photos on the catch form**: add several per catch. The first photo of a new catch fills in When and the spot (and picks your saved water) from the photo's own time and GPS, read on the device.
+* **Weather for catches logged later**: a catch logged more than 3 hours after the fact, or saved offline, gets that hour's weather from Open-Meteo's free archive (only the water's coordinates and the date are sent). Journal → Stats offers to fill it in for older catches that have none (`past-weather.js`).
 * **Personal bests and life list**: every species you've caught, when and where first, longest and heaviest, overall and per water. A blank weight is estimated from length with standard-weight formulas for the species (shown with ≈).
 * **Tackle box**: your lures and baits with photos; pick one on the catch form and see how many fish each has caught.
 * **From photos**: pick old fish photos and Tackle Box reads the date and GPS on the device, matches the water (yours or any California water), and makes draft catches to confirm.
