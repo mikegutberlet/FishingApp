@@ -1,0 +1,28 @@
+/* Crew trips (views/crew-plan.js). Every class starts with cp- so it can't collide. */
+.cp-card { cursor: pointer; }
+.cp-acts { gap: 8px; margin: 8px 0 12px; flex-wrap: wrap; }
+.cp-acts button { flex: 1; min-width: 140px; }
+.cp-chips { gap: 6px; flex-wrap: wrap; margin: 4px 0 8px; }
+.cp-person { padding: 8px 0; border-bottom: 1px solid var(--line); }
+.cp-person.cp-me { border-left: 3px solid var(--accent); padding-left: 8px; }
+.cp-person-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.cp-person-head select { width: auto; flex: none; }
+.cp-lic { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin: 4px 0; }
+.cp-lic .check { margin: 0; }
+.cp-bad { color: var(--danger); }
+.cp-good { color: var(--good, #2f855a); }
+.cp-add { gap: 8px; margin-top: 8px; }
+.cp-add input { flex: 1; min-width: 0; }
+.cp-add button { flex: none; }
+.cp-gear { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--line); }
+.cp-gear .cp-item { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.cp-gear select { width: auto; max-width: 45%; flex: none; }
+.cp-tally { width: 100%; border-collapse: collapse; }
+.cp-tally th { text-align: left; font-size: 12px; font-weight: 600; color: var(--muted); }
+.cp-tally td, .cp-tally th { padding: 6px 4px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.cp-works { border-left: 4px solid var(--accent); }
+.cp-works p { margin: 4px 0; }
+.cp-season { margin-bottom: 6px; }
+.cp-row { padding: 3px 0; }
+.cp-camp-row { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.cp-waters { max-height: 260px; overflow-y: auto; }
