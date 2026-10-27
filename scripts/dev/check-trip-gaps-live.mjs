@@ -15,10 +15,11 @@ for (const w of WATERS) {
     const r = await roadsNear(w);
     console.log(`roads: ${r.chains.length} routes with chain points, ${r.chains.filter(c => c.worst).length} with controls on; ${r.closures.length} full closures; passes ${r.passes.map(p => p.name).join(', ') || 'none'}; failed ${r.failed.join(', ') || 'none'}`);
     for (const c of r.chains.slice(0, 5)) console.log(`  ${c.route} worst R${c.worst} nearest ${c.km.toFixed(0)} km: ${c.points.slice(0, 2).map(p => `${p.name} [${p.code}] ${p.text.slice(0, 60)}`).join(' | ')}`);
-    for (const c of r.closures.slice(0, 5)) console.log(`  CLOSED ${c.route} ${c.from} -> ${c.to} ${c.km.toFixed(0)} km ${c.start} .. ${c.end ?? 'indef'} ${c.work} ${c.duration}`);
+    for (const c of r.closures.slice(0, 5)) console.log(`  CLOSED ${c.route} ${c.from} -> ${c.to} ${c.km.toFixed(0)} km ${c.start} .. ${c.end ?? 'indef'} ${c.work} ${c.duration} +${c.more}`);
   } catch (e) { console.log('roads FAILED', e.message); }
   try {
-    const s = await lookupSupplies(w);
+    // Overpass answers 406 to Node's own user agent; phones send a browser's.
+    const s = await lookupSupplies(w, { fetchImpl: (u, o) => fetch(u, { ...o, headers: { 'User-Agent': 'Mozilla/5.0 (Linux; Android 14) Chrome/129.0 Mobile Safari/537.36' } }) });
     for (const [k, list] of Object.entries(s.places)) console.log(`  ${k}: ${list.slice(0, 3).map(p => `${p.name} (${p.town}) ${p.km.toFixed(1)} km ${p.dir}`).join('; ') || 'none'}`);
   } catch (e) { console.log('supplies FAILED', e.message); }
   await new Promise(r => setTimeout(r, 3000));

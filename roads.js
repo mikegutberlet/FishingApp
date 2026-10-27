@@ -66,7 +66,8 @@ export function readChain(rec, lat, lon) {
   if (pLat == null || pLon == null || String(cc?.inService) === 'false') return null;
   const code = String(s.status ?? '').trim();
   const ts = s.statusTimestamp ?? {};
-  return { route: l.route ?? '', name: l.locationName ?? '', place: l.nearbyPlace ?? '', lat: pLat, lon: pLon, direction: l.direction ?? '',
+  return { route: l.route ?? '', name: String(l.locationName ?? '').replace(/(\s*_)+.*$/, '').trim(), // District 9 pads names with "_ _ _(14)6"
+    place: l.nearbyPlace ?? '', lat: pLat, lon: pLon, direction: l.direction ?? '',
     code, level: CHAIN_LEVELS[code]?.level ?? (/^R-?\d/.test(code) ? +code.replace(/\D/g, '') : 0), text: s.statusDescription ?? '',
     since: ts.statusDate ? `${ts.statusDate}T${ts.statusTime ?? '00:00:00'}` : null, km: haversineKm(lat, lon, pLat, pLon) };
 }
@@ -123,7 +124,15 @@ export async function roadsNear(lake, { km = NEAR_KM, fetchImpl, now = Date.now(
     byRoute.set(p.route, r);
   }
   const seen = new Set();
-  const uniq = closures.sort((a, b) => a.km - b.km).filter(c => { const k = `${c.route}|${c.from}|${c.to}|${c.start}`; return !seen.has(k) && seen.add(k); });
+  // Night work repeats as one closure per night: show the next one, and how many more follow.
+  const uniq = [];
+  for (const c of closures.sort((a, b) => a.km - b.km || String(a.start).localeCompare(String(b.start)))) {
+    const k = `${c.route}|${c.from}|${c.to}`, exact = `${k}|${c.start}`;
+    if (seen.has(exact)) continue; // the same closure listed by two districts
+    seen.add(exact);
+    if (seen.has(k)) { uniq.find(u => `${u.route}|${u.from}|${u.to}` === k).more++; continue; }
+    seen.add(k); uniq.push({ ...c, more: 0 });
+  }
   const passes = SEASONAL_PASSES.map(p => ({ ...p, km: haversineKm(lat, lon, p.lat, p.lon) })).filter(p => p.km <= km).sort((a, b) => a.km - b.km);
   return { chains: [...byRoute.values()], closures: uniq.slice(0, 12), passes, failed, at: new Date(at).toISOString(), stale };
 }
