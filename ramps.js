@@ -77,6 +77,7 @@ export function rampStatus(ramp, levelFt, ratePerDay = null) {
     let bottom = now.floor;
     for (let more = true; more;) { more = false; for (const x of stages) if (x.floor < bottom && x.top >= bottom) { bottom = x.floor; more = true; } }
     return { name: ramp.name, usable: true, stage: now.label, floor: Number.isFinite(now.floor) ? now.floor : null, spare: Number.isFinite(now.floor) ? levelFt - now.floor : null,
+      stageDays: rate < -0.02 && Number.isFinite(now.floor) ? Math.floor((levelFt - now.floor) / -rate) : null, lastStage: bottom === now.floor && bottom <= lowest, gapBelow: bottom === now.floor && bottom > lowest,
       daysLeft: rate < -0.02 && Number.isFinite(bottom) ? Math.floor((levelFt - bottom) / -rate) : null };
   }
   if (levelFt < lowest) return { name: ramp.name, usable: false, why: 'low', stage: stages.find(x => x.floor === lowest).label, at: lowest, short: lowest - levelFt, days: rate > 0.02 ? Math.ceil((lowest - levelFt) / rate) : null };

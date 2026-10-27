@@ -33,7 +33,10 @@ export async function rampsCard(lake, el) {
   const when = d => d == null ? '' : d < 14 ? `${d} day${d === 1 ? '' : 's'}` : `${Math.round(d / 7)} weeks`;
   const line = ({ r, s }) => `<li class="${s.usable ? 'tg-ok' : 'tg-no'}"><b>${s.usable ? '✅' : '⛔'} ${esc(r.name)}</b>${r.mine ? ' <span class="muted small">(yours)</span>' : ''}<br>
     <span class="small">${s.usable
-      ? `${r.stages.length > 1 ? `${esc(s.stage)}${s.spare != null ? ', ' : ''}` : ''}${s.spare != null ? `${ft(s.spare)} above its floor (${s.floor.toLocaleString()} ft)` : ''}${s.daysLeft != null ? ` · at this drop, about ${when(s.daysLeft)} until it closes` : ''}`
+      // A multi-stage ramp: when this lane closes, then when the last one does.
+      ? r.stages.length > 1 && !s.lastStage
+        ? `${esc(s.stage)} lane${s.spare != null ? `: ${ft(s.spare)} above its floor (${s.floor.toLocaleString()} ft)` : ''}${s.stageDays != null ? `, closes in about ${when(s.stageDays)}` : ''}; ${s.gapBelow ? 'a lower lane only opens once the lake drops further' : `then the next stage${s.daysLeft != null ? `, last lane closes in about ${when(s.daysLeft)}` : ''}`}`
+        : `${r.stages.length > 1 ? `${esc(s.stage)} lane (the last)${s.spare != null ? ': ' : ''}` : ''}${s.spare != null ? `${ft(s.spare)} above its floor (${s.floor.toLocaleString()} ft)` : ''}${s.daysLeft != null ? ` · closes in about ${when(s.daysLeft)} at this drop` : ''}`
       : s.why === 'low' ? `${ft(s.short)} too low: usable from ${s.at.toLocaleString()} ft${s.days != null ? ` · at this rise, about ${when(s.days)}` : ''}`
       : `${esc(s.stage)} opens when the lake drops to ${s.at.toLocaleString()} ft (${ft(s.short)} to go${s.days != null ? `, about ${when(s.days)} at this drop` : ''})`}</span></li>`;
   el.innerHTML = `<h3>🚤 Ramps at today's level</h3>
