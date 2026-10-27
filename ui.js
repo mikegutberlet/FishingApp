@@ -5,6 +5,19 @@ export const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;'
 export const fmtDate = iso => iso ? new Date(/^\d{4}-\d\d-\d\d$/.test(iso) ? iso + 'T12:00' : iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '';
 export const fmtTime = iso => new Date(iso).toLocaleTimeString(undefined, { hour: 'numeric' });
 export const status = msg => { $('#status').textContent = msg; if (msg) setTimeout(() => $('#status').textContent === msg && ($('#status').textContent = ''), 4000); };
+// A bar above the bottom nav with an Undo button, for a few seconds after a delete. A new bar replaces the old one.
+let undoTimer;
+export function undoBar(text, onUndo, ms = 7000) {
+  document.querySelector('.undo-bar')?.remove();
+  clearTimeout(undoTimer);
+  const bar = document.createElement('div');
+  bar.className = 'undo-bar';
+  bar.setAttribute('role', 'status');
+  bar.innerHTML = `<span>${esc(text)}</span><button type="button">Undo</button>`;
+  bar.querySelector('button').onclick = () => { bar.remove(); clearTimeout(undoTimer); onUndo(); };
+  document.body.append(bar);
+  undoTimer = setTimeout(() => bar.remove(), ms);
+}
 export const arrow = deg => `<span class="arrow" style="transform:rotate(${deg + 180}deg)">↑</span>`;
 export const M_TO_FT = 3.28084;
 // A line icon from the sprite at the top of index.html.

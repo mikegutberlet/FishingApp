@@ -76,6 +76,7 @@
       <button id="btn-start-trip" class="trip-cta">▶ Trip mode: one-tap logging with GPS track</button>
       <h2 id="catch-form-title">Log a catch</h2>
       <form id="catch-form" class="card form">
+        <button type="button" id="btn-same" class="same-last hidden"></button>
         <label>Lake / river <select name="lakeId" required></select></label>
         <label>Species <input name="species" list="species-list" required></label>
         <div id="species-chips" class="pick-chips"></div>
@@ -86,16 +87,22 @@
         <label>From your tackle box <select name="tackleId"><option value="">–</option></select></label>
         <label>Lure / bait <input name="lure" list="lure-list"></label>
         <label>When <input name="time" type="datetime-local" required></label>
-        <label class="check released"><input type="checkbox" name="released" checked> Released</label>
+        <div class="row count-row">
+          <label class="check released"><input type="checkbox" name="released" checked> Released</label>
+          <label id="count-label">How many <input name="count" type="number" min="1" max="200" step="1" value="1" inputmode="numeric"></label>
+        </div>
+        <p id="count-hint" class="muted small hidden">Logs that many of this fish (a stringer of panfish or trout). The size and photos go on the first one.</p>
         <div id="form-photos" class="photos"></div>
         <label>Photos <input name="photo" type="file" accept="image/*" multiple></label>
         <p id="photo-hint" class="muted small hidden"></p>
         <label>Notes <textarea name="notes" rows="2"></textarea></label>
+        <label>Tags <input name="tags" placeholder="boat, shore, tournament…" autocomplete="off"></label>
+        <div id="tag-chips" class="pick-chips"></div>
         <details id="more-details" class="more">
           <summary>More details <span class="muted small">depth, water temp, clarity, technique, location</span></summary>
           <div class="row">
             <label>Depth (<span data-unit="depth">ft</span>) <input name="depth" type="number" step="any" min="0" inputmode="decimal"></label>
-            <label>Water temp (°F) <input name="waterTemp" type="number" step="0.5" inputmode="decimal"></label>
+            <label>Water temp (°<span data-unit="temp">F</span>) <input name="waterTemp" type="number" step="any" inputmode="decimal"></label>
           </div>
           <label>Water clarity <select name="clarity"><option value="">–</option><option>Clear</option><option>Stained</option><option>Murky</option><option>Muddy</option></select></label>
           <label>Technique <input name="technique" placeholder="jig, drop shot, trolling…"></label>
@@ -127,6 +134,7 @@
         <p>Everything is stored only in this browser on this device. There is no account and no server.
           Back up regularly, and use a backup file to move your data to another device.</p>
         <button id="btn-export">⬇ Export backup</button>
+        <button id="btn-csv">⬇ Catch log as a spreadsheet (CSV)</button>
         <label class="file-btn">⬆ Import backup or shared lake <input type="file" id="import-file" accept=".json,application/json" hidden></label>
         <p id="storage-info" class="muted small"></p>
       </div>
@@ -140,6 +148,7 @@
         <label>Length <select name="length"><option value="in">inches</option><option value="cm">cm</option></select></label>
         <label>Weight <select name="weight"><option value="lb">pounds</option><option value="kg">kg</option></select></label>
         <label>Depth <select name="depth"><option value="ft">feet</option><option value="m">meters</option></select></label>
+        <label>Water &amp; air temp <select name="temp"><option value="F">°F</option><option value="C">°C</option></select></label>
       </form>
       <h2>Offline maps</h2>
       <div class="card" id="offline-areas"></div>

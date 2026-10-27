@@ -40,6 +40,11 @@ It is a PWA: open it once in Safari/Chrome, choose **Add to Home Screen**, and i
 * **Catch page**: tap any catch for its photos large (swipe, tap for full screen), size, water, lure, conditions and moon, a pin on the map, older/newer, and Edit / Share / Delete (`views/catch.js`).
 * **Photos on the catch form**: add several per catch. The first photo of a new catch fills in When and the spot (and picks your saved water) from the photo's own time and GPS, read on the device.
 * **Weather for catches logged later**: a catch logged more than 3 hours after the fact, or saved offline, gets that hour's weather from Open-Meteo's free archive (only the water's coordinates and the date are sent). Journal → Stats offers to fill it in for older catches that have none (`past-weather.js`).
+* **Faster logging**: *Same as last* copies the water, species, lure, technique, depth, clarity, spot and tags from your newest catch; *How many* logs a stringer in one go (the size, photos and notes go on the first). Tags (boat, shore, tournament…) with one-tap chips of the ones you use, and a Tag filter in the Journal.
+* **Never lose a catch**: a new catch you've started is kept on the device (without photos) if the app closes, and deleting a catch shows an Undo bar instead of a confirm box.
+* **Calendar** (Journal → Calendar): each month with every day shaded by fish caught, trip and note marks; tap a day for its trips, catches and notes (`views/calendar.js`).
+* **Spreadsheet export**: Settings → *Catch log as a spreadsheet (CSV)*, or *Export* on filtered Journal results (`catch-csv.js`). Sizes in your units; no photos.
+* **Catch temps in °C**: Settings → Units → Water & air temp converts water temp on the form and the water and air temps on catch cards, the catch page and the CSV. Stored in °F.
 * **Personal bests and life list**: every species you've caught, when and where first, longest and heaviest, overall and per water. A blank weight is estimated from length with standard-weight formulas for the species (shown with ≈).
 * **Tackle box**: your lures and baits with photos; pick one on the catch form and see how many fish each has caught.
 * **From photos**: pick old fish photos and Tackle Box reads the date and GPS on the device, matches the water (yours or any California water), and makes draft catches to confirm.

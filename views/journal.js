@@ -11,8 +11,10 @@ import { renderBests } from './bests.js';
 import { renderTackle, tackleLabel } from './tackle.js';
 import { renderBackfill } from './backfill.js';
 import { renderStats } from './stats.js';
+import { renderCalendar } from './calendar.js';
+import { exportCatchesCsv } from '../catch-csv.js';
 
-const SECTIONS = { timeline: 'Timeline', stats: 'Stats', bests: 'Bests', tackle: 'Tackle box', photos: 'Photos' };
+const SECTIONS = { timeline: 'Timeline', calendar: 'Calendar', stats: 'Stats', bests: 'Bests', tackle: 'Tackle box', photos: 'Photos' };
 let section = 'timeline';
 
 export async function renderJournal(which = section) {
@@ -27,6 +29,7 @@ export async function renderJournal(which = section) {
   fitTabs($('.tabs', el));
   const body = $('#j-body', el);
   if (section === 'timeline') return renderTimeline(body);
+  if (section === 'calendar') return renderCalendar(body);
   if (section === 'stats') { body.innerHTML = '<div id="stats"></div>'; return renderStats(); }
   if (section === 'bests') return renderBests(body);
   if (section === 'tackle') return renderTackle(body);
@@ -36,8 +39,8 @@ export async function renderJournal(which = section) {
 const dayKey = iso => { const d = new Date(iso); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
 const hm = iso => new Date(iso).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
 
-// Search and filters: kept while the app is open. Species and kept/released are about fish, so they show catches only.
-const filt = { q: '', species: '', lakeId: '', kept: '', from: '', to: '' };
+// Search and filters: kept while the app is open. Species, kept/released and tags are about fish, so they show catches only.
+const filt = { q: '', species: '', lakeId: '', kept: '', tag: '', from: '', to: '' };
 const filtering = () => Object.values(filt).some(Boolean);
 let filtersOpen = false;
 
@@ -53,6 +56,7 @@ async function renderTimeline(body, limitDays = 30) {
   const fishIn = t => catches.filter(c => c.tripId === t.id);
   const species = [...new Set(catches.map(c => c.species).filter(Boolean))].sort((a, b) => a.localeCompare(b));
   const waters = lakes.filter(l => catches.some(c => c.lakeId === l.id) || trips.some(t => t.lakeId === l.id) || notes.some(n => n.lakeId === l.id)).sort((a, b) => a.name.localeCompare(b.name));
+  const tags = [...new Set(catches.flatMap(c => c.tags ?? []))].sort((a, b) => a.localeCompare(b));
   const opt = (v, label, cur) => `<option value="${esc(v)}" ${v === cur ? 'selected' : ''}>${esc(label)}</option>`;
   body.innerHTML = `<button id="j-new" style="width:100%;margin-bottom:12px">＋ Journal entry for a past day</button>
     <div class="j-search"><input type="search" id="j-q" placeholder="Search fish, lures, notes, waters" value="${esc(filt.q)}" enterkeyhint="search">
@@ -60,7 +64,8 @@ async function renderTimeline(body, limitDays = 30) {
     <form class="card form j-filters ${filtersOpen ? '' : 'hidden'}" id="j-filters">
       <div class="row"><label>Species <select name="species">${opt('', 'Any')}${species.map(x => opt(x, x, filt.species)).join('')}</select></label>
         <label>Water <select name="lakeId">${opt('', 'Any')}${waters.map(l => opt(l.id, l.name, filt.lakeId)).join('')}</select></label></div>
-      <div class="row"><label>Kept or released <select name="kept">${opt('', 'Either')}${opt('kept', 'Kept', filt.kept)}${opt('released', 'Released', filt.kept)}</select></label></div>
+      <div class="row"><label>Kept or released <select name="kept">${opt('', 'Either')}${opt('kept', 'Kept', filt.kept)}${opt('released', 'Released', filt.kept)}</select></label>
+        ${tags.length ? `<label>Tag <select name="tag">${opt('', 'Any')}${tags.map(t => opt(t, t, filt.tag)).join('')}</select></label>` : ''}</div>
       <div class="row"><label>From <input type="date" name="from" value="${esc(filt.from)}"></label><label>To <input type="date" name="to" value="${esc(filt.to)}"></label></div>
     </form>
     <div id="j-list"></div>`;
@@ -69,10 +74,10 @@ async function renderTimeline(body, limitDays = 30) {
   const words = () => filt.q.toLowerCase().split(/\s+/).filter(Boolean);
   const hit = (...fields) => { const text = fields.filter(Boolean).join(' ').toLowerCase(); return words().every(w => text.includes(w)); };
   const inDates = iso => (!filt.from || dayKey(iso) >= filt.from) && (!filt.to || dayKey(iso) <= filt.to);
-  const fishOnly = () => filt.species || filt.kept;
+  const fishOnly = () => filt.species || filt.kept || filt.tag;
   const catchOk = c => (!filt.species || c.species === filt.species) && (!filt.lakeId || c.lakeId === filt.lakeId)
-    && (!filt.kept || (filt.kept === 'released') === !!c.released) && inDates(c.time)
-    && hit(c.species, c.lure, c.technique, c.notes, c.clarity, lakeName[c.lakeId], tackleName[c.tackleId]);
+    && (!filt.kept || (filt.kept === 'released') === !!c.released) && (!filt.tag || (c.tags ?? []).includes(filt.tag)) && inDates(c.time)
+    && hit(c.species, c.lure, c.technique, c.notes, c.clarity, lakeName[c.lakeId], tackleName[c.tackleId], ...(c.tags ?? []));
   const tripOk = t => (!filt.lakeId || t.lakeId === filt.lakeId) && inDates(t.start)
     && hit(lakeName[t.lakeId], t.journal, t.companions, ...fishIn(t).flatMap(c => [c.species, c.lure]));
   const noteOk = n => (!filt.lakeId || n.lakeId === filt.lakeId) && inDates(n.createdAt) && hit(n.text, lakeName[n.lakeId]);
@@ -107,11 +112,12 @@ async function renderTimeline(body, limitDays = 30) {
     const days = [...new Set(sorted.map(x => dayKey(x.time)))];
     const n = k => sorted.filter(x => x[k]).length;
     const plural = (k, one, many) => { const v = n(k); return v ? `${v} ${v === 1 ? one : many}` : ''; };
-    list.innerHTML = (on ? `<div class="j-count small"><span>${[plural('c', 'catch', 'catches'), plural('trip', 'trip', 'trips'), plural('n', 'note', 'notes')].filter(Boolean).join(' · ') || 'Nothing matches'}</span><a href="#" id="j-clear">Clear</a></div>` : '')
+    list.innerHTML = (on ? `<div class="j-count small"><span>${[plural('c', 'catch', 'catches'), plural('trip', 'trip', 'trips'), plural('n', 'note', 'notes')].filter(Boolean).join(' · ') || 'Nothing matches'}</span>${n('c') ? '<a href="#" id="j-csv">Export</a>' : ''}<a href="#" id="j-clear">Clear</a></div>` : '')
       + (days.length ? days.slice(0, limit).map(d => `<h2>${fmtDate(d + 'T12:00')}</h2>${sorted.filter(x => dayKey(x.time) === d).map(card).join('')}`).join('')
         : on ? '' : emptyState('📓', 'Your trips, catches and notes show up here, newest first.', ['🐟 Log a catch', 'log']))
       + (days.length > limit ? '<button id="j-more" style="width:100%">Show older</button>' : '');
     $('#j-more', list)?.addEventListener('click', () => draw(limit + 30));
+    $('#j-csv', list)?.addEventListener('click', e => { e.preventDefault(); exportCatchesCsv(sorted.filter(x => x.c).map(x => x.c)).catch(err => alert(err.message)); });
     $('#j-clear', list)?.addEventListener('click', e => {
       e.preventDefault();
       Object.keys(filt).forEach(k => filt[k] = '');
@@ -125,7 +131,7 @@ async function renderTimeline(body, limitDays = 30) {
     list.querySelectorAll('[data-note]').forEach(e => e.onclick = () => openLake(e.dataset.note, 'notes'));
   };
   const markFilters = () => {
-    const n = ['species', 'lakeId', 'kept', 'from', 'to'].filter(k => filt[k]).length;
+    const n = ['species', 'lakeId', 'kept', 'tag', 'from', 'to'].filter(k => filt[k]).length;
     const b = $('#j-filt', body);
     b.textContent = n ? `Filters (${n})` : 'Filters';
     b.classList.toggle('on', !!n);

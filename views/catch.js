@@ -3,13 +3,12 @@
 import { db } from '../db.js';
 import { compass } from '../data-sources.js';
 import { $, esc, fmtDate, showView, status } from '../ui.js';
-import { fmtLen, fmtDepth } from '../units.js';
-import { editCatch, weightText, catchPhotos } from './log.js';
+import { fmtLen, fmtDepth, fmtTemp } from '../units.js';
+import { editCatch, weightText, catchPhotos, deleteCatch } from './log.js';
 import { openTrip } from './trips.js';
 import { openLake } from './lake.js';
 import { tackleLabel } from './tackle.js';
 import { openComposer } from '../crew.js';
-import { refreshMap } from '../map.js';
 import { pastConditions } from '../past-weather.js';
 
 let list = [], from = 'journal', pin = null;
@@ -52,17 +51,18 @@ async function draw(id) {
       ${row('Lure / bait', esc(c.lure || (tackle ? tackleLabel(tackle) : '')))}
       ${row('Technique', esc(c.technique))}
       ${row('Depth', c.depth != null ? fmtDepth(c.depth) : '')}
-      ${row('Water temp', c.waterTemp != null ? `${c.waterTemp}°F` : '')}
+      ${row('Water temp', fmtTemp(c.waterTemp))}
       ${row('Clarity', esc(c.clarity))}
       ${row('Moon', esc(c.moon))}
     </div>
     ${k ? `<h3>Conditions</h3><div class="card c-facts">
-      ${row('Air', k.airTemp != null ? `${Math.round(k.airTemp)}°F` : '')}
+      ${row('Air', fmtTemp(k.airTemp, true))}
       ${row('Wind', k.wind != null ? `${compass(k.windDir)} ${Math.round(k.wind)} mph${k.gusts != null ? `, gusts ${Math.round(k.gusts)}` : ''}` : '')}
       ${row('Pressure', k.pressureInHg != null ? `${k.pressureInHg}" ${esc(k.pressureTrend ?? '')}` : '')}
       ${row('Sky', esc([k.sky, k.cloud != null && `${Math.round(k.cloud)}% cloud`].filter(Boolean).join(', ')))}
       ${k.source === 'archive' ? '<p class="muted small" style="grid-column:1/-1;margin:0">From the weather archive for that hour at this water.</p>' : ''}
     </div>` : Date.parse(c.time) < Date.now() - 3600e3 && lake ? '<button id="c-weather" style="width:100%">Look up the weather for this catch</button>' : ''}
+    ${c.tags?.length ? `<div class="tag-list">${c.tags.map(t => `<span class="pill">${esc(t)}</span>`).join('')}</div>` : ''}
     ${c.notes ? `<h3>Notes</h3><div class="card small" style="white-space:pre-wrap">${esc(c.notes)}</div>` : ''}
     ${Number.isFinite(c.lat) && Number.isFinite(c.lon) ? '<div id="c-map" class="trip-map"></div>' : ''}
     <div class="row c-acts"><button id="c-edit" class="primary">Edit</button><button id="c-share">Share</button><button id="c-del" class="danger">Delete</button></div>`;
@@ -76,12 +76,12 @@ async function draw(id) {
   $('#c-edit').onclick = () => { pin?.remove(); pin = null; editCatch(c.id); };
   $('#c-share').onclick = () => openComposer({ catches: [c.id] });
   $('#c-del').onclick = async () => {
-    if (!confirm('Delete this catch?')) return;
-    await db.del('catches', c.id);
-    refreshMap();
+    const before = list;
     list = list.filter(x => x !== c.id);
     const next = older ?? newer;
-    return next ? draw(next) : goBack(null);
+    // Undo brings the catch back, and shows it again if you're still on the catch page.
+    await deleteCatch(c, () => { if ($('#view-catch').classList.contains('active')) { list = before; draw(c.id); } });
+    return next ? draw(next) : goBack(c);
   };
   $('#c-weather')?.addEventListener('click', async e => {
     e.target.disabled = true; e.target.textContent = 'Looking it up…';
