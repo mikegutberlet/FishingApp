@@ -96,7 +96,8 @@ const SAFE_ID = /^[\w.:-]{0,100}$/;
 const FREE_TEXT = new Set(['name', 'notes', 'note', 'text', 'journal', 'species', 'lure', 'technique', 'companions', 'title', 'color', 'size', 'brand', 'from', 'description', 'county',
   'regs', 'access', 'number', 'stockName', 'road', 'park', 'launch', 'gate', 'gateCode', 'signalNote', 'worked', 'nextTime']);
 const NUMERIC = new Set(['lat', 'lon', 'acres', 'elevationFt', 'maxDepth', 'maxDepthFt', 'lengthKm', 'km', 'length', 'weight', 'weightEst', 'depth',
-  'waterTemp', 'airTemp', 'wind', 'windDir', 'gusts', 'cloud', 'pressureInHg', 'levelFt', 'count', 'inches', 'qty', 'rating', 'accuracy', 'trollMph', 'heading']);
+  'waterTemp', 'airTemp', 'wind', 'windDir', 'gusts', 'cloud', 'pressureInHg', 'levelFt', 'count', 'inches', 'qty', 'rating', 'accuracy', 'trollMph', 'heading',
+  'driveMin', 'walkInMin', 'walkOutMin']);
 const BAD = Symbol('unsafe id');
 function clean(v, k = '') {
   if (k === 'id' || k.endsWith('Id')) return v == null || typeof v === 'number' || (typeof v === 'string' && SAFE_ID.test(v)) ? v : BAD;

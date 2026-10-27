@@ -30,6 +30,10 @@ It is a PWA: open it once in Safari/Chrome, choose **Add to Home Screen**, and i
 * **Wind on the water:** which bank the wind is blowing into, with the next big shift; map layer *Wind on my lakes* puts a wind arrow on each saved water.
 * **Flow vs normal:** for USGS stream gauges, today's flow as a percent of the median for this date over the gauge's record, with a fishable / high / blown-out read on rivers.
 * **Today (home screen):** your starred waters at a glance: weather, wind and which bank it's blowing into, the next bite window, 7-day level change, and new or upcoming CDFW plants, with NWS alerts flagged. Star a water with ☆ on its page.
+* **Your day (weather call for your craft):** pick shore, float tube, kayak or small boat once. Each water gets a green / amber / red strip of safe hours ("Float tube: good till 11, off by 1") with storm timing ("Thunderstorms 1–5 pm: off the water by noon"), on Conditions, Today and Plan a trip. The Conditions card adds the trip-day lines: dawn and tonight's low, rain, smoke (Open-Meteo air quality), water temperature with a PFD reminder, and last light with when to start walking out.
+* **Day plan:** wake, leave-by, on the water (first light, a bite window or your own time), wind up and turnaround, worked back from your typed drive time (kept with the water, never sent anywhere) and the walk from Getting there, as calendar alarms (.ics).
+* **Weather-turning watch:** on the trip screen, the next 2 hours for your craft and a loud banner when gusts, storms, rain or a new NWS warning are coming ("Gusts 22 mph by 12:15. Head for the ramp."). It refreshes every 5 minutes while the screen is open; iPhones run nothing in the background.
+* **River rising line:** each USGS gauge shows the change over the last hour ("Up 0.6 ft in the last hour: rising fast"), with a banner on rivers when it jumps.
 * **Plan a trip:** pick a day in the next 10 and your saved waters are ranked 0–10 by wind, rain, temperature, pressure trend, solunar rating, days since the last plant and lake-level trend, with the reasons and the best time to be on the water.
 
 ## Logging and journal

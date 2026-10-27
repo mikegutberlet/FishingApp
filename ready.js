@@ -11,6 +11,7 @@ import { lookupNow } from './access-now.js';
 import { lookupCamping } from './camping.js';
 import { lakeBounds, packPlan, runPack, readPackFor, packLines, wantTopo, setWantTopo } from './offline.js';
 import { activeTrip } from './views/trips.js';
+import { airQuality } from './boat-weather.js';
 
 const READY_KEY = 'tackle-box-ready'; // { [lake id]: { at: ISO, failed: [part names] } }, this phone only
 const readyLog = () => { try { return JSON.parse(localStorage.getItem(READY_KEY)) ?? {}; } catch { return {}; } };
@@ -27,6 +28,7 @@ export async function saveInfo(lake, { signal, onStep = () => {} } = {}) {
   };
   await part('forecast', async () => !(await weatherFor(lake.lat, lake.lon)).saved);
   await part('weather alerts', async () => !(await fetchAlerts(lake.lat, lake.lon)).savedAt);
+  await part('air quality', async () => !(await airQuality(lake.lat, lake.lon)).saved);
   // A big lake's roads depend on which shore you go to, so Getting there needs a spot picked on its tab first.
   if (isBig(lake)) skipped.push('Getting there (pick a spot on its tab with signal)');
   else await part('Getting there', async () => (await lookupAccess(lake)).failed.length < 6);
