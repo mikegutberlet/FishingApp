@@ -1,5 +1,6 @@
+corps: 504 https://cwms-data.usace.army.mil/cwms-data/catalog/TIMESERIES?office=NWDP&like=.*%5C.Elev-Forebay%5C..*&page-size=1000
 {
-  "startedAt": "2026-10-27T02:03:26.475Z",
+  "startedAt": "2026-10-27T18:59:26.953Z",
   "schedule": {
     "windows": [
       "2024-10-27..2024-11-26: 12",
@@ -205,7 +206,7 @@
     }
   ],
   "points": {
-    "nhd": 4484,
+    "nhd": 4467,
     "odfwMaps": 756,
     "via": {
       "odfw": 190,
@@ -223,18 +224,19 @@
       "PRINEVILLE FISHING PD → Prineville Fishing Pond (Central)",
       "RUNNING Y PD → Running Y Pond (Southeast)",
       "PINE NURSERY PD → Pine Nursery Pond (Central)",
-      "LAIRD LK → Laird Lake (Southwest)",
       "BURNS GRAVEL PD → Burns Gravel Pond (Southeast)",
-      "Weaver Road Pd → Weaver Road Pond (Southwest)",
-      "BURMA PD, L → Little Burma Pond (Southwest)",
-      "HOLLIDAY PARK PD → Holliday Park Pond (Northeast)",
-      "LONG CREEK PD → Long Creek Pond (Northeast)",
-      "SEVENTH ST PD → Seventh St. Pond (Northeast)",
-      "SMOCK PRAIRIE RES → Smock Prairie Reservoir (Central)",
-      "RED TOP LK → Red Top Lake (Southwest)",
-      "MIDDLE FK PD (HOOD R) → Middle Fork Pond (Hood River) (Central)",
+      "LAIRD LK → Laird Lake (Southwest)",
       "KINGSLEY RES, UPR → Upper Kingsley Reservoir (Central)",
       "HAINES PD-1 → Haines Pond 1 (Southeast)",
-      "MCKENZIE R-1 (below Leaburg Dam) → McKenzie River 1 (Below Leaburg Dam) (Willamette)",
+      "MIDDLE FK PD (HOOD R) → Middle Fork Pond (Hood River) (Central)",
+      "HOLLIDAY PARK PD → Holliday Park Pond (Northeast)",
+      "LONG CREEK PD → Long Creek Pond (Northeast)",
+      "Weaver Road Pd → Weaver Road Pond (Southwest)",
+      "BURMA PD, L → Little Burma Pond (Southwest)",
+      "SEVENTH ST PD → Seventh St. Pond (Northeast)",
+      "RED TOP LK → Red Top Lake (Southwest)",
+      "SMOCK PRAIRIE RES → Smock Prairie Reservoir (Central)",
+      "FALL CR (WILLAMETTE R) → Fall Creek (Willamette River) (Willamette)",
+      "WESTON HIGHWAY PD → Weston Highway Pond (Northeast)",
       "COTTONWOOD PIT → Cottonwood Pit (Central)",
-      "FALL CR (WILLAMETTE R) → Fall Creek (Willamette 
+      "MCKE
