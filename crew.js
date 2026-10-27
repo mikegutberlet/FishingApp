@@ -13,14 +13,15 @@ import { saveFile, askNewPassword } from './backup.js';
 import { shrinkPhoto, weightText } from './views/log.js';
 import { ACCESS_FIELDS, CARRIERS, SIGNAL, VEHICLES, allAccessNotes } from './access-notes.js';
 import { TRAILER, SHADE, WIND, myCampsites, refreshCampsiteLayer } from './campsites.js';
+import { planItem } from './crew-plan.js';
 
 const NAME_KEY = 'tackle-box-crew-name';
 const QR_MAX = 2900;  // bytes a version-40 QR code holds at low error correction, less a little headroom
-const CATCH_FIELDS = ['species', 'time', 'length', 'weight', 'weightEst', 'depth', 'waterTemp', 'lure', 'technique', 'clarity', 'released', 'moon', 'conditions'];
+const CATCH_FIELDS = ['species', 'count', 'time', 'length', 'weight', 'weightEst', 'depth', 'waterTemp', 'lure', 'technique', 'clarity', 'released', 'moon', 'conditions'];
 
 export const isCrewPack = d => d?.app === 'tackle-box' && d.kind === 'crew' && Array.isArray(d.lakes) && Array.isArray(d.items);
 
-function myName() {
+export function myName() {
   let n = localStorage.getItem(NAME_KEY);
   if (!n) {
     n = prompt('Your name, so friends know who this is from:')?.trim();
@@ -34,7 +35,7 @@ const blobToDataUrl = blob => new Promise(r => { const f = new FileReader(); f.o
 
 // Builds the pack. Catches lose their GPS spot unless `exact`; photos are redrawn, which drops all EXIF (camera, GPS, time).
 // Access notes carry their gate code only if `gateCodes`.
-async function buildPack({ catches = [], spots = [], access = [], campsites = [] }, { exact = false, photos = true, notes = false, gateCodes = false } = {}) {
+async function buildPack({ catches = [], spots = [], access = [], campsites = [], plans = [] }, { exact = false, photos = true, notes = false, gateCodes = false } = {}) {
   const lakes = new Map((await db.all('lakes')).map(l => [l.id, l]));
   const lakeKeys = [], lakeIdx = id => {
     let i = lakeKeys.indexOf(id);
@@ -67,6 +68,8 @@ async function buildPack({ catches = [], spots = [], access = [], campsites = []
     const it = { kind: 'campsite', id: c.id, lake: lakes.has(c.lakeId) ? lakeIdx(c.lakeId) : -1, lat: c.lat, lon: c.lon, name: c.name, text: c.text, trailer: c.trailer, shade: c.shade, wind: c.wind, signal: c.signal, checked: c.checked };
     items.push(it);
   }
+  // A group plan (crew-plan.js) brings its waters along, so a friend's phone can add any it doesn't have.
+  for (const p of plans) items.push(planItem(p, id => lakes.has(id) ? lakeIdx(id) : null));
   return {
     app: 'tackle-box', kind: 'crew', v: 1, from: myName(), sharedAt: new Date().toISOString(),
     // stockId is the water's id in its state's stocking data (CDFW stock id, NDOW water slug).
@@ -92,7 +95,7 @@ function cleanLake(l) {
 }
 function cleanItem(it) {
   const out = { kind: it.kind, lat: num(it.lat), lon: num(it.lon) };
-  for (const k of ['length', 'weight', 'weightEst', 'depth', 'waterTemp']) out[k] = num(it[k]);
+  for (const k of ['count', 'length', 'weight', 'weightEst', 'depth', 'waterTemp']) out[k] = num(it[k]);
   for (const k of ['species', 'lure', 'technique', 'clarity', 'moon', 'name', 'type']) out[k] = str(it[k], 120);
   for (const k of ['notes', 'text']) out[k] = str(it[k], 4000);
   out.time = it.time && !isNaN(Date.parse(it.time)) ? new Date(it.time).toISOString() : undefined;
@@ -126,8 +129,8 @@ async function matchLake(l, mine) {
 export async function importCrewPack(pack, { ask = true } = {}) {
   const n = k => pack.items.filter(i => k.includes(i.kind)).length;
   const fish = n(['catch']), spots = n(['spot', 'waypoint']);
-  const notes = n(['access']), camps = n(['campsite']);
-  const summary = [fish && `${fish} catch${fish > 1 ? 'es' : ''}`, spots && `${spots} spot${spots > 1 ? 's' : ''}`, notes && `access notes for ${notes} water${notes > 1 ? 's' : ''}`, camps && `${camps} campsite${camps > 1 ? 's' : ''}`].filter(Boolean).join(' and ');
+  const notes = n(['access']), camps = n(['campsite']), plans = pack.items.filter(i => i.kind === 'plan');
+  const summary = [plans.length && `the group plan${plans[0].name ? ` "${String(plans[0].name).slice(0, 80)}"` : ''}`, fish && `${fish} catch${fish > 1 ? 'es' : ''}`, spots && `${spots} spot${spots > 1 ? 's' : ''}`, notes && `access notes for ${notes} water${notes > 1 ? 's' : ''}`, camps && `${camps} campsite${camps > 1 ? 's' : ''}`].filter(Boolean).join(' and ');
   if (ask && !confirm(`${pack.from || 'A friend'} shared ${summary || 'nothing'}${pack.lakes.length ? ` on ${pack.lakes.map(l => l.name).join(', ')}` : ''}.\n\nAdd to your Crew list?`)) return false;
   const mine = await db.all('lakes');
   const ids = [], added = [];
@@ -139,6 +142,7 @@ export async function importCrewPack(pack, { ask = true } = {}) {
   }
   const from = String(pack.from || 'Friend').slice(0, 60);
   for (const it of pack.items) {
+    if (it.kind === 'plan') continue; // below
     const lakeId = ids[it.lake] ?? null;
     if (!KINDS.includes(it.kind) || (!lakeId && (it.kind !== 'campsite' || !Number.isFinite(num(it.lat)) || !Number.isFinite(num(it.lon))))) continue;
     // Same friend + same original id = same row, so getting a pack twice doesn't duplicate anything.
@@ -147,6 +151,7 @@ export async function importCrewPack(pack, { ask = true } = {}) {
   }
   status(`Added ${summary} from ${from}${added.length ? ` · new water: ${added.join(', ')}` : ''}`);
   await refreshMap(); refreshCrewLayer(); refreshCampsiteLayer(); renderCrewCard();
+  if (plans.length) await (await import('./views/crew-plan.js')).receivePlans(plans, ids, from);
   return true;
 }
 
@@ -180,6 +185,7 @@ export async function checkShareLink() {
 }
 
 // ---------- Sending ----------
+export const planPack = plan => buildPack({ plans: [plan] });
 export async function sendPack(pack, how) {
   const pw = confirm('Protect it with a passphrase?\n\nRecommended for a file. Tell your friend the passphrase in person or another way.') ? askNewPassword('share') : null;
   const body = pw ? { app: 'tackle-box', kind: 'crew-encrypted', encrypted: await encryptJson(pack, pw) } : pack;

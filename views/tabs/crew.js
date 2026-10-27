@@ -4,10 +4,12 @@ import { esc, fmtDate } from '../../ui.js';
 import { fmtLen, fmtWt, fmtDepth } from '../../units.js';
 import { showCrewSpot, openComposer } from '../../crew.js';
 import { openLake } from '../lake.js';
+import { crewTabCards } from '../crew-plan.js';
 
 export async function renderCrew(lake, body) {
   const rows = (await db.byLake('crew', lake.id)).sort((a, b) => (b.time ?? b.receivedAt).localeCompare(a.time ?? a.receivedAt));
-  body.innerHTML = `${rows.length ? rows.map(r => r.kind === 'access'
+  const tally = await crewTabCards(lake).catch(() => '');
+  body.innerHTML = `${tally}${rows.length ? rows.map(r => r.kind === 'access'
       ? `<div class="card"><b>🚙 Access notes</b> <span class="muted small">from ${esc(r.from)} · on the <a href="#" data-gt>Getting there</a> tab · <a href="#" class="danger" data-del="${esc(r.id)}">remove</a></span></div>`
       : r.kind === 'catch'
       ? `<div class="card catch">${r.photo ? `<img src="${URL.createObjectURL(r.photo)}" alt="">` : ''}<div style="flex:1">
