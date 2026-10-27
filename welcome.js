@@ -197,16 +197,17 @@ function readHash() {
   if (!hi && !go) return null;
   history.replaceState(null, '', location.pathname + location.search);
   if (go) {
-    if (go[1] === 'sos') $('#btn-sos')?.click();
-    else if (document.getElementById(`view-${go[1]}`)) showView(go[1]);
+    // On a cold start this runs while the app's modules are still loading: wait until app.js has shown Today and wired the SOS button.
+    setTimeout(() => go[1] === 'sos' ? $('#btn-sos')?.click() : document.getElementById(`view-${go[1]}`) && showView(go[1]), 0);
     return null;
   }
   try { return decodeURIComponent(hi[1]).replace(/[<>]/g, '').trim().slice(0, 40); } catch { return ''; }
 }
 
+const openedShare = /^#(water|crew)=/.test(location.hash); // a friend's water or share: let it show; the welcome waits for the next start
 const invitedBy = readHash();
 addEventListener('hashchange', readHash);
-setTimeout(() => maybeWelcome(invitedBy || ''), 300); // after app.js has drawn Today
+if (!openedShare) setTimeout(() => maybeWelcome(invitedBy || ''), 300); // after app.js has drawn Today
 
 // Settings: install steps, the invite card, and the "see the full list" link in the privacy summary.
 onShow('settings', () => { document.querySelectorAll('#install-help').forEach(el => { el.classList.add('wl-install-box'); fillInstall(el); }); renderInvite(); });

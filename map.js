@@ -62,21 +62,25 @@ map.on('click', e => {
 // so the app's first load doesn't fetch them). `statewide` holds every loaded one.
 export let statewide = null;
 // Make sure a state's list is loaded (for search), even when the map isn't looking at it yet (or is still loading it).
-export const loadState = S => loadedStates.get(S.code) ? Promise.resolve(loadedStates.get(S.code)) : S.statewide().then(d => { loadedStates.set(S.code, d); const all = [...loadedStates.values()].filter(Boolean); statewide = { lakes: all.flatMap(x => x.lakes), riverLabels: all.flatMap(x => x.riverLabels) }; drawWaterLabels(); return d; });
+// One load per state at a time; a list that came back short (no signal) isn't kept, so the next search or pan tries again.
+export function loadState(S) {
+  if (loadedStates.has(S.code)) return Promise.resolve(loadedStates.get(S.code));
+  if (!loading.has(S.code)) loading.set(S.code, S.statewide().then(d => {
+    loading.delete(S.code);
+    if (!d.lakes.length || !d.riverLabels.length) return d;
+    loadedStates.set(S.code, d);
+    const all = [...loadedStates.values()];
+    statewide = { lakes: all.flatMap(x => x.lakes), riverLabels: all.flatMap(x => x.riverLabels) };
+    drawWaterLabels();
+    return d;
+  }));
+  return loading.get(S.code);
+}
 let shownWaters = [];
-const loadedStates = new Map();
+const loadedStates = new Map(), loading = new Map();
 function loadStates() {
   if (!map.getContainer().offsetWidth) return; // hidden: wait until the map is on screen (showing it fires moveend)
-  for (const S of statesIn(map.getBounds())) {
-    if (loadedStates.has(S.code)) continue;
-    loadedStates.set(S.code, null);
-    S.statewide().then(d => {
-      loadedStates.set(S.code, d);
-      const all = [...loadedStates.values()].filter(Boolean);
-      statewide = { lakes: all.flatMap(x => x.lakes), riverLabels: all.flatMap(x => x.riverLabels) };
-      drawWaterLabels();
-    });
-  }
+  for (const S of statesIn(map.getBounds())) loadState(S);
 }
 map.whenReady(loadStates);
 map.on('moveend', loadStates);

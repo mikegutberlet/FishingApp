@@ -19,8 +19,9 @@ export function renderAccessMore(lake, data, s, el) {
   const km = pointsKm(data), trailKm = trailheadKm(data, s);
   let st = slots.get(el);
   if (!st || st.key !== `${data.lat},${data.lon},${trailKm}`) { st = { key: `${data.lat},${data.lon},${trailKm}`, points: null, error: null, loading: false }; slots.set(el, st); }
-  const paint = () => {
-    if (!el.isConnected) return;
+  // The lookup below paints with whatever the latest redraw had, and not at all once another spot has the slot.
+  const paint = st.paint = () => {
+    if (!el.isConnected || slots.get(el) !== st) return;
     el.innerHTML = rulesCard(lake, r, S) + pointsCard(st, km, trailKm);
     wire(lake, data, s, el, st, km, trailKm, paint);
   };
@@ -29,11 +30,11 @@ export function renderAccessMore(lake, data, s, el) {
   st.loading = true;
   (async () => {
     const have = await cachedPoints(data.lat, data.lon, km, trailKm);
-    if (have) { st.points = have; paint(); if (!have.stale) { st.loading = false; return; } }
-    if (navigator.onLine === false) { st.loading = false; if (!have) { st.error = 'offline'; paint(); } return; }
+    if (have) { st.points = have; st.paint(); if (!have.stale) { st.loading = false; return; } }
+    if (navigator.onLine === false) { st.loading = false; if (!have) { st.error = 'offline'; st.paint(); } return; }
     try { st.points = await nearbyPoints(data.lat, data.lon, km, { trailKm }); st.error = st.points.error ?? null; }
     catch (e) { st.error = e.message; }
-    st.loading = false; paint();
+    st.loading = false; st.paint();
   })();
 }
 
@@ -51,7 +52,7 @@ function rulesCard(lake, r, S) {
   }
   for (const t of r.passes) items.push(`<div class="gt-chip"><span>🅿️</span><div><b>Parking pass</b><div class="small">${esc(t)}</div>
     <div class="muted small">${a(PASS_SRC[/adventure pass/i.test(t) ? 'CA' : 'OR'], PASS_SRC[/adventure pass/i.test(t) ? 'CA' : 'OR'].label)}</div></div></div>`);
-  if (r.boat && lake.kind !== 'ocean') {
+  if (r.boat && lake.kind !== 'coast') {
     const src = /tahoe/i.test(lake.name ?? '') && r.boatHere ? TAHOE_SRC : BOAT_SRC[S?.code];
     items.push(`<div class="gt-chip"><span>🚤</span><div><b>${r.boatHere ? 'Boat inspection here' : 'Bringing a boat'}</b><div class="small">${esc(r.boat)}</div>${src ? `<div class="muted small">${a(src, src.label)}</div>` : ''}</div></div>`);
   }
