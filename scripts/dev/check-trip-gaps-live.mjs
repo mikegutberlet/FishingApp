@@ -2,6 +2,10 @@
 // Prints what a phone would show. Writes nothing.
 import { roadsNear } from '../../roads.js';
 import { lookupSupplies } from '../../supplies.js';
+// Overpass answers 406 to a bare Node request; send what a phone on the app's site sends (as check-camping does).
+const browserFetch = (u, init = {}) => fetch(u, { ...init, headers: { 'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) TackleBox-check',
+  Referer: 'https://mikegutberlet.github.io/FishingApp/', Origin: 'https://mikegutberlet.github.io', ...(init.headers ?? {}) } })
+  .then(r => { if (!r.ok) console.log(`  ${r.status} from ${u}`); return r; });
 const WATERS = [
   { name: 'Lake Oroville', lat: 39.55, lon: -121.43 },
   { name: 'Lake Tahoe (South)', lat: 38.95, lon: -120.0 },
@@ -18,8 +22,7 @@ for (const w of WATERS) {
     for (const c of r.closures.slice(0, 5)) console.log(`  CLOSED ${c.route} ${c.from} -> ${c.to} ${c.km.toFixed(0)} km ${c.start} .. ${c.end ?? 'indef'} ${c.work} ${c.duration} +${c.more}`);
   } catch (e) { console.log('roads FAILED', e.message); }
   try {
-    // Overpass answers 406 to Node's own user agent; phones send a browser's.
-    const s = await lookupSupplies(w, { fetchImpl: (u, o) => fetch(u, { ...o, headers: { 'User-Agent': 'Mozilla/5.0 (Linux; Android 14) Chrome/129.0 Mobile Safari/537.36' } }) });
+    const s = await lookupSupplies(w, { fetchImpl: browserFetch });
     for (const [k, list] of Object.entries(s.places)) console.log(`  ${k}: ${list.slice(0, 3).map(p => `${p.name} (${p.town}) ${p.km.toFixed(1)} km ${p.dir}`).join('; ') || 'none'}`);
   } catch (e) { console.log('supplies FAILED', e.message); }
   await new Promise(r => setTimeout(r, 3000));
