@@ -2,7 +2,7 @@
 // and the small map on the Today screen that opens the full one.
 import { db } from './db.js';
 import { map, statewide, loadState, setWaterTap, here, baseLayers, stockedLayer, watersLayer, refreshMap } from './map.js';
-import { selected, forLake, stockIdOf } from './states/index.js';
+import { STATES, forLake, stockIdOf } from './states/index.js';
 import { $, esc, fmtDate, icon, showView, status } from './ui.js';
 import { openWater, openLake, waterRecord } from './views/lake.js';
 import { directionsUrl } from './views/access.js';
@@ -19,7 +19,8 @@ let hits = [];
 async function draw() {
   const q = search.value.trim().toLowerCase();
   if (q.length < 2) { results.innerHTML = ''; results.classList.add('hidden'); return; }
-  if (!statewide) await loadState(selected());
+  // Every state, not just the one picked under Lakes: a search for Crater Lake should find Oregon's too.
+  await Promise.all(Object.values(STATES).map(loadState));
   if (search.value.trim().toLowerCase() !== q || !statewide) return;
   const c = map.getCenter(), from = { lat: c.lat, lon: c.lng };
   const rivers = [...new Map(statewide.riverLabels.map(r => [r.id, r])).values()];
@@ -27,8 +28,8 @@ async function draw() {
   if (search.value.trim().toLowerCase() !== q) return;
   hits = [...statewide.lakes, ...rivers, ...coast].filter(w => w.name.toLowerCase().includes(q))
     .sort((a, b) => (a.name.toLowerCase().startsWith(q) ? 0 : 1) - (b.name.toLowerCase().startsWith(q) ? 0 : 1) || km(from, a) - km(from, b)).slice(0, 30);
-  results.innerHTML = hits.length ? hits.map((w, i) => `<button type="button" data-i="${i}"><b>${esc(w.name)}</b><span class="muted small">${esc(summary(w))}${here ? ` · ${mi(km(here, w))} away` : ''}</span></button>`).join('')
-    : '<div class="muted small" style="padding:10px">No matches. Try another spelling, or pick the state under Lakes.</div>';
+  results.innerHTML = hits.length ? hits.map((w, i) => `<button type="button" data-i="${i}"><b>${esc(w.name)}</b><span class="muted small">${esc([summary(w), w.kind === 'coast' ? '' : forLake(w)?.code].filter(Boolean).join(' · '))}${here ? ` · ${mi(km(here, w))} away` : ''}</span></button>`).join('')
+    : '<div class="muted small" style="padding:10px">No matches in California, Nevada or Oregon. Try another spelling, or a shorter part of the name.</div>';
   results.classList.remove('hidden');
 }
 search.oninput = draw;

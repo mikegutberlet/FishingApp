@@ -4,7 +4,10 @@ export const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;'
 // A date with no time (a plant week, '2026-10-25') means that calendar day, so read it as local noon, not UTC midnight.
 export const fmtDate = iso => iso ? new Date(/^\d{4}-\d\d-\d\d$/.test(iso) ? iso + 'T12:00' : iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '';
 export const fmtTime = iso => new Date(iso).toLocaleTimeString(undefined, { hour: 'numeric' });
-export const status = msg => { $('#status').textContent = msg; if (msg) setTimeout(() => $('#status').textContent === msg && ($('#status').textContent = ''), 4000); };
+// A short message under the header. Long ones stay up longer, so there's time to read them.
+// Is this fetch error just no signal? Chrome says "Failed to fetch", Safari "Load failed", Firefox "NetworkError…".
+export const noSignal = e => navigator.onLine === false || /failed to fetch|load failed|networkerror|network connection|timed out|aborted/i.test(e?.message ?? '');
+export const status = msg => { $('#status').textContent = msg; if (msg) setTimeout(() => $('#status').textContent === msg && ($('#status').textContent = ''), Math.min(10e3, 3000 + msg.length * 45)); };
 // A bar above the bottom nav with an Undo button, for a few seconds after a delete. A new bar replaces the old one.
 let undoTimer;
 export function undoBar(text, onUndo, ms = 7000) {

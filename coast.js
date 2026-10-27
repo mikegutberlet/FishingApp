@@ -5,6 +5,7 @@
 // (Cache API `tb-forecast`, like the saved forecast) so tides, waves and the zone forecast work with no signal.
 import { haversineKm } from './data-sources.js';
 import { mpaKey } from './ocean-rules.js';
+import { noSignal } from './ui.js';
 
 export const COAST_KINDS = {
   pier: { label: 'Pier', icon: '🎣' },
@@ -142,9 +143,10 @@ export async function marineZone(lat, lon) {
   return data;
 }
 // A spot on a pier or the beach often sits on land, so its zone is looked up a little offshore (west, then around) when the point itself has none.
+// With no signal it gives up at the first try (and throws), rather than waiting out nine lookups and blaming the zone list.
 export async function marineZoneNear(lat, lon) {
   for (const [dy, dx] of [[0, 0], [0, -0.03], [-0.025, -0.025], [0.025, -0.025], [-0.03, 0], [0.03, 0], [0, -0.08], [-0.06, -0.06], [0.06, -0.06]]) {
-    const z = await marineZone(lat + dy, lon + dx).catch(() => null);
+    const z = await marineZone(lat + dy, lon + dx).catch(e => { if (noSignal(e)) throw e; return null; });
     if (z) return z;
   }
   return null;

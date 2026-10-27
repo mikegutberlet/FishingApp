@@ -51,7 +51,7 @@ input[type=checkbox], input[type=radio] { accent-color: var(--accent); }
 .lake-bar { display: flex; justify-content: space-between; align-items: center; margin: -4px 0 2px; }
 .lake-name { font-size: 24px; line-height: 1.2; margin: 4px 0 10px; }
 .lake-name small { display: block; font-size: 13px; font-weight: 400; color: var(--muted); margin-top: 4px; letter-spacing: 0; }
-.lake-acts { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; margin-bottom: 10px; }
+.lake-acts { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; } /* wraps, so "Before you go" isn't hidden off the edge */
 .lake-acts::-webkit-scrollbar { display: none; }
 .lake-acts button { flex: 1 0 auto; white-space: nowrap; font-size: 14px; padding: 6px 12px; }
 .lake-acts button.primary { width: auto; flex: 2 0 auto; padding: 6px 14px; }
@@ -89,7 +89,12 @@ input[type=checkbox], input[type=radio] { accent-color: var(--accent); }
 
 /* Five tabs in the bottom nav; settings and your data sit behind the gear in the header. */
 header { gap: 10px; }
-header #status { margin-left: auto; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+/* Status messages float as a toast under the header, so a long one ("Tap the map where…") is readable on a phone. */
+header #btn-sos { margin-left: auto; }
+header #status { position: fixed; top: calc(var(--head-h) + 8px); left: 16px; right: 16px; z-index: 1500; margin: 0 auto; max-width: 480px; width: fit-content;
+  padding: 10px 14px; border-radius: 12px; background: rgba(15,59,76,.96); color: #fff; font-size: 14px; line-height: 1.35; text-align: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,.25); pointer-events: none; }
+header #status:empty { display: none; }
 .head-btn { background: none; border: 0; color: #fff; font-size: 20px; min-height: 0; width: 40px; height: 40px; padding: 0; margin-right: -8px; border-radius: 50%; flex-shrink: 0; }
 .head-btn.active { background: rgba(255,255,255,.18); }
 .view-title { font-size: 22px; margin-top: 4px; }
@@ -193,3 +198,9 @@ body:has(.water-sheet:not(.hidden)) .map-actions, body:has(.water-sheet:not(.hid
 .stock-year > div { margin: 2px 0 0 56px; }
 .stock-none { opacity: .7; }
 .bars .barrow .fill.uncounted { opacity: .45; }
+
+/* Side-by-side fields share their row instead of pushing past the card; date-and-time pairs stack on a phone. */
+.form .row > label { min-width: 0; }
+.form .row input, .form .row select { min-width: 0; }
+.form .row:has(input[type=datetime-local]) { flex-wrap: wrap; }
+.form .row:has(input[type=datetime-local]) > label { flex: 1 1 200px; }

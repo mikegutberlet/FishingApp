@@ -1,5 +1,5 @@
 // Caches the app shell so it opens with no signal on the water. Your data is in IndexedDB, not here.
-const CACHE = 'tackle-box-v29';
+const CACHE = 'tackle-box-v30';
 // One file per line. Add new files here and bump CACHE.
 const SHELL = [
   './',
@@ -163,6 +163,7 @@ self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c
 self.addEventListener('activate', e => e.waitUntil(
   caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE && k !== 'tiles' && k !== 'tb-access' && k !== 'tb-forecast' && k !== 'tb-help' && !k.startsWith('offline-')).map(k => caches.delete(k)))).then(() => self.clients.claim())));
 
+let slowUntil = 0; // weak signal: until then, files with a saved copy don't wait for the network
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   const isTile = /tile\.openstreetmap\.org|arcgisonline\.com|basemap\.nationalmap\.gov/.test(url.host);
@@ -173,8 +174,14 @@ self.addEventListener('fetch', e => {
     // Map tiles: from a saved offline lake or what you've viewed before, otherwise fetch and keep a copy.
     e.respondWith(caches.open('tiles').then(async c => (await caches.match(e.request)) || fetch(e.request).then(r => { if (r.ok || r.type === 'opaque') c.put(e.request, r.clone()); return r; })));
   } else if (isShell) {
-    // Network first so updates land, cache as fallback for offline.
-    e.respondWith(fetch(e.request).then(r => { const copy = r.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)); return r; }).catch(async () => (await (await caches.open(CACHE)).match(e.request)) || caches.match(e.request)));
+    // Network first so updates land, cache as fallback for offline. On one bar of signal the network can hang for a minute,
+    // so when there's a saved copy it gets 4 seconds, then the saved copy is used and the network refreshes it in the background.
+    // After one such wait, saved copies are used straight away for a minute, so the app's files don't each wait their turn.
+    const net = fetch(e.request).then(r => { if (r.ok) { const copy = r.clone(); e.waitUntil(caches.open(CACHE).then(c => c.put(e.request, copy))); } return r; });
+    e.waitUntil(net.catch(() => {}));
+    e.respondWith(caches.open(CACHE).then(c => c.match(e.request)).then(saved => saved || caches.match(e.request)).then(saved => !saved ? net
+      : Date.now() < slowUntil ? saved
+      : Promise.race([net.catch(() => saved), new Promise(res => setTimeout(() => { slowUntil = Date.now() + 60e3; res(saved); }, 4000))])));
   }
   // Weather/USGS calls go straight to the network.
 });

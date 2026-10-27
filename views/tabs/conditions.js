@@ -5,7 +5,7 @@ import { pressureTrend, fetchUsgsNearby, moonPhase, WEATHER_CODES, compass } fro
 import { weatherFor, fetchAlerts, alertLevel, fetchFlowStats, flowRating, hourIndex, dayIndex, localKey, levelChange, forecastAge } from '../../forecast.js';
 import { solunar, dayRating, stars, windowAt, windowsAround, windowLabel, windowSpan, shortTime } from '../../solunar.js';
 import { windOnWater, windText, windSvg } from '../../wind.js';
-import { $, esc, fmtDate, fmtTime, arrow } from '../../ui.js';
+import { $, esc, fmtDate, fmtTime, arrow, noSignal } from '../../ui.js';
 import { renderDayCard, riverLine } from '../day-plan.js';
 
 export async function renderConditions(lake, body) {
@@ -61,7 +61,8 @@ export async function renderConditions(lake, body) {
     $('#windcard').classList.remove('hidden');
   } catch (e) {
     if (!body.isConnected) return;
-    $('#wx').textContent = `Weather: ${e.message} (offline?)`;
+    $('#wx').innerHTML = noSignal(e) ? `<h3>Weather</h3><p class="small">No signal, and no forecast saved for this water. Open it once with signal, or use 📴 Ready at home, and the forecast stays on your phone. Bite windows below are worked out on the phone.</p>`
+      : `<h3>Weather</h3><p class="small">The forecast didn’t load (${esc(e.message)}). Try again in a minute.</p>`;
     renderBite(solFor(now), around, now);
   }
   reservoirFor(lake).then(r => {
@@ -98,7 +99,7 @@ export async function renderConditions(lake, body) {
           ${river ? `<br><span class="small">${f.tip}</span>` : ''}`;
       }).catch(() => {});
     }
-  } catch (e) { if (body.isConnected) $('#water').textContent = `USGS: ${e.message}`; }
+  } catch (e) { if (body.isConnected) $('#water').innerHTML = `<h3>Water (USGS)</h3><p class="muted small">${noSignal(e) ? 'River gauges need signal.' : `The USGS gauges didn’t answer (${esc(e.message)}).`}</p>`; }
 }
 
 // Today's bite windows, and which one is on now or next (including one that started before midnight).
