@@ -10,7 +10,8 @@ import { cached as cachedAccess } from '../access-lookup.js';
 import { sunTimes } from '../sun.js';
 import { sendIcs } from '../ics.js';
 import { $, esc, status } from '../ui.js';
-import { CRAFTS, craftId, setCraft, craftSelect, limits, safeHours, stormTiming, stripHtml, dayCard, airQuality, dayAqi, weatherTurning, alertKey, crossTime, riverRise, isRiver } from '../boat-weather.js';
+import { CRAFTS, craftId, setCraft, craftSelect, limits, safeHours, stormTiming, stripHtml, dayCard, airQuality, dayAqi, weatherTurning, alertKey, crossTime, riverRise } from '../boat-weather.js';
+import { isRiver } from '../states/common.js';
 
 const dayLabel = (key, k) => { const d = new Date(key + 'T12:00'); return k === 0 ? 'Today' : k === 1 ? 'Tomorrow' : `${d.toLocaleDateString(undefined, { weekday: 'short' })} ${d.getDate()}`; };
 const dayKeys = n => Array.from({ length: n }, (_, k) => localKey(addDays(Date.now(), k)));
@@ -236,11 +237,11 @@ async function riverNow(lake) {
 }
 
 // ---------- River rising line on a gauge in Conditions ----------
-// Fills `el` with the line, and puts a banner at the top of the tab when a river is rising fast.
-export function riverLine(siteId, el, lake, body) {
+// Fills `el` with the line, and puts a banner at the top of the tab when a river (`river`) is rising fast.
+export function riverLine(siteId, el, river, body) {
   riverRise(siteId).then(r => {
     if (!r || !el.isConnected) return;
     el.innerHTML = `<br>🌊 <span class="chip ${r.tone}">${esc(r.text)}</span>`;
-    if (r.fast && isRiver(lake) && !body.querySelector('.dw-banner.river')) body.querySelector('#alerts')?.insertAdjacentHTML('beforebegin', `<div class="dw-banner bad river" role="alert"><span>🌊</span><b>${esc(r.text)} at the gauge. Rivers can keep rising for hours after rain or a dam release: stay out of the channel.</b></div>`);
+    if (r.fast && river && !body.querySelector('.dw-banner.river')) body.querySelector('#alerts')?.insertAdjacentHTML('beforebegin', `<div class="dw-banner bad river" role="alert"><span>🌊</span><b>${esc(r.text)} at the gauge. Rivers can keep rising for hours after rain or a dam release: stay out of the channel.</b></div>`);
   }).catch(() => {});
 }

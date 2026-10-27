@@ -246,4 +246,3 @@ export function riseFrom(stage, flow) {
   }
   return null;
 }
-export const isRiver = lake => lake?.kind === 'river' || /river|creek|stream|fork/i.test(`${lake?.type ?? ''} ${lake?.name ?? ''}`);

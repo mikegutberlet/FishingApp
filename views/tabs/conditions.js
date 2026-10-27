@@ -87,7 +87,7 @@ export async function renderConditions(lake, body) {
       <br><span class="muted small">${fmtDate(s.readings[0].time)} ${fmtTime(s.readings[0].time)}</span></p>`).join('') : '<p class="muted">No active gauges nearby. Common for natural lakes; rivers and reservoirs usually have one.</p>');
     const river = lake.kind === 'river' || /river|creek|stream|fork/i.test(`${lake.type} ${lake.name}`);
     for (const s of sites) {
-      if (s.readings.some(r => r.code === '00065' || r.code === '00060')) riverLine(s.id, body.querySelector(`.rise[data-site="${CSS.escape(s.id)}"]`), lake, body);
+      if (s.readings.some(r => r.code === '00065' || r.code === '00060')) riverLine(s.id, body.querySelector(`.rise[data-site="${CSS.escape(s.id)}"]`), river, body);
       const q = s.readings.find(r => r.code === '00060');
       if (!q) continue;
       fetchFlowStats(s.id).then(st => {
