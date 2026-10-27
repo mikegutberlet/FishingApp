@@ -159,7 +159,7 @@ async function fsPages(bbox) {
       activity: a.markeractivity ?? null, status: /^(open|closed)$/i.test(a.openstatus ?? '') ? a.openstatus.toLowerCase() : null,
       feeText: plain(a.feedescription, 220), reservations: plain(String(a.reservation_info ?? '').replace(/<a [^>]*>[^<]*<\/a>/gi, 'Recreation.gov'), 220),
       recgovId: String(a.reservation_info ?? '').match(/recreation\.gov\/camping\/campgrounds\/(\d+)/)?.[1] ?? null, restrictions: plain(a.restrictions, 300), accessibility: plain(a.accessibility, 160),
-      season: a.open_season_start && !/\d:\d\d/.test(a.open_season_start) ? (a.open_season_end && a.open_season_end !== a.open_season_start ? `${a.open_season_start}–${a.open_season_end}` : a.open_season_start) : null, forest: a.forestname ?? null,
+      season: a.open_season_start && !/\d:\d\d/.test(a.open_season_start) ? (!a.open_season_end ? `from ${a.open_season_start}` : a.open_season_end === a.open_season_start ? a.open_season_start : `${a.open_season_start}–${a.open_season_end}`) : null, forest: a.forestname ?? null,
       source: { label: 'USFS recreation opportunities', url: arcRecord(RECOPP, 'objectid', a.objectid) },
     };
   }).filter(Boolean);
@@ -332,23 +332,29 @@ async function padus(lat, lon, shore) {
 
 // ---------- Merging ----------
 // The same campground is often in several lists (the Forest Service inventory, its web page, Recreation.gov and
-// OpenStreetMap). Records with the same distinctive name within 3 km (one name inside the other: 600 m), or any two within 150 m,
-// become one: agency facts first, then Recreation.gov's booking facts, then what OpenStreetMap mappers added.
+// OpenStreetMap). Records with the same distinctive name within 3 km (5 km when one is Recreation.gov's, whose points can sit
+// at an office or the highway turnoff; one name inside the other: 600 m), or any two within 150 m, become one: agency facts
+// first, then Recreation.gov's booking facts, then what OpenStreetMap mappers added.
 const GENERIC = new Set(['campground', 'camp', 'cg', 'campsite', 'campsites', 'camping', 'area', 'site', 'sites', 'the', 'and', 'of', 'at', 'rv', 'park', 'family', 'lake', 'reservoir', 'river', 'creek', 'loop', 'unit', 'state', 'recreation', 'dispersed', 'in']);
+const SIDE = new Set(['east', 'west', 'north', 'south', 'upper', 'lower', 'middle']);
+const fromRecgov = r => r.sources?.some(s => /Recreation\.gov/.test(s.label));
 const words = n => String(n ?? '').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter(w => w.length > 1 && !GENERIC.has(w));
 function same(a, b) {
   const d = haversineKm(a.lat, a.lon, b.lat, b.lon);
   if (a.recgovId && b.recgovId) return a.recgovId === b.recgovId;
   if (a.recid && b.recid) return a.recid === b.recid;
-  if (d < 0.15 && !(a.unnamed && b.unnamed)) return true;
-  if (d > 3) return false;
   const wa = words(a.name), wb = words(b.name);
+  // A side word only one name has makes them neighbours, however close: "Jones Valley Inlet" and "Jones Valley Inlet
+  // West", or "Silver Lake East" and "West".
+  if (wa.length && wb.length && [...wa, ...wb].some(w => SIDE.has(w) && !(wa.includes(w) && wb.includes(w)))) return false;
+  if (d < 0.15 && !(a.unnamed && b.unnamed)) return true;
+  if (d > (fromRecgov(a) || fromRecgov(b) ? 5 : 3)) return false;
   if (!wa.length || !wb.length) return d < 0.3;
   const shared = wa.filter(w => wb.includes(w)).length;
-  // The same distinctive name up to 3 km apart (agencies and mappers put the point at the gate, the office or the
-  // middle of the loops); one name inside the other only close by, since "Silver Lake East" and "West", or a group
-  // camp next to the family one, are different places.
-  return shared === wa.length && shared === wb.length ? true : shared >= Math.min(wa.length, wb.length) && d <= 0.6;
+  // The same distinctive name a few km apart (agencies and mappers put the point at the gate, the office or the
+  // middle of the loops); one name inside the other only close by.
+  if (shared === wa.length && shared === wb.length) return true;
+  return shared >= Math.min(wa.length, wb.length) && d <= 0.6;
 }
 const keep = o => Object.fromEntries(Object.entries(o).filter(([, v]) => v != null && v !== ''));
 function merge(records, pages) {
@@ -371,7 +377,7 @@ function merge(records, pages) {
       if (!s.sources.some(x => x.url === p.source.url)) s.sources.push(p.source);
     } else if (/camp|cabin|rv/i.test(p.activity ?? '')) {
       out.push({ name: p.name, lat: p.lat, lon: p.lon, kind: /dispersed/i.test(p.activity) ? 'dispersed' : /cabin/i.test(p.activity) ? 'cabin' : /group/i.test(p.activity) ? 'group' : 'developed',
-        operator: 'Forest Service', status: p.status, recgovId: p.recgovId, infoUrl: p.infoUrl, feeText: p.feeText, fee: /no fee|free/i.test(p.feeText ?? '') ? 'no' : null, reservations: p.reservations, restrictions: p.restrictions, season: p.season, forest: p.forest, recid: p.recid, sources: [p.source] });
+        operator: /state (park|rec)/i.test(p.name) ? 'State park' : 'Forest Service', status: p.status, recgovId: p.recgovId, infoUrl: p.infoUrl, feeText: p.feeText, fee: /no fee|free/i.test(p.feeText ?? '') ? 'no' : null, reservations: p.reservations, restrictions: p.restrictions, season: p.season, forest: p.forest, recid: p.recid, sources: [p.source] });
     }
   }
   for (const s of out) {
