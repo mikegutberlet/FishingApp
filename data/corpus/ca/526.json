@@ -1,0 +1,1474 @@
+{
+ "id": "526",
+ "state": "CA",
+ "name": "Bayley Reservoir",
+ "lat": 41.26893,
+ "lon": -120.63624,
+ "county": "Modoc",
+ "kind": "lake",
+ "firstSeen": "2026-10-27",
+ "checkedAt": "2026-10-27T17:49:36.650Z",
+ "updatedAt": "2026-10-27T17:49:36.650Z",
+ "agency": {
+  "name": "CDFW",
+  "url": "https://apps.wildlife.ca.gov/fishing/?stockid=526",
+  "about": null,
+  "lastYearStocked": 2024
+ },
+ "facts": {
+  "type": "Lake",
+  "acres": 296,
+  "elevationFt": 5167,
+  "maxDepthFt": null,
+  "meanDepthFt": null,
+  "depthSource": null,
+  "lengthKm": null,
+  "nhdId": "00218760",
+  "hydro": {
+   "acres": 200,
+   "meanDepthFt": 13.1,
+   "volumeAcreFt": 2619,
+   "shoreKm": null,
+   "source": "HydroLAKES estimate"
+  },
+  "surveys": []
+ },
+ "about": null,
+ "access": {
+  "fetchedAt": "2026-10-27T17:50:29.585Z",
+  "lat": 41.26893,
+  "lon": -120.63624,
+  "searchKm": 2.49,
+  "shoreKm": 0.49,
+  "summary": {
+   "verdict": "Road open to cars",
+   "road": null,
+   "hikeMi": null,
+   "cls": "road",
+   "land": [
+    "Bureau of Land Management"
+   ],
+   "wilderness": null,
+   "trails": {
+    "hike": 0,
+    "bike": 0,
+    "moto": 0
+   },
+   "gates": 0,
+   "seasonal": 0,
+   "roads": 9,
+   "trailsTotal": 0
+  },
+  "features": [
+   {
+    "kind": "road",
+    "name": null,
+    "ref": null,
+    "paths": [
+     [
+      [
+       41.2721,
+       -120.6288
+      ],
+      [
+       41.2723,
+       -120.6294
+      ],
+      [
+       41.2723,
+       -120.6301
+      ],
+      [
+       41.2723,
+       -120.6307
+      ],
+      [
+       41.2722,
+       -120.6312
+      ],
+      [
+       41.272,
+       -120.632
+      ],
+      [
+       41.2721,
+       -120.6333
+      ],
+      [
+       41.2722,
+       -120.6347
+      ],
+      [
+       41.2722,
+       -120.6354
+      ],
+      [
+       41.2723,
+       -120.6361
+      ],
+      [
+       41.2726,
+       -120.6367
+      ],
+      [
+       41.2729,
+       -120.6369
+      ],
+      [
+       41.2732,
+       -120.6372
+      ],
+      [
+       41.2739,
+       -120.6376
+      ],
+      [
+       41.2744,
+       -120.6377
+      ],
+      [
+       41.275,
+       -120.638
+      ],
+      [
+       41.2754,
+       -120.6389
+      ],
+      [
+       41.2758,
+       -120.6394
+      ],
+      [
+       41.276,
+       -120.6397
+      ],
+      [
+       41.276,
+       -120.6409
+      ],
+      [
+       41.2763,
+       -120.6419
+      ],
+      [
+       41.2765,
+       -120.6423
+      ],
+      [
+       41.2768,
+       -120.6436
+      ],
+      [
+       41.2768,
+       -120.6446
+      ],
+      [
+       41.2768,
+       -120.6453
+      ]
+     ]
+    ],
+    "tags": {
+     "car": "yes",
+     "highClearance": "yes",
+     "atv": null,
+     "motorcycle": null,
+     "foot": "yes",
+     "bike": "yes",
+     "surface": null,
+     "maint": null,
+     "designation": "Street"
+    },
+    "source": {
+     "label": "OpenStreetMap",
+     "url": "https://www.openstreetmap.org/way/7912442",
+     "id": "osm-way-7912442"
+    }
+   },
+   {
+    "kind": "road",
+    "name": null,
+    "ref": null,
+    "paths": [
+     [
+      [
+       41.278,
+       -120.648
+      ],
+      [
+       41.2782,
+       -120.648
+      ],
+      [
+       41.2783,
+       -120.648
+      ],
+      [
+       41.2785,
+       -120.6479
+      ],
+      [
+       41.2788,
+       -120.6478
+      ],
+      [
+       41.2789,
+       -120.6476
+      ]
+     ]
+    ],
+    "tags": {
+     "car": "yes",
+     "highClearance": "yes",
+     "atv": null,
+     "motorcycle": null,
+     "foot": "yes",
+     "bike": "yes",
+     "surface": null,
+     "maint": null,
+     "designation": "Street"
+    },
+    "source": {
+     "label": "OpenStreetMap",
+     "url": "https://www.openstreetmap.org/way/7913517",
+     "id": "osm-way-7913517"
+    }
+   },
+   {
+    "kind": "road",
+    "name": null,
+    "ref": null,
+    "paths": [
+     [
+      [
+       41.2525,
+       -120.6195
+      ],
+      [
+       41.2526,
+       -120.6195
+      ],
+      [
+       41.2527,
+       -120.6195
+      ],
+      [
+       41.2528,
+       -120.6194
+      ],
+      [
+       41.2529,
+       -120.619
+      ],
+      [
+       41.253,
+       -120.6188
+      ],
+      [
+       41.2532,
+       -120.6186
+      ],
+      [
+       41.2534,
+       -120.6186
+      ],
+      [
+       41.2537,
+       -120.6186
+      ],
+      [
+       41.2547,
+       -120.6193
+      ],
+      [
+       41.2549,
+       -120.6195
+      ],
+      [
+       41.255,
+       -120.6198
+      ],
+      [
+       41.2552,
+       -120.62
+      ],
+      [
+       41.2563,
+       -120.6212
+      ],
+      [
+       41.2573,
+       -120.6223
+      ],
+      [
+       41.2578,
+       -120.6227
+      ],
+      [
+       41.2591,
+       -120.6234
+      ],
+      [
+       41.2598,
+       -120.6238
+      ],
+      [
+       41.2605,
+       -120.6244
+      ],
+      [
+       41.2608,
+       -120.6245
+      ],
+      [
+       41.2613,
+       -120.6248
+      ],
+      [
+       41.2615,
+       -120.625
+      ],
+      [
+       41.2617,
+       -120.6252
+      ],
+      [
+       41.2619,
+       -120.6257
+      ],
+      [
+       41.2622,
+       -120.6259
+      ],
+      [
+       41.2624,
+       -120.6262
+      ],
+      [
+       41.2625,
+       -120.6264
+      ],
+      [
+       41.2628,
+       -120.627
+      ],
+      [
+       41.2629,
+       -120.6273
+      ],
+      [
+       41.2629,
+       -120.6274
+      ],
+      [
+       41.263,
+       -120.6274
+      ]
+     ]
+    ],
+    "tags": {
+     "car": "yes",
+     "highClearance": "yes",
+     "atv": null,
+     "motorcycle": null,
+     "foot": "yes",
+     "bike": "yes",
+     "surface": null,
+     "maint": null,
+     "designation": "Street"
+    },
+    "source": {
+     "label": "OpenStreetMap",
+     "url": "https://www.openstreetmap.org/way/7914327",
+     "id": "osm-way-7914327"
+    }
+   },
+   {
+    "kind": "road",
+    "name": null,
+    "ref": null,
+    "paths": [
+     [
+      [
+       41.2745,
+       -120.6512
+      ],
+      [
+       41.2756,
+       -120.6512
+      ],
+      [
+       41.2758,
+       -120.6512
+      ],
+      [
+       41.2759,
+       -120.6511
+      ],
+      [
+       41.2761,
+       -120.651
+      ],
+      [
+       41.2765,
+       -120.6508
+      ],
+      [
+       41.2767,
+       -120.6506
+      ],
+      [
+       41.2768,
+       -120.6505
+      ],
+      [
+       41.277,
+       -120.6502
+      ],
+      [
+       41.2772,
+       -120.65
+      ],
+      [
+       41.2774,
+       -120.6496
+      ],
+      [
+       41.2775,
+       -120.6493
+      ],
+      [
+       41.2777,
+       -120.649
+      ],
+      [
+       41.2779,
+       -120.6483
+      ],
+      [
+       41.278,
+       -120.648
+      ],
+      [
+       41.2781,
+       -120.6476
+      ],
+      [
+       41.2781,
+       -120.6474
+      ],
+      [
+       41.2782,
+       -120.6472
+      ],
+      [
+       41.2782,
+       -120.647
+      ],
+      [
+       41.2782,
+       -120.6468
+      ],
+      [
+       41.278,
+       -120.6463
+      ],
+      [
+       41.278,
+       -120.6463
+      ],
+      [
+       41.278,
+       -120.6462
+      ],
+      [
+       41.278,
+       -120.646
+      ]
+     ]
+    ],
+    "tags": {
+     "car": "yes",
+     "highClearance": "yes",
+     "atv": null,
+     "motorcycle": null,
+     "foot": "yes",
+     "bike": "yes",
+     "surface": null,
+     "maint": null,
+     "designation": "Street"
+    },
+    "source": {
+     "label": "OpenStreetMap",
+     "url": "https://www.openstreetmap.org/way/7914410",
+     "id": "osm-way-7914410"
+    }
+   },
+   {
+    "kind": "road",
+    "name": null,
+    "ref": null,
+    "paths": [
+     [
+      [
+       41.2738,
+       -120.6468
+      ],
+      [
+       41.2749,
+       -120.6455
+      ],
+      [
+       41.2759,
+       -120.6447
+      ],
+      [
+       41.2762,
+       -120.6449
+      ],
+      [
+       41.2767,
+       -120.6453
+      ],
+      [
+       41.2774,
+       -120.6453
+      ],
+      [
+       41.2777,
+       -120.6457
+      ],
+      [
+       41.2782,
+       -120.6464
+      ],
+      [
+       41.2788,
+       -120.6469
+      ],
+      [
+       41.28,
+       -120.6477
+      ],
+      [
+       41.2807,
+       -120.6477
+      ],
+      [
+       41.2812,
+       -120.6482
+      ],
+      [
+       41.2816,
+       -120.6493
+      ],
+      [
+       41.2819,
+       -120.6497
+      ],
+      [
+       41.2827,
+       -120.6501
+      ],
+      [
+       41.2833,
+       -120.6509
+      ],
+      [
+       41.2837,
+       -120.6516
+      ],
+      [
+       41.2842,
+       -120.652
+      ],
+      [
+       41.2849,
+       -120.6524
+      ],
+      [
+       41.2858,
+       -120.653
+      ],
+      [
+       41.2857,
+       -120.6535
+      ],
+      [
+       41.2855,
+       -120.6543
+      ],
+      [
+       41.2854,
+       -120.655
+      ],
+      [
+       41.2854,
+       -120.6554
+      ],
+      [
+       41.2858,
+       -120.6566
+      ],
+      [
+       41.286,
+       -120.6571
+      ],
+      [
+       41.2864,
+       -120.6574
+      ],
+      [
+       41.2869,
+       -120.6578
+      ],
+      [
+       41.2874,
+       -120.6578
+      ],
+      [
+       41.288,
+       -120.6576
+      ],
+      [
+       41.2883,
+       -120.6576
+      ]
+     ]
+    ],
+    "tags": {
+     "car": "yes",
+     "highClearance": "yes",
+     "atv": null,
+     "motorcycle": null,
+     "foot": "yes",
+     "bike": "yes",
+     "surface": null,
+     "maint": null,
+     "designation": "Street"
+    },
+    "source": {
+     "label": "OpenStreetMap",
+     "url": "https://www.openstreetmap.org/way/7917676",
+     "id": "osm-way-7917676"
+    }
+   },
+   {
+    "kind": "road",
+    "name": null,
+    "ref": null,
+    "paths": [
+     [
+      [
+       41.276,
+       -120.6396
+      ],
+      [
+       41.2762,
+       -120.6392
+      ],
+      [
+       41.2764,
+       -120.6388
+      ],
+      [
+       41.2765,
+       -120.6386
+      ],
+      [
+       41.2766,
+       -120.6386
+      ],
+      [
+       41.2766,
+       -120.6385
+      ],
+      [
+       41.2766,
+       -120.6384
+      ],
+      [
+       41.2767,
+       -120.6382
+      ],
+      [
+       41.2771,
+       -120.6375
+      ],
+      [
+       41.2773,
+       -120.6372
+      ],
+      [
+       41.2774,
+       -120.637
+      ],
+      [
+       41.2777,
+       -120.6362
+      ],
+      [
+       41.2778,
+       -120.6361
+      ],
+      [
+       41.2781,
+       -120.6356
+      ],
+      [
+       41.2782,
+       -120.6355
+      ],
+      [
+       41.2783,
+       -120.6353
+      ],
+      [
+       41.2784,
+       -120.6352
+      ],
+      [
+       41.2784,
+       -120.6351
+      ],
+      [
+       41.2785,
+       -120.6349
+      ],
+      [
+       41.2788,
+       -120.6342
+      ],
+      [
+       41.2792,
+       -120.6335
+      ],
+      [
+       41.2799,
+       -120.6322
+      ],
+      [
+       41.2806,
+       -120.6309
+      ],
+      [
+       41.2809,
+       -120.6301
+      ],
+      [
+       41.2809,
+       -120.63
+      ],
+      [
+       41.281,
+       -120.6298
+      ],
+      [
+       41.281,
+       -120.6297
+      ],
+      [
+       41.2813,
+       -120.6293
+      ],
+      [
+       41.2814,
+       -120.6292
+      ],
+      [
+       41.2815,
+       -120.629
+      ]
+     ]
+    ],
+    "tags": {
+     "car": "yes",
+     "highClearance": "yes",
+     "atv": null,
+     "motorcycle": null,
+     "foot": "yes",
+     "bike": "yes",
+     "surface": null,
+     "maint": null,
+     "designation": "Street"
+    },
+    "source": {
+     "label": "OpenStreetMap",
+     "url": "https://www.openstreetmap.org/way/7918201",
+     "id": "osm-way-7918201"
+    }
+   },
+   {
+    "kind": "road",
+    "name": null,
+    "ref": null,
+    "paths": [
+     [
+      [
+       41.2391,
+       -120.6462
+      ],
+      [
+       41.2409,
+       -120.6456
+      ],
+      [
+       41.2421,
+       -120.6453
+      ],
+      [
+       41.2425,
+       -120.6449
+      ],
+      [
+       41.2432,
+       -120.6439
+      ],
+      [
+       41.2438,
+       -120.6429
+      ],
+      [
+       41.2441,
+       -120.6415
+      ],
+      [
+       41.2444,
+       -120.6395
+      ],
+      [
+       41.2461,
+       -120.6373
+      ],
+      [
+       41.2462,
+       -120.6365
+      ],
+      [
+       41.2467,
+       -120.6346
+      ],
+      [
+       41.2476,
+       -120.634
+      ],
+      [
+       41.2481,
+       -120.633
+      ],
+      [
+       41.2483,
+       -120.6304
+      ],
+      [
+       41.2484,
+       -120.6283
+      ],
+      [
+       41.2487,
+       -120.6278
+      ],
+      [
+       41.2494,
+       -120.6277
+      ],
+      [
+       41.2497,
+       -120.6274
+      ],
+      [
+       41.2505,
+       -120.6256
+      ],
+      [
+       41.2511,
+       -120.6245
+      ],
+      [
+       41.2518,
+       -120.623
+      ],
+      [
+       41.2524,
+       -120.6217
+      ],
+      [
+       41.2526,
+       -120.6208
+      ],
+      [
+       41.2525,
+       -120.6201
+      ],
+      [
+       41.2525,
+       -120.6199
+      ],
+      [
+       41.2521,
+       -120.6177
+      ],
+      [
+       41.2516,
+       -120.6168
+      ],
+      [
+       41.2514,
+       -120.6165
+      ]
+     ]
+    ],
+    "tags": {
+     "car": "yes",
+     "highClearance": "yes",
+     "atv": null,
+     "motorcycle": null,
+     "foot": "yes",
+     "bike": "yes",
+     "surface": null,
+     "maint": null,
+     "designation": "Street"
+    },
+    "source": {
+     "label": "OpenStreetMap",
+     "url": "https://www.openstreetmap.org/way/7920352",
+     "id": "osm-way-7920352"
+    }
+   },
+   {
+    "kind": "road",
+    "name": "Delta Lake",
+    "ref": null,
+    "paths": [
+     [
+      [
+       41.2525,
+       -120.6201
+      ],
+      [
+       41.2525,
+       -120.6199
+      ]
+     ]
+    ],
+    "tags": {
+     "car": "yes",
+     "highClearance": "yes",
+     "atv": null,
+     "motorcycle": null,
+     "foot": "yes",
+     "bike": "yes",
+     "surface": null,
+     "maint": null,
+     "designation": "Street"
+    },
+    "source": {
+     "label": "OpenStreetMap",
+     "url": "https://www.openstreetmap.org/way/7925973",
+     "id": "osm-way-7925973"
+    }
+   },
+   {
+    "kind": "road",
+    "name": "Bayley Reservoir Road",
+    "ref": null,
+    "paths": [
+     [
+      [
+       41.263,
+       -120.6274
+      ],
+      [
+       41.2658,
+       -120.6259
+      ],
+      [
+       41.2696,
+       -120.6262
+      ],
+      [
+       41.2727,
+       -120.629
+      ],
+      [
+       41.2767,
+       -120.6305
+      ],
+      [
+       41.2794,
+       -120.631
+      ],
+      [
+       41.2805,
+       -120.6295
+      ],
+      [
+       41.2825,
+       -120.6281
+      ],
+      [
+       41.2858,
+       -120.6266
+      ],
+      [
+       41.2891,
+       -120.6252
+      ],
+      [
+       41.2918,
+       -120.6243
+      ],
+      [
+       41.2942,
+       -120.6251
+      ],
+      [
+       41.296,
+       -120.6275
+      ],
+      [
+       41.2975,
+       -120.6295
+      ],
+      [
+       41.3005,
+       -120.6322
+      ],
+      [
+       41.3064,
+       -120.6372
+      ],
+      [
+       41.309,
+       -120.6381
+      ],
+      [
+       41.3123,
+       -120.643
+      ],
+      [
+       41.3146,
+       -120.6443
+      ],
+      [
+       41.3172,
+       -120.6407
+      ],
+      [
+       41.3196,
+       -120.6386
+      ],
+      [
+       41.3221,
+       -120.6357
+      ],
+      [
+       41.3245,
+       -120.6336
+      ],
+      [
+       41.3277,
+       -120.6316
+      ],
+      [
+       41.3304,
+       -120.6309
+      ],
+      [
+       41.3327,
+       -120.6348
+      ],
+      [
+       41.3343,
+       -120.6348
+      ],
+      [
+       41.3362,
+       -120.6331
+      ],
+      [
+       41.337,
+       -120.631
+      ],
+      [
+       41.3391,
+       -120.6271
+      ],
+      [
+       41.3395,
+       -120.6266
+      ]
+     ]
+    ],
+    "tags": {
+     "car": null,
+     "highClearance": null,
+     "atv": null,
+     "motorcycle": null,
+     "foot": "yes",
+     "bike": "yes",
+     "surface": null,
+     "maint": null,
+     "designation": "Track"
+    },
+    "source": {
+     "label": "OpenStreetMap",
+     "url": "https://www.openstreetmap.org/way/7930041",
+     "id": "osm-way-7930041"
+    }
+   },
+   {
+    "kind": "mast",
+    "name": null,
+    "ref": null,
+    "lat": 41.15528,
+    "lon": -120.56385,
+    "paths": [],
+    "tags": {
+     "operator": null
+    },
+    "source": {
+     "label": "OpenStreetMap",
+     "url": "https://www.openstreetmap.org/node/9143513122",
+     "id": "osm-node-9143513122"
+    }
+   },
+   {
+    "kind": "mast",
+    "name": null,
+    "ref": null,
+    "lat": 41.15499,
+    "lon": -120.56373,
+    "paths": [],
+    "tags": {
+     "operator": null
+    },
+    "source": {
+     "label": "OpenStreetMap",
+     "url": "https://www.openstreetmap.org/node/9143513123",
+     "id": "osm-node-9143513123"
+    }
+   }
+  ],
+  "land": {
+   "parcels": [
+    {
+     "manager": "BLM",
+     "type": "FED",
+     "unit": "Applegate Field Office",
+     "local": "Bureau of Land Management",
+     "designation": "PUB",
+     "access": "OA",
+     "acres": 684641,
+     "n": 1,
+     "localManager": "BLM",
+     "owner": "BLM",
+     "source": {
+      "label": "USGS Protected Areas Database (PAD-US)",
+      "url": "https://services.arcgis.com/v01gqwM5QqNysAAi/ArcGIS/rest/services/Manager_Name_PADUS/FeatureServer/0/query?where=OBJECTID%3D3915&outFields=*&f=html"
+     }
+    }
+   ]
+  },
+  "hike": null,
+  "failed": []
+ },
+ "camping": {
+  "fetchedAt": "2026-10-27T17:51:00.023Z",
+  "searchKm": 16.49,
+  "shoreKm": 0.49,
+  "sites": [],
+  "land": {
+   "parcels": [
+    {
+     "manager": "USFS",
+     "unit": "Modoc National Forest",
+     "designation": "NF",
+     "access": "OA",
+     "localManager": "Forest Service Region 05 Pacific Southwest",
+     "acres": 1678612,
+     "n": 1,
+     "source": {
+      "label": "USGS Protected Areas Database (PAD-US)",
+      "url": "https://services.arcgis.com/v01gqwM5QqNysAAi/ArcGIS/rest/services/Manager_Name_PADUS/FeatureServer/0/query?where=OBJECTID%3D4567&outFields=*&f=html"
+     }
+    },
+    {
+     "manager": "BLM",
+     "unit": "Applegate Field Office",
+     "designation": "PUB",
+     "access": "OA",
+     "localManager": "BLM",
+     "acres": 684641,
+     "n": 1,
+     "source": {
+      "label": "USGS Protected Areas Database (PAD-US)",
+      "url": "https://services.arcgis.com/v01gqwM5QqNysAAi/ArcGIS/rest/services/Manager_Name_PADUS/FeatureServer/0/query?where=OBJECTID%3D3915&outFields=*&f=html"
+     }
+    },
+    {
+     "manager": "SDOL",
+     "unit": "California State Lands Commission",
+     "designation": "SRMA",
+     "access": "OA",
+     "localManager": "California State Lands Commission",
+     "acres": 265889,
+     "n": 1,
+     "source": {
+      "label": "USGS Protected Areas Database (PAD-US)",
+      "url": "https://services.arcgis.com/v01gqwM5QqNysAAi/ArcGIS/rest/services/Manager_Name_PADUS/FeatureServer/0/query?where=OBJECTID%3D190591&outFields=*&f=html"
+     }
+    }
+   ]
+  },
+  "dispersed": "yes",
+  "failed": []
+ },
+ "stocking": {
+  "recent": [
+   {
+    "year": 2026,
+    "species": "Trout",
+    "plants": 2,
+    "fish": null
+   }
+  ],
+  "history": {
+   "names": [
+    "Bayley Reservoir"
+   ],
+   "years": [
+    {
+     "y": 2026,
+     "fish": null,
+     "plants": 2,
+     "sp": {
+      "Trout": [
+       null,
+       2
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20260516093819/https://nrm.dfg.ca.gov/FishPlants/PublicPlantSearch",
+      "https://web.archive.org/web/20260603103548/https://nrm.dfg.ca.gov/FishPlants/PublicPlantSearch"
+     ]
+    },
+    {
+     "y": 2025,
+     "fish": null,
+     "plants": 1,
+     "sp": {
+      "Trout": [
+       null,
+       1
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20250507093752/https://nrm.dfg.ca.gov/FishPlants/PublicPlantSearch"
+     ]
+    },
+    {
+     "y": 2024,
+     "fish": null,
+     "plants": 3,
+     "sp": {
+      "Trout": [
+       null,
+       3
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20241119202434/https://nrm.dfg.ca.gov/FishPlants/PublicPlantSearch"
+     ]
+    },
+    {
+     "y": 2012,
+     "fish": null,
+     "plants": 2,
+     "sp": {
+      "Trout": [
+       null,
+       2
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20120528084532/http://nrm.dfg.ca.gov:80/fishplants/",
+      "https://web.archive.org/web/20120605131310/http://nrm.dfg.ca.gov/FishPlants/"
+     ]
+    },
+    {
+     "y": 2010,
+     "fish": null,
+     "plants": 1,
+     "sp": {
+      "Trout": [
+       null,
+       1
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20100613034014/http://www.dfg.ca.gov/fish/Hatcheries/FishPlanting/Northern.asp"
+     ]
+    },
+    {
+     "y": 2008,
+     "fish": null,
+     "plants": 1,
+     "sp": {
+      "Trout": [
+       null,
+       1
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20080712080941/http://www.dfg.ca.gov:80/fish/Hatcheries/FishPlanting/Northern.asp"
+     ]
+    }
+   ]
+  },
+  "note": "CDFW publishes the week and species, not counts. History grows each night from the public schedule."
+ },
+ "introductions": [],
+ "rules": {
+  "source": null,
+  "booklet": "https://wildlife.ca.gov/Regulations",
+  "updatedAt": "2026-10-27T15:56:38.040Z",
+  "county": "Modoc",
+  "special": []
+ },
+ "advisories": {
+  "algae": [],
+  "eating": [],
+  "eatingSource": "https://oehha.ca.gov/fish/advisories"
+ },
+ "sources": [
+  {
+   "label": "CDFW stocking schedule",
+   "url": "https://nrm.dfg.ca.gov/FishPlants/",
+   "fetchedAt": "2026-10-27T02:03:30.225Z"
+  },
+  {
+   "label": "CDFW page for the water",
+   "url": "https://apps.wildlife.ca.gov/fishing/?stockid=526",
+   "fetchedAt": "2026-10-27T17:49:36.650Z"
+  },
+  {
+   "label": "USGS National Hydrography Dataset (data/ca/lakes.json, rivers.json)",
+   "url": "https://www.usgs.gov/national-hydrography/national-hydrography-dataset",
+   "fetchedAt": "2026-10-27T17:49:36.650Z"
+  },
+  {
+   "label": "HydroLAKES v1.0 (modelled depth and volume)",
+   "url": "https://www.hydrosheds.org/products/hydrolakes",
+   "fetchedAt": "2026-10-27T17:49:36.650Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved May 16, 2026 (Internet Archive)",
+   "url": "https://web.archive.org/web/20260516093819/https://nrm.dfg.ca.gov/FishPlants/PublicPlantSearch",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved Jun 3, 2026 (Internet Archive)",
+   "url": "https://web.archive.org/web/20260603103548/https://nrm.dfg.ca.gov/FishPlants/PublicPlantSearch",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved May 7, 2025 (Internet Archive)",
+   "url": "https://web.archive.org/web/20250507093752/https://nrm.dfg.ca.gov/FishPlants/PublicPlantSearch",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved Nov 19, 2024 (Internet Archive)",
+   "url": "https://web.archive.org/web/20241119202434/https://nrm.dfg.ca.gov/FishPlants/PublicPlantSearch",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved May 28, 2012 (Internet Archive)",
+   "url": "https://web.archive.org/web/20120528084532/http://nrm.dfg.ca.gov:80/fishplants/",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved Jun 5, 2012 (Internet Archive)",
+   "url": "https://web.archive.org/web/20120605131310/http://nrm.dfg.ca.gov/FishPlants/",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved Jun 13, 2010 (Internet Archive)",
+   "url": "https://web.archive.org/web/20100613034014/http://www.dfg.ca.gov/fish/Hatcheries/FishPlanting/Northern.asp",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved Jul 12, 2008 (Internet Archive)",
+   "url": "https://web.archive.org/web/20080712080941/http://www.dfg.ca.gov:80/fish/Hatcheries/FishPlanting/Northern.asp",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "OpenStreetMap",
+   "url": "https://www.openstreetmap.org/way/7912442",
+   "fetchedAt": "2026-10-27T17:50:29.585Z"
+  },
+  {
+   "label": "OpenStreetMap",
+   "url": "https://www.openstreetmap.org/way/7913517",
+   "fetchedAt": "2026-10-27T17:50:29.585Z"
+  },
+  {
+   "label": "OpenStreetMap",
+   "url": "https://www.openstreetmap.org/way/7914327",
+   "fetchedAt": "2026-10-27T17:50:29.585Z"
+  },
+  {
+   "label": "OpenStreetMap",
+   "url": "https://www.openstreetmap.org/way/7914410",
+   "fetchedAt": "2026-10-27T17:50:29.585Z"
+  },
+  {
+   "label": "OpenStreetMap",
+   "url": "https://www.openstreetmap.org/way/7917676",
+   "fetchedAt": "2026-10-27T17:50:29.585Z"
+  },
+  {
+   "label": "OpenStreetMap",
+   "url": "https://www.openstreetmap.org/way/7918201",
+   "fetchedAt": "2026-10-27T17:50:29.585Z"
+  },
+  {
+   "label": "OpenStreetMap",
+   "url": "https://www.openstreetmap.org/way/7920352",
+   "fetchedAt": "2026-10-27T17:50:29.585Z"
+  },
+  {
+   "label": "OpenStreetMap",
+   "url": "https://www.openstreetmap.org/way/7925973",
+   "fetchedAt": "2026-10-27T17:50:29.585Z"
+  },
+  {
+   "label": "OpenStreetMap",
+   "url": "https://www.openstreetmap.org/way/7930041",
+   "fetchedAt": "2026-10-27T17:50:29.585Z"
+  },
+  {
+   "label": "OpenStreetMap",
+   "url": "https://www.openstreetmap.org/node/9143513122",
+   "fetchedAt": "2026-10-27T17:50:29.585Z"
+  },
+  {
+   "label": "OpenStreetMap",
+   "url": "https://www.openstreetmap.org/node/9143513123",
+   "fetchedAt": "2026-10-27T17:50:29.585Z"
+  },
+  {
+   "label": "USGS Protected Areas Database (PAD-US)",
+   "url": "https://services.arcgis.com/v01gqwM5QqNysAAi/ArcGIS/rest/services/Manager_Name_PADUS/FeatureServer/0/query?where=OBJECTID%3D3915&outFields=*&f=html",
+   "fetchedAt": "2026-10-27T17:50:29.585Z"
+  }
+ ],
+ "notes": [],
+ "manual": {},
+ "changes": [
+  {
+   "date": "2026-10-27",
+   "text": "added to the corpus"
+  }
+ ]
+}

@@ -1,0 +1,1442 @@
+{
+ "id": "125",
+ "state": "CA",
+ "name": "Annie Lake",
+ "lat": 41.91008,
+ "lon": -120.10732,
+ "county": "Modoc",
+ "kind": "lake",
+ "firstSeen": "2026-10-27",
+ "checkedAt": "2026-10-27T17:47:13.126Z",
+ "updatedAt": "2026-10-27T17:47:13.126Z",
+ "agency": {
+  "name": "CDFW",
+  "url": "https://apps.wildlife.ca.gov/fishing/?stockid=125",
+  "about": null,
+  "lastYearStocked": 2025
+ },
+ "facts": {
+  "type": "Lake",
+  "acres": 61,
+  "elevationFt": 5020,
+  "maxDepthFt": null,
+  "meanDepthFt": null,
+  "depthSource": null,
+  "lengthKm": null,
+  "nhdId": "00256265",
+  "hydro": {
+   "acres": 84,
+   "meanDepthFt": 24,
+   "volumeAcreFt": 2019,
+   "shoreKm": null,
+   "source": "HydroLAKES estimate"
+  },
+  "surveys": []
+ },
+ "about": null,
+ "access": {
+  "fetchedAt": "2026-10-27T17:47:42.872Z",
+  "lat": 41.91008,
+  "lon": -120.10732,
+  "searchKm": 2.22,
+  "shoreKm": 0.22,
+  "summary": {
+   "verdict": "Road open to cars",
+   "road": "Lake Annie Road",
+   "hikeMi": null,
+   "cls": "road",
+   "land": [
+    "Bureau of Land Management"
+   ],
+   "wilderness": null,
+   "trails": {
+    "hike": 0,
+    "bike": 0,
+    "moto": 0
+   },
+   "gates": 0,
+   "seasonal": 0,
+   "roads": 9,
+   "trailsTotal": 0
+  },
+  "features": [
+   {
+    "kind": "road",
+    "name": null,
+    "ref": null,
+    "paths": [
+     [
+      [
+       41.9389,
+       -120.0565
+      ],
+      [
+       41.94,
+       -120.0585
+      ],
+      [
+       41.9427,
+       -120.0615
+      ],
+      [
+       41.9453,
+       -120.0636
+      ],
+      [
+       41.9484,
+       -120.0656
+      ],
+      [
+       41.9525,
+       -120.0689
+      ],
+      [
+       41.9571,
+       -120.0709
+      ],
+      [
+       41.9596,
+       -120.0723
+      ],
+      [
+       41.9619,
+       -120.0772
+      ],
+      [
+       41.962,
+       -120.0817
+      ],
+      [
+       41.9596,
+       -120.0831
+      ],
+      [
+       41.9569,
+       -120.0853
+      ],
+      [
+       41.9577,
+       -120.0895
+      ],
+      [
+       41.9572,
+       -120.0928
+      ],
+      [
+       41.9569,
+       -120.0978
+      ],
+      [
+       41.9554,
+       -120.0984
+      ],
+      [
+       41.9533,
+       -120.0982
+      ],
+      [
+       41.9503,
+       -120.0952
+      ],
+      [
+       41.9464,
+       -120.0929
+      ],
+      [
+       41.9442,
+       -120.092
+      ],
+      [
+       41.9415,
+       -120.0926
+      ],
+      [
+       41.9382,
+       -120.0916
+      ],
+      [
+       41.9349,
+       -120.0926
+      ],
+      [
+       41.9311,
+       -120.0958
+      ],
+      [
+       41.9269,
+       -120.0961
+      ],
+      [
+       41.9239,
+       -120.0967
+      ],
+      [
+       41.923,
+       -120.0997
+      ],
+      [
+       41.9186,
+       -120.1029
+      ],
+      [
+       41.9171,
+       -120.1054
+      ],
+      [
+       41.9164,
+       -120.1063
+      ]
+     ]
+    ],
+    "tags": {
+     "car": null,
+     "highClearance": null,
+     "atv": null,
+     "motorcycle": null,
+     "foot": "yes",
+     "bike": "yes",
+     "surface": null,
+     "maint": null,
+     "designation": "Track"
+    },
+    "source": {
+     "label": "OpenStreetMap",
+     "url": "https://www.openstreetmap.org/way/7919760",
+     "id": "osm-way-7919760"
+    }
+   },
+   {
+    "kind": "road",
+    "name": "Lake Annie",
+    "ref": null,
+    "paths": [
+     [
+      [
+       41.9066,
+       -120.1096
+      ],
+      [
+       41.9077,
+       -120.1094
+      ],
+      [
+       41.9083,
+       -120.1095
+      ],
+      [
+       41.9085,
+       -120.1098
+      ],
+      [
+       41.9086,
+       -120.1111
+      ],
+      [
+       41.9088,
+       -120.1114
+      ],
+      [
+       41.9091,
+       -120.1113
+      ],
+      [
+       41.9094,
+       -120.1108
+      ],
+      [
+       41.9096,
+       -120.1102
+      ],
+      [
+       41.91,
+       -120.1095
+      ],
+      [
+       41.9103,
+       -120.1094
+      ],
+      [
+       41.911,
+       -120.1092
+      ],
+      [
+       41.9117,
+       -120.1086
+      ],
+      [
+       41.9121,
+       -120.1086
+      ],
+      [
+       41.9125,
+       -120.1089
+      ],
+      [
+       41.9132,
+       -120.1088
+      ],
+      [
+       41.9134,
+       -120.1086
+      ],
+      [
+       41.9136,
+       -120.1078
+      ],
+      [
+       41.9136,
+       -120.1076
+      ],
+      [
+       41.9135,
+       -120.1071
+      ],
+      [
+       41.9137,
+       -120.1068
+      ],
+      [
+       41.9145,
+       -120.1067
+      ],
+      [
+       41.9151,
+       -120.1065
+      ],
+      [
+       41.9158,
+       -120.1062
+      ],
+      [
+       41.9164,
+       -120.1063
+      ],
+      [
+       41.9164,
+       -120.1063
+      ]
+     ]
+    ],
+    "tags": {
+     "car": null,
+     "highClearance": null,
+     "atv": null,
+     "motorcycle": null,
+     "foot": "yes",
+     "bike": "yes",
+     "surface": null,
+     "maint": null,
+     "designation": "Track"
+    },
+    "source": {
+     "label": "OpenStreetMap",
+     "url": "https://www.openstreetmap.org/way/7925988",
+     "id": "osm-way-7925988"
+    }
+   },
+   {
+    "kind": "road",
+    "name": "Lake Annie Road",
+    "ref": null,
+    "paths": [
+     [
+      [
+       41.8819,
+       -120.1323
+      ],
+      [
+       41.8847,
+       -120.1323
+      ],
+      [
+       41.8854,
+       -120.1323
+      ],
+      [
+       41.8854,
+       -120.1322
+      ],
+      [
+       41.8855,
+       -120.132
+      ],
+      [
+       41.8854,
+       -120.1276
+      ],
+      [
+       41.8854,
+       -120.1275
+      ],
+      [
+       41.8856,
+       -120.1273
+      ],
+      [
+       41.8858,
+       -120.1271
+      ],
+      [
+       41.8871,
+       -120.1263
+      ],
+      [
+       41.8896,
+       -120.1247
+      ],
+      [
+       41.8922,
+       -120.123
+      ],
+      [
+       41.8939,
+       -120.1217
+      ],
+      [
+       41.8957,
+       -120.1205
+      ],
+      [
+       41.8972,
+       -120.1198
+      ],
+      [
+       41.8988,
+       -120.119
+      ],
+      [
+       41.8996,
+       -120.1186
+      ],
+      [
+       41.9008,
+       -120.1183
+      ],
+      [
+       41.9024,
+       -120.118
+      ],
+      [
+       41.9032,
+       -120.1178
+      ],
+      [
+       41.9034,
+       -120.1177
+      ],
+      [
+       41.9037,
+       -120.1175
+      ],
+      [
+       41.9046,
+       -120.1152
+      ],
+      [
+       41.9048,
+       -120.1144
+      ],
+      [
+       41.9053,
+       -120.1127
+      ],
+      [
+       41.9055,
+       -120.1118
+      ],
+      [
+       41.9058,
+       -120.1109
+      ],
+      [
+       41.9062,
+       -120.1102
+      ],
+      [
+       41.9064,
+       -120.1098
+      ],
+      [
+       41.9065,
+       -120.1097
+      ],
+      [
+       41.9066,
+       -120.1096
+      ]
+     ]
+    ],
+    "tags": {
+     "car": "yes",
+     "highClearance": "yes",
+     "atv": null,
+     "motorcycle": null,
+     "foot": "yes",
+     "bike": "yes",
+     "surface": null,
+     "maint": null,
+     "designation": "Street"
+    },
+    "source": {
+     "label": "OpenStreetMap",
+     "url": "https://www.openstreetmap.org/way/7926534",
+     "id": "osm-way-7926534"
+    }
+   },
+   {
+    "kind": "road",
+    "name": "Surprise Valley Road",
+    "ref": "CR 1",
+    "paths": [
+     [
+      [
+       41.9949,
+       -120.0422
+      ],
+      [
+       41.9917,
+       -120.0395
+      ],
+      [
+       41.9869,
+       -120.0349
+      ],
+      [
+       41.9807,
+       -120.0315
+      ],
+      [
+       41.9724,
+       -120.0259
+      ],
+      [
+       41.9686,
+       -120.0251
+      ],
+      [
+       41.9657,
+       -120.0246
+      ],
+      [
+       41.9625,
+       -120.026
+      ],
+      [
+       41.9576,
+       -120.0311
+      ],
+      [
+       41.9518,
+       -120.0326
+      ],
+      [
+       41.9473,
+       -120.0332
+      ],
+      [
+       41.9457,
+       -120.0377
+      ],
+      [
+       41.94,
+       -120.0556
+      ],
+      [
+       41.9369,
+       -120.0567
+      ],
+      [
+       41.9364,
+       -120.0613
+      ],
+      [
+       41.9316,
+       -120.0639
+      ],
+      [
+       41.9299,
+       -120.0686
+      ],
+      [
+       41.9281,
+       -120.0731
+      ],
+      [
+       41.9248,
+       -120.075
+      ],
+      [
+       41.9192,
+       -120.0769
+      ],
+      [
+       41.9163,
+       -120.0786
+      ],
+      [
+       41.9107,
+       -120.08
+      ],
+      [
+       41.9042,
+       -120.0789
+      ],
+      [
+       41.9013,
+       -120.0759
+      ],
+      [
+       41.8968,
+       -120.0679
+      ],
+      [
+       41.8924,
+       -120.0662
+      ],
+      [
+       41.8898,
+       -120.068
+      ],
+      [
+       41.8872,
+       -120.0704
+      ],
+      [
+       41.8857,
+       -120.0782
+      ],
+      [
+       41.8882,
+       -120.0874
+      ],
+      [
+       41.8884,
+       -120.0884
+      ]
+     ]
+    ],
+    "tags": {
+     "car": "yes",
+     "highClearance": "yes",
+     "atv": null,
+     "motorcycle": null,
+     "foot": "yes",
+     "bike": "yes",
+     "surface": "gravel",
+     "maint": null,
+     "designation": "Local road · unpaved"
+    },
+    "source": {
+     "label": "OpenStreetMap",
+     "url": "https://www.openstreetmap.org/way/209023963",
+     "id": "osm-way-209023963"
+    }
+   },
+   {
+    "kind": "road",
+    "name": null,
+    "ref": null,
+    "paths": [
+     [
+      [
+       41.8983,
+       -120.128
+      ],
+      [
+       41.8981,
+       -120.1261
+      ],
+      [
+       41.8982,
+       -120.1258
+      ],
+      [
+       41.8981,
+       -120.1254
+      ],
+      [
+       41.8982,
+       -120.1251
+      ],
+      [
+       41.8982,
+       -120.1248
+      ],
+      [
+       41.898,
+       -120.1244
+      ],
+      [
+       41.8979,
+       -120.1237
+      ],
+      [
+       41.8978,
+       -120.1224
+      ],
+      [
+       41.8979,
+       -120.1214
+      ],
+      [
+       41.898,
+       -120.1208
+      ],
+      [
+       41.8981,
+       -120.1203
+      ],
+      [
+       41.8983,
+       -120.1192
+      ]
+     ]
+    ],
+    "tags": {
+     "car": null,
+     "highClearance": null,
+     "atv": null,
+     "motorcycle": null,
+     "foot": "yes",
+     "bike": "yes",
+     "surface": null,
+     "maint": null,
+     "designation": "Track"
+    },
+    "source": {
+     "label": "OpenStreetMap",
+     "url": "https://www.openstreetmap.org/way/1009501109",
+     "id": "osm-way-1009501109"
+    }
+   },
+   {
+    "kind": "road",
+    "name": null,
+    "ref": null,
+    "paths": [
+     [
+      [
+       41.889,
+       -120.1079
+      ],
+      [
+       41.8896,
+       -120.1085
+      ],
+      [
+       41.89,
+       -120.109
+      ],
+      [
+       41.8901,
+       -120.1091
+      ],
+      [
+       41.8912,
+       -120.1103
+      ],
+      [
+       41.8917,
+       -120.1108
+      ],
+      [
+       41.892,
+       -120.1111
+      ],
+      [
+       41.8922,
+       -120.1114
+      ],
+      [
+       41.8925,
+       -120.1116
+      ],
+      [
+       41.893,
+       -120.1118
+      ],
+      [
+       41.8934,
+       -120.1119
+      ],
+      [
+       41.8938,
+       -120.112
+      ],
+      [
+       41.8942,
+       -120.112
+      ],
+      [
+       41.8946,
+       -120.1121
+      ],
+      [
+       41.8951,
+       -120.1123
+      ],
+      [
+       41.8957,
+       -120.1125
+      ],
+      [
+       41.8962,
+       -120.1126
+      ],
+      [
+       41.8966,
+       -120.1128
+      ],
+      [
+       41.8972,
+       -120.1129
+      ],
+      [
+       41.8974,
+       -120.1129
+      ],
+      [
+       41.8979,
+       -120.1129
+      ],
+      [
+       41.8983,
+       -120.1129
+      ],
+      [
+       41.9,
+       -120.1129
+      ],
+      [
+       41.9001,
+       -120.1129
+      ]
+     ]
+    ],
+    "tags": {
+     "car": null,
+     "highClearance": null,
+     "atv": null,
+     "motorcycle": null,
+     "foot": "yes",
+     "bike": "yes",
+     "surface": null,
+     "maint": null,
+     "designation": "Track"
+    },
+    "source": {
+     "label": "OpenStreetMap",
+     "url": "https://www.openstreetmap.org/way/1303804806",
+     "id": "osm-way-1303804806"
+    }
+   },
+   {
+    "kind": "road",
+    "name": null,
+    "ref": null,
+    "paths": [
+     [
+      [
+       41.9066,
+       -120.1096
+      ],
+      [
+       41.9066,
+       -120.1094
+      ],
+      [
+       41.9066,
+       -120.109
+      ],
+      [
+       41.9066,
+       -120.1082
+      ],
+      [
+       41.9066,
+       -120.1076
+      ],
+      [
+       41.9067,
+       -120.1071
+      ],
+      [
+       41.9067,
+       -120.1068
+      ],
+      [
+       41.9067,
+       -120.1067
+      ],
+      [
+       41.9067,
+       -120.1065
+      ],
+      [
+       41.9066,
+       -120.1064
+      ],
+      [
+       41.9065,
+       -120.1063
+      ],
+      [
+       41.9065,
+       -120.1063
+      ]
+     ]
+    ],
+    "tags": {
+     "car": null,
+     "highClearance": null,
+     "atv": null,
+     "motorcycle": null,
+     "foot": "yes",
+     "bike": "yes",
+     "surface": null,
+     "maint": null,
+     "designation": "Track"
+    },
+    "source": {
+     "label": "OpenStreetMap",
+     "url": "https://www.openstreetmap.org/way/1303804807",
+     "id": "osm-way-1303804807"
+    }
+   },
+   {
+    "kind": "road",
+    "name": null,
+    "ref": null,
+    "paths": [
+     [
+      [
+       41.9001,
+       -120.1127
+      ],
+      [
+       41.9002,
+       -120.1127
+      ],
+      [
+       41.9004,
+       -120.1126
+      ],
+      [
+       41.9007,
+       -120.1124
+      ],
+      [
+       41.9012,
+       -120.1122
+      ],
+      [
+       41.9016,
+       -120.112
+      ],
+      [
+       41.9018,
+       -120.1118
+      ],
+      [
+       41.9019,
+       -120.1117
+      ],
+      [
+       41.902,
+       -120.1116
+      ],
+      [
+       41.9022,
+       -120.1115
+      ],
+      [
+       41.9024,
+       -120.1113
+      ],
+      [
+       41.9027,
+       -120.1112
+      ],
+      [
+       41.9027,
+       -120.1111
+      ],
+      [
+       41.903,
+       -120.111
+      ],
+      [
+       41.9034,
+       -120.1108
+      ],
+      [
+       41.9035,
+       -120.1108
+      ]
+     ]
+    ],
+    "tags": {
+     "car": null,
+     "highClearance": null,
+     "atv": null,
+     "motorcycle": null,
+     "foot": "yes",
+     "bike": "yes",
+     "surface": null,
+     "maint": null,
+     "designation": "Track"
+    },
+    "source": {
+     "label": "OpenStreetMap",
+     "url": "https://www.openstreetmap.org/way/1316990811",
+     "id": "osm-way-1316990811"
+    }
+   },
+   {
+    "kind": "road",
+    "name": null,
+    "ref": null,
+    "paths": [
+     [
+      [
+       41.9001,
+       -120.1129
+      ],
+      [
+       41.9001,
+       -120.1127
+      ]
+     ]
+    ],
+    "tags": {
+     "car": null,
+     "highClearance": null,
+     "atv": null,
+     "motorcycle": null,
+     "foot": "yes",
+     "bike": "yes",
+     "surface": null,
+     "maint": null,
+     "designation": "Track"
+    },
+    "source": {
+     "label": "OpenStreetMap",
+     "url": "https://www.openstreetmap.org/way/1316990812",
+     "id": "osm-way-1316990812"
+    }
+   }
+  ],
+  "land": {
+   "parcels": [
+    {
+     "manager": "BLM",
+     "type": "FED",
+     "unit": "Applegate Field Office",
+     "local": "Bureau of Land Management",
+     "designation": "PUB",
+     "access": "OA",
+     "acres": 684641,
+     "n": 1,
+     "localManager": "BLM",
+     "owner": "BLM",
+     "source": {
+      "label": "USGS Protected Areas Database (PAD-US)",
+      "url": "https://services.arcgis.com/v01gqwM5QqNysAAi/ArcGIS/rest/services/Manager_Name_PADUS/FeatureServer/0/query?where=OBJECTID%3D3915&outFields=*&f=html"
+     }
+    }
+   ]
+  },
+  "hike": null,
+  "failed": []
+ },
+ "camping": {
+  "fetchedAt": "2026-10-27T17:48:20.356Z",
+  "searchKm": 16.22,
+  "shoreKm": 0.22,
+  "sites": [
+   {
+    "name": "Unnamed campground",
+    "lat": 41.93299,
+    "lon": -120.1897,
+    "unnamed": true,
+    "kind": "developed",
+    "sources": [
+     {
+      "label": "OpenStreetMap",
+      "url": "https://www.openstreetmap.org/node/3616836199"
+     }
+    ],
+    "distKm": 7.052030477985126
+   },
+   {
+    "name": "Fee Reservoir Campground",
+    "lat": 41.82956,
+    "lon": -120.0289,
+    "kind": "developed",
+    "infoUrl": "https://www.blm.gov/visit/fee-reservoir",
+    "sources": [
+     {
+      "label": "OpenStreetMap",
+      "url": "https://www.openstreetmap.org/way/1500707437"
+     }
+    ],
+    "distKm": 10.835931668912924
+   },
+   {
+    "name": "Cave Lake Campground",
+    "lat": 41.97862,
+    "lon": -120.20446,
+    "kind": "developed",
+    "scale": 3,
+    "operator": "Forest Service",
+    "capacity": 30,
+    "fee": "yes",
+    "feeText": "Overnight Use: Single Site: $15 per night Additional Vehicle Fee: $5 per vehicle per night",
+    "season": "Facilities open as weather permits; usually early July to late October.",
+    "water": "no",
+    "waterText": "No",
+    "toilets": "vault",
+    "toiletText": "Vault Toilet (2)",
+    "packOut": true,
+    "about": "The Campground at Cave Lake is little used and the perfect place for a week-end or week long getaway.",
+    "directions": "From Lakeview, Oregon go south 14 miles on US Hwy 395 and into California to County Road 2. Turn east on County Road 2 and continue for 7 miles to the campground. From Alturas travel north on US Hwy…",
+    "restrictions": "Dogs on leash only. Please clean up afeeter your dog. Garbage service is not provided. Please take all trash, garbage, fish guts and dog droppings with you when you leave. Camping limit 14 days.",
+    "infoUrl": "https://www.fs.usda.gov/recarea/modoc/recarea/?recid=71260",
+    "recid": "71260",
+    "sources": [
+     {
+      "label": "USFS recreation sites (INFRA)",
+      "url": "https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_InfraRecreationSites_01/MapServer/0/query?where=objectid%3D3935247&outFields=*&f=html"
+     },
+     {
+      "label": "OpenStreetMap",
+      "url": "https://www.openstreetmap.org/node/3424942812"
+     },
+     {
+      "label": "USFS recreation opportunities",
+      "url": "https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_RecreationOpportunities_01/MapServer/0/query?where=objectid%3D273&outFields=*&f=html"
+     }
+    ],
+    "status": "open",
+    "reservations": "Reservations are not accepted. All sites are first come, first served. $15/night",
+    "forest": "Modoc National Forest",
+    "firstCome": true,
+    "distKm": 10.849611553792414
+   }
+  ],
+  "land": {
+   "parcels": [
+    {
+     "manager": "USFS",
+     "unit": "Modoc National Forest",
+     "designation": "NF",
+     "access": "OA",
+     "localManager": "Forest Service Region 05 Pacific Southwest",
+     "acres": 1678612,
+     "n": 1,
+     "source": {
+      "label": "USGS Protected Areas Database (PAD-US)",
+      "url": "https://services.arcgis.com/v01gqwM5QqNysAAi/ArcGIS/rest/services/Manager_Name_PADUS/FeatureServer/0/query?where=OBJECTID%3D4567&outFields=*&f=html"
+     }
+    },
+    {
+     "manager": "BLM",
+     "unit": "Applegate Field Office",
+     "designation": "PUB",
+     "access": "OA",
+     "localManager": "BLM",
+     "acres": 684641,
+     "n": 1,
+     "source": {
+      "label": "USGS Protected Areas Database (PAD-US)",
+      "url": "https://services.arcgis.com/v01gqwM5QqNysAAi/ArcGIS/rest/services/Manager_Name_PADUS/FeatureServer/0/query?where=OBJECTID%3D3915&outFields=*&f=html"
+     }
+    },
+    {
+     "manager": "USFS",
+     "unit": "Mt. Bidwell Roadless Area",
+     "designation": "IRA",
+     "access": "OA",
+     "localManager": "Modoc National Forest",
+     "acres": 11687,
+     "n": 1,
+     "source": {
+      "label": "USGS Protected Areas Database (PAD-US)",
+      "url": "https://services.arcgis.com/v01gqwM5QqNysAAi/ArcGIS/rest/services/Manager_Name_PADUS/FeatureServer/0/query?where=OBJECTID%3D303570&outFields=*&f=html"
+     }
+    }
+   ]
+  },
+  "dispersed": "yes",
+  "failed": []
+ },
+ "stocking": {
+  "recent": [
+   {
+    "year": 2026,
+    "species": "Trout",
+    "plants": 1,
+    "fish": null
+   }
+  ],
+  "history": {
+   "names": [
+    "Annie Lake"
+   ],
+   "years": [
+    {
+     "y": 2026,
+     "fish": null,
+     "plants": 1,
+     "sp": {
+      "Trout": [
+       null,
+       1
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20260403112711/https://nrm.dfg.ca.gov/FishPlants/PublicPlantSearch"
+     ]
+    },
+    {
+     "y": 2025,
+     "fish": null,
+     "plants": 1,
+     "sp": {
+      "Trout": [
+       null,
+       1
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20250610222119/https://nrm.dfg.ca.gov/FishPlants/PublicPlantSearch"
+     ]
+    },
+    {
+     "y": 2024,
+     "fish": null,
+     "plants": 1,
+     "sp": {
+      "Trout": [
+       null,
+       1
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20240520100042/https://www.nrm.dfg.ca.gov/FishPlants/"
+     ]
+    },
+    {
+     "y": 2021,
+     "fish": null,
+     "plants": 1,
+     "sp": {
+      "Trout": [
+       null,
+       1
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20210422061719/https://nrm.dfg.ca.gov/FishPlants/Default.aspx?time=All"
+     ]
+    },
+    {
+     "y": 2012,
+     "fish": null,
+     "plants": 1,
+     "sp": {
+      "Trout": [
+       null,
+       1
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20120528084532/http://nrm.dfg.ca.gov:80/fishplants/"
+     ]
+    },
+    {
+     "y": 2010,
+     "fish": null,
+     "plants": 1,
+     "sp": {
+      "Trout": [
+       null,
+       1
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20100516123848/http://www.dfg.ca.gov/fish/Hatcheries/FishPlanting/Northern.asp"
+     ]
+    },
+    {
+     "y": 2008,
+     "fish": null,
+     "plants": 1,
+     "sp": {
+      "Trout": [
+       null,
+       1
+      ]
+     },
+     "src": [
+      "https://web.archive.org/web/20080712080941/http://www.dfg.ca.gov:80/fish/Hatcheries/FishPlanting/Northern.asp"
+     ]
+    }
+   ]
+  },
+  "note": "CDFW publishes the week and species, not counts. History grows each night from the public schedule."
+ },
+ "introductions": [],
+ "rules": {
+  "source": null,
+  "booklet": "https://wildlife.ca.gov/Regulations",
+  "updatedAt": "2026-10-27T15:56:38.040Z",
+  "county": "Modoc",
+  "special": []
+ },
+ "advisories": {
+  "algae": [],
+  "eating": [],
+  "eatingSource": "https://oehha.ca.gov/fish/advisories"
+ },
+ "sources": [
+  {
+   "label": "CDFW stocking schedule",
+   "url": "https://nrm.dfg.ca.gov/FishPlants/",
+   "fetchedAt": "2026-10-27T02:03:30.225Z"
+  },
+  {
+   "label": "CDFW page for the water",
+   "url": "https://apps.wildlife.ca.gov/fishing/?stockid=125",
+   "fetchedAt": "2026-10-27T17:47:13.126Z"
+  },
+  {
+   "label": "USGS National Hydrography Dataset (data/ca/lakes.json, rivers.json)",
+   "url": "https://www.usgs.gov/national-hydrography/national-hydrography-dataset",
+   "fetchedAt": "2026-10-27T17:47:13.126Z"
+  },
+  {
+   "label": "HydroLAKES v1.0 (modelled depth and volume)",
+   "url": "https://www.hydrosheds.org/products/hydrolakes",
+   "fetchedAt": "2026-10-27T17:47:13.126Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved Apr 3, 2026 (Internet Archive)",
+   "url": "https://web.archive.org/web/20260403112711/https://nrm.dfg.ca.gov/FishPlants/PublicPlantSearch",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved Jun 10, 2025 (Internet Archive)",
+   "url": "https://web.archive.org/web/20250610222119/https://nrm.dfg.ca.gov/FishPlants/PublicPlantSearch",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved May 20, 2024 (Internet Archive)",
+   "url": "https://web.archive.org/web/20240520100042/https://www.nrm.dfg.ca.gov/FishPlants/",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved Apr 22, 2021 (Internet Archive)",
+   "url": "https://web.archive.org/web/20210422061719/https://nrm.dfg.ca.gov/FishPlants/Default.aspx?time=All",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved May 28, 2012 (Internet Archive)",
+   "url": "https://web.archive.org/web/20120528084532/http://nrm.dfg.ca.gov:80/fishplants/",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved May 16, 2010 (Internet Archive)",
+   "url": "https://web.archive.org/web/20100516123848/http://www.dfg.ca.gov/fish/Hatcheries/FishPlanting/Northern.asp",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "CDFW plant schedule, saved Jul 12, 2008 (Internet Archive)",
+   "url": "https://web.archive.org/web/20080712080941/http://www.dfg.ca.gov:80/fish/Hatcheries/FishPlanting/Northern.asp",
+   "fetchedAt": "2026-10-27T14:34:38.667Z"
+  },
+  {
+   "label": "OpenStreetMap",
+   "url": "https://www.openstreetmap.org/way/7919760",
+   "fetchedAt": "2026-10-27T17:47:42.872Z"
+  },
+  {
+   "label": "OpenStreetMap",
+   "url": "https://www.openstreetmap.org/way/7925988",
+   "fetchedAt": "2026-10-27T17:47:42.872Z"
+  },
+  {
+   "label": "OpenStreetMap",
+   "url": "https://www.openstreetmap.org/way/7926534",
+   "fetchedAt": "2026-10-27T17:47:42.872Z"
+  },
+  {
+   "label": "OpenStreetMap",
+   "url": "https://www.openstreetmap.org/way/209023963",
+   "fetchedAt": "2026-10-27T17:47:42.872Z"
+  },
+  {
+   "label": "OpenStreetMap",
+   "url": "https://www.openstreetmap.org/way/1009501109",
+   "fetchedAt": "2026-10-27T17:47:42.872Z"
+  },
+  {
+   "label": "OpenStreetMap",
+   "url": "https://www.openstreetmap.org/way/1303804806",
+   "fetchedAt": "2026-10-27T17:47:42.872Z"
+  },
+  {
+   "label": "OpenStreetMap",
+   "url": "https://www.openstreetmap.org/way/1303804807",
+   "fetchedAt": "2026-10-27T17:47:42.872Z"
+  },
+  {
+   "label": "OpenStreetMap",
+   "url": "https://www.openstreetmap.org/way/1316990811",
+   "fetchedAt": "2026-10-27T17:47:42.872Z"
+  },
+  {
+   "label": "OpenStreetMap",
+   "url": "https://www.openstreetmap.org/way/1316990812",
+   "fetchedAt": "2026-10-27T17:47:42.872Z"
+  },
+  {
+   "label": "USGS Protected Areas Database (PAD-US)",
+   "url": "https://services.arcgis.com/v01gqwM5QqNysAAi/ArcGIS/rest/services/Manager_Name_PADUS/FeatureServer/0/query?where=OBJECTID%3D3915&outFields=*&f=html",
+   "fetchedAt": "2026-10-27T17:47:42.872Z"
+  },
+  {
+   "label": "OpenStreetMap",
+   "url": "https://www.openstreetmap.org/node/3616836199",
+   "fetchedAt": "2026-10-27T17:48:20.356Z"
+  },
+  {
+   "label": "OpenStreetMap",
+   "url": "https://www.openstreetmap.org/way/1500707437",
+   "fetchedAt": "2026-10-27T17:48:20.356Z"
+  },
+  {
+   "label": "USFS recreation sites (INFRA)",
+   "url": "https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_InfraRecreationSites_01/MapServer/0/query?where=objectid%3D3935247&outFields=*&f=html",
+   "fetchedAt": "2026-10-27T17:48:20.356Z"
+  },
+  {
+   "label": "OpenStreetMap",
+   "url": "https://www.openstreetmap.org/node/3424942812",
+   "fetchedAt": "2026-10-27T17:48:20.356Z"
+  },
+  {
+   "label": "USFS recreation opportunities",
+   "url": "https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_RecreationOpportunities_01/MapServer/0/query?where=objectid%3D273&outFields=*&f=html",
+   "fetchedAt": "2026-10-27T17:48:20.356Z"
+  }
+ ],
+ "notes": [],
+ "manual": {},
+ "changes": [
+  {
+   "date": "2026-10-27",
+   "text": "added to the corpus"
+  }
+ ]
+}
