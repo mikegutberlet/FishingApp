@@ -12,7 +12,7 @@ const hourText = h => { const d = new Date(); d.setHours(+h, 0); return d.toLoca
 
 export async function renderKnow(lake, body) {
   body.innerHTML = `<div id="kw-plan" class="card"><h3>🎯 Game plan</h3><p class="muted small">Working it out…</p></div>
-    ${lake.unsaved ? '' : '<div id="kw-spots"></div>'}<div id="kw-ice"></div><div id="kw-year"></div>`;
+    ${lake.unsaved ? '' : '<div id="kw-spots"></div>'}<div id="kw-ice"></div><div id="kw-year"></div><div id="kw-fish"></div>`;
   const redraw = () => body.isConnected && renderKnow(lake, body);
   const plan = await gamePlan(lake).catch(e => ({ error: e }));
   if (!body.isConnected) return;
@@ -22,6 +22,7 @@ export async function renderKnow(lake, body) {
   if (!lake.unsaved) renderSpotsCard(lake, body.querySelector('#kw-spots')).catch(() => {});
   renderIce(lake, body.querySelector('#kw-ice'), redraw);
   renderYear(lake, body.querySelector('#kw-year'), plan.ice ?? null);
+  import('./fish-seen.js').then(m => m.renderFishSeen(lake, body.querySelector('#kw-fish'))).catch(e => console.warn('fish seen:', e.message));
 }
 
 function planHtml(p) {
