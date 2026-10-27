@@ -7,6 +7,7 @@ import { weatherFor, localKey, addDays, levelChange } from '../forecast.js';
 import { solunar, dayRating, stars, windowSpan, windowLabel } from '../solunar.js';
 import { $, esc, fmtDate, showView, onShow } from '../ui.js';
 import { openLake } from './lake.js';
+import { dayStripHtml, openDayPlan } from './day-plan.js';
 
 const DAY = 864e5;
 let picked = 0; // days from today
@@ -83,7 +84,7 @@ export async function renderPlanner() {
   if (!lakes.length) { $('#plan-list').innerHTML = '<div class="card">Save some waters first (Lakes → pick your state → Any water), then come back to rank them.</div>'; return; }
   const date = days[picked].key;
   const rows = (await Promise.all(lakes.map(async lake => {
-    try { return { lake, ...(await scoreDay(lake, await weatherFor(lake.lat, lake.lon), date)) }; } catch { return { lake, error: true }; }
+    try { const w = await weatherFor(lake.lat, lake.lon); return { lake, w, ...(await scoreDay(lake, w, date)) }; } catch { return { lake, error: true }; }
   }))).filter(r => r.error || r.score != null);
   if (!el.isConnected || date !== days[picked].key) return;
   rows.sort((a, b) => (b.score ?? -1) - (a.score ?? -1));
@@ -94,8 +95,10 @@ export async function renderPlanner() {
       <div class="plan-head"><span class="rank">${n + 1}</span><div style="flex:1"><b>${esc(r.lake.name)}</b>${r.lake.favorite ? ' ★' : ''}<div class="muted small">${esc(r.summary)}</div></div>
         <div class="score"><b>${r.score.toFixed(1)}</b><div class="meter"><i style="width:${r.score * 10}%"></i></div></div></div>
       ${r.best ? `<div class="small">Best time: <b>${windowSpan(r.best)}</b>, ${windowLabel(r.best).toLowerCase()}</div>` : ''}
-      <div class="chips">${r.reasons.map(x => `<span class="chip ${x.tone}">${esc(x.text)}</span>`).join('')}</div></div>`).join('');
+      <div class="chips">${r.reasons.map(x => `<span class="chip ${x.tone}">${esc(x.text)}</span>`).join('')}</div>
+      ${dayStripHtml(r.w, date, r.lake)}<button type="button" class="dw-plan-link" data-plan="${esc(r.lake.id)}">⏰ Plan this day</button></div>`).join('');
   $('#plan-list').querySelectorAll('.plan-item').forEach(c => c.onclick = () => openLake(c.dataset.id));
+  $('#plan-list').querySelectorAll('[data-plan]').forEach(b => b.onclick = e => { e.stopPropagation(); openDayPlan(rows.find(r => r.lake.id === b.dataset.plan).lake, date); });
 }
 
 onShow('planner', renderPlanner);

@@ -8,6 +8,7 @@ import { solunar, dayRating, stars, nextWindow, shortTime } from '../solunar.js'
 import { windOnWater, bankName } from '../wind.js';
 import { $, esc, fmtDate, arrow, showView, onShow, emptyState, icon } from '../ui.js';
 import { openLake } from './lake.js';
+import { dayStripHtml } from './day-plan.js';
 
 // Slot for the "days like today" insight (workstream E). Register a renderer:
 //   registerTodayInsight(async el => { el.innerHTML = '…'; return true; })  // return false to keep the card hidden
@@ -86,6 +87,7 @@ async function fillCard(card, lake) {
     hero.querySelector('.hero-wind').innerHTML = `${arrow(x.from)} ${Math.round(x.speed)} mph${x.gusts >= x.speed + 5 ? `, gusts ${Math.round(x.gusts)}` : ''} · ${x.calm ? 'calm' : `into the ${bankName(x.to)} bank`}`;
     put(1, `<div class="stat"><b>${(c.pressure_msl * 0.02953).toFixed(2)}"</b><span>Pressure${trend ? ` · ${trend.label.toLowerCase()} ${trend.delta > 1 ? '↗' : trend.delta < -1 ? '↘' : '→'}` : ''}</span></div>`);
     putBite(w);
+    grid.insertAdjacentHTML('afterend', dayStripHtml(w, localKey(), lake, { orTomorrow: true })); // your craft's safe hours today
   }).catch(() => { hero.className = 'hero sky-cloud'; hero.querySelector('.hero-sky').textContent = 'Forecast unavailable (offline?)'; });
   reservoirFor(lake).then(res => {
     const ch = levelChange(res?.elevation, 7, 4);

@@ -9,6 +9,7 @@ import { openViewer } from './catch.js';
 import { renderCatchCards, snapshotConditions, shrinkPhoto, editCatch, weightText } from './log.js';
 import { fmtLen, fromLen, units } from '../units.js';
 import { estimateWeight } from '../weight.js';
+import { tripWatch } from './day-plan.js';
 
 const KEY = 'tackle-box-active-trip';
 const SCREEN_KEY = 'tackle-box-keep-screen-on';
@@ -219,6 +220,7 @@ async function renderLive(t) {
     ...events.map(e => ({ time: e.time, html: `${e.kind === 'bite' ? '💥 Bite' : '💨 Lost fish'}${spot(e)}`, eventId: e.id }))].sort((a, b) => b.time.localeCompare(a.time));
   el.innerHTML = `<div class="trip-head"><div><b>${esc(lake?.name ?? 'Trip')}</b><div class="muted small" id="trip-gps">${t.saver ? '🔋 Battery saver: no track, a GPS fix on each tap' : lastFix ? `GPS ±${Math.round(lastFix.accuracy)} m · ${t.track.length} track points` : 'Waiting for GPS…'}</div></div>
       <div class="trip-clock" id="trip-clock">${clock(Date.now() - Date.parse(t.start))}</div></div>
+    <div id="trip-wx"></div>
     <div class="grid trip-stats"><div class="stat"><b>${catches.length}</b><span>Fish</span></div><div class="stat"><b>${bites}</b><span>Bites</span></div><div class="stat"><b>${lost}</b><span>Lost</span></div></div>
     <div class="quick">
       <button class="q-catch" id="q-catch">🐟<span>Catch</span></button>
@@ -237,6 +239,7 @@ async function renderLive(t) {
   el.querySelectorAll('[data-edit]').forEach(a => a.onclick = e => { e.preventDefault(); editCatch(a.dataset.edit); });
   el.querySelectorAll('[data-undo]').forEach(a => a.onclick = async e => { e.preventDefault(); await db.del('events', a.dataset.undo); renderLive(t); });
   $('#trip-end').onclick = () => endTrip(t);
+  if (lake) tripWatch(t, lake, $('#trip-wx'));
   $('#trip-saver').onclick = async e => { e.preventDefault(); await setSaver(t, !t.saver); };
   updatePill();
 }

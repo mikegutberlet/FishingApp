@@ -6,10 +6,11 @@ import { weatherFor, fetchAlerts, alertLevel, fetchFlowStats, flowRating, hourIn
 import { solunar, dayRating, stars, windowAt, windowsAround, windowLabel, windowSpan, shortTime } from '../../solunar.js';
 import { windOnWater, windText, windSvg } from '../../wind.js';
 import { $, esc, fmtDate, fmtTime, arrow } from '../../ui.js';
+import { renderDayCard, riverLine } from '../day-plan.js';
 
 export async function renderConditions(lake, body) {
   const moon = moonPhase();
-  body.innerHTML = `<div id="alerts"></div><div class="card" id="wx">Loading weather…</div><div class="card hidden" id="bite"></div><div class="card hidden" id="windcard"></div>
+  body.innerHTML = `<div id="alerts"></div><div class="card hidden" id="dayplan"></div><div class="card" id="wx">Loading weather…</div><div class="card hidden" id="bite"></div><div class="card hidden" id="windcard"></div>
     <div class="card hidden" id="res"></div><div class="card" id="water">Looking for USGS gauges…</div>
     <div class="card"><h3>Windy</h3>
       <iframe class="windy" loading="lazy" src="https://embed.windy.com/embed2.html?lat=${lake.lat}&lon=${lake.lon}&detailLat=${lake.lat}&detailLon=${lake.lon}&zoom=10&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=mph&metricTemp=%C2%B0F"></iframe>
@@ -54,6 +55,7 @@ export async function renderConditions(lake, body) {
       }).join('')}</table>
       <p class="muted small">Open-Meteo forecast · moon and bite windows computed on device · times are peak of each window</p>`;
     renderBite(solFor(now), around, now, w.daily.sunrise[di], w.daily.sunset[di]);
+    renderDayCard(lake, $('#dayplan'), w);
     const x = windOnWater(w);
     $('#windcard').innerHTML = `<h3>Wind on the water</h3><div class="wind-card">${windSvg(x)}<div class="small">${windText(x)}</div></div>`;
     $('#windcard').classList.remove('hidden');
@@ -81,10 +83,11 @@ export async function renderConditions(lake, body) {
     sites = sites.slice(0, 3);
     $('#water').innerHTML = `<h3>Water (USGS)</h3>` + (sites.length ? sites.map(s => `<p><b>${esc(s.name)}</b> <span class="muted small">#${esc(s.id)} · ${s.distKm.toFixed(1)} km</span><br>
       ${s.readings.map(r => r.code === '00010' ? `Water temp: <b>${(r.value * 9 / 5 + 32).toFixed(1)}°F</b>` : `${esc(r.name.split(',')[0])}: <b>${r.value} ${esc(r.unit)}</b>`).join('<br>')}
-      <span class="flow" data-site="${esc(s.id)}"></span>
+      <span class="flow" data-site="${esc(s.id)}"></span><span class="rise" data-site="${esc(s.id)}"></span>
       <br><span class="muted small">${fmtDate(s.readings[0].time)} ${fmtTime(s.readings[0].time)}</span></p>`).join('') : '<p class="muted">No active gauges nearby. Common for natural lakes; rivers and reservoirs usually have one.</p>');
     const river = lake.kind === 'river' || /river|creek|stream|fork/i.test(`${lake.type} ${lake.name}`);
     for (const s of sites) {
+      if (s.readings.some(r => r.code === '00065' || r.code === '00060')) riverLine(s.id, body.querySelector(`.rise[data-site="${CSS.escape(s.id)}"]`), lake, body);
       const q = s.readings.find(r => r.code === '00060');
       if (!q) continue;
       fetchFlowStats(s.id).then(st => {
