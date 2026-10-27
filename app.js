@@ -35,6 +35,8 @@ initRoutes();
 initAccessPoints();
 import './insights.js';
 import { initCrew } from './crew.js';
+import './welcome.js';
+import './share-water.js';
 import './license.js';
 import { checkReminders } from './reminders.js';
 import { initCamp } from './views/camp.js';

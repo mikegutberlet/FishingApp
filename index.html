@@ -28,6 +28,7 @@
   <link rel="stylesheet" href="know.css">
   <link rel="stylesheet" href="access-more.css">
   <link rel="stylesheet" href="coast.css">
+  <link rel="stylesheet" href="welcome.css">
   <script>try { if (JSON.parse(localStorage.getItem('tackle-box-lock'))?.hash) document.documentElement.classList.add('locked'); } catch {}</script>
 </head>
 <body>
@@ -140,8 +141,15 @@
 
     <section id="view-settings" class="view">
       <h2 class="view-title">Settings &amp; data</h2>
+      <div class="card wl-glance">
+        <b>🔒 Your fishing stays on this phone</b>
+        <p class="small">No account, and no server keeps your data. Catches, photos, notes and spots are stored only here and leave only when you share them.
+          Weather, maps and stocking are looked up by a water's location or the map area you view, never with your catches.
+          <a href="#" data-scroll="what-leaves">See exactly what leaves your device</a>.</p>
+      </div>
       <h2>Install</h2>
       <div class="card small" id="install-help"></div>
+      <div class="card" id="invite-card"></div>
       <h2>Your data</h2>
       <div class="card">
         <p>Everything is stored only in this browser on this device. There is no account and no server.
@@ -165,7 +173,7 @@
       </form>
       <h2>Offline maps</h2>
       <div class="card" id="offline-areas"></div>
-      <h2>What leaves your device</h2>
+      <h2 id="what-leaves">What leaves your device</h2>
       <div class="card small">
         <ul>
           <li><b>Open-Meteo</b> (weather/wind): the lake's coordinates. Today, Plan a trip and the <i>Wind on my lakes</i> map layer send each of your starred or saved waters' coordinates, one request per water. The <i>Game plan</i> (its tab and the line on Today) also asks Open-Meteo for the last 30 days of air temperature at the water's coordinates to estimate the water temperature, once a day per water.</li>

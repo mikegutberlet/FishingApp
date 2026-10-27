@@ -1,0 +1,34 @@
+/* First-run welcome, install steps, invite card and the water share sheet (welcome.js, share-water.js). */
+.wl-sheet { position: fixed; inset: 0; z-index: 2600; background: rgba(4, 22, 29, .6); display: flex; align-items: flex-end; justify-content: center;
+  padding: 16px 16px calc(16px + env(safe-area-inset-bottom)); }
+@media (min-height: 640px) { .wl-sheet { align-items: center; } }
+.wl-card { background: var(--card); color: var(--text); border-radius: 18px; padding: 16px; width: 100%; max-width: 440px; max-height: 100%;
+  display: flex; flex-direction: column; box-shadow: 0 12px 40px rgba(0,0,0,.3); }
+.wl-top { display: flex; align-items: center; justify-content: space-between; min-height: 36px; }
+.wl-top .wl-skip { border: 0; background: none; color: var(--muted); padding: 6px 4px; }
+.wl-dots { display: flex; gap: 6px; }
+.wl-dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+.wl-dots i.on { background: var(--accent); width: 20px; border-radius: 4px; }
+.wl-body { overflow-y: auto; padding: 4px 2px 12px; }
+.wl-body h2 { font-size: 20px; margin: 4px 0 8px; }
+.wl-hero { font-size: 40px; line-height: 1; margin-top: 4px; }
+.wl-list { padding-left: 0; list-style: none; margin: 8px 0; }
+.wl-list li { padding: 7px 0; border-bottom: 1px solid var(--line); }
+.wl-list li:last-child { border-bottom: 0; }
+.wl-steps { padding-left: 22px; margin: 8px 0; }
+.wl-steps li { margin-bottom: 8px; }
+.wl-key { display: inline-flex; vertical-align: -4px; padding: 1px 4px; border: 1px solid var(--line); border-radius: 6px; }
+.wl-key .ic { width: 16px; height: 16px; }
+.wl-note { background: var(--bg); border-radius: 8px; padding: 8px 10px; }
+.wl-install { margin: 4px 0 8px; }
+.wl-qr { max-width: 220px; }
+.wl-nav { gap: 8px; }
+.wl-name { display: block; margin: 10px 0; color: var(--muted); }
+.wl-name input { display: block; width: 100%; margin-top: 4px; font: inherit; padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text); }
+#invite-card .row { gap: 8px; }
+.wl-links { margin-top: 4px; }
+.wl-glance { border-left: 4px solid var(--accent); }
+.wl-glance p { margin: 6px 0 0; }
+.sw-card { display: flex; flex-direction: column; gap: 8px; }
+.sw-opt { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; width: 100%; padding: 12px; }
+.sw-opt span { font-size: 13px; font-weight: 400; opacity: .85; }

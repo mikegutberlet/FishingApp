@@ -4,7 +4,7 @@ import { forLake } from '../states/index.js';
 import { $, esc, showView, fitTabs, icon } from '../ui.js';
 import { map, refreshMap } from '../map.js';
 import { renderLakeList, editLake } from './lakes.js';
-import { shareLake } from './settings.js';
+import { openShareSheet } from '../share-water.js';
 import { offlineButton } from '../offline.js';
 import { renderConditions } from './tabs/conditions.js';
 import { renderDepth } from './tabs/depth.js';
@@ -108,7 +108,7 @@ export async function openLake(id, tab = 'conditions') {
   $('#back', d).onclick = renderLakeList;
   $('#edit').onclick = () => editLake(lake);
   $('#center').onclick = () => { showView('map'); map.setView([lake.lat, lake.lon], 14); };
-  $('#share').onclick = () => shareLake(lake);
+  $('#share').onclick = () => openShareSheet(lake);
   $('#fav').onclick = () => toggleFavorite(lake, $('#fav'));
   $('#share').after(offlineButton(lake));
   const go = document.createElement('button');
@@ -130,11 +130,12 @@ function openUnsaved(lake, tab) {
   d.classList.remove('hidden');
   d.innerHTML = `<div class="lake-bar"><button id="back" class="ghost">‹ Map</button></div>
     <h2 class="lake-name">${esc(lake.name)}${lakeSummary(lake)}</h2>
-    <div class="lake-acts"><button id="save" class="primary">${icon('plus')}Save to my lakes</button></div>
+    <div class="lake-acts"><button id="save" class="primary">${icon('plus')}Save to my lakes</button><button id="share">${icon('share')}Share</button></div>
     <div class="lake-tabs"><div class="tabs">${tabsFor(lake).map(k => `<button data-tab="${k}" class="${k === tab ? 'active' : ''}">${LAKE_TABS[k].label}</button>`).join('')}</div></div>
     <div id="tab-body"></div>`;
   $('#back', d).onclick = () => showView('map');
   $('#save').onclick = () => saveWater(lake, tab);
+  $('#share').onclick = () => openShareSheet(lake);
   $('#save').after(offlineButton(lake));
   d.querySelectorAll('.tabs button').forEach(b => b.onclick = () => openUnsaved(lake, b.dataset.tab));
   fitTabs($('.tabs', d));

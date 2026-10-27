@@ -151,6 +151,10 @@ const SHELL = [
   'views/tabs/tides.js',
   'views/tabs/marine.js',
   'views/tabs/ocean-rules.js',
+  'welcome.css',
+  'welcome.js',
+  'share-water.js',
+  'guide.html',
 ];
 
 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())));
