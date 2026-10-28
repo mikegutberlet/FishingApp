@@ -38,7 +38,7 @@ export async function renderCamping(lake, body) {
   const el = body.querySelector('#cp');
   const ctx = { filter: 'all' };
   const have = await cached(lake);
-  const archive = have ? null : await archiveCamping(lake); // nothing kept yet: the repo's archived copy shows while the live lookup runs
+  const archive = have ? null : await archiveCamping(lake); // nothing kept yet: your private archive's copy shows while the live lookup runs
   if (!el.isConnected) return;
   if (have ?? archive) draw(lake, have ?? archive, el, ctx);
   if (isFresh(have)) return;

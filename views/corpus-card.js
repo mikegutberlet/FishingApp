@@ -4,8 +4,11 @@ import { esc, fmtDate } from '../ui.js';
 import { corpusFor, corpusKey } from '../corpus.js';
 import { fmtMi } from '../access-rules.js';
 
+// A hand-added note's link may leave out the https:// ("www.example.com/page"), or not be an address at all.
+const fullUrl = url => /^https?:\/\//i.test(url) ? url : `https://${url}`;
+const hostOf = url => { try { return new URL(fullUrl(url)).hostname; } catch { return url; } };
 // Where a hand note came from (scripts/add-notes.mjs): the book and page, or the web page and the day it was read.
-const noteSource = s => [s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title ?? new URL(s.url).hostname)} ↗</a>` : s.title && `<i>${esc(s.title)}</i>`, s.author && esc(s.author), s.page && `p. ${esc(s.page)}`, s.read && s.url && `read ${fmtDate(s.read)}`].filter(Boolean).join(', ');
+const noteSource = s => [s.url ? `<a href="${esc(fullUrl(s.url))}" target="_blank" rel="noopener">${esc(s.title ?? hostOf(s.url))} ↗</a>` : s.title && `<i>${esc(s.title)}</i>`, s.author && esc(s.author), s.page && `p. ${esc(s.page)}`, s.read && s.url && `read ${fmtDate(s.read)}`].filter(Boolean).join(', ');
 
 export async function renderArchiveCard(lake, el) {
   if (!corpusKey(lake)) return;

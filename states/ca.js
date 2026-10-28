@@ -27,10 +27,16 @@ export const stockedHint = 'Lake Cachuma, Shasta, Mono…';
 // Nightly calendar feed of a stocked water's plants (scripts/build-ca-ics.mjs), as an absolute URL calendar apps can fetch.
 export const plantCalendarUrl = stockId => new URL(`data/ca/ics/${+stockId}.ics`, location.href).href;
 
-// Every CDFW stocked water with a map point, newest plant first, plus its planting history.
+// Every CDFW stocked water with a map point, newest plant first, plus its planting history. Built once per pair of
+// files (the finder asks for it for every water it checks); callers only read it.
+let stocked = null;
 export async function waters() {
   const [w, p] = await Promise.all([load('waters'), load('plants')]);
   if (!w) return [];
+  if (stocked?.w !== w || stocked?.p !== p) stocked = { w, p, list: watersOf(w, p) };
+  return stocked.list;
+}
+function watersOf(w, p) {
   const plantsById = new Map();
   for (const plant of p?.plants ?? []) {
     if (!plant.stockId) continue;

@@ -6,13 +6,14 @@ import { weatherFor, localKey, addDays } from './forecast.js';
 import { conditionsNow, analyze } from './insights.js';
 import { isRiver } from './states/common.js';
 import { waterTempNow, clarityNow, iceEstimate, allIceLogs } from './know-water.js';
+import { speciesName, notGameFish } from './species.js';
 
 // Species groups. `temps` = [too cold below, best from, best to, too warm above] in °F at the surface. Each band has
 // where to look (depth in ft for lakes, the water type for rivers) and how to fish it. Rules of thumb that hold for
 // most western waters; your own catches come first on the page whenever you have them.
 const GROUPS = {
   trout: {
-    match: /trout|rainbow|brown|brook|cutthroat|golden|tiger|steelhead|splake/i, label: 'Trout', temps: [42, 50, 63, 68],
+    match: /trout|rainbow|brown|brook|cutthroat|golden|tiger(?! musk)|steelhead|splake/i, label: 'Trout', temps: [42, 50, 63, 68],
     bands: {
       cold: { lake: [0, 15, 'Slow and near the bottom, or sunny shallows by midday'], river: 'Slow, deep pools and tailouts in the warmest hours', how: 'Bait on the bottom (dough bait, nightcrawler), small spoons and jigs fished slowly, nymphs dead-drifted deep' },
       cool: { lake: [0, 12, 'Cruising the shoreline, inlets and points'], river: 'Riffles, runs and seams; fish move up into faster water', how: 'Spinners and small spoons, floating bait off the bottom, woolly buggers and leeches stripped slowly' },
@@ -108,9 +109,11 @@ const GROUPS = {
     colors: { Clear: 'perch, shad, natural', Stained: 'firetiger, chartreuse, gold', Murky: 'chartreuse, orange, glow', Muddy: 'glow, chartreuse' },
   },
 };
-// Lake trout and kokanee are checked first, so "Lake trout" isn't read as trout.
-const ORDER = ['laker', 'kokanee', ...Object.keys(GROUPS).filter(k => k !== 'laker' && k !== 'kokanee')];
-export const groupOf = species => ORDER.find(k => GROUPS[k].match.test(species ?? '')) ?? null;
+// Lake trout, kokanee and catfish are checked first, so "Lake trout" and "Brown bullhead" aren't read as trout.
+const FIRST = ['laker', 'kokanee', 'catfish'];
+const ORDER = [...FIRST, ...Object.keys(GROUPS).filter(k => !FIRST.includes(k))];
+// By the species list's name (species.js), so "RB" and "TT" are trout, and "Golden Shiner" or "Brook Stickleback" is no group.
+export const groupOf = species => notGameFish(species) ? null : ORDER.find(k => GROUPS[k].match.test(speciesName(species) ?? species ?? '')) ?? null;
 export const groupLabel = g => GROUPS[g]?.label ?? g;
 
 export function band(group, f) {

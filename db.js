@@ -24,6 +24,8 @@ const SCHEMA = {
   corpusPrivate: [],
 };
 export const STORES = Object.keys(SCHEMA);
+// What a backup carries: everything but the private archive, which is re-imported from its own pack and stays on the phone.
+const BACKUP_STORES = STORES.filter(s => s !== 'corpusPrivate');
 const DB_VERSION = STORES.reduce((n, name) => n + 1 + SCHEMA[name].length, 0) - 8;
 
 let dbPromise;
@@ -55,6 +57,8 @@ function tx(store, mode, fn) {
     const result = fn(t.objectStore(store));
     t.oncomplete = () => resolve(result && 'result' in result ? result.result : result);
     t.onerror = () => reject(t.error);
+    // A full disk aborts the transaction without an error event.
+    t.onabort = () => reject(t.error ?? new Error('Saving was cancelled'));
   }));
 }
 
@@ -72,6 +76,8 @@ export const db = {
   del: (store, id) => tx(store, 'readwrite', s => s.delete(id)),
   byLake: (store, lakeId) => tx(store, 'readonly', s => s.index('lakeId').getAll(lakeId)),
   clear: store => tx(store, 'readwrite', s => s.clear()),
+  // Clear a store and write rows in one transaction: if any write fails, the store is left as it was.
+  replaceAll: (store, rows) => tx(store, 'readwrite', s => { try { s.clear(); for (const r of rows) s.put(r); } catch (e) { s.transaction.abort(); throw e; } }),
 };
 
 // Backup: photos are Blobs, so encode them as data URLs for a portable JSON file.
@@ -80,7 +86,7 @@ const dataUrlToBlob = url => fetch(url).then(r => r.blob());
 
 export async function exportAll() {
   const out = { app: 'tackle-box', version: DB_VERSION, exportedAt: new Date().toISOString() };
-  for (const name of STORES) {
+  for (const name of BACKUP_STORES) {
     const rows = await db.all(name);
     for (const row of rows) {
       if (row.photo instanceof Blob) row.photo = await blobToDataUrl(row.photo);
@@ -143,12 +149,12 @@ const cleanRow = (row, store) => {
 export async function importAll(data, { replace = false } = {}) {
   if (data.app !== 'tackle-box') throw new Error('Not a Tackle Box backup file');
   let skipped = 0;
-  for (const name of STORES) {
+  for (const name of BACKUP_STORES) {
     const rows = Array.isArray(data[name]) ? data[name] : [];
     data[name] = rows.map(r => cleanRow(r, name)).filter(Boolean);
     skipped += rows.length - data[name].length;
   }
-  for (const name of STORES) {
+  for (const name of BACKUP_STORES) {
     if (replace) await db.clear(name);
     for (const row of data[name]) {
       // Merging keeps whichever copy was edited last, so an old backup can't undo newer work on this device.

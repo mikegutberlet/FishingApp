@@ -150,6 +150,17 @@ function namesOf(lake) {
   }
   return nameCache.get(k);
 }
+// The map's lakes and the stocked waters by name, built once per pair of files: the finder asks for thousands of waters.
+let nameIdx = null;
+function namesIndex(lakes, w) {
+  if (nameIdx?.lakes !== lakes || nameIdx?.w !== w) {
+    const byPlain = new Map(), byKey = new Map(), add = (m, k, x) => (m.get(k) ?? m.set(k, []).get(k)).push(x);
+    for (const l of lakes) add(byPlain, String(l.name).replace(/\s*\(.*?\)\s*/g, ' ').replace(/\s+/g, ' ').trim(), l);
+    for (const o of [...lakes, ...(w?.waters ?? []).filter(x => x.lat != null)]) add(byKey, String(o.name).replace(/\s*\(.*?\)\s*/g, ' ').trim().toLowerCase(), o);
+    nameIdx = { lakes, w, byPlain, byKey };
+  }
+  return nameIdx;
+}
 async function findNames(lake) {
   const id = lake.odfwWaterId ?? (lake.lat != null ? (await matchStockedWater(lake))?.id : null);
   const w = await d.load('waters');
@@ -159,18 +170,18 @@ async function findNames(lake) {
   const all = [...new Set(own.flatMap(variants))];
   if (lake.lat == null || all.length === plain.size) return all;
   const [{ lakes }, zone] = await Promise.all([statewide(), zoneOf(lake)]);
-  const others = [...lakes, ...(w?.waters ?? []).filter(x => x.lat != null)];
+  const { byPlain, byKey } = namesIndex(lakes, w);
   // The map's lakes of this one's own name close by are this water: a point anywhere on Detroit Lake is on the same
   // water as ODFW's Detroit Reservoir point, which sits on the map's Detroit Lake.
-  const mine = lakes.filter(l => plain.has(String(l.name).replace(/\s*\(.*?\)\s*/g, ' ').replace(/\s+/g, ' ').trim()) && haversineKm(l.lat, l.lon, lake.lat, lake.lon) <= Math.max(25, sizeKm(l)));
+  const mine = [...plain].flatMap(n => byPlain.get(n) ?? []).filter(l => haversineKm(l.lat, l.lon, lake.lat, lake.lon) <= Math.max(25, sizeKm(l)));
   const same = o => haversineKm(o.lat, o.lon, lake.lat, lake.lon) <= Math.max(sizeKm(o), sizeKm(lake)) || mine.some(l => haversineKm(o.lat, o.lon, l.lat, l.lon) <= sizeKm(l));
   const out = [];
   for (const n of all) {
     const key = n.toLowerCase();
     let taken = false;
     if (!plain.has(n)) {
-      for (const o of others) {
-        if (String(o.name).replace(/\s*\(.*?\)\s*/g, ' ').trim().toLowerCase() !== key || same(o)) continue;
+      for (const o of byKey.get(key) ?? []) {
+        if (same(o)) continue;
         if (!zone || sameZone(await zoneAt(o.lat, o.lon), zone)) { taken = true; break; }
       }
     }

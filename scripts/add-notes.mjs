@@ -15,8 +15,9 @@
 
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const ROOT = new URL('../', import.meta.url).pathname;
+const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const DIR = process.env.CORPUS_DIR ? path.resolve(process.env.CORPUS_DIR) : null;
 const MAX_CHARS = 400;
 const today = new Date().toISOString().slice(0, 10);
@@ -63,10 +64,16 @@ for (const [i, n] of notes.entries()) {
 }
 if (bad.length) { console.error(bad.join('\n')); process.exit(1); }
 
+// Every file is read before any is written. No file yet is fine; one that can't be read (cloud-only, half-written)
+// stops the run rather than being overwritten with a stub.
+const existing = new Map();
+for (const file of byFile.keys()) {
+  try { existing.set(file, JSON.parse(await readFile(file, 'utf8'))); } catch (e) { if (e.code !== 'ENOENT') { console.error(`${file}: ${e.message}. Nothing was written.`); process.exit(1); } }
+}
+
 let added = 0, skipped = 0;
 for (const [file, { st, w, add }] of byFile) {
-  let f = null; try { f = JSON.parse(await readFile(file, 'utf8')); } catch {}
-  f ??= { id: String(w.id), state: st.toUpperCase(), name: w.name, notes: [], manual: {} };
+  const f = existing.get(file) ?? { id: String(w.id), state: st.toUpperCase(), name: w.name, notes: [], manual: {} };
   f.notes ??= [];
   for (const n of add) {
     if (f.notes.some(o => key(o.text) === key(n.text))) { skipped++; continue; }
