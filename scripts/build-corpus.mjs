@@ -21,6 +21,7 @@
 //     sources:  [{ label, url, fetchedAt }]                  every source touched for this file
 //     notes:    [{ date, by, text, source }]                 HAND-KEPT: the job never changes this list (scripts/add-notes.mjs)
 //     excerpts: [{ text, source }]                           HAND-KEPT: passages from your own books, with the page
+//     passages: [{ src, kind, title, page|url, text, … }]      INGEST-KEPT: scripts/ingest.mjs owns this list (books and links read nightly)
 //     manual:   { ... }                                       HAND-KEPT: values here override the job's facts in the app
 //     changes:  [{ date, text }]                             what the job saw change, newest first (last 50)
 //   }
@@ -87,6 +88,7 @@ const { lookupCamping } = await import('../camping.js');
 const { dispersedSummary } = await import('../camping-rules.js');
 const { speciesLabel } = await import('../species.js');
 const { haversineKm } = await import('../data-sources.js');
+const { BOOK_EXT } = await import('./ingest/text.mjs');
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const minutesLeft = () => MINUTES - (Date.now() - started) / 60000;
@@ -258,7 +260,7 @@ async function buildWater(S, w, prev, { live }) {
     introductions: (intro?.local ?? []).map(x => ({ year: x.year, text: x.text })),
     rules, advisories,
     sources: [...sources.values()],
-    notes: prev?.notes ?? [], excerpts: prev?.excerpts ?? [], manual: prev?.manual ?? {},
+    notes: prev?.notes ?? [], excerpts: prev?.excerpts ?? [], passages: prev?.passages ?? [], manual: prev?.manual ?? {},
     changes: prev?.changes ?? [],
   };
   return file;
@@ -331,6 +333,7 @@ function waterSection(S, f) {
   if (f.advisories.eating.length) lines.push(`- **Eating the fish**: ${f.advisories.eating.map(a => link(a.name, a.url)).join('; ')}`);
   for (const n of f.notes) lines.push(`- 📝 **Note** (${n.date}${n.by ? `, ${n.by}` : ''}): ${n.text}${n.source ? ` (${noteSource(n.source)})` : ''}`);
   for (const x of f.excerpts ?? []) lines.push(`- 📖 **From your books**: “${x.text}”${x.source ? ` (${noteSource(x.source)})` : ''}`);
+  if (f.passages?.length) lines.push(`- 📚 **From your library**: ${f.passages.length} passage${f.passages.length === 1 ? '' : 's'} from ${new Set(f.passages.map(p => p.src)).size} source${new Set(f.passages.map(p => p.src)).size === 1 ? '' : 's'}`);
   lines.push(`- ${f.sources.length} sources · first seen ${f.firstSeen} · last checked ${f.checkedAt.slice(0, 10)}`);
   return lines.join('\n');
 }
@@ -419,17 +422,18 @@ for (const code of STATES) {
   await writeJson(`${dir}/index.json`, {
     updatedAt: new Date().toISOString(), count: files.length, stocked: waters.length,
     waters: files.sort((a, b) => a.name.localeCompare(b.name)).map(f => ({ id: f.id, name: f.name, county: f.county, lat: f.lat, lon: f.lon, checkedAt: checked.get(f.id) ?? f.checkedAt, updatedAt: f.updatedAt,
-      verdict: f.access?.summary?.verdict ?? null, camps: f.camping?.sites?.length ?? null, years: yearsSpan(f), notes: f.notes.length, dropped: !byId.has(f.id) || undefined })),
+      verdict: f.access?.summary?.verdict ?? null, camps: f.camping?.sites?.length ?? null, years: yearsSpan(f), notes: f.notes.length, passages: f.passages?.length ?? 0, dropped: !byId.has(f.id) || undefined })),
   }, true);
   await writeDocs(S, files.map(f => ({ ...f, checkedAt: checked.get(f.id) ?? f.checkedAt })));
   console.log(`${code}: ${run.checked} checked (${run.added} new, ${run.changed} changed, ${run.kept} unchanged); ${files.length} files in the corpus`);
 }
 await appendChangelog(runs);
-// The pack the app imports: every water's file, keyed st/id, plus the books in <dir>/library by file name.
+// The pack the app imports: every water's file, keyed st/id, plus the books in <dir>/library by file name
+// (book files only: not the sidecars, not the .text cache).
 {
   const waters = {};
   for (const code of STATES) { const st = code.toLowerCase(); if (!existsSync(outPath(st))) continue; for (const name of await readdir(outPath(st))) if (name.endsWith('.json') && name !== 'index.json') { const f = await readJson(`${st}/${name}`); if (f) waters[`${st}/${name.slice(0, -5)}`] = f; } }
-  const library = existsSync(outPath('library')) ? (await readdir(outPath('library'))).filter(n => !n.startsWith('.')).sort() : [];
+  const library = existsSync(outPath('library')) ? (await readdir(outPath('library'))).filter(n => !n.startsWith('.') && BOOK_EXT.includes(path.extname(n).toLowerCase())).sort() : [];
   await writeJson('tackle-box-private-corpus.json', { app: 'tackle-box', kind: 'private-corpus', builtAt: new Date().toISOString(), waters, library });
   console.log(`pack: ${Object.keys(waters).length} waters, ${library.length} books → ${outPath('tackle-box-private-corpus.json')}`);
 }
