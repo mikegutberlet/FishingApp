@@ -1,12 +1,15 @@
 # The private archive server. Copy server/.env.example to server/.env, set CORPUS_PATH (the NAS folder) and
 # CORPUS_TOKEN (a long random key), then:  docker compose -f server/docker-compose.yml up -d --build
+# Compose builds the image from this repo on GitHub, so the server needs no checkout and no registry;
+# `--build` picks up a new version. Running from a checkout, use context: .. instead.
 services:
   tackle-box-archive:
     build:
-      context: ..
+      context: https://github.com/mikegutberlet/FishingApp.git#main
       dockerfile: server/Dockerfile
     container_name: tackle-box-archive
     restart: unless-stopped
+    user: "${PUID:-3000}:${PGID:-3000}"
     ports:
       - "${PORT:-8787}:8787"
     volumes:

@@ -15,6 +15,12 @@ docker compose -f server/docker-compose.yml up -d --build
 curl http://localhost:8787/health
 ```
 
+Compose builds the image straight from this repo on GitHub, so the server needs no checkout and no registry; `--build` picks up a new version. The container runs as uid 3000 by default (`PUID`/`PGID`), so the archive folder should be owned by that user.
+
+## Behind a reverse proxy or Tailscale
+
+The deployment itself (compose service, secret, route) belongs in the infrastructure repo; this README only covers the container. The route must **not** sit behind a forward-auth login (Authentik and the like): the app sends its own key, and a browser fetch can't follow a login redirect. When the HTTPS name is a tailnet name, phones must be on the tailnet to reach it; friends would need an invitation to it, or the pack import instead.
+
 Copy the existing archive into `CORPUS_PATH` first (the project's `sources/corpus/` folder has the records built so far), or set `BUILD_ON_START=1` and let the first run start from nothing.
 
 Then in the app: ⚙️ gear → **Your private archive** → the HTTPS address and the key → **Connect**.
