@@ -10,6 +10,7 @@ import { $, esc, fmtDate, arrow, showView, onShow, emptyState, icon } from '../u
 import { openLake } from './lake.js';
 import { dayStripHtml } from './day-plan.js';
 import { fillReportLines } from '../report-line.js';
+import { speciesLabel } from '../species.js';
 
 // Slot for the "days like today" insight (workstream E). Register a renderer:
 //   registerTodayInsight(async el => { el.innerHTML = '…'; return true; })  // return false to keep the card hidden
@@ -106,7 +107,7 @@ async function fillCard(card, lake) {
   if (stockId) forLake(lake).plantsFor(stockId).then(plants => {
     const today = localKey(now), soon = localKey(addDays(now, 7)), recent = localKey(addDays(now, -14));
     const p = plants.filter(x => x.week >= recent && x.week <= soon).sort((a, b) => b.week.localeCompare(a.week))[0];
-    if (p) put(3, `<div class="stat new-plant"><b>🐟 ${esc(p.species)}</b><span>${p.week > today ? 'Plant planned' : 'Planted'} ${p.weekEnd && p.weekEnd !== p.week ? 'week of ' : ''}${fmtDate(p.week + 'T12:00')}</span></div>`);
+    if (p) put(3, `<div class="stat new-plant"><b>🐟 ${esc(speciesLabel(p.species))}</b><span>${p.week > today ? 'Plant planned' : 'Planted'} ${p.weekEnd && p.weekEnd !== p.week ? 'week of ' : ''}${fmtDate(p.week + 'T12:00')}</span></div>`);
   }).catch(() => {});
   fetchAlerts(lake.lat, lake.lon).then(alerts => {
     if (!alerts.length) return;

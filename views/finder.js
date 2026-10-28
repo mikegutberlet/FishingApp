@@ -10,6 +10,8 @@ import { units } from '../units.js';
 import { groupOf, groupLabel } from '../game-plan.js';
 import { openLake, openWater } from './lake.js';
 import { renderLakeList } from './lakes.js';
+import { stockHistoryFor } from '../stock-history.js';
+import { speciesName, speciesLine, isCatchAll } from '../species.js';
 
 const HOME = 'tackle-box-home', PREFS = 'tackle-box-finder';
 const read = k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
@@ -17,6 +19,8 @@ const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } ca
 const prefs = () => ({ fish: [], access: [], miles: 50, stocked: false, mine: false, noAlgae: true, sort: 'near', ...read(PREFS) });
 
 const FISH = ['trout', 'kokanee', 'laker', 'largemouth', 'smallmouth', 'striper', 'crappie', 'panfish', 'catfish', 'walleye'];
+// Kinds of trout, by the species list's names (species.js): "Cutthroat trout" also finds Lahontan, Paiute and the rest.
+const KINDS = ['Rainbow trout', 'Brown trout', 'Brook trout', 'Cutthroat trout', 'Lahontan cutthroat trout', 'Golden trout', 'Tiger trout', 'Bull trout', 'Cutbow trout', 'Steelhead'];
 const ACCESS = { ramp: 'Boat ramp', pier: 'Fishing pier', marina: 'Marina', rental: 'Boat rental', camp: 'Campground', parking: 'Parking' };
 const MILES = [10, 25, 50, 100, 200, 0];
 // NAS records of fish that didn't take or were removed don't mean the fish is there.
@@ -53,14 +57,25 @@ function factsFor(e) {
     const id = e.saved?.[S.stockField];
     const stock = e.stock ?? (id != null ? (await S.waters()).find(w => String(w.id) === String(id)) : await S.matchStockedWater(e.w));
     const [hist, access] = await Promise.all([S.historyFor(place), S.accessFor?.(place)]);
-    const fish = new Map(), add = (s, src) => { const g = group(s); if (g) (fish.get(g) ?? fish.set(g, new Set()).get(g)).add(src); };
+    const fish = new Map(), add = (s, src) => addFish(fish, s, src);
     for (const p of stock?.plants ?? []) add(p.species, 'stocked');
+    // Past years' reports name the kind more often than the current schedule does ("Rainbow Trout" vs "Legal trout").
+    const past = stock ? await stockHistoryFor({ name: stock.name, state: S.code, [S.stockField]: stock.id, lat: stock.lat, lon: stock.lon, county: stock.county ?? stock.counties }) : null;
+    for (const y of past?.years ?? []) for (const s of Object.keys(y.sp)) add(s, 'past');
     // historyFor lines read "Species (locality) · status".
     for (const h of hist.local) if (!GONE.test(h.text.split(' · ').at(-1))) add(h.text.split(/ \(| · /)[0], 'on record');
     return { stock, fish, lastPlant: stock?.lastPlant ?? null, access: access ? new Set(access.places.map(p => p.kind)) : null };
   })().catch(() => ({ fish: new Map(), access: null })));
   return facts.get(e.key);
 }
+// A fish goes in under its group ('trout') and, for trout and kokanee, also under the kind the record names
+// ('k:Tiger trout'). Other fish stay by group, so a card's list stays short.
+function addFish(fish, s, src) {
+  const g = group(s), kind = speciesName(s);
+  const named = kind && !isCatchAll(kind) && (speciesLine(kind).includes('Trout') || /kokanee|sockeye/i.test(kind));
+  for (const k of [g, named && `k:${kind}`]) if (k) (fish.get(k) ?? fish.set(k, new Set()).get(k)).add(src);
+}
+const hasFish = (fish, want) => fish.has(want) || [...fish.keys()].some(k => k.startsWith('k:') && speciesLine(k.slice(2)).includes(want));
 const habs = new Map();
 const habFor = e => habs.get(e.key) ?? habs.set(e.key, (e.S.habFor?.(e.w ?? e.stock) ?? Promise.resolve([])).then(a => a.length, () => 0)).get(e.key);
 
@@ -88,7 +103,8 @@ export async function renderFinder() {
   list.innerHTML = `<button id="back">‹ My waters</button><h2>Where should I go?</h2>
     <div class="card form fd-filters">
       <div class="fd-from"><span id="fd-from" class="muted">Finding where you are…</span><button type="button" id="fd-home">${read(HOME) ? 'Move home' : 'Set home'}</button></div>
-      <fieldset><legend>Fish I want</legend><div class="fd-chips">${FISH.map(g => chip('fish', g, groupLabel(g), P.fish.includes(g))).join('')}</div></fieldset>
+      <fieldset><legend>Fish I want</legend><div class="fd-chips">${FISH.map(g => chip('fish', g, groupLabel(g), P.fish.includes(g))).join('')}</div>
+        <div class="fd-chips fd-kinds"><span class="muted small">Kind of trout</span>${KINDS.map(k => chip('fish', k, k.replace(/ trout$/, ''), P.fish.includes(k))).join('')}</div></fieldset>
       <fieldset><legend>Getting on the water</legend><div class="fd-chips">${Object.entries(ACCESS).map(([k, l]) => chip('access', k, l, P.access.includes(k))).join('')}</div></fieldset>
       <fieldset><legend>How far</legend><div class="fd-chips">${MILES.map(m => chip('miles', m, fmtMiles(m), P.miles === m)).join('')}</div></fieldset>
       <label class="check"><input type="checkbox" data-opt="stocked" ${P.stocked ? 'checked' : ''}> Stocked in the last 30 days or coming up</label>
@@ -97,7 +113,7 @@ export async function renderFinder() {
       <label>Sort <select id="fd-sort"><option value="near">Closest first</option><option value="stocked" ${P.sort === 'stocked' ? 'selected' : ''}>Most recently stocked</option></select></label>
     </div>
     <div id="fd-count" class="muted small" aria-live="polite"></div><div id="fd-results"></div>
-    <p class="muted small">Fish lists come from state stocking reports, USGS records of introduced fish and your own catches. Native fish that were never stocked or recorded don't show up, so a water left out may still hold them. Ramps, piers, marinas, rentals, campgrounds and parking come from OpenStreetMap and cover California only for now. Distances are straight-line.</p>`;
+    <p class="muted small">Fish lists come from state stocking reports, USGS records of introduced fish and your own catches. California's and Oregon's current schedules say only “trout”, so a kind of trout is matched from past reports, USGS records and your catches. Native fish that were never stocked or recorded don't show up, so a water left out may still hold them. Ramps, piers, marinas, rentals, campgrounds and parking come from OpenStreetMap and cover California only for now. Distances are straight-line.</p>`;
   $('#back').onclick = renderLakeList;
   $('#fd-home').onclick = setHome;
   const [from, all, saved, catches] = await Promise.all([origin(), loadPool(), db.all('lakes'), db.all('catches')]);
@@ -150,9 +166,9 @@ export async function renderFinder() {
       const mine = e.saved ? caught.get(e.saved.id) ?? [] : [];
       const fish = new Map([...f.fish].map(([g, s]) => [g, new Set(s)]));
       const yours = [...mine.map(c => c.species), ...String(e.saved?.species ?? '').split(/,|;/)];
-      for (const s of yours) { const g = group(s); if (g) (fish.get(g) ?? fish.set(g, new Set()).get(g)).add('yours'); }
+      for (const s of yours) addFish(fish, s, 'yours');
       const r = { ...e, f, fish, mine: mine.length };
-      if (P.fish.length && !P.fish.some(g => fish.has(g))) { if (!fish.size) unknown.add(e.key); }
+      if (P.fish.length && !P.fish.some(g => hasFish(fish, g))) { if (!fish.size) unknown.add(e.key); }
       else if (P.access.length && !(f.access && P.access.every(k => f.access.has(k)))) { if (!f.access) unknown.add(e.key); }
       else if (P.stocked && !(f.lastPlant && f.lastPlant >= cutoff)) ;
       else if (P.mine && !r.mine) ;
@@ -179,9 +195,16 @@ export async function renderFinder() {
 }
 
 function card(r, i, today) {
-  // Each fish once, under the best evidence for it: your catches, then a stocking report, then a USGS record.
-  const by = { yours: "You've caught", stocked: 'Stocked', 'on record': 'On record' }, rows = {};
-  for (const [g, src] of r.fish) (rows[Object.keys(by).find(k => src.has(k))] ??= []).push(groupLabel(g));
+  // Each fish once, under the best evidence for it: your catches, then the current schedule, then past stocking
+  // reports, then a USGS record.
+  const by = { yours: "You've caught", stocked: 'Stocked', past: 'Stocked before', 'on record': 'On record' }, rows = {};
+  // A group shows by its kinds when the records name them ("Rainbow trout, Tiger trout"), else by its own name ("Trout").
+  const kinds = [...r.fish.keys()].filter(k => k.startsWith('k:'));
+  for (const [g, all] of r.fish) {
+    const named = new Set(g.startsWith('k:') ? [] : kinds.filter(k => group(k.slice(2)) === g).flatMap(k => [...r.fish.get(k)]));
+    const src = [...all].filter(s => !named.has(s));
+    if (src.length) (rows[Object.keys(by).find(k => src.includes(k))] ??= []).push(g.startsWith('k:') ? g.slice(2) : groupLabel(g));
+  }
   const fish = Object.keys(by).filter(k => rows[k]).map(k => `<div class="small fd-fish"><span>${by[k]}:</span> ${esc(rows[k].join(', '))}</div>`).join('');
   const plant = r.f.lastPlant && `${r.f.lastPlant > today ? 'Plant planned' : 'Last stocked'} ${fmtDate(r.f.lastPlant)}`;
   const access = r.f.access && Object.keys(ACCESS).filter(k => r.f.access.has(k)).map(k => ACCESS[k]).join(', ');

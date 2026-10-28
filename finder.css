@@ -4,6 +4,8 @@
 .fd-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .fd-chips button { border-radius: 999px; min-height: 36px; padding: 4px 12px; font-size: 14px; white-space: nowrap; }
 .fd-chips button[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+.fd-kinds { margin-top: 8px; align-items: center; }
+.fd-kinds > span { width: 100%; }
 @media (prefers-color-scheme: dark) { .fd-chips button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); } }
 .fd-from { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
 .fd-from button { flex-shrink: 0; }

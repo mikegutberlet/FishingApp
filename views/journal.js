@@ -13,6 +13,7 @@ import { renderBackfill } from './backfill.js';
 import { renderStats } from './stats.js';
 import { renderCalendar } from './calendar.js';
 import { exportCatchesCsv } from '../catch-csv.js';
+import { fishName } from '../species.js';
 
 const SECTIONS = { timeline: 'Timeline', calendar: 'Calendar', stats: 'Stats', bests: 'Bests', tackle: 'Tackle box', photos: 'Photos' };
 let section = 'timeline';
@@ -54,7 +55,7 @@ async function renderTimeline(body, limitDays = 30) {
   if (!body.isConnected) return; // the Journal was drawn again meanwhile (e.g. a second tap on its tab)
   const inTrip = new Set(trips.map(t => t.id));
   const fishIn = t => catches.filter(c => c.tripId === t.id);
-  const species = [...new Set(catches.map(c => c.species).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+  const species = [...new Set(catches.map(c => fishName(c.species)).filter(Boolean))].sort((a, b) => a.localeCompare(b));
   const waters = lakes.filter(l => catches.some(c => c.lakeId === l.id) || trips.some(t => t.lakeId === l.id) || notes.some(n => n.lakeId === l.id)).sort((a, b) => a.name.localeCompare(b.name));
   const tags = [...new Set(catches.flatMap(c => c.tags ?? []))].sort((a, b) => a.localeCompare(b));
   const opt = (v, label, cur) => `<option value="${esc(v)}" ${v === cur ? 'selected' : ''}>${esc(label)}</option>`;
@@ -75,7 +76,7 @@ async function renderTimeline(body, limitDays = 30) {
   const hit = (...fields) => { const text = fields.filter(Boolean).join(' ').toLowerCase(); return words().every(w => text.includes(w)); };
   const inDates = iso => (!filt.from || dayKey(iso) >= filt.from) && (!filt.to || dayKey(iso) <= filt.to);
   const fishOnly = () => filt.species || filt.kept || filt.tag;
-  const catchOk = c => (!filt.species || c.species === filt.species) && (!filt.lakeId || c.lakeId === filt.lakeId)
+  const catchOk = c => (!filt.species || fishName(c.species) === filt.species) && (!filt.lakeId || c.lakeId === filt.lakeId)
     && (!filt.kept || (filt.kept === 'released') === !!c.released) && (!filt.tag || (c.tags ?? []).includes(filt.tag)) && inDates(c.time)
     && hit(c.species, c.lure, c.technique, c.notes, c.clarity, lakeName[c.lakeId], tackleName[c.tackleId], ...(c.tags ?? []));
   const tripOk = t => (!filt.lakeId || t.lakeId === filt.lakeId) && inDates(t.start)

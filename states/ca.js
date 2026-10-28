@@ -316,7 +316,7 @@ const partOpen = (p, date) => {
 };
 
 // Which special-regulation group a species falls under: 'trout' (incl. salmon, steelhead), 'bass' (black bass), 'catfish', or null.
-export const regGroup = species => /trout|steelhead|salmon/i.test(species) ? 'trout' : /\bbass\b/i.test(species) && !/striped|white/i.test(species) ? 'bass' : /catfish|bullhead/i.test(species) ? 'catfish' : null;
+export const regGroup = species => /trout|steelhead|salmon|cutbow|splake|dolly varden/i.test(species) ? 'trout' : /\bbass\b/i.test(species) && !/striped|white/i.test(species) ? 'bass' : /catfish|bullhead/i.test(species) ? 'catfish' : null;
 
 // Warnings for a catch against the rules here: closed season, release-only, size limits, bag limit.
 // `kept` is how many of this species group you've already kept here today. A released fish only gets the season warnings.

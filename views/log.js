@@ -14,6 +14,8 @@ import { readExif } from '../exif.js';
 import { matchWater } from './backfill.js';
 import { pastConditions } from '../past-weather.js';
 import { openCatch, openViewer } from './catch.js';
+import { kindsOf, isCatchAll, fishName, STARTER_SPECIES } from '../species.js';
+import { forLake } from '../states/index.js';
 
 let editing = null; // the catch being edited, or null for a new one
 let photos = []; // the form's photos, already shrunk: the first is the catch's main photo
@@ -69,9 +71,9 @@ export async function renderCatchForm() {
 // One-tap species: the ones you catch most, or a few common ones before your first catch.
 function renderSpeciesChips(catches) {
   const n = {};
-  for (const c of catches) if (c.species) n[c.species] = (n[c.species] ?? 0) + 1;
+  for (const c of catches) if (c.species) n[fishName(c.species)] = (n[fishName(c.species)] ?? 0) + 1;
   const top = Object.keys(n).sort((a, b) => n[b] - n[a]).slice(0, 6);
-  const picks = top.length ? top : ['Rainbow trout', 'Largemouth bass', 'Smallmouth bass', 'Striped bass', 'Channel catfish', 'Crappie'];
+  const picks = top.length ? top : STARTER_SPECIES.slice(0, 6);
   $('#species-chips').innerHTML = picks.map(s => `<button type="button" data-species="${esc(s)}">${esc(s)}</button>`).join('');
 }
 $('#species-chips').onclick = e => {
@@ -186,7 +188,7 @@ async function fillFromPhoto(file) {
   if (ex.lat != null && f.lat.value === '' && f.lon.value === '') {
     f.lat.value = ex.lat.toFixed(6); f.lon.value = ex.lon.toFixed(6);
     const lake = matchWater(ex.lat, ex.lon, await db.all('lakes'), null).lake;
-    if (lake) f.lakeId.value = lake.id;
+    if (lake) { f.lakeId.value = lake.id; showKinds(); }
     got.push(lake ? `the spot on ${lake.name}` : 'the spot');
   }
   hint.textContent = got.length ? `From the photo: ${got.join(' · ')}` : '';
@@ -226,6 +228,17 @@ const showEstimate = () => {
   f.weight.placeholder = est ? `≈ ${toWt(est)} estimated` : '';
 };
 $('#catch-form').species.addEventListener('input', showEstimate);
+// "Which trout?": the kinds the species can be narrowed to, those of the water's state. A tap fills the kind in.
+async function showKinds() {
+  const f = $('#catch-form'), el = $('#species-kinds'), name = f.species.value.trim();
+  const lakeId = f.lakeId.value, lake = lakeId ? await db.get('lakes', lakeId) : null;
+  if (f.species.value.trim() !== name || f.lakeId.value !== lakeId) return; // changed while the water loaded
+  const kinds = name ? kindsOf(name, forLake(lake)?.code) : [];
+  el.classList.toggle('hidden', !kinds.length);
+  el.innerHTML = kinds.length ? `<span class="muted small">Which ${esc(name.toLowerCase().replace(/ trout$/, ''))}?</span>${kinds.map(s => `<button type="button" data-species="${esc(s)}">${esc(s)}</button>`).join('')}` : '';
+}
+for (const k of ['species', 'lakeId']) $('#catch-form')[k].addEventListener(k === 'species' ? 'input' : 'change', showKinds);
+$('#species-kinds').onclick = e => $('#species-chips').onclick(e);
 $('#catch-form').time.addEventListener('input', e => delete e.target.dataset.auto);
 $('#catch-form').length.addEventListener('input', showEstimate);
 // Regulation warnings follow the water, species, size, date and Released box.
@@ -247,6 +260,7 @@ export async function logCatchAt(lakeId) {
   showView('log', { render: false });
   await renderCatchForm();
   $('#catch-form').lakeId.value = lakeId;
+  showKinds();
 }
 
 function resetForm() {
@@ -262,6 +276,7 @@ function resetForm() {
   $('#photo-hint').classList.add('hidden');
   $('#count-hint').classList.add('hidden');
   $('#count-label').classList.remove('hidden');
+  showKinds();
   // After editing an older catch, the new one you'd started comes back; after saving a new one, its draft is done.
   if (wasEditing) restoreDraft(true); else clearDraft();
 }
@@ -289,6 +304,7 @@ export async function editCatch(id) {
   renderTagChips();
   $('#btn-cancel-edit').classList.remove('hidden');
   showEstimate();
+  showKinds();
   showCatchWarnings(f, c.id);
   $('#view-log').scrollTop = 0;
 }
@@ -377,7 +393,7 @@ export async function renderCatchCards(catches, el, lakes) {
     const cond = c.conditions;
     const n = catchPhotos(c).length;
     card.innerHTML = `${c.photo ? `<span class="catch-ph"><img src="${URL.createObjectURL(c.photo)}" alt="">${n > 1 ? `<span class="ph-count">${n}</span>` : ''}</span>` : ''}<div style="flex:1">
-      <b>${esc(c.species)}</b> ${fmtLen(c.length)} ${weightText(c)} ${c.released ? '<span class="muted small">released</span>' : ''}
+      <b>${esc(c.species)}</b>${isCatchAll(c.species) ? ' <span class="muted small">(kind not set)</span>' : ''} ${fmtLen(c.length)} ${weightText(c)} ${c.released ? '<span class="muted small">released</span>' : ''}
       <div class="muted small">${esc(lakeName[c.lakeId] || '')} · ${fmtDate(c.time)} ${fmtTime(c.time)}${c.tripId ? ` · <a href="#" data-trip>trip</a>` : ''}</div>
       <div class="small">${[c.lure, c.technique, c.depth != null && fmtDepth(c.depth), c.waterTemp != null && `water ${fmtTemp(c.waterTemp)}`, Number.isFinite(c.trollMph) && c.trollMph >= 0.3 && fmtSpeed(c.trollMph)].filter(Boolean).map(esc).join(' · ')}</div>
       ${cond ? `<div class="muted small">${fmtTemp(cond.airTemp, true)} · ${compass(cond.windDir)} ${Math.round(cond.wind)} mph · ${cond.pressureInHg}" ${cond.pressureTrend ?? ''} · ${esc(cond.sky)} · ${esc(c.moon)}</div>` : ''}

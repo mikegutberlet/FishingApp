@@ -26,8 +26,7 @@ export const M_TO_FT = 3.28084;
 // A line icon from the sprite at the top of index.html.
 export const icon = name => `<svg class="ic" aria-hidden="true"><use href="#i-${name}"/></svg>`;
 
-export const COMMON_SPECIES = ['Largemouth bass', 'Smallmouth bass', 'Walleye', 'Northern pike', 'Muskellunge', 'Bluegill', 'Black crappie', 'White crappie',
-  'Yellow perch', 'Rainbow trout', 'Brown trout', 'Brook trout', 'Lake trout', 'Channel catfish', 'Flathead catfish', 'Striped bass', 'White bass', 'Carp', 'Salmon'];
+export { SPECIES_NAMES as COMMON_SPECIES } from './species.js';
 export const localNow = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 16); };
 
 // ---------- Navigation ----------

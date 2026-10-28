@@ -85,6 +85,7 @@ const { lookupAccess } = await import('../access-lookup.js');
 const { summarize, CLASS_TEXT, MANAGERS, isWilderness, fmtMi } = await import('../access-rules.js');
 const { lookupCamping } = await import('../camping.js');
 const { dispersedSummary } = await import('../camping-rules.js');
+const { speciesLabel } = await import('../species.js');
 const { haversineKm } = await import('../data-sources.js');
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -313,7 +314,8 @@ function waterSection(S, f) {
   }
   const span = yearsSpan(f);
   if (span || f.stocking.recent.length) {
-    const sp = [...new Set([...f.stocking.recent.map(r => r.species), ...Object.keys((f.stocking.history?.years ?? []).reduce((m, y) => Object.assign(m, y.sp), {}))])];
+    // The file keeps each agency's wording; the catalogue names the fish by the app's species list ("RB" → "Rainbow trout").
+    const sp = [...new Set([...f.stocking.recent.map(r => r.species), ...Object.keys((f.stocking.history?.years ?? []).reduce((m, y) => Object.assign(m, y.sp), {}))].map(speciesLabel))];
     lines.push(`- **Stocking**: ${span ? `records ${span}` : 'current schedule only'}${sp.length ? ` · ${sp.slice(0, 6).join(', ')}` : ''}${f.agency.lastYearStocked ? ` · last stocked ${f.agency.lastYearStocked}` : ''}${f.stocking.history ? ` · ${new Set(f.stocking.history.years.flatMap(y => y.src)).size} source documents` : ''}`);
   }
   if (f.introductions.length) lines.push(`- **Introductions** (USGS NAS): ${f.introductions.slice(0, 6).map(i => `${i.year} ${i.text}`).join('; ')}${f.introductions.length > 6 ? `; +${f.introductions.length - 6} more` : ''}`);

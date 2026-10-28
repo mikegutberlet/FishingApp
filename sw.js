@@ -166,6 +166,7 @@ const SHELL = [
   'corpus.js',
   'private-corpus.js',
   'views/corpus-card.js',
+  'species.js',
 ];
 
 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())));
