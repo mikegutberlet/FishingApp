@@ -11,9 +11,29 @@ export const corpusKey = lake => {
   const S = forLake(lake), id = stockIdOf(lake);
   return S && id != null && id !== '' ? `${S.code.toLowerCase()}/${encodeURIComponent(String(id))}` : null;
 };
+// Your archive server (server/serve.mjs), when you've set one up: { url, key } in localStorage. A file fetched from it
+// is kept in the phone's store too, so the water still has its archive offline. The imported pack feeds the same store.
+export const SERVER = 'corpus-server';
+export const serverConf = () => { try { const c = JSON.parse(localStorage.getItem(SERVER)); return c?.url && c?.key ? c : null; } catch { return null; } };
+export const serverFetch = (path, ms = 8000) => { const c = serverConf(); if (!c) return Promise.reject(new Error('no server')); return fetch(`${c.url.replace(/\/+$/, '')}/${path}`, { headers: { Authorization: `Bearer ${c.key}` }, signal: AbortSignal.timeout(ms) }); };
+let fresh = {}, freshFor = null;
 export async function corpusFor(lake) {
   const key = corpusKey(lake);
   if (!key) return null;
+  const conf = serverConf();
+  if (conf) {
+    // Once per session per water (per server): a water the job hasn't reached (404) is asked for again after 5 min,
+    // a failure after 30 s; either way the phone's own copy (an earlier fetch, or the imported pack) stands in.
+    const id = `${conf.url} ${conf.key}`;
+    if (freshFor !== id) { fresh = {}; freshFor = id; }
+    fresh[key] ??= serverFetch(`${key}.json`).then(async r => {
+      if (r.status === 404) { setTimeout(() => delete fresh[key], 300e3); return undefined; }
+      if (!r.ok) throw new Error(r.status);
+      const f = await r.json(); await db.put('corpusPrivate', { ...f, id: key }, { touch: false }); return f;
+    }).catch(() => { setTimeout(() => delete fresh[key], 30e3); return undefined; });
+    const f = await fresh[key];
+    if (f !== undefined) return f;
+  }
   return (await db.get('corpusPrivate', key).catch(() => null)) ?? null;
 }
 
