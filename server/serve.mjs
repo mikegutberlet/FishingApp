@@ -14,7 +14,9 @@
 
 import http from 'node:http';
 import { stat, readFile, mkdir, open } from 'node:fs/promises';
+import { pipeline } from 'node:stream/promises';
 import { spawn } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const DIR = path.resolve(process.env.CORPUS_DIR || '/corpus');
@@ -22,8 +24,10 @@ const TOKEN = process.env.CORPUS_TOKEN;
 const PORT = +(process.env.PORT || 8787);
 const ORIGIN = process.env.ALLOW_ORIGIN || 'https://mikegutberlet.github.io';
 const BUILD_HOUR = process.env.BUILD_HOUR == null ? 1 : +process.env.BUILD_HOUR;
-const REPO = path.resolve(new URL('..', import.meta.url).pathname);
+const STATES = ['ca', 'nv', 'or'];
+const REPO = fileURLToPath(new URL('..', import.meta.url));
 if (!TOKEN || TOKEN.length < 16) { console.error('CORPUS_TOKEN must be set (16+ characters): the key the app sends'); process.exit(1); }
+if (!Number.isInteger(BUILD_HOUR) || BUILD_HOUR > 23) { console.error('BUILD_HOUR must be an hour, 0–23, or -1 for never'); process.exit(1); }
 await mkdir(path.join(DIR, 'logs'), { recursive: true });
 
 // ---------- Serving ----------
@@ -35,11 +39,11 @@ let lastBuild = null;
 async function health() {
   const pack = await stat(path.join(DIR, 'tackle-box-private-corpus.json')).catch(() => null);
   let waters = 0;
-  for (const st of ['ca', 'nv', 'or']) waters += (await readFile(path.join(DIR, st, 'index.json'), 'utf8').then(JSON.parse).catch(() => null))?.count ?? 0;
+  for (const st of STATES) waters += (await readFile(path.join(DIR, st, 'index.json'), 'utf8').then(JSON.parse).catch(() => null))?.count ?? 0;
   return { ok: true, builtAt: pack?.mtime.toISOString() ?? null, waters, lastBuild };
 }
 
-const server = http.createServer(async (req, res) => {
+async function handle(req, res) {
   cors(res);
   if (req.method === 'OPTIONS') { res.writeHead(204); return res.end(); }
   if (req.method !== 'GET' && req.method !== 'HEAD') return send(res, 405, '{"error":"GET only"}');
@@ -49,15 +53,16 @@ const server = http.createServer(async (req, res) => {
   // Only the archive's own files: two levels deep at most, json or markdown, no dot segments.
   const parts = url.pathname.split('/').filter(Boolean).map(p => { try { return decodeURIComponent(p); } catch { return '\0'; } });
   const ext = path.extname(parts.at(-1) ?? '');
-  if (!parts.length || parts.length > 2 || parts.some(p => !/^[\w.-]+$/.test(p) || p.startsWith('.')) || !TYPES[ext] || (parts.length === 2 && !['ca', 'nv', 'or', 'docs'].includes(parts[0]))) return send(res, 404, '{"error":"not in the archive"}');
+  if (!parts.length || parts.length > 2 || parts.some(p => !/^[\w.-]+$/.test(p) || p.startsWith('.')) || !TYPES[ext] || (parts.length === 2 && ![...STATES, 'docs'].includes(parts[0]))) return send(res, 404, '{"error":"not in the archive"}');
   const file = path.join(DIR, ...parts);
   const s = await stat(file).catch(() => null);
   if (!s?.isFile()) return send(res, 404, '{"error":"not in the archive"}');
   res.writeHead(200, { 'Content-Type': TYPES[ext], 'Content-Length': s.size, 'Last-Modified': s.mtime.toUTCString(), 'Cache-Control': 'no-store' });
   if (req.method === 'HEAD') return res.end();
   const fh = await open(file);
-  fh.createReadStream().pipe(res);
-});
+  try { await pipeline(fh.createReadStream(), res); } catch {} // the phone gave up mid-file: nothing to do
+}
+const server = http.createServer((req, res) => handle(req, res).catch(e => { console.error(e); if (!res.headersSent) send(res, 500, '{"error":"server error"}'); else res.destroy(); }));
 server.listen(PORT, () => console.log(`archive server on :${PORT}, serving ${DIR} to ${ORIGIN}; nightly build at ${BUILD_HOUR < 0 ? 'never' : `${BUILD_HOUR}:00`}`));
 
 // ---------- The nightly build ----------

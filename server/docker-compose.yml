@@ -2,7 +2,9 @@
 # CORPUS_TOKEN (a long random key), then:  docker compose -f server/docker-compose.yml up -d --build
 services:
   tackle-box-archive:
-    build: .
+    build:
+      context: ..
+      dockerfile: server/Dockerfile
     container_name: tackle-box-archive
     restart: unless-stopped
     ports:

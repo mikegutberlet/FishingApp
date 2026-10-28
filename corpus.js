@@ -16,14 +16,18 @@ export const corpusKey = lake => {
 export const SERVER = 'corpus-server';
 export const serverConf = () => { try { const c = JSON.parse(localStorage.getItem(SERVER)); return c?.url && c?.key ? c : null; } catch { return null; } };
 export const serverFetch = (path, ms = 8000) => { const c = serverConf(); if (!c) return Promise.reject(new Error('no server')); return fetch(`${c.url.replace(/\/+$/, '')}/${path}`, { headers: { Authorization: `Bearer ${c.key}` }, signal: AbortSignal.timeout(ms) }); };
-const fresh = {};
+let fresh = {}, freshFor = null;
 export async function corpusFor(lake) {
   const key = corpusKey(lake);
   if (!key) return null;
-  if (serverConf()) {
-    // Once per session per water: a 404 means the job hasn't reached it; any failure falls back to the phone's copy.
+  const conf = serverConf();
+  if (conf) {
+    // Once per session per water (per server): a water the job hasn't reached (404) is asked for again after 5 min,
+    // a failure after 30 s; either way the phone's own copy (an earlier fetch, or the imported pack) stands in.
+    const id = `${conf.url} ${conf.key}`;
+    if (freshFor !== id) { fresh = {}; freshFor = id; }
     fresh[key] ??= serverFetch(`${key}.json`).then(async r => {
-      if (r.status === 404) return null;
+      if (r.status === 404) { setTimeout(() => delete fresh[key], 300e3); return undefined; }
       if (!r.ok) throw new Error(r.status);
       const f = await r.json(); await db.put('corpusPrivate', { ...f, id: key }, { touch: false }); return f;
     }).catch(() => { setTimeout(() => delete fresh[key], 30e3); return undefined; });

@@ -2,8 +2,8 @@
 #   docker compose -f server/docker-compose.yml up -d        (see server/README.md)
 FROM node:22-alpine
 RUN apk add --no-cache git
-# A checkout of the public repo: the build reads the state data files from it and pulls before each run.
-RUN git clone --depth 1 https://github.com/mikegutberlet/FishingApp.git /app
+# This checkout, .git included: the build reads the state data files from it and pulls before each run.
+COPY . /app
 WORKDIR /app
 ENV CORPUS_DIR=/corpus PORT=8787 TZ=America/Los_Angeles
 EXPOSE 8787

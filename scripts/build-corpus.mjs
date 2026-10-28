@@ -32,7 +32,7 @@
 // CORPUS_ONLY (comma list of st:id to build, e.g. "ca:175,or:ALDER_LK"), CORPUS_DOCS_ONLY=1 (rebuild docs only),
 // CORPUS_NO_LIVE=1 (skip the live lookups: rebuild the parts that come from the repo's own files).
 
-import { readFile, writeFile, mkdir, readdir, unlink } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, readdir, unlink, rename } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 
@@ -92,7 +92,8 @@ const minutesLeft = () => MINUTES - (Date.now() - started) / 60000;
 const fileOf = (st, id) => `${DATA}/${st.toLowerCase()}/${encodeURIComponent(String(id))}.json`;
 async function readJson(p) { try { return JSON.parse(await readFile(outPath(p), 'utf8')); } catch { return null; } }
 // Water files are written compact (road geometry pretty-printed is three times the size); the small index stays readable.
-async function writeJson(p, v, pretty = false) { await mkdir(path.dirname(outPath(p)), { recursive: true }); await writeFile(outPath(p), JSON.stringify(v, null, pretty ? 1 : 0) + '\n'); }
+// Written whole then renamed into place, so the archive server never hands out a half-written file.
+async function writeJson(p, v, pretty = false) { await mkdir(path.dirname(outPath(p)), { recursive: true }); await writeFile(outPath(p) + '.tmp', JSON.stringify(v, null, pretty ? 1 : 0) + '\n'); await rename(outPath(p) + '.tmp', outPath(p)); }
 const round = (n, d = 4) => n == null ? null : +(+n).toFixed(d);
 
 // ---------- Which water, and what the app would know about it ----------

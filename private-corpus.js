@@ -35,16 +35,23 @@ function renderCard() {
     ${m ? `<p class="small">Imported pack: ${m.waters} waters${m.library ? `, ${m.library} books` : ''} · built ${fmtDate(m.builtAt)} · imported ${fmtDate(m.importedAt)} <button class="danger" id="private-corpus-clear">Remove from this phone</button></p>` : ''}`;
   $('#corpus-check', el).onclick = async () => {
     const url = $('#corpus-url', el).value.trim().replace(/\/+$/, ''), key = $('#corpus-key', el).value.trim(), out = $('#corpus-server-status', el);
-    if (!/^https:\/\/.+/.test(url) || !key) { out.textContent = 'Give the server’s https address and its key.'; return; }
-    localStorage.setItem(SERVER, JSON.stringify({ url, key }));
+    if (!/^https:\/\/.+|^http:\/\/localhost/.test(url) || !key) { out.textContent = 'Give the server’s https address and its key.'; return; }
     out.textContent = 'Checking…';
+    // The address and key are kept only once the server has answered with them, so a typo doesn't slow every lookup.
+    const was = localStorage.getItem(SERVER);
+    localStorage.setItem(SERVER, JSON.stringify({ url, key }));
     try {
       const h = await serverFetch('health').then(r => r.json());
+      if (h?.ok !== true) throw new Error('not an archive server');
       const r = await serverFetch('ca/index.json');
       if (r.status === 401) throw new Error('the key is wrong');
-      out.textContent = `Connected: ${h.waters} waters in the archive, built ${fmtDate(h.builtAt)}${h.lastBuild ? `, last nightly run ${h.lastBuild.ok ? 'ok' : 'failed'} ${fmtDate(h.lastBuild.at)}` : ''}.`;
+      if (!r.ok && r.status !== 404) throw new Error(`HTTP ${r.status}`);
+      out.textContent = `Connected: ${h.waters ?? 0} waters in the archive${h.builtAt ? `, built ${fmtDate(h.builtAt)}` : ''}${h.lastBuild ? `, last nightly run ${h.lastBuild.ok ? 'ok' : 'failed'} ${fmtDate(h.lastBuild.at)}` : ''}.`;
       status('Archive server connected'); renderCard(); $('#corpus-server-status', el).textContent = out.textContent;
-    } catch (e) { out.textContent = `Couldn’t reach the archive server (${e.message}). Check the address, the key, and that the server allows this app’s address.`; }
+    } catch (e) {
+      was ? localStorage.setItem(SERVER, was) : localStorage.removeItem(SERVER);
+      out.textContent = `Couldn’t reach the archive server (${e.message}). Check the address, the key, and that the server allows this app’s address.`;
+    }
   };
   $('#corpus-forget', el)?.addEventListener('click', () => { localStorage.removeItem(SERVER); renderCard(); });
   $('#private-corpus-clear', el)?.addEventListener('click', async () => { if (!confirm('Remove the imported archive from this phone? (The pack on your NAS and Drive stays.)')) return; await db.clear('corpusPrivate'); localStorage.removeItem(META); renderCard(); });
