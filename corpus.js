@@ -99,5 +99,5 @@ export async function fillCamping(lake, data) {
 export function archiveLine(data) {
   const ar = data.archive;
   if (!ar) return '';
-  return ` <b>${ar.all ? 'Shown from the archive' : `Filled in from the archive for ${ar.sources.join(', ')}`}</b> (the copy kept in the app’s repo, fetched ${new Date(ar.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}; see Info → In the archive).`;
+  return ` <b>${ar.all ? 'Shown from the archive' : `Filled in from the archive for ${ar.sources.join(', ')}`}</b> (your private archive’s copy, fetched ${new Date(ar.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}; see Info → In the archive).`;
 }

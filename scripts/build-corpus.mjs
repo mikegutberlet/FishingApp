@@ -294,8 +294,11 @@ const stable = f => JSON.stringify({ ...f, checkedAt: null, updatedAt: null, sou
 const slug = f => `${f.name} ${f.id}`.toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-');
 const num = n => n == null ? null : (+n).toLocaleString('en-US');
 const link = (t, u) => u ? `[${t}](${u})` : t;
+// A hand-added note's link may leave out the https:// ("www.example.com/page"), or not be an address at all.
+const fullUrl = url => /^https?:\/\//i.test(url) ? url : `https://${url}`;
+const hostOf = url => { try { return new URL(fullUrl(url)).hostname; } catch { return url; } };
 // Where a hand note came from: the book and page, or the web page and the day it was read.
-const noteSource = s => [s.url ? link(s.title ?? new URL(s.url).hostname, s.url) : s.title && `*${s.title}*`, s.author, s.page && `p. ${s.page}`, s.read && s.url && `read ${s.read}`].filter(Boolean).join(', ');
+const noteSource = s => [s.url ? link(s.title ?? hostOf(s.url), fullUrl(s.url)) : s.title && `*${s.title}*`, s.author, s.page && `p. ${s.page}`, s.read && s.url && `read ${s.read}`].filter(Boolean).join(', ');
 function waterSection(S, f) {
   const a = f.access?.summary, lines = [];
   lines.push(`### ${f.name} (${f.id})`);

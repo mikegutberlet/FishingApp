@@ -43,10 +43,16 @@ export function stateData(dir, code) {
     .catch(() => { setTimeout(() => delete cache[key], 30000); return null; });
   const load = name => get(name, `data/${dir}/${name}.json`);
 
-  // Every stocked water with a map point, newest stocking first, plus its stocking history.
+  // Every stocked water with a map point, newest stocking first, plus its stocking history. Built once per pair of
+  // files (the finder asks for it for every water it checks); callers only read it.
+  let stocked = null;
   async function waters() {
     const [w, p] = await Promise.all([load('waters'), load('plants')]);
     if (!w) return [];
+    if (stocked?.w !== w || stocked?.p !== p) stocked = { w, p, list: watersOf(w, p) };
+    return stocked.list;
+  }
+  function watersOf(w, p) {
     const plantsById = new Map();
     for (const plant of p?.plants ?? []) {
       if (!plantsById.has(plant.stockId)) plantsById.set(plant.stockId, []);
