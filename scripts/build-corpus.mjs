@@ -21,7 +21,7 @@
 //     sources:  [{ label, url, fetchedAt }]                  every source touched for this file
 //     notes:    [{ date, by, text, source }]                 HAND-KEPT: the job never changes this list (scripts/add-notes.mjs)
 //     excerpts: [{ text, source }]                           HAND-KEPT: passages from your own books, with the page
-//     passages: [{ src, kind, title, page|url, text, … }]      INGEST-KEPT: scripts/ingest.mjs owns this list (books and links read nightly)
+//     passages: [{ src, kind, title, page|url, text, hash, … }] INGEST-KEPT: scripts/ingest.mjs owns this list (books and links read nightly)
 //     manual:   { ... }                                       HAND-KEPT: values here override the job's facts in the app
 //     changes:  [{ date, text }]                             what the job saw change, newest first (last 50)
 //   }

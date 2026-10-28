@@ -35,7 +35,7 @@ Every section of a water's file records where it came from and when it was fetch
 | `advisories` | Toxic algae and fish-eating advisories in force when the file was built | state portals (`data/<st>/hab.json`, `oehha.json`, `advisories.json`) |
 | `notes` | **Hand-kept.** Anything worth remembering that no service records, each with the book, page or web page it came from | you, your books, sites and blogs (`scripts/add-notes.mjs`) |
 | `excerpts` | **Hand-kept.** Passages from your own books worth keeping whole, with the page | your books (`scripts/add-notes.mjs`) |
-| `passages` | **Ingest-kept.** Every paragraph of your books and links that names the water, with the page or chapter (books) or link (web), which name matched, and whether the name could mean another water too | `scripts/ingest.mjs`, nightly in the archive server, from `library/` and `urls.md` |
+| `passages` | **Ingest-kept.** Every paragraph of your books and links that names the water, with the page or chapter (books) or link (web), which name matched, whether the name could mean another water too, and a `hash` of the text (how the ingest knows a passage is the same one next run) | `scripts/ingest.mjs`, nightly in the archive server, from `library/` and `urls.md` |
 | `manual` | **Hand-kept.** Values that override the job's facts in the app (`{"maxDepthFt": 70}`) | you |
 | `changes` | What the job saw change on each visit, newest first | the job |
 

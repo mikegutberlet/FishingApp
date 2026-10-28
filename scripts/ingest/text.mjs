@@ -16,14 +16,17 @@ export const MIN_CHARS = 80, MAX_CHARS = 1500;
 
 // ---------- Paragraphs ----------
 const clean = s => s.replace(/(\w)-\n\s*(\w)/g, '$1$2').replace(/\s*\n\s*/g, ' ').replace(/\s+/g, ' ').trim();
+// Over-long text is cut at the last sentence end that leaves at least MIN_CHARS on both sides, else hard at
+// MAX_CHARS; a short tail is glued to the piece before it (a little over MAX_CHARS) rather than dropped.
 function split(text) {
   const out = [];
   while (text.length > MAX_CHARS) {
-    const head = text.slice(0, MAX_CHARS), m = head.match(/^[\s\S]*[.!?](?=\s)/);
-    const cut = m ? m[0].length : MAX_CHARS;
+    const head = text.slice(0, MAX_CHARS);
+    let cut = MAX_CHARS;
+    for (const m of head.matchAll(/[.!?](?=\s)/g)) if (m.index + 1 >= MIN_CHARS && text.length - (m.index + 1) >= MIN_CHARS) cut = m.index + 1;
     out.push(text.slice(0, cut).trim()); text = text.slice(cut).trim();
   }
-  if (text) out.push(text);
+  if (text) { if (text.length < MIN_CHARS && out.length) out[out.length - 1] += ' ' + text; else out.push(text); }
   return out;
 }
 export function paragraphs(pages) {
@@ -92,7 +95,7 @@ async function readImage(file) {
 }
 async function readTxt(file) {
   const texts = (await readFile(file, 'utf8')).split('\f');
-  return { pages: texts.map((text, i) => ({ page: texts.length > 1 ? String(i + 1) : '', text })), ocr: false };
+  return { pages: texts.map((text, i) => ({ page: String(i + 1), text })), ocr: false };
 }
 
 // extractFile(file, cacheDir) → { title, author?, pages: [{ page, text }], ocr }

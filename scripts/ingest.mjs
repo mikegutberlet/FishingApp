@@ -34,7 +34,11 @@ const sha1 = s => createHash('sha1').update(s).digest('hex');
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
 
 const waters = await loadWaters();
-const index = buildIndex(waters, (await readJson(path.join(DIR, 'aliases.json'), {})) ?? {});
+// aliases.json is hand-edited: a bad line is logged and ignored, never fatal.
+let aliases = {};
+try { aliases = (await readJson(path.join(DIR, 'aliases.json'), {})) ?? {}; } catch (e) { console.log(`aliases.json: ${e.message}; ignored`); }
+for (const [alias, ref] of Object.entries(aliases)) if (ref !== null) { try { resolveWater(ref, waters); } catch (e) { console.log(`alias "${alias}" → ${ref}: ${e.message}; ignored`); delete aliases[alias]; } }
+const index = buildIndex(waters, aliases);
 const byKey = new Map(); for (const st of STATES) for (const w of waters[st]) byKey.set(`${st}:${w.id}`, { st, w });
 // A bare water name in urls.md or a sidecar is looked up across the three states.
 function refTo(ref) {
@@ -49,7 +53,7 @@ function refTo(ref) {
 const oldCounts = new Map();
 function oldCount(src) { return oldCounts.get(src) ?? 0; }
 const existing = new Map();
-for (const st of STATES) { const d = path.join(DIR, st); if (!existsSync(d)) continue; for (const n of await readdir(d)) if (n.endsWith('.json') && n !== 'index.json') { const f = await readJson(path.join(d, n)); if (f) existing.set(`${st}:${f.id ?? decodeURIComponent(n.slice(0, -5))}`, { file: path.join(d, n), f }); } }
+for (const st of STATES) { const d = path.join(DIR, st); if (!existsSync(d)) continue; for (const n of await readdir(d)) if (n.endsWith('.json') && n !== 'index.json') { try { const f = await readJson(path.join(d, n)); if (f) existing.set(`${st}:${f.id ?? decodeURIComponent(n.slice(0, -5))}`, { file: path.join(d, n), f }); } catch (e) { console.log(`${st}/${n}: ${e.message}; skipped`); } } }
 for (const { f } of existing.values()) for (const p of f.passages ?? []) oldCounts.set(p.src, oldCount(p.src) + 1);
 
 // ---------- Collect ----------
@@ -71,9 +75,13 @@ for (const name of books) {
     const meta = { kind: 'book', title: side.title ?? r.title, ...((side.author ?? r.author) && { author: side.author ?? r.author }) };
     const ranges = Object.entries(side.pages ?? {}).map(([range, ref]) => { const [a, b] = range.split('-').map(Number); return { a, b: b ?? a, key: refTo(ref) }; });
     for (const { page, text } of paragraphs(r.pages)) {
-      for (const h of matchWaters(text, index, { states: side.states })) file(`${h.st}:${h.id}`, passage(src, meta, page, text, 'name', [h.name], h.ambiguous));
-      const n = Number(page);
-      if (Number.isInteger(n)) for (const rg of ranges) if (n >= rg.a && n <= rg.b) file(rg.key, passage(src, meta, page, text, 'pages'));
+      const n = Number(page), pinned = new Set(Number.isInteger(n) ? ranges.filter(rg => n >= rg.a && n <= rg.b).map(rg => rg.key) : []);
+      // A page range is the reader's word on which water this page is about: a name that could mean several
+      // waters is filed only on the pinned one.
+      let hits = matchWaters(text, index, { states: side.states });
+      for (const h of hits) if (h.ambiguous && hits.some(o => o.term === h.term && pinned.has(`${o.st}:${o.id}`))) { hits = hits.filter(o => o.term !== h.term || pinned.has(`${o.st}:${o.id}`)); for (const o of hits) if (o.term === h.term) o.ambiguous = false; }
+      for (const h of hits) file(`${h.st}:${h.id}`, passage(src, meta, page, text, 'name', [h.name], h.ambiguous));
+      for (const key of pinned) file(key, passage(src, meta, page, text, 'pages'));
     }
     processed.add(src);
     console.log(`book "${meta.title}": ${summary(src)}${r.ocr ? ' (ocr)' : ''}`);
@@ -108,7 +116,8 @@ for (const key of targets) {
   const f = have?.f ?? (w && stubRecord(st, w));
   if (!f) continue;
   const prev = f.passages ?? [], kept = prev.filter(p => present.has(p.src) && !processed.has(p.src));
-  removed += prev.length - kept.length;
+  // "Removed" counts passages that are really gone, not ones a re-read source filed again unchanged.
+  removed += prev.filter(p => !kept.includes(p) && !(fresh.get(key) ?? []).some(q => q.src === p.src && q.hash === p.hash)).length;
   const firstSeen = new Map(prev.map(p => [`${p.src} ${p.hash}`, p.ingestedAt]));
   const next = [...kept, ...(fresh.get(key) ?? []).map(p => ({ ...p, ingestedAt: firstSeen.get(`${p.src} ${p.hash}`) ?? now }))]
     .sort((a, b) => b.ingestedAt.localeCompare(a.ingestedAt) || pageNum(a) - pageNum(b));

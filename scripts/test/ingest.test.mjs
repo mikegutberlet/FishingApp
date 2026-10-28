@@ -9,6 +9,8 @@ before(async () => {
   await mkdir(path.join(dir, 'library'), { recursive: true }); await mkdir(path.join(dir, 'ca'), { recursive: true });
   await copyFile(path.join(fx, 'two-pages.pdf'), path.join(dir, 'library', 'Guide.pdf'));
   await writeFile(path.join(dir, 'library', 'Guide.pdf.json'), JSON.stringify({ title: 'Fixture Guide', author: 'Test Author', states: ['ca'], pages: { '1': 'ca:Crowley Lake' } }));
+  await writeFile(path.join(dir, 'library', 'Silver.txt'), 'Silver Lake holds browns along the west shore in October, and the inlet creek runs cold enough for them to spawn there.');
+  await writeFile(path.join(dir, 'library', 'Silver.txt.json'), JSON.stringify({ pages: { '1': 'ca:10784' } }));
   await writeFile(path.join(dir, 'ca', '18122.json'), JSON.stringify({ id: '18122', state: 'CA', name: 'Convict Lake', notes: [{ date: '2026-01-01', text: 'hand note', source: { title: 'me' } }], manual: {} }));
   server = http.createServer((req, res) => { if (fail) { res.statusCode = 503; return res.end(); } res.end(req.url === '/robots.txt' ? robots : page); });
   await new Promise(r => server.listen(0, r)); port = server.address().port;
@@ -27,12 +29,19 @@ test('files book and web passages on the right waters, keeps hand notes', async 
   assert.equal(f.passages.find(p => p.src.endsWith('/tagged')).how, 'tagged');
 });
 test('sidecar pages pin a range to one water and a stub file is created', async () => {
-  const crowleyFile = (await readdir(path.join(dir, 'ca'))).find(n => n !== '18122.json');
-  const c = JSON.parse(await readFile(path.join(dir, 'ca', crowleyFile), 'utf8'));
+  const files = await Promise.all((await readdir(path.join(dir, 'ca'))).map(async n => JSON.parse(await readFile(path.join(dir, 'ca', n), 'utf8'))));
+  const c = files.find(f => f.name === 'Crowley Lake');
   assert.equal(c.name, 'Crowley Lake'); assert.equal(c.checkedAt, undefined); assert.ok(c.passages.some(p => p.how === 'pages' && p.page === '1'));
 });
-test('a second run changes nothing', async () => {
-  const before = JSON.stringify(await convict()); await ingest(); assert.equal(JSON.stringify(await convict()), before);
+test('a sidecar page range settles an ambiguous name on that one water', async () => {
+  const files = await readdir(path.join(dir, 'ca'));
+  assert.ok(files.includes('10784.json') && !files.includes('14582.json') && !files.includes('17432.json'), `files: ${files}`);
+  const silver = JSON.parse(await readFile(path.join(dir, 'ca', '10784.json'), 'utf8'));
+  assert.equal(silver.passages.length, 1); assert.equal(silver.passages[0].ambiguous, undefined); assert.deepEqual(silver.passages[0].matched, ['Silver Lake']);
+});
+test('a second run changes nothing and reports nothing removed', async () => {
+  const before = JSON.stringify(await convict()); const { stdout } = await ingest(); assert.equal(JSON.stringify(await convict()), before);
+  assert.match(stdout, /0 passages removed; 0 files written/);
 });
 test('a failed fetch keeps last run\'s passages and still exits 0', async () => {
   fail = true; const { stdout } = await ingest(); fail = false;
@@ -52,4 +61,13 @@ test('--dry writes nothing and exits 1 without CORPUS_DIR', async () => {
   const before = JSON.stringify(await convict()); const { stdout } = await ingest('--dry');
   assert.match(stdout, /ca:18122 {2}Fixture Guide {2}1 {2}Convict Lake/); assert.equal(JSON.stringify(await convict()), before);
   await assert.rejects(run('node', ['scripts/ingest.mjs'], { env: { ...process.env, CORPUS_DIR: '' } }), /usage/);
+});
+test('a bad alias or an unreadable water file is logged and the run goes on', async () => {
+  await writeFile(path.join(dir, 'aliases.json'), JSON.stringify({ Convict: 'ca:NoSuchLake', Crowley: 'ca:Crowley Lake' }));
+  await writeFile(path.join(dir, 'ca', 'broken.json'), '{');
+  const { stdout } = await ingest();
+  assert.match(stdout, /alias "Convict" → ca:NoSuchLake: .*ignored/); assert.match(stdout, /ca\/broken\.json: .*skipped/); assert.match(stdout, /book "Fixture Guide"/);
+  assert.equal(await readFile(path.join(dir, 'ca', 'broken.json'), 'utf8'), '{');
+  await writeFile(path.join(dir, 'aliases.json'), '{ not json');
+  assert.match((await ingest()).stdout, /aliases\.json: .*ignored/);
 });

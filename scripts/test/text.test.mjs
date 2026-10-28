@@ -10,6 +10,13 @@ test('paragraphs drops short lines and splits long ones at a sentence end', () =
   assert.ok(out[2].text.startsWith('mountain lake'));
   assert.ok(out.every(p => p.page === '1'));
 });
+test('paragraphs loses no text when a split leaves a short remainder', () => {
+  for (const text of ['Short start. ' + 'x'.repeat(1600) + '.', 'y'.repeat(1490) + ' end. ' + 'z'.repeat(60), 'w'.repeat(3100)]) {
+    const out = paragraphs([{ page: '1', text }]);
+    assert.equal(out.map(p => p.text).join(' ').replace(/\s/g, ''), text.replace(/\s/g, ''));
+    assert.ok(out.every(p => p.text.length >= 80), 'every piece is at least 80 chars');
+  }
+});
 test('needsOcr is true when pages average under 40 characters', () => {
   assert.equal(needsOcr(['', ' \f', 'x']), true);
   assert.equal(needsOcr(['A'.repeat(500), 'B'.repeat(10)]), false);

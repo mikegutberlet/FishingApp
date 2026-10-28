@@ -45,7 +45,9 @@ export function articleText(html) {
   for (const tag of DROP) { const re = new RegExp(`<${tag}\\b[^>]*>[\\s\\S]*?<\\/${tag}\\s*>`, 'gi'); let prev; do { prev = h; h = h.replace(re, ' '); } while (h !== prev); }
   const pick = tag => h.match(new RegExp(`<${tag}\\b[^>]*>([\\s\\S]*?)<\\/${tag}\\s*>`, 'i'))?.[1];
   const body = pick('article') ?? pick('main') ?? pick('body') ?? h;
-  const paragraphs = [...body.matchAll(/<(p|li|h[1-6]|blockquote|td)\b[^>]*>([\s\S]*?)<\/\1\s*>/gi)].map(m => text(m[2])).filter(Boolean);
+  let paragraphs = [...body.matchAll(/<(p|li|h[1-6]|blockquote|td)\b[^>]*>([\s\S]*?)<\/\1\s*>/gi)].map(m => text(m[2])).filter(Boolean);
+  // Older pages leave <p> unclosed (valid HTML): fall back to splitting on block tags.
+  if (!paragraphs.length) paragraphs = body.replace(/<\/?(p|li|h[1-6]|blockquote|td|tr|div|section)\b[^>]*>/gi, '\n\n').split(/\n\s*\n/).map(text).filter(Boolean);
   return { title, paragraphs };
 }
 

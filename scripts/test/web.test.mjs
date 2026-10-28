@@ -16,3 +16,7 @@ test('articleText prefers article, strips chrome and decodes entities', () => {
   const html = '<html><head><title>Convict &amp; Crowley</title><script>x()</script></head><body><nav><p>Menu item</p></nav><article><h1>Trip</h1><p>Convict Lake was <b>glassy</b> at dawn.</p><ul><li>Bring a 5-wt.</li></ul></article><footer><p>© site</p></footer></body></html>';
   assert.deepEqual(articleText(html), { title: 'Convict & Crowley', paragraphs: ['Trip', 'Convict Lake was glassy at dawn.', 'Bring a 5-wt.'] });
 });
+test('articleText copes with unclosed <p> tags', () => {
+  const html = '<html><body><p>Unclosed first paragraph about Convict Lake<p>Second one<br>continues</body></html>';
+  assert.deepEqual(articleText(html).paragraphs, ['Unclosed first paragraph about Convict Lake', 'Second one continues']);
+});
