@@ -11,7 +11,12 @@ Tackle Box pulls from a lot of public services: state stocking schedules, USGS h
   ca/<id>.json, nv/…, or/…      one file per stocked water, plus index.json per state
   docs/ca.md, nv.md, or.md      the readable catalogue, one section per water
   docs/CHANGELOG.md             what each run added or saw change
-  library/                      the books themselves (PDF, EPUB, scans); listed in the pack by file name only
+  library/                      the books themselves (PDF, EPUB, scans, photos); read nightly by scripts/ingest.mjs
+  library/<file>.json           optional sidecar per book: title, author, states it covers, page ranges per water
+  library/.text/                cached text extracted from each book (by content hash), so OCR runs once
+  urls.md                       websites and blogs to read nightly, one per line, optional water name after two spaces
+  aliases.json                  extra matching terms ({"Convict": "ca:18122"}) or blocked ones ({"Silver Lake": null})
+  logs/<date>.log               the archive server's nightly run log
   tackle-box-private-corpus.json   the pack the app imports (⚙️ gear → Import)
 ```
 
@@ -30,6 +35,7 @@ Every section of a water's file records where it came from and when it was fetch
 | `advisories` | Toxic algae and fish-eating advisories in force when the file was built | state portals (`data/<st>/hab.json`, `oehha.json`, `advisories.json`) |
 | `notes` | **Hand-kept.** Anything worth remembering that no service records, each with the book, page or web page it came from | you, your books, sites and blogs (`scripts/add-notes.mjs`) |
 | `excerpts` | **Hand-kept.** Passages from your own books worth keeping whole, with the page | your books (`scripts/add-notes.mjs`) |
+| `passages` | **Ingest-kept.** Every paragraph of your books and links that names the water, with the page or chapter (books) or link (web), which name matched, and whether the name could mean another water too | `scripts/ingest.mjs`, nightly in the archive server, from `library/` and `urls.md` |
 | `manual` | **Hand-kept.** Values that override the job's facts in the app (`{"maxDepthFt": 70}`) | you |
 | `changes` | What the job saw change on each visit, newest first | the job |
 
@@ -42,6 +48,7 @@ The live sections keep the same shape the app stores on the phone (`access-looku
 Rules the job follows:
 
 - **It never touches `notes`, `excerpts` or `manual`.** Add them with `scripts/add-notes.mjs`, which files each note on the right water with its source (`{"title": "…", "author": "…", "page": "112"}` for a book, `{"title": "…", "url": "https://…"}` for a web page) and, when a passage is worth keeping whole, the `excerpt` itself. They show up in the app's Info tab and on the catalogue page. A water the job hasn't reached yet gets a file holding only its notes; the job builds the rest on its next visit. `node scripts/add-notes.mjs --find "convict"` lists the ids to use.
+- **`passages` belongs to the ingest.** `scripts/ingest.mjs` (run by the archive server before the build) owns that list: each source's passages are replaced when the source is read again, dropped when the book or URL is gone, and kept when a page failed to load. The build keeps the list as it is. See `server/README.md` for the sidecar and alias files.
 - **It keeps the last good copy.** When a live service doesn't answer, the previous `access` or `camping` section stays and the file says which sources failed.
 - **It cites everything.** Each road, trail, campground and parcel keeps the URL of the record it came from; each stocking year keeps the document it was read from.
 
@@ -54,6 +61,8 @@ CORPUS_ONLY=ca:175,or:ALDER_LK node scripts/build-corpus.mjs      # a few waters
 CORPUS_NO_LIVE=1 node scripts/build-corpus.mjs                    # refresh only what comes from the repo's own data files
 CORPUS_DOCS_ONLY=1 node scripts/build-corpus.mjs                  # regenerate the catalogue, index and pack from the files
 node scripts/add-notes.mjs notes.json                             # file notes and excerpts from your sources
+node scripts/ingest.mjs [--dry]                                   # read library/ and urls.md, file passages per water
+node --test 'scripts/test/*.test.mjs'                             # the scripts' tests
 ```
 
 ## How the app uses it
