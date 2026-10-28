@@ -8,12 +8,10 @@ const META = 'corpus-private';
 export const isPrivateCorpus = data => data?.app === 'tackle-box' && data.kind === 'private-corpus' && data.waters && typeof data.waters === 'object';
 
 export async function importPrivateCorpus(data) {
-  await db.clear('corpusPrivate');
-  let n = 0;
-  for (const [id, w] of Object.entries(data.waters)) {
-    if (!/^[a-z]{2}\/[^/]+$/.test(id) || !w || typeof w !== 'object') continue;
-    await db.put('corpusPrivate', { ...w, id }, { touch: false }); n++;
-  }
+  const rows = Object.entries(data.waters).filter(([id, w]) => /^[a-z]{2}\/[^/]+$/.test(id) && w && typeof w === 'object').map(([id, w]) => ({ ...w, id }));
+  // All or nothing: a write that fails (storage full) keeps the archive already on the phone, and its line in Settings.
+  await db.replaceAll('corpusPrivate', rows);
+  const n = rows.length;
   localStorage.setItem(META, JSON.stringify({ builtAt: data.builtAt ?? null, waters: n, library: (data.library ?? []).length, importedAt: new Date().toISOString() }));
   status(`Private archive: ${n} waters`);
   renderCard();

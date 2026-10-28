@@ -124,10 +124,12 @@ export async function renderFinder() {
   for (const c of catches) if (c.lakeId) (caught.get(c.lakeId) ?? caught.set(c.lakeId, []).get(c.lakeId)).push(c);
   const savedFor = new Map();
   const extra = [];
+  const keys = new Set(all.map(e => e.key));
   for (const l of saved) {
     const S = forLake(l);
-    const key = l.nhdId && S ? `${S.code}:n:${l.nhdId}` : S && l[S.stockField] != null ? `${S.code}:s:${l[S.stockField]}` : null;
-    if (key && all.some(e => e.key === key)) savedFor.set(key, l);
+    // A river saved from the state's list has an NHD id but isn't in the finder's lakes: try its stock id too.
+    const key = S && [l.nhdId && `${S.code}:n:${l.nhdId}`, l[S.stockField] != null && `${S.code}:s:${l[S.stockField]}`].find(k => k && keys.has(k));
+    if (key) savedFor.set(key, l);
     else if (S && l.lat != null) extra.push({ key: `mine:${l.id}`, S, w: l, name: l.name, type: l.type, lat: l.lat, lon: l.lon, saved: l });
   }
   const entries = [...all.map(e => savedFor.has(e.key) ? { ...e, saved: savedFor.get(e.key) } : e), ...extra];

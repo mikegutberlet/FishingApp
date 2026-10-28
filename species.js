@@ -109,11 +109,16 @@ const clean = raw => ` ${String(raw ?? '').toLowerCase().replace(/[^a-z, -]/g, '
   .replace(/\b(cut+bow|bow-?cut+)\b/g, 'cutbow').replace(/\bcati(fsh|fish)\b/g, 'catfish').replace(/\b(bleugill|blue gill)\b/g, 'bluegill')
   .replace(/\s+/g, ' ').trim();
 
+// Small fish and aquarium releases whose names share a word with a game fish ("Lahontan Creek Tui Chub", "Brook
+// Stickleback", "Smallmouth Buffalo", "tiger barb", "Golden Shiner", "sailfin catfish") aren't any fish on the list.
+const NOT_GAME = /\b(chubs?|cisco|stickleback|silverside|buffalo|barbs?|shiners?|sailfin|armou?red|suckermouth|firewood)\b/;
+export const notGameFish = raw => NOT_GAME.test(clean(raw));
+
 // The list's name for a fish however a record writes it, or null when it isn't one we know ("Spring", "72t").
 const memo = new Map();
 export function speciesName(raw) {
   const s = clean(raw);
-  if (!memo.has(s)) memo.set(s, s ? MATCH_ORDER.find(x => x.re.test(s))?.name ?? null : null);
+  if (!memo.has(s)) memo.set(s, s && !notGameFish(s) ? MATCH_ORDER.find(x => x.re.test(s))?.name ?? null : null);
   return memo.get(s);
 }
 // A catch's name for counting: the list's name when it is one we know, else the name as typed.

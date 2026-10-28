@@ -65,7 +65,7 @@ export async function lookupAccess(lake, { spot = null, force = false, onPartial
   if (!osmFinished && onPartial) onPartial(snapshot(['OpenStreetMap']));
   await osmDone;
   const data = snapshot([]);
-  if (failed.length) await fillAccess(lake, data); // the repo's archived copy stands in for a source that didn't answer
+  if (failed.length) await fillAccess(lake, data); // your private archive's copy stands in for a source that didn't answer
   // A lookup where nothing answered isn't worth keeping: offline, or every service down.
   if (failed.length < 6) await withHike(lake, spot, data);
   return data;
