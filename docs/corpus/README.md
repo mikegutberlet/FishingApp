@@ -16,6 +16,9 @@ Tackle Box pulls from a lot of public services: state stocking schedules, USGS h
   library/.text/                cached text extracted from each book (by content hash), so OCR runs once
   urls.md                       websites and blogs to read nightly, one per line, optional water name after two spaces
   aliases.json                  extra matching terms ({"Convict": "ca:18122"}) or blocked ones ({"Silver Lake": null})
+  maps/regions.json             optional: your own region list for the topo map packs (default: data/maps/regions.json)
+  maps/<region>/<z>/<x>/<y>.png USGS topo tiles the archive server fills nightly (scripts/build-maps.mjs), served to the app
+  maps/index.json, maps/<region>/index.json, maps/<region>/missing.json   how far each region has got; tiles USGS doesn't have
   logs/<date>.log               the archive server's nightly run log
   tackle-box-private-corpus.json   the pack the app imports (⚙️ gear → Import)
 ```

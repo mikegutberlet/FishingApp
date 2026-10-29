@@ -38,6 +38,14 @@ Drop books into `<folder>/library/` (PDF, EPUB, `.txt`, or scans and page photos
 - Passages belong to their source: a replaced book or a changed page updates its own, a removed book or a dropped URL takes its passages with it, and a page that failed to load keeps last run's. Sites' `robots.txt` is honoured; a page that forbids us is dropped. Hand notes and excerpts (`notes`, `excerpts`) are never touched.
 - `CORPUS_DIR=<folder> node scripts/ingest.mjs --dry` prints what would be filed without writing. `INGEST=0` on the container turns the step off.
 
+## Region maps
+
+The server also keeps a whole region's USGS topo map (public domain; the only base layer whose terms allow bulk download) so a phone can pull it in one tap instead of saving lake by lake. After each nightly build, `scripts/build-maps.mjs` fetches the tiles of every region in the region list into `<folder>/maps/<region>/<z>/<x>/<y>.png`, four at a time, for at most `MAPS_MINUTES` (60) a night, and carries on the next night from where it stopped. Tiles USGS has no image for (ocean, beyond coverage) are listed in `maps/<region>/missing.json` and never asked for again. `maps/index.json` and `maps/<region>/index.json` say how far each region has got (`have`/`tiles`, `bytes`, `complete`).
+
+- Regions come from `data/maps/regions.json` in the repo (Eastern Sierra zoom 6–14, and California, Nevada and Oregon overviews zoom 6–11). To change them, put your own `maps/regions.json` in the folder with the same shape: `{ "regions": [{ "id": "eastern-sierra", "name": "Eastern Sierra", "bounds": [west, south, east, north], "zMin": 6, "zMax": 14 }] }` (ids letters, digits, `-` and `_`; zoom at most 16). Each zoom level has four times the tiles of the one before: the Eastern Sierra to zoom 14 is about 19,000 tiles and 380 MB, the California overview to zoom 11 about 5,700 tiles and 115 MB, Nevada and Oregon about 2,400 each and 50 MB. USGS answers a few tiles a second, so the first fill of the defaults takes a few nights.
+- In the app, ⚙️ gear → **Your private archive** lists the regions the server has started on, with the size, and **Download** saves one onto the phone (it shows under *Offline maps* too, and the map's **Topo** layer uses it with no signal). A download that stops early is resumed by the same button.
+- `MAPS=0` on the container turns the step off; `MAPS_MINUTES=0` removes the budget (a one-off `docker compose exec tackle-box-archive sh -c 'cd /app && MAPS_MINUTES=0 node scripts/build-maps.mjs'` fills everything in one go).
+
 ## Notes by hand
 
 `CORPUS_DIR=<folder> node scripts/add-notes.mjs notes.json` files short notes and excerpts from your books onto the right waters; the next nightly run (or `CORPUS_DOCS_ONLY=1 node scripts/build-corpus.mjs`) folds them into the catalogue and the pack, and the app sees them the next time it opens the water.

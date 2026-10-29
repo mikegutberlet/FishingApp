@@ -1,0 +1,8 @@
+{
+  "regions": [
+    { "id": "eastern-sierra", "name": "Eastern Sierra", "bounds": [-120.0, 36.3, -117.7, 38.6], "zMin": 6, "zMax": 14 },
+    { "id": "ca", "name": "California overview", "bounds": [-124.5, 32.5, -114.1, 42.05], "zMin": 6, "zMax": 11 },
+    { "id": "nv", "name": "Nevada overview", "bounds": [-120.01, 34.99, -114.03, 42.01], "zMin": 6, "zMax": 11 },
+    { "id": "or", "name": "Oregon overview", "bounds": [-124.75, 41.99, -116.45, 46.3], "zMin": 6, "zMax": 11 }
+  ]
+}
