@@ -2,6 +2,7 @@
 // the map works with no signal. Each pack is its own cache ("offline-<id>"), which app updates leave alone, and
 // sw.js answers tile and data requests from any cache before going to the network.
 import { db } from './db.js';
+import { tileRange as slippyRange, tilesAt as slippyTilesAt, tileList, boundsOf } from './slippy.js';
 import { forLake } from './states/index.js';
 import { $, esc, fmtDate, status, showView, onShow, icon } from './ui.js';
 import { map, baseLayers } from './map.js';
@@ -68,14 +69,10 @@ export async function lakeBounds(lake) {
   return b.pad(0.05);
 }
 
-// Slippy-map tile numbers covering a box at one zoom.
-function tileRange(b, z) {
-  const n = 2 ** z, clamp = v => Math.max(0, Math.min(n - 1, v));
-  const x = lon => clamp(Math.floor((lon + 180) / 360 * n));
-  const y = lat => { const r = lat * Math.PI / 180; return clamp(Math.floor((1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * n)); };
-  return { x0: x(b.getWest()), x1: x(b.getEast()), y0: y(b.getNorth()), y1: y(b.getSouth()) };
-}
-const tilesAt = (b, z) => { const r = tileRange(b, z); return (r.x1 - r.x0 + 1) * (r.y1 - r.y0 + 1); };
+// Slippy-map tile numbers covering a Leaflet bounds at one zoom (math in slippy.js, shared with the archive).
+const edges = b => ({ west: b.getWest(), south: b.getSouth(), east: b.getEast(), north: b.getNorth() });
+const tileRange = (b, z) => slippyRange(edges(b), z);
+const tilesAt = (b, z) => slippyTilesAt(edges(b), z);
 
 // Zoom range and size for a box and set of layers, dropping the closest zooms until it fits under the cap (per layer).
 export function plan(bounds, layers) {
