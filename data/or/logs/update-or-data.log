@@ -1,50 +1,62 @@
 {
-  "startedAt": "2026-10-28T19:07:33.163Z",
+  "startedAt": "2026-10-29T19:14:01.302Z",
   "schedule": {
     "windows": [
-      "2024-10-28..2024-11-27: 12",
-      "2024-11-28..2024-12-28: 9",
-      "2024-12-29..2025-01-28: 0",
-      "2025-01-29..2025-02-28: 53",
-      "2025-03-01..2025-03-31: 130",
-      "2025-04-01..2025-05-01: 182",
-      "2025-05-02..2025-06-01: 297",
-      "2025-06-02..2025-07-02: 131",
-      "2025-07-03..2025-08-02: 88",
-      "2025-08-03..2025-09-02: 33",
-      "2025-09-03..2025-10-03: 43",
-      "2025-10-04..2025-11-03: 32",
-      "2025-11-04..2025-12-04: 12",
-      "2025-12-05..2026-01-04: 4",
-      "2026-01-05..2026-02-04: 5",
-      "2026-02-05..2026-03-07: 65",
-      "2026-03-08..2026-04-07: 144",
-      "2026-04-08..2026-05-08: 249",
-      "2026-05-09..2026-06-08: 260",
-      "2026-06-09..2026-07-09: 104",
-      "2026-07-10..2026-08-09: 62",
-      "2026-08-10..2026-09-09: 27",
-      "2026-09-10..2026-10-10: 55",
-      "2026-10-11..2026-11-10: 17",
-      "2026-11-11..2026-12-11: 8",
-      "2026-12-12..2027-01-11: 6",
-      "2027-01-12..2027-02-11: 19",
-      "2027-02-12..2027-03-14: 90",
-      "2027-03-15..2027-04-14: 148",
-      "2027-04-15..2027-05-15: 293",
-      "2027-05-16..2027-06-15: 198",
-      "2027-06-16..2027-07-16: 125",
-      "2027-07-17..2027-08-16: 59",
-      "2027-08-17..2027-09-16: 28",
-      "2027-09-17..2027-10-17: 60",
-      "2027-10-18..2027-10-28: 4"
+      "2024-10-29..2024-11-28: 12",
+      "2024-11-29..2024-12-29: 9",
+      "2024-12-30..2025-01-29: 0",
+      "2025-01-30..2025-03-01: 53",
+      "2025-03-02..2025-04-01: 118",
+      "2025-04-02..2025-05-02: 247",
+      "2025-05-03..2025-06-02: 297",
+      "2025-06-03..2025-07-03: 131",
+      "2025-07-04..2025-08-03: 88",
+      "2025-08-04..2025-09-03: 33",
+      "2025-09-04..2025-10-04: 43",
+      "2025-10-05..2025-11-04: 23",
+      "2025-11-05..2025-12-05: 12",
+      "2025-12-06..2026-01-05: 4",
+      "2026-01-06..2026-02-05: 5",
+      "2026-02-06..2026-03-08: 65",
+      "2026-03-09..2026-04-08: 144",
+      "2026-04-09..2026-05-09: 249",
+      "2026-05-10..2026-06-09: 218",
+      "2026-06-10..2026-07-10: 120",
+      "2026-07-11..2026-08-10: 62",
+      "2026-08-11..2026-09-10: 27",
+      "2026-09-11..2026-10-11: 55",
+      "2026-10-12..2026-11-11: 17",
+      "2026-11-12..2026-12-12: 8",
+      "2026-12-13..2027-01-12: 6",
+      "2027-01-13..2027-02-12: 34",
+      "2027-02-13..2027-03-15: 90",
+      "2027-03-16..2027-04-15: 148",
+      "2027-04-16..2027-05-16: 293",
+      "2027-05-17..2027-06-16: 198",
+      "2027-06-17..2027-07-17: 125",
+      "2027-07-18..2027-08-17: 35",
+      "2027-08-18..2027-09-17: 46",
+      "2027-09-18..2027-10-18: 60",
+      "2027-10-19..2027-10-29: 8"
     ],
-    "rows": 2922,
+    "rows": 2926,
     "weeks": [
       "2024-10-28",
-      "2027-10-18"
+      "2027-10-25"
     ],
     "sample": [
+      {
+        "week": "2024-10-28",
+        "weekEnd": "2024-11-01",
+        "raw": "ANA R",
+        "zone": "Southeast",
+        "office": "Lakeview",
+        "legals": 250,
+        "trophy": 0,
+        "brood": 0,
+        "fingerling": 0,
+        "total": 250
+      },
       {
         "week": "2024-10-28",
         "weekEnd": "2024-11-01",
@@ -68,39 +80,27 @@
         "brood": 0,
         "fingerling": 0,
         "total": 1975
-      },
-      {
-        "week": "2024-10-28",
-        "weekEnd": "2024-11-01",
-        "raw": "ALTON BAKER CANAL",
-        "zone": "Willamette",
-        "office": "Springfield",
-        "legals": 750,
-        "trophy": 0,
-        "brood": 0,
-        "fingerling": 0,
-        "total": 750
       }
     ]
   },
   "recreation": {
-    "weekOf": "2026-10-22",
+    "weekOf": "2026-10-29",
     "northwest": {
       "date": null,
-      "items": 6,
+      "items": 9,
       "first": [
-        "Fall salmon fishing is fair on Nehalem, Tillamook, and Nestucca bays although fishing did slow a little over the past week. All basins are still producing Chinook and coho salmon. The North Coast rivers are still at low flows, so fishing is best in the bays and tidewaters. Wednesday 10/28/2026 will be the last day of wild coho retention on these basins, no wild coho adults may be retained after that date. See the regulation updates online at Fall Coastal Salmon Management for details on seasons and bag limits.",
-        "The Nestucca and Wilson Rivers still have summer steelhead available, mostly in the upper reaches. Fall can be a good time to target these fish that have been holding most of the summer, as the dropping water temperatures and fall rains can get them more active and willing to bite.",
-        "Many coastal streams are open for cutthroat trout fishing through Oct 31. There are resident and sea-run cutthroat available for catching. Check the regulations for open areas."
+        "Bring your raingear, fall salmon fishing is fair on Nehalem, Tillamook, and Nestucca bays. All basins are still producing Chinook and coho salmon. The North Coast rivers finally got some rain which will move some fish up into the rivers and may slow fishing in the bay, but there are still fresh fish coming through. Wild coho retention is now closed on these basins, no wild coho adults may be retained as of Oct. 28. Angling for hatchery coho is still open and there are hatchery coho coming through Tillamook and Nehalem bays. See the regulation updates online at Fall Coastal Salmon Management for details on seasons and bag limits.",
+        "North Coast Rivers finally got some rain, and although the rivers only came up a little it was enough to move some fish in. Fall Chinook were reported moving into the lower river and fishing picked up at the hatchery hole. Fall Chinook should be moving into the lower reaches of the Necanicum, Nehalem, Kilchis, Wilson, and Nestucca Rivers as well.",
+        "The Trask River, North Fork Nehalem River, and Lower Columbia Tributaries should have hatchery coho arriving with the recent rains."
       ]
     },
     "southwest": {
       "date": null,
-      "items": 3,
+      "items": 5,
       "first": [
-        "Weather has been near perfect for some late season trout fishing on either Garrison or Floras Lakes. Garrison Lake in particular usually has some fairly good numbers of trout that carry over from the spring stockings.",
+        "Try some late season trout fishing on either Garrison or Floras Lakes. Garrison Lake in particular usually has some fairly good numbers of trout that carry over from the spring stockings.",
         "Anglers are still picking up fall chinook trolling the Chetco River estuary.",
-        "Empire, Saunders, and Butterfield Lakes will be stocked by end of week 10/23/26 with legal trout."
+        "Empire, Saunders, and Butterfield Lakes were stocked recently with legal trout."
       ]
     },
     "willamette": {
@@ -113,19 +113,20 @@
     },
     "central": {
       "date": null,
-      "items": 2,
+      "items": 3,
       "first": [
         "Following trophy trout stockings, the Fall River has been fishing exceptionally well.",
-        "Pine Nursery Pond in Bend was recently stocked with brown trout."
+        "Pine Nursery Pond in Bend was recently stocked with rainbow and brown trout.",
+        "Reports of consistent trout fishing on the lower Deschutes around the Trout Creek area."
       ]
     },
     "northeast": {
       "date": null,
-      "items": 3,
+      "items": 4,
       "first": [
-        "Tiger Muskie fishing at Phillips Reservoir should be good as fish are aggressively feeding to stock up on forage before winter sets in. Water temperature is prime right now in the low 50°F. Fishing should remain hot until water temps drop below 45°F. As an added bonus, the low water levels will concentrate fish and may make catching fish easier.",
+        "Tiger Muskies are hungry and aggressive at Phillips Reservoir. Try your luck before winter sets in. Water temperature is prime right now in the low 50°F. Fishing should remain hot until water temps drop below 45°F. As an added bonus, the low water levels will concentrate fish and may make catching fish easier.",
         "Coho fishing has been great on the lower Umatilla River. Expect fishing to remain good into November. Summer steelhead are also present and will become more prominent as the season progresses.",
-        "Anglers are catching steelhead in both the Grande Ronde and Imnaha Rivers. Focus lower on both rivers this time of year. Kokanee anglers are finding bright fish on the north end of Wallowa Lake. These kokanee will be smaller in size as many larger fish are spawning at the other end of the lake. Kinney Lake was stocked for the winter with trout."
+        "Anglers are catching steelhead in both the Grande Ronde and Imnaha Rivers. Focus lower on both rivers this time of year."
       ]
     },
     "southeast": {
@@ -133,24 +134,24 @@
       "items": 7,
       "first": [
         "Fishing for trout at Lost Creek Reservoir.",
-        "Malheur Reservoir – great for Rainbow Trout from 10-22\". Common sizes are 12-16\" but fish up to 22\" were captured in our sampling this week. We also fly-fished it in the evening and morning and had catches of 10+ trout/hr. People were observed being successful trolling and bank fishing with bait too. Water temperatures were in the mid 50's. You can launch a boat from the boat ramp. Water is up to the old school bus (a school bus frame in the reservoir used by those who are familiar with it to gauge how full the reservoir is).",
-        "Yellowjacket Reservoir – Great fishing without a crowd! We sampled this last week and found fish from 8-18\" with a common size of 12-15\". We fished leech patterns under an indicator mid-day and had non-stop action. Water temperatures are in the mid-50's here too."
+        "Malheur Reservoir – great for Rainbow Trout from 10-22\". Common sizes are 12-16\" but we captured fish up to 22\" in our sampling this week. We also fly-fished it in the evening and morning and had catches of 10+ trout/hr. We saw people having success trolling and bank fishing with bait as well. Water temperatures were in the mid 50's. You can launch a boat from the boat ramp. Water is up to the old school bus. If you know you know.",
+        "Yellowjacket Reservoir – Great fishing without a crowd! We sampled last week and found fish from 8-18\" with a common size of 12-15\". We fished leech patterns under an indicator mid-day and had non-stop action. Water temperatures are in the mid-50's here, too."
       ]
     },
     "columbia": {
-      "date": "2026-10-22",
-      "items": 26,
+      "date": "2026-10-29",
+      "items": 16,
       "first": [
         "Current and upcoming fishing opportunities:",
-        "Angling for coho has been fair to good near the mouths of some tributaries.",
-        "Forecasts for 2026 Columbia River Spring Chinook, Summer Chinook, Fall Chinook, Coho, and Sockeye are available here."
+        "Angling for coho has been winding down, but some anglers have still been catching around the Longview area as well as near the mouth of the Sandy River.",
+        "Bonneville Dam to McNary Dam: Weekly checking showed 22 walleye kept, and 20 walleye released for 13 boats (27 anglers)."
       ]
     },
     "marine": {
-      "date": "2026-10-22",
-      "items": 37,
+      "date": "2026-10-29",
+      "items": 36,
       "first": [
-        "Marine fishing. As of Jan 1, 2026 , an Ocean Endorsement is needed for most recreational anglers fishing in the ocean. Check the Ocean Endorsement page for more information.",
+        "Marine fishing. As of Jan 1, 2026, an Ocean Endorsement is needed for most recreational anglers fishing in the ocean. Check the Ocean Endorsement page for more information.",
         "Marine fishing. Report unusual fish and ocean conditions",
         "Marine fishing. Have you encountered unusual fish or ocean conditions off the Oregon Coast this year? With warm El Niño waters pushing up the coast, we're starting to see unusual tropical visitors migrating north! Report your on-the-water observations to CaCurrent.Observations@noaa.gov (more information available here ). Your observations are critical to understanding how changing ocean conditions affect what we see offshore."
       ]
@@ -223,19 +224,20 @@
       "RUNNING Y PD → Running Y Pond (Southeast)",
       "PINE NURSERY PD → Pine Nursery Pond (Central)",
       "PRINEVILLE FISHING PD → Prineville Fishing Pond (Central)",
-      "LAIRD LK → Laird Lake (Southwest)",
       "BURNS GRAVEL PD → Burns Gravel Pond (Southeast)",
-      "SEVENTH ST PD → Seventh St. Pond (Northeast)",
-      "SMOCK PRAIRIE RES → Smock Prairie Reservoir (Central)",
-      "RED TOP LK → Red Top Lake (Southwest)",
-      "KINGSLEY RES, UPR → Upper Kingsley Reservoir (Central)",
+      "LAIRD LK → Laird Lake (Southwest)",
       "HAINES PD-1 → Haines Pond 1 (Southeast)",
       "MIDDLE FK PD (HOOD R) → Middle Fork Pond (Hood River) (Central)",
-      "HOLLIDAY PARK PD → Holliday Park Pond (Northeast)",
+      "KINGSLEY RES, UPR → Upper Kingsley Reservoir (Central)",
       "LONG CREEK PD → Long Creek Pond (Northeast)",
       "Weaver Road Pd → Weaver Road Pond (Southwest)",
       "BURMA PD, L → Little Burma Pond (Southwest)",
+      "HOLLIDAY PARK PD → Holliday Park Pond (Northeast)",
+      "SEVENTH ST PD → Seventh St. Pond (Northeast)",
+      "SMOCK PRAIRIE RES → Smock Prairie Reservoir (Central)",
+      "RED TOP LK → Red Top Lake (Southwest)",
+      "COTTONWOOD PIT → Cottonwood Pit (Central)",
       "FALL CR (WILLAMETTE R) → Fall Creek (Willamette River) (Willamette)",
       "WESTON HIGHWAY PD → Weston Highway Pond (Northeast)",
-      "COTTONWOOD PIT → Cottonwood Pit (Central)",
-   
+      "MCKENZIE R-1 (below Leaburg Dam) → McKenzie River 1 (Below Leaburg Dam) (Willamette)",
+    
