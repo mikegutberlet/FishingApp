@@ -15,28 +15,13 @@
 
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { nameKey as key, loadWaters, resolveWater, stubRecord, waterFile } from './corpus-lib.mjs';
 
-const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const DIR = process.env.CORPUS_DIR ? path.resolve(process.env.CORPUS_DIR) : null;
 const MAX_CHARS = 400;
 const today = new Date().toISOString().slice(0, 10);
-const readJson = async p => { try { return JSON.parse(await readFile(path.join(ROOT, p), 'utf8')); } catch { return null; } };
-const key = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-
-// The stocked waters with a map point: the ones the corpus has (or will have) a file for.
-const waters = {};
-for (const st of ['ca', 'nv', 'or']) waters[st] = ((await readJson(`data/${st}/waters.json`))?.waters ?? []).filter(w => w.lat != null && w.lon != null && w.name);
-
-function resolve(ref) {
-  const [st, rest] = String(ref).split(/:(.*)/s), list = waters[st?.toLowerCase()];
-  if (!list || !rest) throw new Error(`"${ref}": use st:id or st:Name, e.g. ca:175 or ca:Convict Lake`);
-  const byId = list.find(w => String(w.id).toLowerCase() === rest.toLowerCase());
-  if (byId) return [st.toLowerCase(), byId];
-  const byName = list.filter(w => key(w.name) === key(rest));
-  if (byName.length === 1) return [st.toLowerCase(), byName[0]];
-  throw new Error(byName.length ? `"${ref}" matches ${byName.length} waters: ${byName.map(w => `${st}:${w.id} (${w.counties ?? w.county ?? ''})`).join(', ')}` : `"${ref}": no stocked water with that id or name (try --find)`);
-}
+const waters = await loadWaters();
+const resolve = ref => resolveWater(ref, waters);
 
 if (process.argv[2] === '--find') {
   const q = key(process.argv[3] ?? '');
@@ -57,7 +42,7 @@ for (const [i, n] of notes.entries()) {
     if (!s.title && !s.url) throw new Error('source needs a title or a url');
     if (s.url && !/^https?:\/\/\S+$/.test(s.url)) throw new Error(`source url "${s.url}" must start with http:// or https://`);
     const source = Object.fromEntries(Object.entries({ title: s.title, author: s.author, page: s.page != null ? String(s.page) : undefined, url: s.url, read: s.read ?? (s.url ? today : undefined) }).filter(([, v]) => v));
-    const file = path.join(DIR, st, `${encodeURIComponent(String(w.id))}.json`);
+    const file = waterFile(DIR, st, w);
     if (!byFile.has(file)) byFile.set(file, { st, w, add: [] });
     byFile.get(file).add.push({ date: n.date ?? today, by: n.by ?? 'Goobs', text, source, excerpt: n.excerpt ? String(n.excerpt).trim() : undefined });
   } catch (e) { bad.push(`#${i + 1}: ${e.message}`); }
@@ -73,7 +58,7 @@ for (const file of byFile.keys()) {
 
 let added = 0, skipped = 0;
 for (const [file, { st, w, add }] of byFile) {
-  const f = existing.get(file) ?? { id: String(w.id), state: st.toUpperCase(), name: w.name, notes: [], manual: {} };
+  const f = existing.get(file) ?? stubRecord(st, w);
   f.notes ??= [];
   for (const n of add) {
     if (f.notes.some(o => key(o.text) === key(n.text))) { skipped++; continue; }

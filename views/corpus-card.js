@@ -1,5 +1,5 @@
 // Info tab card "In the archive": what your private archive holds for this water (docs/corpus/README.md), the hand
-// notes and book excerpts kept in it.
+// notes and book excerpts kept in it, and the passages the nightly ingest found in your books and links.
 import { esc, fmtDate } from '../ui.js';
 import { corpusFor, corpusKey } from '../corpus.js';
 import { fmtMi } from '../access-rules.js';
@@ -24,10 +24,15 @@ export async function renderArchiveCard(lake, el) {
   if (f.rules?.special?.length) rows.push(`<b>Rules that name it:</b> ${f.rules.special.length}`);
   const manual = Object.entries(f.manual ?? {});
   const ex = f.excerpts ?? [];
+  // What the nightly ingest found in your books and links (scripts/ingest.mjs): grouped by source, newest first.
+  const groups = [...(f.passages ?? []).reduce((m, p) => m.set(p.src, [...(m.get(p.src) ?? []), p]), new Map()).values()].sort((a, b) => b[0].ingestedAt.localeCompare(a[0].ingestedAt));
+  const passageSrc = p => noteSource({ title: p.kind === 'web' ? p.title : undefined, url: p.url, page: p.page });
+  const group = ps => `<details class="small"><summary>📚 ${ps[0].url ? `<a href="${esc(fullUrl(ps[0].url))}" target="_blank" rel="noopener">${esc(ps[0].title || hostOf(ps[0].url))} ↗</a>` : `<i>${esc(ps[0].title)}</i>${ps[0].author ? `, ${esc(ps[0].author)}` : ''}`} · ${ps.length} passage${ps.length === 1 ? '' : 's'}</summary>${ps.map(p => `<p class="small">“${esc(p.text)}” <span class="muted">${p.page ? `p. ${esc(p.page)}` : p.url ? passageSrc(p) : ''}${p.ambiguous ? ' (may be another water with this name)' : ''}</span></p>`).join('')}</details>`;
   el.innerHTML = `<div class="card"><h3>In the archive</h3>
     <p class="small">${rows.join('<br>') || (f.checkedAt ? 'Facts, stocking and rules only so far.' : '')}</p>
     ${f.notes?.length ? `<div class="small"><b>Notes kept with the water</b>${f.notes.map(n => `<p class="small">📝 ${esc(n.text)} <span class="muted">${n.source ? `${noteSource(n.source)} · ` : ''}${esc(n.date ?? '')}${n.by ? `, ${esc(n.by)}` : ''}</span></p>`).join('')}</div>` : ''}
     ${ex.length ? `<div class="small"><b>From your books</b>${ex.map(x => `<p class="small">“${esc(x.text)}” <span class="muted">${x.source ? noteSource(x.source) : ''}</span></p>`).join('')}</div>` : ''}
+    ${groups.length ? `<div class="small"><b>From your library</b>${groups.map(group).join('')}</div>` : ''}
     ${manual.length ? `<p class="small muted">Hand-set facts: ${manual.map(([k, v]) => `${esc(k)} = ${esc(String(v))}`).join(', ')}</p>` : ''}
     <p class="muted small">${f.checkedAt ? `${f.sources?.length ?? 0} sources · first seen ${esc(f.firstSeen ?? '')} · last checked ${fmtDate(f.checkedAt)}` : 'The nightly job hasn’t built the rest of this water’s record yet.'}${f.changes?.[0] ? ` · last change: ${esc(f.changes[0].text)} (${esc(f.changes[0].date)})` : ''}<br>
     <a href="https://github.com/mikegutberlet/FishingApp/blob/main/docs/corpus/README.md" target="_blank" rel="noopener">About the archive ↗</a></p></div>`;

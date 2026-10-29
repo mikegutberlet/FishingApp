@@ -1,6 +1,7 @@
 // The private archive server: one small process for your own infrastructure (server/Dockerfile) that
-//   1. runs scripts/build-corpus.mjs every night into CORPUS_DIR (a NAS folder; Google Drive syncs from there), after
-//      pulling the repo so the state data files the GitHub jobs update are fresh, and
+//   1. every night, after pulling the repo so the state data files the GitHub jobs update are fresh, runs
+//      scripts/ingest.mjs (your books in <CORPUS_DIR>/library and links in urls.md, filed per water) and then
+//      scripts/build-corpus.mjs into CORPUS_DIR (a NAS folder; Google Drive syncs from there), and
 //   2. serves that folder over HTTP to the app with a key, so the Info, Getting there and Camping tabs read the archive
 //      straight from here (⚙️ gear → Your private archive → server address and key) and keep a copy on the phone.
 // Put it behind your own HTTPS (reverse proxy, Cloudflare Tunnel, Tailscale): it speaks plain HTTP on PORT.
@@ -8,7 +9,7 @@
 // Env: CORPUS_DIR (default /corpus), CORPUS_TOKEN (required; the key the app sends as "Authorization: Bearer <key>"),
 //      PORT (8787), ALLOW_ORIGIN (https://mikegutberlet.github.io; where the app is served from), BUILD_HOUR (1, local
 //      time, TZ honoured; -1 = never build here), BUILD_ON_START (1 = also build when the process starts),
-//      and the build's own CORPUS_MINUTES etc. (scripts/build-corpus.mjs).
+//      INGEST (0 = skip the books-and-links step), and the build's own CORPUS_MINUTES etc. (scripts/build-corpus.mjs).
 // Routes: GET /health (no key) → { ok, builtAt, waters, lastBuild }; GET /<st>/<id>.json, /<st>/index.json,
 //         /tackle-box-private-corpus.json, /docs/<page>.md (key required). Nothing else is served.
 
@@ -78,11 +79,15 @@ async function build() {
   log.write(`\n=== build ${new Date().toISOString()} ===\n`);
   const pulled = await run('git', ['pull', '--ff-only', '--quiet'], log);
   if (pulled) log.write('git pull failed; building from the checkout as it is\n');
+  // Books and links first, so the catalogue and the pack the build writes carry tonight's passages. An ingest
+  // failure is logged and the build still runs.
+  const ing = process.env.INGEST === '0' ? null : await run('node', ['scripts/ingest.mjs'], log);
+  if (ing !== null) log.write(`=== ingest exit ${ing} ===\n`);
   const code = await run('node', ['scripts/build-corpus.mjs'], log);
-  lastBuild = { at: new Date().toISOString(), ok: code === 0, log: `logs/${day}.log` };
+  lastBuild = { at: new Date().toISOString(), ok: code === 0, ingest: ing === null ? 'off' : ing === 0, log: `logs/${day}.log` };
   log.write(`=== done, exit ${code} ===\n`);
   log.end(); building = false;
-  console.log(`build ${lastBuild.ok ? 'ok' : `failed (exit ${code})`}, see ${lastBuild.log}`);
+  console.log(`build ${lastBuild.ok ? 'ok' : `failed (exit ${code})`}${ing === null ? '' : `, ingest ${ing === 0 ? 'ok' : `failed (exit ${ing})`}`}, see ${lastBuild.log}`);
 }
 function schedule() {
   if (BUILD_HOUR < 0) return;
