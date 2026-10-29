@@ -30,6 +30,7 @@ function renderCard() {
     <label>Key <input id="corpus-key" type="password" placeholder="the CORPUS_TOKEN you set on the server" value="${esc(c?.key ?? '')}" autocomplete="off"></label></div>
     <p><button id="corpus-check">${c ? 'Save and check' : 'Connect'}</button>${c ? ` <button class="danger" id="corpus-forget">Forget server</button>` : ''}</p>
     <p class="small muted" id="corpus-server-status">${c ? 'Connected: waters are fetched as you open them and kept here.' : ''}</p>
+    <div id="region-maps"></div>
     ${m ? `<p class="small">Imported pack: ${m.waters} waters${m.library ? `, ${m.library} books` : ''} · built ${fmtDate(m.builtAt)} · imported ${fmtDate(m.importedAt)} <button class="danger" id="private-corpus-clear">Remove from this phone</button></p>` : ''}`;
   $('#corpus-check', el).onclick = async () => {
     const url = $('#corpus-url', el).value.trim().replace(/\/+$/, ''), key = $('#corpus-key', el).value.trim(), out = $('#corpus-server-status', el);
@@ -52,6 +53,7 @@ function renderCard() {
     }
   };
   $('#corpus-forget', el)?.addEventListener('click', () => { localStorage.removeItem(SERVER); renderCard(); });
+  if (c) import('./views/region-maps.js').then(m => m.renderRegionMaps($('#region-maps', el)));
   $('#private-corpus-clear', el)?.addEventListener('click', async () => { if (!confirm('Remove the imported archive from this phone? (The pack on your NAS and Drive stays.)')) return; await db.clear('corpusPrivate'); localStorage.removeItem(META); renderCard(); });
 }
 onShow('settings', renderCard);

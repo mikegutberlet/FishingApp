@@ -6,6 +6,7 @@ import { tileRange as slippyRange, tilesAt as slippyTilesAt, tileList, boundsOf 
 import { forLake } from './states/index.js';
 import { $, esc, fmtDate, status, showView, onShow, icon } from './ui.js';
 import { map, baseLayers } from './map.js';
+import { serverFetch } from './corpus.js';
 
 const PREFIX = 'offline-';
 const META = 'offline-meta.json'; // each pack's cache describes itself at this key
@@ -103,7 +104,7 @@ const writeMeta = (cache, pack) => cache.put(META, new Response(JSON.stringify(p
 
 // Fetches whatever the pack doesn't have yet. Only readable 2xx responses are kept (the tile servers send CORS
 // headers), each stored with its size so the pack's total can be summed without reading every body back.
-async function download(cache, urls, onProgress, signal, checkpoint) {
+async function download(cache, urls, onProgress, signal, checkpoint, fetcher = url => fetch(`${url}#offline`, { mode: 'cors', signal })) {
   let done = 0, bytes = 0;
   const queue = urls.slice();
   const worker = async () => {
@@ -113,7 +114,7 @@ async function download(cache, urls, onProgress, signal, checkpoint) {
         const old = await cache.match(url), have = !url.startsWith('data/') && old; // tiles don't change; the state data does
         if (!have || have.type === 'opaque') {
           // #offline tells sw.js to pass it straight through instead of keeping a second copy in its own caches.
-          const r = await fetch(`${url}#offline`, { mode: 'cors', signal });
+          const r = await fetcher(url);
           if (!r.ok) throw new Error(r.status);
           const blob = await r.blob();
           await cache.put(url, new Response(blob, { headers: { 'content-type': r.headers.get('content-type') || blob.type, 'content-length': String(blob.size) } }));
@@ -225,6 +226,42 @@ export async function packLines(lake) {
 }
 
 // ---------- "Save for offline" on a water's page ----------
+// ---------- Region packs from your private archive ----------
+// A whole region's USGS topo tiles, pre-downloaded by the archive server (scripts/build-maps.mjs) and fetched from
+// it here with the key. Each tile is stored under the USGS URL Leaflet asks for, so sw.js serves it like any other
+// saved tile, and the pack shows in the Offline maps list like a lake's. Satellite stays per lake (Esri's terms).
+export const regionPackId = id => `${PREFIX}region-${id}`;
+export const REGION_ZOOM_MAX = MAX_ZOOM.Topo;
+
+// Leaflet's URL for each tile → the archive's path for it.
+export function regionUrls(region) {
+  const urls = new Map();
+  for (const { z, x, y } of tileList(boundsOf(region.bounds), region.zMin, Math.min(region.zMax, REGION_ZOOM_MAX)))
+    urls.set(L.Util.template(baseLayers.Topo._url, { z, x, y, s: '', r: '' }), `maps/${region.id}/${z}/${x}/${y}.png`);
+  return urls;
+}
+
+// What this phone holds of a region: null when nothing was ever downloaded. `missing` counts tiles the archive has
+// and this phone doesn't (tiles the archive itself lacks, region.missing, are never counted against the pack).
+export async function regionStatus(region) {
+  const meta = await readPack(regionPackId(region.id));
+  if (!meta) return null;
+  const { bytes, missing } = await survey(await caches.open(regionPackId(region.id)), [...regionUrls(region).keys()]);
+  return { ...meta, bytes, missing: Math.max(0, missing - (region.missing ?? 0)), complete: missing <= (region.missing ?? 0) };
+}
+
+export async function downloadRegion(region, { signal, onProgress = () => {} }) {
+  const id = regionPackId(region.id), urls = regionUrls(region), keys = [...urls.keys()];
+  const cache = await caches.open(id);
+  const [w, s, e, n] = region.bounds;
+  const base = { id, name: `Region: ${region.name}`, region: region.id, bounds: [s, w, n, e], zMin: region.zMin, zMax: Math.min(region.zMax, REGION_ZOOM_MAX), layers: ['Topo'], tiles: keys.length, savedAt: new Date().toISOString() };
+  const describe = async () => { const st = await survey(cache, keys); const meta = { ...base, bytes: st.bytes, missing: Math.max(0, st.missing - (region.missing ?? 0)), complete: st.missing <= (region.missing ?? 0) }; await writeMeta(cache, meta); return meta; };
+  await describe(); // a download cut off early still leaves a described, resumable pack
+  // The archive answers 404 for a tile USGS has no image for: skipped like a failed fetch, and not held against the pack.
+  await download(cache, keys, onProgress, signal, describe, url => serverFetch(urls.get(url), 30000));
+  return describe();
+}
+
 export async function offlineDialog(lake) {
   if (!('caches' in window)) return alert('This browser can\'t save maps for offline use.');
   const id = packId(lake);
@@ -296,7 +333,7 @@ export function offlineButton(lake) {
 
 // ---------- Offline maps list in the Data view ----------
 let outline = null;
-async function renderPacks() {
+export async function renderPacks() {
   const el = $('#offline-areas');
   if (!el) return;
   const packs = await listPacks();
