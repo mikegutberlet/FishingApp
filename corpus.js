@@ -15,7 +15,9 @@ export const corpusKey = lake => {
 // is kept in the phone's store too, so the water still has its archive offline. The imported pack feeds the same store.
 export const SERVER = 'corpus-server';
 export const serverConf = () => { try { const c = JSON.parse(localStorage.getItem(SERVER)); return c?.url && c?.key ? c : null; } catch { return null; } };
-export const serverFetch = (path, ms = 8000) => { const c = serverConf(); if (!c) return Promise.reject(new Error('no server')); return fetch(`${c.url.replace(/\/+$/, '')}/${path}`, { headers: { Authorization: `Bearer ${c.key}` }, signal: AbortSignal.timeout(ms) }); };
+// A caller's own signal (a user stopping a download) is combined with the timeout where the browser can (Safari 17.4+, Chrome 116+).
+const withTimeout = (signal, ms) => signal && 'any' in AbortSignal ? AbortSignal.any([signal, AbortSignal.timeout(ms)]) : AbortSignal.timeout(ms);
+export const serverFetch = (path, ms = 8000, signal = null) => { const c = serverConf(); if (!c) return Promise.reject(new Error('no server')); return fetch(`${c.url.replace(/\/+$/, '')}/${path}`, { headers: { Authorization: `Bearer ${c.key}` }, signal: withTimeout(signal, ms) }); };
 let fresh = {}, freshFor = null;
 export async function corpusFor(lake) {
   const key = corpusKey(lake);

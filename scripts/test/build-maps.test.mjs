@@ -3,7 +3,7 @@ import { mkdtemp, mkdir, writeFile, readFile, rm } from 'node:fs/promises';
 import { execFile } from 'node:child_process'; import { promisify } from 'node:util'; import http from 'node:http'; import os from 'node:os'; import path from 'node:path';
 const exec = promisify(execFile);
 const PNG = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 0]);
-let dir, server, port, requests = 0;
+let dir, server, port, requests = 0, jsonTimes = 0;
 before(async () => {
   dir = await mkdtemp(path.join(os.tmpdir(), 'tb-maps-'));
   await mkdir(path.join(dir, 'maps'), { recursive: true });
@@ -12,6 +12,7 @@ before(async () => {
   server = http.createServer((req, res) => {
     requests++;
     if (req.url === '/tile/6/24/10') { res.statusCode = 404; return res.end(); }   // {z}/{y}/{x}
+    if (req.url === '/tile/7/49/21' && jsonTimes-- > 0) { res.setHeader('content-type', 'application/json'); return res.end('{"error":{"code":500}}'); } // ArcGIS "200 with an error body"
     res.setHeader('content-type', 'image/png'); res.end(PNG);
   });
   await new Promise(r => server.listen(0, r)); port = server.address().port;
@@ -41,6 +42,21 @@ test('stops at the budget and resumes next run', async () => {
   const partial = await index(); assert.equal(partial.complete, false); assert.ok(partial.have < partial.tiles);
   await run(env({ MAPS_MINUTES: '0' }));
   assert.equal((await index()).complete, true);
+});
+
+test('a 200 that is not an image is a failure, not a tile', async () => {
+  await rm(path.join(dir, 'maps', 'test'), { recursive: true, force: true });
+  jsonTimes = 2; // both attempts of the first run
+  const { stdout } = await run(env({ MAPS_MINUTES: '0' }));
+  assert.match(stdout, /1 failed, retried next run/);
+  await assert.rejects(readFile(path.join(dir, 'maps', 'test', '7', '21', '49.png')), 'the JSON body must not be saved as a tile');
+  assert.equal((await index()).complete, false);
+  await run(env({ MAPS_MINUTES: '0' }));
+  assert.deepEqual(await readFile(path.join(dir, 'maps', 'test', '7', '21', '49.png')), PNG); assert.equal((await index()).complete, true);
+});
+
+test('a budget that is not a number is refused', async () => {
+  for (const bad of ['60m', '-5']) await assert.rejects(run(env({ MAPS_MINUTES: bad })), e => e.code === 1 && /MAPS_MINUTES/.test(e.stderr), bad);
 });
 
 test('a bad regions file is reported and exits 1', async () => {

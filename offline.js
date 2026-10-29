@@ -243,12 +243,14 @@ export function regionUrls(region) {
 
 // What this phone holds of a region: null when nothing was ever downloaded. `missing` counts tiles the archive has
 // and this phone doesn't (tiles the archive itself lacks, region.missing, are never counted against the pack).
+// (Counting is by cache.keys() alone, not survey(): a region pack holds ~19k entries and Settings opens often.)
 export async function regionStatus(region) {
   const meta = await readPack(regionPackId(region.id));
   if (!meta) return null;
-  const { bytes, missing } = await survey(await caches.open(regionPackId(region.id)), [...regionUrls(region).keys()]);
-  return { ...meta, bytes, missing: Math.max(0, missing - (region.missing ?? 0)), complete: missing <= (region.missing ?? 0) };
+  const missing = await absent(await caches.open(regionPackId(region.id)), [...regionUrls(region).keys()]);
+  return { ...meta, missing: Math.max(0, missing - (region.missing ?? 0)), complete: missing <= (region.missing ?? 0) };
 }
+const absent = async (cache, urls) => { const have = new Set((await cache.keys()).map(r => r.url)); return urls.filter(u => !have.has(u)).length; };
 
 export async function downloadRegion(region, { signal, onProgress = () => {} }) {
   const id = regionPackId(region.id), urls = regionUrls(region), keys = [...urls.keys()];
@@ -256,9 +258,12 @@ export async function downloadRegion(region, { signal, onProgress = () => {} }) 
   const [w, s, e, n] = region.bounds;
   const base = { id, name: `Region: ${region.name}`, region: region.id, bounds: [s, w, n, e], zMin: region.zMin, zMax: Math.min(region.zMax, REGION_ZOOM_MAX), layers: ['Topo'], tiles: keys.length, savedAt: new Date().toISOString() };
   const describe = async () => { const st = await survey(cache, keys); const meta = { ...base, bytes: st.bytes, missing: Math.max(0, st.missing - (region.missing ?? 0)), complete: st.missing <= (region.missing ?? 0) }; await writeMeta(cache, meta); return meta; };
-  await describe(); // a download cut off early still leaves a described, resumable pack
-  // The archive answers 404 for a tile USGS has no image for: skipped like a failed fetch, and not held against the pack.
-  await download(cache, keys, onProgress, signal, describe, url => serverFetch(urls.get(url), 30000));
+  const start = await describe(); // a download cut off early still leaves a described, resumable pack
+  // Every 250 tiles only the running size is noted (a full survey of ~19k entries each time would stall the phone);
+  // missing: null until the end, as lake packs do. The archive answers 404 for a tile USGS has no image for: skipped
+  // like a failed fetch, and not held against the pack.
+  const checkpoint = got => writeMeta(cache, { ...base, bytes: start.bytes + got, missing: null, complete: false });
+  await download(cache, keys, onProgress, signal, checkpoint, url => serverFetch(urls.get(url), 30000, signal));
   return describe();
 }
 

@@ -6,7 +6,9 @@ import { serverFetch } from '../corpus.js';
 import { regionStatus, downloadRegion, regionPackId, deletePack, renderPacks } from '../offline.js';
 
 const mb = b => `${Math.max(1, Math.round(b / 1e6))} MB`;
-const running = new Map(); // region id → AbortController while a download runs
+const running = new Map(); // region id → { ctrl, text } while a download runs; the card may be re-rendered meanwhile
+const live = () => document.querySelector('#region-maps'); // whichever copy of the section is on screen now
+const stateEl = id => live()?.querySelector(`[data-region="${id}"] [data-state]`);
 
 export async function renderRegionMaps(el) {
   if (!el) return;
@@ -27,26 +29,27 @@ export async function renderRegionMaps(el) {
   el.innerHTML = `<h4 style="margin:12px 0 4px">Region maps</h4>
     <p class="small muted">A whole region’s topo map from your archive, so the map works between lakes with no signal. Switch the map to <b>Topo</b> to use it.</p>`
     + built.map((r, i) => {
-      const st = status[i], run = running.has(r.id);
-      const state = run ? 'downloading…' : !st ? 'not on this phone' : st.complete ? `saved, ${mb(st.bytes)}` : `partial: ${st.missing} tile${st.missing === 1 ? '' : 's'} missing`;
+      const st = status[i], run = running.get(r.id);
+      const state = run ? run.text : !st ? 'not on this phone' : st.complete ? `saved, ${mb(st.bytes)}` : `partial: ${st.missing} tile${st.missing === 1 ? '' : 's'} missing`;
       const action = run ? '' : !st ? 'Download' : st.complete ? '' : 'Update';
       return `<div class="lake-item" style="margin:6px 0" data-region="${esc(r.id)}"><div><b>${esc(r.name)}</b><div class="muted small">zoom ${esc(r.zMin)}–${esc(r.zMax)} · ~${mb(r.bytes)}${r.complete ? '' : ` · ${esc(r.have)} of ${esc(r.tiles)} tiles on the server so far`} · <span data-state>${esc(state)}</span></div>
         ${r.bytes > 1e9 && !st ? `<div class="small" style="color:var(--warn,#c60)">Large: ${(r.bytes / 1e9).toFixed(1)} GB. Make sure the phone has room.</div>` : ''}</div>
         <div class="acts">${action ? `<button data-region-get="${esc(r.id)}">${action}</button>` : ''}${st || run ? `<button class="danger" data-region-del="${esc(r.id)}" title="${run ? 'Stop' : 'Delete'}">✕</button>` : ''}</div></div>`;
     }).join('');
   el.querySelectorAll('[data-region-get]').forEach(b => b.onclick = async () => {
-    const region = built.find(r => r.id === b.dataset.regionGet), row = b.closest('[data-region]'), out = $('[data-state]', row);
-    const ctrl = new AbortController(); running.set(region.id, ctrl);
-    b.remove();
+    const region = built.find(r => r.id === b.dataset.regionGet);
+    const run = { ctrl: new AbortController(), text: 'starting…' }; running.set(region.id, run);
+    const show = text => { run.text = text; const out = stateEl(region.id); if (out) out.textContent = text; };
+    renderRegionMaps(el); // the row now shows ✕ (stop) instead of Download
     try {
-      await downloadRegion(region, { signal: ctrl.signal, onProgress: (n, total) => { out.textContent = `${n} / ${total}`; } });
-    } catch (e) { out.textContent = `stopped (${e.message})`; }
+      await downloadRegion(region, { signal: run.ctrl.signal, onProgress: (n, total) => { if (!run.ctrl.signal.aborted) show(`${n} / ${total}`); } });
+    } catch (e) { show(`stopped (${e.message})`); }
     running.delete(region.id);
-    if (el.isConnected) { renderRegionMaps(el); renderPacks(); } // the Offline maps list below shows the pack too
+    const now = live(); if (now) { renderRegionMaps(now); renderPacks(); } // the Offline maps list below shows the pack too
   });
   el.querySelectorAll('[data-region-del]').forEach(b => b.onclick = async () => {
-    const id = b.dataset.regionDel, ctrl = running.get(id);
-    if (ctrl) { ctrl.abort(); return; } // the download loop stops, then re-renders as partial
+    const id = b.dataset.regionDel, run = running.get(id);
+    if (run) { run.ctrl.abort(); run.text = 'stopping…'; const out = stateEl(id); if (out) out.textContent = run.text; return; } // the loop stops, then re-renders as partial
     if (!confirm(`Delete the ${built.find(r => r.id === id)?.name ?? id} map from this phone?`)) return;
     await deletePack(regionPackId(id));
     renderRegionMaps(el); renderPacks();

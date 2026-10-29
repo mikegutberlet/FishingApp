@@ -18,6 +18,7 @@ import { tileList, boundsOf } from '../slippy.js';
 
 const ROOT = process.env.CORPUS_DIR;
 const MINUTES = Number(process.env.MAPS_MINUTES ?? 60);
+if (!Number.isFinite(MINUTES) || MINUTES < 0) { console.error(`MAPS_MINUTES must be a number of minutes (0 = no limit), not "${process.env.MAPS_MINUTES}"`); process.exit(1); }
 const CONCURRENCY = Math.max(1, Number(process.env.MAPS_CONCURRENCY) || 4);
 const TILE_URL = process.env.MAPS_TILE_URL || 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}';
 const UA = 'TackleBoxArchive/1.0 (+https://github.com/mikegutberlet/FishingApp)';
@@ -51,6 +52,8 @@ async function fetchTile(t, file) {
       const r = await fetch(url(t), { headers: { 'user-agent': UA }, signal: AbortSignal.timeout(30000) });
       if (r.status === 404) return 'missing';
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      // ArcGIS answers some errors as HTTP 200 with a JSON body: never save one as a tile (it would be served and cached as immutable).
+      if (!/^image\//.test(r.headers.get('content-type') ?? '')) throw new Error(`not an image (${r.headers.get('content-type') ?? 'no type'})`);
       const buf = Buffer.from(await r.arrayBuffer());
       if (!buf.length) throw new Error('empty body');
       await mkdir(path.dirname(file), { recursive: true });
