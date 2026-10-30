@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-29T19:09:01.443Z",
+  "startedAt": "2026-10-30T18:47:15.257Z",
   "ndow": {
     "waters": 551
   },
@@ -73,8 +73,8 @@
   },
   "plants": {
     "total": 1706,
-    "new": 1,
-    "kept": 1705
+    "new": 0,
+    "kept": 1706
   },
   "usgs": {
     "sites": [
@@ -133,14 +133,14 @@
   },
   "keptStations": [],
   "reservoirs": [
-    "USGS 10288500 Walker Lake near Hawthorne, NV: 2026-10-29 3914.15 / 2026-10-28 1130000",
-    "USGS 10297000 Topaz Lake near Topaz, CA: 2026-10-28 4982.11 / 2026-10-28 15580",
-    "USGS 10301700 Weber Reservoir near Schurz, NV: 2026-10-28 4201.15 / 2026-10-28 5398",
-    "USGS 10312100 Lahontan Reservoir near Fallon, NV: 2026-10-29 4124.43 / 2026-10-29 59390",
-    "USGS 10336710 Marlette Lake near Carson City, NV: 2026-10-28 7818.4 / 2026-10-28 4978",
-    "USGS 13174000 Wild Horse Reservoir near Gold Cr, NV: 2026-10-28 6182.03 / 2026-10-28 21450",
-    "USBR MEAD Lake Mead: 2026-10-28 1038.38 / 2026-10-28 6866580",
-    "USBR MOHAVE Lake Mohave: 2026-10-28 638.31 / 2026-10-28 1628930"
+    "USGS 10288500 Walker Lake near Hawthorne, NV: 2026-10-30 3914.14 / 2026-10-29 1130000",
+    "USGS 10297000 Topaz Lake near Topaz, CA: 2026-10-29 4982.07 / 2026-10-29 15510",
+    "USGS 10301700 Weber Reservoir near Schurz, NV: 2026-10-29 4201.17 / 2026-10-29 5408",
+    "USGS 10312100 Lahontan Reservoir near Fallon, NV: 2026-10-30 4124.28 / 2026-10-30 58940",
+    "USGS 10336710 Marlette Lake near Carson City, NV: 2026-10-29 7818.41 / 2026-10-29 4981",
+    "USGS 13174000 Wild Horse Reservoir near Gold Cr, NV: 2026-10-29 6181.99 / 2026-10-29 21390",
+    "USBR MEAD Lake Mead: 2026-10-29 1038.51 / 2026-10-29 6875460",
+    "USBR MOHAVE Lake Mohave: 2026-10-29 638.185 / 2026-10-29 1625520"
   ],
   "hab": [
     "Mountain View Pond: HAB Watch 2026-10-14 located",
@@ -153,5 +153,5 @@
     "Lake Mohave including Placer Cove and Eagle Wash: HAB Watch 2026-06-11 located",
     "Walker Lake: HAB Watch 2026-05-19 located"
   ],
-  "finishedAt": "2026-10-29T19:09:31.487Z"
+  "finishedAt": "2026-10-30T18:47:41.313Z"
 }
