@@ -76,4 +76,21 @@ DESCRIPTION:Trout plant this week at Greenhorn Reservoir
 TRIGGER:-PT12H
 END:VALARM
 END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-25-193-trout@tackle-box
+DTSTAMP:20261025T000000Z
+DTSTART;VALUE=DATE:20261025
+DTEND;VALUE=DATE:20261101
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Greenhorn Reservoir
+DESCRIPTION:CDFW plans to plant Trout at Greenhorn Reservoir (Siskiyou Coun
+ ty) the week of 2026-10-25. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=193
+GEO:41.71025;-122.65377
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Greenhorn Reservoir
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
 END:VCALENDAR

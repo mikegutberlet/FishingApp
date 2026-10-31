@@ -110,4 +110,21 @@ DESCRIPTION:Trout plant this week at Bass Lake
 TRIGGER:-PT12H
 END:VALARM
 END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-01-19260-trout@tackle-box
+DTSTAMP:20261101T000000Z
+DTSTART;VALUE=DATE:20261101
+DTEND;VALUE=DATE:20261108
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Bass Lake
+DESCRIPTION:CDFW plans to plant Trout at Bass Lake (Madera County) the week
+  of 2026-11-01. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=19260
+GEO:37.31058;-119.55064
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Bass Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
 END:VCALENDAR
