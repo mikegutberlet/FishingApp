@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-31T17:52:53.523Z",
+  "startedAt": "2026-11-01T18:29:49.240Z",
   "ndow": {
     "waters": 551
   },
@@ -133,14 +133,14 @@
   },
   "keptStations": [],
   "reservoirs": [
-    "USGS 10288500 Walker Lake near Hawthorne, NV: 2026-10-31 3914.11 / 2026-10-30 1130000",
-    "USGS 10297000 Topaz Lake near Topaz, CA: 2026-10-30 4982.02 / 2026-10-30 15430",
-    "USGS 10301700 Weber Reservoir near Schurz, NV: 2026-10-30 4201.18 / 2026-10-30 5418",
-    "USGS 10312100 Lahontan Reservoir near Fallon, NV: 2026-10-31 4124.13 / 2026-10-31 58490",
-    "USGS 10336710 Marlette Lake near Carson City, NV: 2026-10-30 7818.41 / 2026-10-30 4981",
-    "USGS 13174000 Wild Horse Reservoir near Gold Cr, NV: 2026-10-30 6181.97 / 2026-10-30 21360",
-    "USBR MEAD Lake Mead: 2026-10-30 1038.66 / 2026-10-30 6885720",
-    "USBR MOHAVE Lake Mohave: 2026-10-30 638.219 / 2026-10-30 1626450"
+    "USGS 10288500 Walker Lake near Hawthorne, NV: 2026-11-01 3914.1 / 2026-10-31 1129000",
+    "USGS 10297000 Topaz Lake near Topaz, CA: 2026-10-31 4982.03 / 2026-10-31 15450",
+    "USGS 10301700 Weber Reservoir near Schurz, NV: 2026-10-31 4201.19 / 2026-10-31 5422",
+    "USGS 10312100 Lahontan Reservoir near Fallon, NV: 2026-11-01 4124.04 / 2026-11-01 58220",
+    "USGS 10336710 Marlette Lake near Carson City, NV: 2026-10-31 7818.5 / 2026-10-31 5010",
+    "USGS 13174000 Wild Horse Reservoir near Gold Cr, NV: 2026-10-31 6181.99 / 2026-10-31 21390",
+    "USBR MEAD Lake Mead: 2026-10-31 1038.85 / 2026-10-31 6898730",
+    "USBR MOHAVE Lake Mohave: 2026-10-31 638.141 / 2026-10-31 1624320"
   ],
   "hab": [
     "Mountain View Pond: HAB Watch 2026-10-14 located",
@@ -153,5 +153,5 @@
     "Lake Mohave including Placer Cove and Eagle Wash: HAB Watch 2026-06-11 located",
     "Walker Lake: HAB Watch 2026-05-19 located"
   ],
-  "finishedAt": "2026-10-31T17:53:25.531Z"
+  "finishedAt": "2026-11-01T18:30:21.632Z"
 }
