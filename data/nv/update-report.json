@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-11-01T18:29:49.240Z",
+  "startedAt": "2026-11-02T22:26:53.960Z",
   "ndow": {
     "waters": 551
   },
@@ -72,8 +72,8 @@
     "geocoderCalls": 0
   },
   "plants": {
-    "total": 1706,
-    "new": 0,
+    "total": 1712,
+    "new": 6,
     "kept": 1706
   },
   "usgs": {
@@ -133,25 +133,25 @@
   },
   "keptStations": [],
   "reservoirs": [
-    "USGS 10288500 Walker Lake near Hawthorne, NV: 2026-11-01 3914.1 / 2026-10-31 1129000",
-    "USGS 10297000 Topaz Lake near Topaz, CA: 2026-10-31 4982.03 / 2026-10-31 15450",
-    "USGS 10301700 Weber Reservoir near Schurz, NV: 2026-10-31 4201.19 / 2026-10-31 5422",
-    "USGS 10312100 Lahontan Reservoir near Fallon, NV: 2026-11-01 4124.04 / 2026-11-01 58220",
-    "USGS 10336710 Marlette Lake near Carson City, NV: 2026-10-31 7818.5 / 2026-10-31 5010",
-    "USGS 13174000 Wild Horse Reservoir near Gold Cr, NV: 2026-10-31 6181.99 / 2026-10-31 21390",
-    "USBR MEAD Lake Mead: 2026-10-31 1038.85 / 2026-10-31 6898730",
-    "USBR MOHAVE Lake Mohave: 2026-10-31 638.141 / 2026-10-31 1624320"
+    "USGS 10288500 Walker Lake near Hawthorne, NV: 2026-11-02 3914.14 / 2026-11-01 1130000",
+    "USGS 10297000 Topaz Lake near Topaz, CA: 2026-11-01 4982.05 / 2026-11-01 15480",
+    "USGS 10301700 Weber Reservoir near Schurz, NV: 2026-11-01 4201.22 / 2026-11-01 5444",
+    "USGS 10312100 Lahontan Reservoir near Fallon, NV: 2026-11-02 4123.92 / 2026-11-02 57870",
+    "USGS 10336710 Marlette Lake near Carson City, NV: 2026-11-01 7818.51 / 2026-11-01 5013",
+    "USGS 13174000 Wild Horse Reservoir near Gold Cr, NV: 2026-11-01 6181.97 / 2026-11-01 21360",
+    "USBR MEAD Lake Mead: 2026-11-01 1038.93 / 2026-11-01 6904200",
+    "USBR MOHAVE Lake Mohave: 2026-11-01 638.28 / 2026-11-01 1628110"
   ],
   "hab": [
     "Mountain View Pond: HAB Watch 2026-10-14 located",
-    "Lahontan Reservoir: HAB Danger 2026-09-09 located",
+    "Lahontan Reservoir: HAB Warning 2026-11-02 located",
+    "Lake Mohave including Placer Cove, Eagle Wash, and Cottonwood Cove: HAB Watch 2026-06-11 located",
     "Rye Patch Reservoir: HAB Watch 2026-09-30 located",
     "Wild Horse Reservoir: HAB Watch 2026-08-13 located",
     "Virginia Lake: HAB Watch 2026-06-23 located",
     "South Meadows Community Pond: HAB Watch 2026-06-23 NO POINT",
     "Marlette Lake: HAB Watch 2026-06-17 located",
-    "Lake Mohave including Placer Cove and Eagle Wash: HAB Watch 2026-06-11 located",
     "Walker Lake: HAB Watch 2026-05-19 located"
   ],
-  "finishedAt": "2026-11-01T18:30:21.632Z"
+  "finishedAt": "2026-11-02T22:27:18.771Z"
 }
