@@ -1,5 +1,7 @@
+  fetch failed https://web.archive.org/cdx/search/cdx?url=www.dfg.ca.gov%2Ffish%2FHatcheries%2FFishPlanting%2F*&output=json&fl=timestamp,original,digest&filter=statuscode:200&collapse=digest
+  504 https://web.archive.org/cdx/search/cdx?url=nrm.dfg.ca.gov%2FFishPlants%2F*&output=json&fl=timestamp,original,digest&filter=statuscode:200&collapse=digest
 CDFW anadromous hatchery releases, 2018 on: 3717 releases
-0 new copies/reports read; 32975 records, 1635 sources
+4 new copies/reports read; 32992 records, 1639 sources
 stock-history: 827 waters (556 matched to a stocked or mapped water, 11 ambiguous names), 2001–2026
 Most-recorded unmatched names:
   San Francisco Bay (marin): 23 yrs
