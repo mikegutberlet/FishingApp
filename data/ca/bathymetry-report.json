@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-27T02:03:44.659Z",
+  "startedAt": "2026-11-03T18:29:58.436Z",
   "items": [
     {
       "id": "5f5fd23b82ce3550e3bff45e",
@@ -248,7 +248,7 @@
         "file": "Whiskeytown_2020_2m_bathy_NAD83_NAVD88.tif",
         "shp": "/tmp/bathy/6052599bd34e7eb1cb3eb498/contours.shp",
         "field": "e",
-        "interval": "6",
+        "interval": "12",
         "units": "m",
         "nodata": -3.402823e+38,
         "lake": "Whiskeytown Lake",
@@ -262,8 +262,8 @@
       },
       "ok": {
         "fileId": "bathymetric-data-for-whiskeytown-lake-september-2020",
-        "features": 648,
-        "bytes": 3036778,
+        "features": 300,
+        "bytes": 2419812,
         "simplify": "0.00005",
         "units": "m"
       }
@@ -317,7 +317,7 @@
     "Lake depth profile, water quality, sediment, periphyton, tadpole (Pseudacris regilla), and landscape data from six lakes and two stream sites of the Tokopah Basin in Sequoia National Park, California, 2021-2022"
   ],
   "saved": [
-    "Bathymetric data for Whiskeytown Lake, September 2020 (3037 KB, m)",
+    "Bathymetric data for Whiskeytown Lake, September 2020 (2420 KB, m)",
     "Bathymetric survey and stage-storage assessment of Lost Lake, California, collected in 2022 (1602 KB, m)",
     "Bathymetric survey and stage-storage assessment of Quail Lake, Calif., collected in 2022 (3061 KB, ft)",
     "Calaveras Reservoir, California, contours, NAVD88 (2019) (900 KB, ft)",
@@ -327,5 +327,5 @@
   "hydrolakes": {
     "rows": 1701
   },
-  "finishedAt": "2026-10-27T02:07:00.805Z"
+  "finishedAt": "2026-11-03T18:32:33.395Z"
 }
