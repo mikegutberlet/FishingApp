@@ -9,23 +9,6 @@ X-WR-CALDESC:CDFW fish planting schedule for Granite Park Pond. Plants are
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H
 BEGIN:VEVENT
-UID:2025-11-02-28287-trout@tackle-box
-DTSTAMP:20251102T000000Z
-DTSTART;VALUE=DATE:20251102
-DTEND;VALUE=DATE:20251109
-TRANSP:TRANSPARENT
-SUMMARY:🐟 Trout plant: Granite Park Pond
-DESCRIPTION:CDFW plans to plant Trout at Granite Park Pond (Sacramento Coun
- ty) the week of 2025-11-02. Plants are subject to change.
-URL:https://apps.wildlife.ca.gov/fishing/?stockid=28287
-GEO:38.54455;-121.40593
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:Trout plant this week at Granite Park Pond
-TRIGGER:-PT12H
-END:VALARM
-END:VEVENT
-BEGIN:VEVENT
 UID:2025-11-30-28287-trout@tackle-box
 DTSTAMP:20251130T000000Z
 DTSTART;VALUE=DATE:20251130

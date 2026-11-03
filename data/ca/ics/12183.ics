@@ -9,23 +9,6 @@ X-WR-CALDESC:CDFW fish planting schedule for Little Grass Valley Reservoir.
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H
 BEGIN:VEVENT
-UID:2025-11-02-12183-trout@tackle-box
-DTSTAMP:20251102T000000Z
-DTSTART;VALUE=DATE:20251102
-DTEND;VALUE=DATE:20251109
-TRANSP:TRANSPARENT
-SUMMARY:🐟 Trout plant: Little Grass Valley Reservoir
-DESCRIPTION:CDFW plans to plant Trout at Little Grass Valley Reservoir (Plu
- mas County) the week of 2025-11-02. Plants are subject to change.
-URL:https://apps.wildlife.ca.gov/fishing/?stockid=12183
-GEO:39.73171;-120.99681
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:Trout plant this week at Little Grass Valley Reservoir
-TRIGGER:-PT12H
-END:VALARM
-END:VEVENT
-BEGIN:VEVENT
 UID:2026-04-26-12183-trout@tackle-box
 DTSTAMP:20260426T000000Z
 DTSTART;VALUE=DATE:20260426
