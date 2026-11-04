@@ -59,4 +59,21 @@ DESCRIPTION:Trout plant this week at Lopez Lake
 TRIGGER:-PT12H
 END:VALARM
 END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-08-6664-trout@tackle-box
+DTSTAMP:20261108T000000Z
+DTSTART;VALUE=DATE:20261108
+DTEND;VALUE=DATE:20261115
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Lopez Lake
+DESCRIPTION:CDFW plans to plant Trout at Lopez Lake (San Luis Obispo County
+ ) the week of 2026-11-08. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=6664
+GEO:35.20494;-120.46907
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Lopez Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
 END:VCALENDAR

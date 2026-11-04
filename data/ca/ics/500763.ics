@@ -178,4 +178,21 @@ DESCRIPTION:Trout plant this week at Kern River\, Section 6
 TRIGGER:-PT12H
 END:VALARM
 END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-08-500763-trout@tackle-box
+DTSTAMP:20261108T000000Z
+DTSTART;VALUE=DATE:20261108
+DTEND;VALUE=DATE:20261115
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Kern River\, Section 6
+DESCRIPTION:CDFW plans to plant Trout at Kern River\, Section 6 (Tulare Cou
+ nty) the week of 2026-11-08. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=500763
+GEO:35.9468;-118.47757
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Kern River\, Section 6
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
 END:VCALENDAR
