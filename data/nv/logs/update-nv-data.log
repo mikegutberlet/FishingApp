@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-11-05T20:46:32.032Z",
+  "startedAt": "2026-11-06T20:02:34.433Z",
   "ndow": {
     "waters": 551
   },
@@ -72,9 +72,9 @@
     "geocoderCalls": 0
   },
   "plants": {
-    "total": 1721,
-    "new": 2,
-    "kept": 1719
+    "total": 1722,
+    "new": 1,
+    "kept": 1721
   },
   "usgs": {
     "sites": [
@@ -106,8 +106,8 @@
         "storage": 6124
       },
       "points": {
-        "elevation": 62,
-        "storage": 62
+        "elevation": 61,
+        "storage": 61
       }
     },
     "Lake Mohave": {

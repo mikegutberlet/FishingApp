@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-11-05T20:46:32.032Z",
+  "startedAt": "2026-11-06T20:02:34.433Z",
   "ndow": {
     "waters": 551
   },
@@ -72,9 +72,9 @@
     "geocoderCalls": 0
   },
   "plants": {
-    "total": 1721,
-    "new": 2,
-    "kept": 1719
+    "total": 1722,
+    "new": 1,
+    "kept": 1721
   },
   "usgs": {
     "sites": [
@@ -106,8 +106,8 @@
         "storage": 6124
       },
       "points": {
-        "elevation": 62,
-        "storage": 62
+        "elevation": 61,
+        "storage": 61
       }
     },
     "Lake Mohave": {
@@ -126,19 +126,19 @@
         "storage": 6134
       },
       "points": {
-        "elevation": 62,
-        "storage": 62
+        "elevation": 61,
+        "storage": 61
       }
     }
   },
   "keptStations": [],
   "reservoirs": [
-    "USGS 10288500 Walker Lake near Hawthorne, NV: 2026-11-05 3914.15 / 2026-11-04 1130000",
-    "USGS 10297000 Topaz Lake near Topaz, CA: 2026-11-04 4982.18 / 2026-11-04 15700",
-    "USGS 10301700 Weber Reservoir near Schurz, NV: 2026-11-04 4201.35 / 2026-11-04 5528",
-    "USGS 10312100 Lahontan Reservoir near Fallon, NV: 2026-11-05 4123.71 / 2026-11-05 57250",
-    "USGS 10336710 Marlette Lake near Carson City, NV: 2026-11-04 7818.53 / 2026-11-04 5020",
-    "USGS 13174000 Wild Horse Reservoir near Gold Cr, NV: 2026-11-04 6181.92 / 2026-11-04 21290",
+    "USGS 10288500 Walker Lake near Hawthorne, NV: 2026-11-06 3914.14 / 2026-11-05 1130000",
+    "USGS 10297000 Topaz Lake near Topaz, CA: 2026-11-05 4982.23 / 2026-11-05 15780",
+    "USGS 10301700 Weber Reservoir near Schurz, NV: 2026-11-05 4201.46 / 2026-11-05 5596",
+    "USGS 10312100 Lahontan Reservoir near Fallon, NV: 2026-11-06 4123.69 / 2026-11-06 57190",
+    "USGS 10336710 Marlette Lake near Carson City, NV: 2026-11-05 7818.53 / 2026-11-05 5020",
+    "USGS 13174000 Wild Horse Reservoir near Gold Cr, NV: 2026-11-05 6181.91 / 2026-11-05 21280",
     "USBR MEAD Lake Mead: 2026-11-04 1039.29 / 2026-11-04 6928880",
     "USBR MOHAVE Lake Mohave: 2026-11-04 638.602 / 2026-11-04 1636910"
   ],
@@ -152,5 +152,5 @@
     "South Meadows Community Pond: HAB Watch 2026-06-23 NO POINT",
     "Walker Lake: HAB Watch 2026-05-19 located"
   ],
-  "finishedAt": "2026-11-05T20:46:54.360Z"
+  "finishedAt": "2026-11-06T20:03:05.533Z"
 }
