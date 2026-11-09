@@ -40,4 +40,20 @@ DESCRIPTION:Trout plant this week at Foothill Regional Park Pond B
 TRIGGER:-PT12H
 END:VALARM
 END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-01-28608-trout@tackle-box
+DTSTAMP:20261101T000000Z
+DTSTART;VALUE=DATE:20261101
+DTEND;VALUE=DATE:20261108
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Foothill Regional Park Pond B
+DESCRIPTION:CDFW plans to plant Trout at Foothill Regional Park Pond B (Son
+ oma County) the week of 2026-11-01. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=28608
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Foothill Regional Park Pond B
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
 END:VCALENDAR
