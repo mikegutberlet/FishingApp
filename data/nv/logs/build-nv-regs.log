@@ -1,9 +1,20 @@
-regs: Western page failed, kept last run's; Southern page failed, kept last run's; Eastern page failed, kept last run's; statewide page failed, kept last run's regs.json
 {
- "statewide": "no text blocks (12194 bytes, title \"One moment, please...\")",
- "western": "no text blocks (12191 bytes, title \"One moment, please...\")",
- "southern": "no text blocks (12143 bytes, title \"One moment, please...\")",
- "eastern": "no text blocks (12142 bytes, title \"One moment, please...\")",
- "stripers": "no text blocks (12158 bytes, title \"One moment, please...\")",
- "baitfish": "no text blocks (12215 bytes, title \"One moment, please...\")"
+ "statewide": {},
+ "western": {
+  "waters": 32,
+  "advisories": 4,
+  "closed": 7
+ },
+ "southern": {
+  "waters": 18,
+  "advisories": 0,
+  "closed": 3
+ },
+ "eastern": {
+  "waters": 11,
+  "advisories": 1,
+  "closed": 4
+ },
+ "stripers": {},
+ "baitfish": {}
 }

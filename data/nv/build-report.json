@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-11-02T21:40:49.614Z",
+  "startedAt": "2026-11-09T22:15:13.428Z",
   "steps": {
     "nhdLayers": [
       {
@@ -55,8 +55,9 @@
         "name": "Waterbody - Large Scale"
       }
     ],
+    "splitTiles": 3,
     "lakes": {
-      "features": 1975,
+      "features": 1976,
       "polygons": 370,
       "inState": 350,
       "carriedOver": 0
@@ -124,14 +125,13 @@
         }
       ]
     },
-    "splitTiles": 1,
     "rivers": {
       "layer": 6,
-      "segments": 109707,
+      "segments": 105689,
       "named": 3995,
       "kept": 630,
       "carriedOver": 0
     }
   },
-  "finishedAt": "2026-11-02T22:42:31.459Z"
+  "finishedAt": "2026-11-09T23:45:02.327Z"
 }
