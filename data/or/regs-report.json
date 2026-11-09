@@ -1,8 +1,19 @@
 {
- "startedAt": "2026-11-02T21:55:24.855Z",
+ "startedAt": "2026-11-09T22:41:13.587Z",
  "pages": {
   "license-tag-permit-fees": [
    "# License, Tag & Permit Fees (40p 71r)"
+  ],
+  "definitions": [
+   "# Definitions (1p 0r)",
+   "## Definitions (79p 0r)"
+  ],
+  "license-information": [
+   "# License Information (1p 3r)",
+   "## Licenses, Tags, Permits, Endorsements and Validations (0p 0r)",
+   "### General Licensing Information (13p 0r)",
+   "### Angling Tag Information (11p 0r)",
+   "### Endorsement and Validation Information (49p 0r)"
   ],
   "general-statewide-regulations": [
    "# General Statewide Regulations (1p 2r)",
@@ -28,17 +39,6 @@
    "### Lingcod, Rockfish, Cabezon, Greenling, Flounder, Sole, Perch, other Nongame Marine Fish and Off-Shore Pelagic Species (3p 0r)",
    "### Pacific Halibut (3p 0r)",
    "### Marine Shellfish and Marine Invertebrates (95p 0r)"
-  ],
-  "definitions": [
-   "# Definitions (1p 0r)",
-   "## Definitions (79p 0r)"
-  ],
-  "license-information": [
-   "# License Information (1p 3r)",
-   "## Licenses, Tags, Permits, Endorsements and Validations (0p 0r)",
-   "### General Licensing Information (13p 0r)",
-   "### Angling Tag Information (11p 0r)",
-   "### Endorsement and Validation Information (49p 0r)"
   ],
   "northwest-zone": {
    "general": 7,
@@ -635,9 +635,9 @@
  "indexLinks": [
   "northwest-zone",
   "willamette-zone",
-  "license-tag-permit-fees",
   "southwest-zone",
-  "general-statewide-regulations",
+  "central-zone",
+  "license-tag-permit-fees",
   "definitions",
   "oregon-department-of-fish-wildlife",
   "columbia-river-basin-endorsement",
@@ -646,6 +646,7 @@
   "angling-tag-instructions-codes",
   "disabilities-hunting-fishing-permit-info",
   "bag-possession-limits",
+  "general-statewide-regulations",
   "management-designations-for-marine-areas",
   "fish-species-identification",
   "select-groundfish-species",
@@ -655,7 +656,6 @@
   "northeast-zone",
   "southeast-zone",
   "marine-zone",
-  "central-zone",
   "snake-river-zone",
   "columbia-river-zone",
   "pdf"
@@ -967,5 +967,5 @@
   "Northwest: 1 parts"
  ],
  "counties": 36,
- "finishedAt": "2026-11-02T21:55:33.661Z"
+ "finishedAt": "2026-11-09T22:41:16.633Z"
 }

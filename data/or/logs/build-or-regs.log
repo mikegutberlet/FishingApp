@@ -1,10 +1,10 @@
 {
- "startedAt": "2026-11-02T21:55:24.855Z",
+ "startedAt": "2026-11-09T22:41:13.587Z",
  "pages": {
   "license-tag-permit-fees": 1,
-  "general-statewide-regulations": 23,
   "definitions": 2,
   "license-information": 5,
+  "general-statewide-regulations": 23,
   "northwest-zone": {
    "general": 7,
    "waters": 84
@@ -41,9 +41,9 @@
  "indexLinks": [
   "northwest-zone",
   "willamette-zone",
-  "license-tag-permit-fees",
   "southwest-zone",
-  "general-statewide-regulations",
+  "central-zone",
+  "license-tag-permit-fees",
   "definitions",
   "oregon-department-of-fish-wildlife",
   "columbia-river-basin-endorsement",
@@ -52,6 +52,7 @@
   "angling-tag-instructions-codes",
   "disabilities-hunting-fishing-permit-info",
   "bag-possession-limits",
+  "general-statewide-regulations",
   "management-designations-for-marine-areas",
   "fish-species-identification",
   "select-groundfish-species",
@@ -61,7 +62,6 @@
   "northeast-zone",
   "southeast-zone",
   "marine-zone",
-  "central-zone",
   "snake-river-zone",
   "columbia-river-zone",
   "pdf"
