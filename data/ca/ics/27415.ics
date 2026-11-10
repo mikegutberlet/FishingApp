@@ -9,23 +9,6 @@ X-WR-CALDESC:CDFW fish planting schedule for Sandy Wool Lake. Plants are su
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H
 BEGIN:VEVENT
-UID:2025-11-09-27415-trout@tackle-box
-DTSTAMP:20251109T000000Z
-DTSTART;VALUE=DATE:20251109
-DTEND;VALUE=DATE:20251116
-TRANSP:TRANSPARENT
-SUMMARY:🐟 Trout plant: Sandy Wool Lake
-DESCRIPTION:CDFW plans to plant Trout at Sandy Wool Lake (Santa Clara Count
- y) the week of 2025-11-09. Plants are subject to change.
-URL:https://apps.wildlife.ca.gov/fishing/?stockid=27415
-GEO:37.45461;-121.86301
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:Trout plant this week at Sandy Wool Lake
-TRIGGER:-PT12H
-END:VALARM
-END:VEVENT
-BEGIN:VEVENT
 UID:2025-11-16-27415-trout@tackle-box
 DTSTAMP:20251116T000000Z
 DTSTART;VALUE=DATE:20251116

@@ -9,23 +9,6 @@ X-WR-CALDESC:CDFW fish planting schedule for Wishon Reservoir. Plants are s
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H
 BEGIN:VEVENT
-UID:2025-11-09-21249-trout@tackle-box
-DTSTAMP:20251109T000000Z
-DTSTART;VALUE=DATE:20251109
-DTEND;VALUE=DATE:20251116
-TRANSP:TRANSPARENT
-SUMMARY:🐟 Trout plant: Wishon Reservoir
-DESCRIPTION:CDFW plans to plant Trout at Wishon Reservoir (Fresno County) t
- he week of 2025-11-09. Plants are subject to change.
-URL:https://apps.wildlife.ca.gov/fishing/?stockid=21249
-GEO:37.02005;-118.96008
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:Trout plant this week at Wishon Reservoir
-TRIGGER:-PT12H
-END:VALARM
-END:VEVENT
-BEGIN:VEVENT
 UID:2026-04-12-21249-trout@tackle-box
 DTSTAMP:20260412T000000Z
 DTSTART;VALUE=DATE:20260412

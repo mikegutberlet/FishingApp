@@ -9,23 +9,6 @@ X-WR-CALDESC:CDFW fish planting schedule for Corrine Lake. Plants are subje
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H
 BEGIN:VEVENT
-UID:2025-11-09-20744-trout@tackle-box
-DTSTAMP:20251109T000000Z
-DTSTART;VALUE=DATE:20251109
-DTEND;VALUE=DATE:20251116
-TRANSP:TRANSPARENT
-SUMMARY:🐟 Trout plant: Corrine Lake
-DESCRIPTION:CDFW plans to plant Trout at Corrine Lake (Madera County) the w
- eek of 2025-11-09. Plants are subject to change.
-URL:https://apps.wildlife.ca.gov/fishing/?stockid=20744
-GEO:37.15892;-119.49585
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:Trout plant this week at Corrine Lake
-TRIGGER:-PT12H
-END:VALARM
-END:VEVENT
-BEGIN:VEVENT
 UID:2025-12-14-20744-trout@tackle-box
 DTSTAMP:20251214T000000Z
 DTSTART;VALUE=DATE:20251214

@@ -9,23 +9,6 @@ X-WR-CALDESC:CDFW fish planting schedule for Eisenhower Park Lake. Plants a
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H
 BEGIN:VEVENT
-UID:2025-11-09-7449-trout@tackle-box
-DTSTAMP:20251109T000000Z
-DTSTART;VALUE=DATE:20251109
-DTEND;VALUE=DATE:20251116
-TRANSP:TRANSPARENT
-SUMMARY:🐟 Trout plant: Eisenhower Park Lake
-DESCRIPTION:CDFW plans to plant Trout at Eisenhower Park Lake (Orange Count
- y) the week of 2025-11-09. Plants are subject to change.
-URL:https://apps.wildlife.ca.gov/fishing/?stockid=7449
-GEO:33.83628;-117.83855
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:Trout plant this week at Eisenhower Park Lake
-TRIGGER:-PT12H
-END:VALARM
-END:VEVENT
-BEGIN:VEVENT
 UID:2025-11-30-7449-trout@tackle-box
 DTSTAMP:20251130T000000Z
 DTSTART;VALUE=DATE:20251130

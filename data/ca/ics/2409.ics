@@ -9,23 +9,6 @@ X-WR-CALDESC:CDFW fish planting schedule for El Dorado Forebay. Plants are
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H
 BEGIN:VEVENT
-UID:2025-11-09-2409-trout@tackle-box
-DTSTAMP:20251109T000000Z
-DTSTART;VALUE=DATE:20251109
-DTEND;VALUE=DATE:20251116
-TRANSP:TRANSPARENT
-SUMMARY:🐟 Trout plant: El Dorado Forebay
-DESCRIPTION:CDFW plans to plant Trout at El Dorado Forebay (El Dorado Count
- y) the week of 2025-11-09. Plants are subject to change.
-URL:https://apps.wildlife.ca.gov/fishing/?stockid=2409
-GEO:38.77073;-120.58479
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:Trout plant this week at El Dorado Forebay
-TRIGGER:-PT12H
-END:VALARM
-END:VEVENT
-BEGIN:VEVENT
 UID:2025-11-30-2409-trout@tackle-box
 DTSTAMP:20251130T000000Z
 DTSTART;VALUE=DATE:20251130

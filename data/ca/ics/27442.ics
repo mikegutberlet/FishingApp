@@ -9,23 +9,6 @@ X-WR-CALDESC:CDFW fish planting schedule for Brite Valley Reservoir. Plants
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H
 BEGIN:VEVENT
-UID:2025-11-09-27442-trout@tackle-box
-DTSTAMP:20251109T000000Z
-DTSTART;VALUE=DATE:20251109
-DTEND;VALUE=DATE:20251116
-TRANSP:TRANSPARENT
-SUMMARY:🐟 Trout plant: Brite Valley Reservoir
-DESCRIPTION:CDFW plans to plant Trout at Brite Valley Reservoir (Kern Count
- y) the week of 2025-11-09. Plants are subject to change.
-URL:https://apps.wildlife.ca.gov/fishing/?stockid=27442
-GEO:35.10503;-118.54192
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:Trout plant this week at Brite Valley Reservoir
-TRIGGER:-PT12H
-END:VALARM
-END:VEVENT
-BEGIN:VEVENT
 UID:2026-01-04-27442-trout@tackle-box
 DTSTAMP:20260104T000000Z
 DTSTART;VALUE=DATE:20260104

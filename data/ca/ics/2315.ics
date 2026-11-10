@@ -9,23 +9,6 @@ X-WR-CALDESC:CDFW fish planting schedule for Folsom Lake. Plants are subjec
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H
 BEGIN:VEVENT
-UID:2025-11-09-2315-trout@tackle-box
-DTSTAMP:20251109T000000Z
-DTSTART;VALUE=DATE:20251109
-DTEND;VALUE=DATE:20251116
-TRANSP:TRANSPARENT
-SUMMARY:🐟 Trout plant: Folsom Lake
-DESCRIPTION:CDFW plans to plant Trout at Folsom Lake (El Dorado\, Placer\, 
- Sacramento County) the week of 2025-11-09. Plants are subject to change.
-URL:https://apps.wildlife.ca.gov/fishing/?stockid=2315
-GEO:38.78683;-121.09427
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:Trout plant this week at Folsom Lake
-TRIGGER:-PT12H
-END:VALARM
-END:VEVENT
-BEGIN:VEVENT
 UID:2025-11-23-2315-trout@tackle-box
 DTSTAMP:20251123T000000Z
 DTSTART;VALUE=DATE:20251123
