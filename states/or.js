@@ -77,7 +77,7 @@ export const searchHint = 'Detroit, Deschutes River, Diamond…';
 export const stockedHint = 'Hagg, Detroit, Willamette zone…';
 
 export { sameWater };
-export const { waters, plantsFor, dataDates, nearestWaters, nearestReservoir, statewide, history, matchStockedWater, historyFor, hydroFor, bathymetryFor, bathymetryUrl, accessFor, accessPlaces, reachMap, speciesList } = d;
+export const { waters, plantsFor, dataDates, nearestWaters, nearestReservoir, statewide, history, matchStockedWater, historyFor, hydroFor, bathymetryFor, bathymetryUrl, accessFor, accessPlaces, reachMap, speciesList, sightingList } = d;
 
 function inRing([x, y], ring) {
   let c = false;

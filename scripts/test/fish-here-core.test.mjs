@@ -28,6 +28,22 @@ test('hereLines: one line per fish, stocked first, with how each is known and th
   assert.deepEqual(hereLines([{ name: 'Wiper', how: 'caught', note: '', source: null }]).lines, [{ name: 'Wiper', tags: ['Caught here'] }]);
 });
 
+test('sightings: a "seen" row never feeds the filters and reads as one tag per fish, after the state\'s own', () => {
+  const SEEN = { sources: [{ label: 'Observations, via GBIF', url: 'https://example.org/a', licence: 'CC BY-NC 4.0' }, { label: 'Museum, via GBIF', url: 'https://example.org/b', licence: 'CC0 1.0' }], fish: {
+    'n:1': [['Rainbow trout', 'seen', 0, 2024, 6], ['Rainbow trout', 'seen', 1, 1961, 1], ['Carp', 'seen', 1, null, 1]],
+    's:9': [['Rainbow trout', 'seen', 0, 2023, 4]],
+  } };
+  const seen = listedRows(SEEN, ['n:1', 's:9']);
+  assert.deepEqual(seen.map(r => [r.name, r.source.label.split(',')[0], r.note, r.n]), [['Rainbow trout', 'Observations', 2024, 6], ['Rainbow trout', 'Museum', 1961, 1], ['Carp', 'Museum', '', 1]]);
+  assert.equal(HOW_SOURCE.seen, undefined);
+  const { lines, sources } = hereLines([...listedRows(FILE, ['n:1']), ...seen]);
+  assert.deepEqual(lines, [
+    { name: 'Rainbow trout', tags: ['Lives here (introduced, hatchery)', 'Seen nearby (7 records, latest 2024)'] },
+    { name: 'Largemouth bass', tags: ['Lives here'] },
+    { name: 'Carp', tags: ['Seen nearby (1 record)'] }]);
+  assert.deepEqual(sources.map(s => s.label), ['State plan', 'Observations, via GBIF', 'Museum, via GBIF']);
+});
+
 test('HOW_SOURCE: a planned plant counts as stocking among a water\'s fish', () => {
   assert.deepEqual(HOW_SOURCE, { plan: 'stocked', lives: 'lives', caught: 'caught' });
 });

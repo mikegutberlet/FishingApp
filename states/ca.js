@@ -105,13 +105,21 @@ export async function history() {
 const norm = s => (s ?? '').toLowerCase().replace(/\b(lake|reservoir|river|creek|pond|the|of)\b|[^a-z0-9]/g, '');
 
 // Best CDFW stocked water for a statewide water: close by, preferring a matching name.
+const stockReachKm = water => water.kind === 'river' ? 3 : Math.max(2, Math.sqrt((water.acres ?? 50) / 247) * 2);
 export async function matchStockedWater(water) {
-  const radius = water.kind === 'river' ? 3 : Math.max(2, Math.sqrt((water.acres ?? 50) / 247) * 2);
-  const near = await nearestWaters(water.lat, water.lon, water.kind === 'river' ? 25 : radius);
+  return pickStocked(water, await nearestWaters(water.lat, water.lon, water.kind === 'river' ? 25 : stockReachKm(water)));
+}
+// The choice itself, from the stocked waters around it, nearest first. Without a matching name, a stocked water is
+// this lake only when it lies on the lake itself: inside a circle of the lake's size, or up to 1.5 km past it for a
+// water the schedule doesn't name (its point can be a ramp at the far end). Indian Valley Reservoir, 22 km from the middle of
+// Clear Lake, is a neighbour, not Clear Lake.
+export function pickStocked(water, near) {
   const key = norm(water.name);
   const named = near.find(w => key && (norm(w.name).startsWith(key) || key.startsWith(norm(w.name))));
   if (named) return named;
-  return water.kind === 'river' ? null : near.find(w => w.distKm <= radius) ?? null;
+  if (water.kind === 'river') return null;
+  const own = Math.sqrt((water.acres ?? 0) * 0.0040469 / Math.PI);
+  return near.find(w => w.distKm <= (/^CDFW water #/.test(w.name ?? '') ? Math.max(0.5, own + Math.min(own, 1.5)) : Math.max(0.25, own))) ?? null;
 }
 
 // Historical introductions/plantings recorded at this water: nearby records, or records whose locality names it.
@@ -209,6 +217,10 @@ export async function reachMap() {
 // The fish CDFW's own lists name for each water, by pool key without the state (fish-here-core.js). null: no file yet.
 export async function speciesList() {
   return load('species');
+}
+// Fish other people recorded near each water, keyed the same way (scripts/build-sightings.mjs). null: no file.
+export async function sightingList() {
+  return load('sightings');
 }
 
 // ---------- Fishing regulations (weekly build from Title 14, CCR) ----------

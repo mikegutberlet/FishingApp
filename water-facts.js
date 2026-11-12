@@ -81,16 +81,19 @@ export function factsFor(e) {
     for (const h of hist.local) if (!GONE.test(h.text.split(' · ').at(-1))) add(h.text.split(/ \(| · /)[0], 'on record');
     // What the agency itself lists for this water, and for the stocked water it stands for.
     const listed = await listedFor(S, [ownKey(e), stock && `s:${stock.id}`, e.saved?.nhdId && `n:${e.saved.nhdId}`]);
-    for (const r of listed) add(r.name, HOW_SOURCE[r.how]);
+    // A sighting near the water is listed on its Stocking tab but isn't a fish to filter or plan on.
+    for (const r of listed) if (HOW_SOURCE[r.how]) add(r.name, HOW_SOURCE[r.how]);
     return { stock, fish, listed, lastPlant: stock?.lastPlant ?? null, access: access ? new Set(access.places.map(p => p.kind)) : null };
   })().catch(() => ({ fish: new Map(), listed: [], access: null })));
   return facts.get(key);
 }
 // An entry's key in a state's files: its pool key without the state. null for a water of your own that isn't in the lists.
 const ownKey = e => e.S && e.key.startsWith(`${e.S.code}:`) ? e.key.slice(e.S.code.length + 1) : null;
-// The fish the agency's own lists name for these keys (fish-here-core.js), or [] before the file's first build.
+// The fish on record for these keys (fish-here-core.js): the agency's own lists, then other people's sightings near
+// the water. [] before the files' first build; either file can be missing.
 export async function listedFor(S, keys) {
-  return listedRows(await S?.speciesList?.().catch(() => null), keys);
+  const [own, seen] = await Promise.all([S?.speciesList?.().catch(() => null), S?.sightingList?.().catch(() => null)]);
+  return [...listedRows(own, keys), ...listedRows(seen, keys)];
 }
 // Drive-up or hike-in from the state's monthly file (reach-core.js says what a value means). null: no record, as for
 // a stream that isn't in the lists, a water added by hand, or before the file's first build.

@@ -38,7 +38,7 @@ const UA = { 'User-Agent': process.env.SPECIES_UA || 'TackleBox-fishing-app (per
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const readJson = async url => JSON.parse(await readFile(url, 'utf8'));
 
-async function get(url, { type = 'json', tries = 3, timeout = 120000 } = {}) {
+export async function get(url, { type = 'json', tries = 3, timeout = 120000 } = {}) {
   for (let i = 1; ; i++) {
     try {
       const r = await fetch(url, { headers: UA, signal: AbortSignal.timeout(timeout) });
