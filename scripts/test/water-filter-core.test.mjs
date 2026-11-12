@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { DEFAULTS, clean, sizeOf, elevOf, isStreamType, kmBetween, quickPass, active, needsFacts, off } from '../../water-filter-core.js';
+import { DEFAULTS, clean, sizeOf, elevOf, isStreamType, kmBetween, quickPass, active, needsFacts, needsWeather, off } from '../../water-filter-core.js';
 
 const P = over => ({ ...DEFAULTS, miles: 0, ...over });
 const ctx = { from: { lat: 39.33, lon: -120.18 }, iced: () => false };
@@ -64,4 +64,9 @@ test('lake level: a list of trends, known words only, needs the lookups, one chi
   const P = { ...DEFAULTS, miles: 0, noAlgae: false, elev: ['low'], iceFree: true, level: ['steady'] };
   assert.deepEqual(active(P), ['elev', 'level', 'iceFree']);
   assert.ok(needsFacts(P)); assert.deepEqual(off('level'), { level: [] });
+});
+test('best-bet score: a switch, not a filter; it needs the forecasts', () => {
+  assert.equal(DEFAULTS.score, false); assert.equal(clean({ score: 'yes' }).score, false); assert.equal(clean({ score: true }).score, true);
+  assert.ok(needsWeather({ ...DEFAULTS, score: true })); assert.ok(needsWeather({ ...DEFAULTS, wx: 'good' })); assert.ok(!needsWeather(DEFAULTS));
+  assert.deepEqual(active({ ...DEFAULTS, miles: 0, noAlgae: false, score: true }), []);
 });

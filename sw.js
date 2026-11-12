@@ -40,6 +40,7 @@ const SHELL = [
   'map-pins.css',
   'map-filters.js',
   'map-filters.css',
+  'best-bet.js',
   'lake-level.js',
   'lake-level-core.js',
   'map-results.js',

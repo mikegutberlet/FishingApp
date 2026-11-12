@@ -8,11 +8,12 @@ import { units } from '../units.js';
 import { openLake, openWater } from './lake.js';
 import { renderLakeList } from './lakes.js';
 import { loadPool, withSaved, fishRows, stockLake, ACCESS } from '../water-facts.js';
-import { quickPass } from '../water-filter-core.js';
+import { quickPass, needsWeather } from '../water-filter-core.js';
 import { wxPass } from '../weather-grid-core.js';
-import { weatherStage, weatherNotes } from '../weather-grid.js';
+import { weatherStage, weatherNotes, dateFor } from '../weather-grid.js';
+import { betFor } from '../best-bet.js';
 import { prefs, savePrefs, home, setHomePoint, origin, context, shape, fullPass } from '../water-filter.js';
-import { filterForm, bindFilterForm } from './filter-form.js';
+import { filterForm, bindFilterForm, syncForm } from './filter-form.js';
 
 const metric = () => units().depth === 'm';
 const distNum = km => metric() ? Math.round(km) : Math.round(km * 0.621371);
@@ -34,7 +35,7 @@ export async function renderFinder() {
     <div class="card form fd-filters">
       <div id="fd-from" class="muted fd-from">Finding where you are…</div>
       ${filterForm(P)}
-      <label>Sort <select id="fd-sort"><option value="near">Closest first</option><option value="stocked" ${P.sort === 'stocked' ? 'selected' : ''}>Most recently stocked</option></select></label>
+      <label>Sort <select id="fd-sort"><option value="near">Closest first</option><option value="stocked" ${P.sort === 'stocked' ? 'selected' : ''}>Most recently stocked</option><option value="bet" ${P.sort === 'bet' && P.score ? 'selected' : ''}>Best bet for the day</option></select></label>
     </div>
     <div class="fd-line"><div id="fd-count" class="muted small" aria-live="polite"></div><button type="button" id="fd-show-map">Show on map</button></div><div id="fd-results"></div>
     <p class="muted small">Fish lists come from state stocking reports, USGS records of introduced fish and your own catches. California's and Oregon's current schedules say only “trout”, so a kind of trout is matched from past reports, USGS records and your catches. Native fish that were never stocked or recorded don't show up, so a water left out may still hold them. Ramps, piers, marinas, rentals, campgrounds and parking come from OpenStreetMap and cover California only for now. Size and elevation come from the states' lake lists, and stocked rivers and creeks have neither, so they drop out when you filter by size or elevation. “Likely ice-free” is an estimate from elevation, the time of year and your own ice notes. Distances are straight-line.</p>`;
@@ -50,7 +51,8 @@ export async function renderFinder() {
     if (key === 'from') { const mine = ++asked, f = await origin(P); if (mine !== asked || !$('#fd-from')) return; from = f; said(); }
     draw();
   }, { setHome });
-  $('#fd-sort').onchange = e => { savePrefs({ sort: e.target.value }); draw(); };
+  // Sorting by best bet needs the scores: it switches them on.
+  $('#fd-sort').onchange = e => { savePrefs({ sort: e.target.value, ...(e.target.value === 'bet' ? { score: true } : {}) }); syncForm(list.querySelector('.fd-filters')); draw(); };
   // The map takes the same settings (map-filters.js) and fits itself to the distance ring, or to these results.
   let found = [];
   $('#fd-show-map').onclick = () => document.dispatchEvent(new CustomEvent('tb-show-on-map', { detail: { points: found.map(r => [r.lat, r.lon]) } }));
@@ -73,7 +75,7 @@ export async function renderFinder() {
       if (hit) hits.push(hit); else if (un) unknown.add(near[i].key);
       if (i % 80 === 79 || i === near.length - 1) {
         const last = i + 1 === near.length, rows = P.wx && !last ? [] : hits.filter(h => !(h.stock && claimed.has(h.key)));
-        if (P.wx && last) return weather(rows);
+        if (needsWeather(P) && last) return weather(rows);
         show(rows, last ? null : `Checking ${i + 1} of ${near.length} waters…`);
         await new Promise(res => setTimeout(res));
         if (me !== run) return;
@@ -86,10 +88,17 @@ export async function renderFinder() {
       const items = rows.map(r => ({ lat: r.lat, lon: r.lon, acres: shape(r).acres, r }));
       const st = await weatherStage(items, P, from);
       if (me !== run || !out.isConnected) return;
-      const kept = items.filter(it => st.grades.has(it) && wxPass(st.grades.get(it)?.grade, P.wx)).map(it => ({ ...it.r, wx: st.grades.get(it)?.line }));
-      show(kept, null, weatherNotes(st, 'Shorten the distance, or add filters').map(n => `${n}.`).join(' '));
+      const kept = [], date = dateFor(P);
+      for (const it of items) {
+        if (P.wx && !(st.grades.has(it) && wxPass(st.grades.get(it)?.grade, P.wx))) continue;
+        const w = st.forecasts.get(it);
+        kept.push({ ...it.r, wx: st.grades.get(it)?.line, bet: P.score && w ? await betFor(it.r, w, date) : null });
+      }
+      if (me !== run || !out.isConnected) return;
+      show(kept, null, weatherNotes(st, 'Shorten the distance, or add filters', !!P.wx).map(n => `${n}.`).join(' '));
     }
     function show(rows, progress, wxNote = '') {
+      if (P.sort === 'bet' && P.score) rows = [...rows].sort((a, b) => (b.bet?.score ?? -1) - (a.bet?.score ?? -1) || (a.distKm ?? 0) - (b.distKm ?? 0));
       if (P.sort === 'stocked') rows = [...rows].sort((a, b) => (b.f.lastPlant ?? '').localeCompare(a.f.lastPlant ?? '') || (a.distKm ?? 0) - (b.distKm ?? 0));
       found = rows;
       const unknowns = [...unknown].filter(k => !claimed.has(k)).length;
@@ -110,7 +119,7 @@ function card(r, i, today) {
   return `<div class="card lake-item fd-item" data-i="${i}">
     ${r.distKm != null ? `<span class="fd-post"><b>${distNum(r.distKm).toLocaleString()}</b>${metric() ? 'km' : 'mi'}</span>` : ''}
     <div class="fd-body"><b>${esc(r.name)}</b><div class="muted small">${esc(r.type ?? '')}${r.S ? ', ' + r.S.code : ''}${r.saved ? ' · saved' : ''}${r.mine ? ` · ${r.mine} catch${r.mine === 1 ? '' : 'es'} logged` : ''}</div>
-      ${r.wx ? `<div class="small fd-wx">${esc(r.wx)}</div>` : ''}${fish}${r.level ? `<div class="small">${esc(r.level.text)}</div>` : ''}${plant ? `<div class="small">${plant}</div>` : ''}
+      ${r.wx ? `<div class="small fd-wx">${esc(r.wx)}</div>` : ''}${r.bet ? `<div class="small fd-bet"><b>Best bet ${r.bet.score} of 10</b>${r.bet.why ? ` · ${esc(r.bet.why)}` : ''}</div>` : ''}${fish}${r.level ? `<div class="small">${esc(r.level.text)}</div>` : ''}${plant ? `<div class="small">${plant}</div>` : ''}
       ${access ? `<div class="small muted">${esc(access)}</div>` : ''}${r.hab ? '<div class="small fd-warn">Toxic algae advisory</div>' : ''}</div><span>›</span></div>`;
 }
 

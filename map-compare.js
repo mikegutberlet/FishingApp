@@ -8,7 +8,8 @@ import { kmBetween } from './water-filter-core.js';
 import { entryFor, factsFor, fishRows, ACCESS } from './water-facts.js';
 import { prefs, shape } from './water-filter.js';
 import { filterView } from './map-filters.js';
-import { weatherLine, dayLabel } from './weather-grid.js';
+import { dayLabel } from './weather-grid.js';
+import { dayLines } from './best-bet.js';
 import { levelFor } from './lake-level.js';
 import { openWater, openLake } from './views/lake.js';
 
@@ -46,13 +47,14 @@ const cap = s => s[0].toUpperCase() + s.slice(1);
 async function facts({ lake }) {
   const P = prefs(), from = filterView().known ?? here;
   const e = await entryFor(lake).catch(() => null), s = e ? shape(e) : lake;
-  const [f, level, wx] = await Promise.all([e ? factsFor(e) : null, e ? levelFor(e) : null, weatherLine(lake, P).catch(() => null)]);
+  const [f, level, day] = await Promise.all([e ? factsFor(e) : null, e ? levelFor(e) : null, dayLines(lake, P).catch(() => ({}))]);
   const acres = s.acres ?? lake.acres, elev = s.elevationFt ?? lake.elevationFt;
   return {
     Distance: from ? far(kmBetween(from, lake)) : null,
     Fish: f && fishRows(f.fish).map(x => `${x.label}: ${x.names.join(', ')}`).join('\n'),
     'Last plant': f?.lastPlant && fmtDate(f.lastPlant),
-    [`Weather, ${dayLabel(P.day)}`]: wx?.replace(/^[^:]+: /, '') ?? 'No forecast',
+    [`Weather, ${dayLabel(P.day)}`]: day.line?.replace(/^[^:]+: /, '') ?? 'No forecast',
+    ...(P.score ? { [`Best bet, ${dayLabel(P.day)}`]: day.bet && `${day.bet.score} of 10${day.bet.why ? `\n${day.bet.why}` : ''}` } : {}),
     'Lake level': level && cap(level.text.replace(/^Lake level /, '').replace(/ \(gauge: .*\)$/, '').replace(':', ',')),
     Elevation: elev > 0 ? `${Math.round(elev).toLocaleString()} ft` : null,
     Size: acres > 0 ? `${Math.round(acres).toLocaleString()} acres` : null,

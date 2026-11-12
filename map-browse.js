@@ -9,7 +9,8 @@ import { directionsUrl } from './views/access.js';
 import { coastSpots } from './coast.js';
 import { entryFor, factsFor, habFor, addFish, fishRows, isSavedLake, ACCESS } from './water-facts.js';
 import { prefs, mapFilterOn } from './water-filter.js';
-import { weatherLine } from './weather-grid.js';
+import { needsWeather } from './water-filter-core.js';
+import { dayLines, betText } from './best-bet.js';
 import { levelFor } from './lake-level.js';
 import { comparing, toggleCompare, compareSaved } from './map-compare.js';
 
@@ -123,9 +124,9 @@ async function more(w, lake, saved) {
     // While the map is filtered by weather, the card leads with the picked day here ("Sat: Kayak: good till 11 …").
     // It is added when it arrives: the rest of the card is on the phone already and doesn't wait for it.
     const P = prefs();
-    if (mapFilterOn() && P.wx && Number.isFinite(lake.lat)) weatherLine(lake, P).then(day => {
-      const el = $('#sheet-more');
-      if (day && shown === w && el) el.insertAdjacentHTML('afterbegin', `<div class="sheet-wx">${esc(day)}</div>`);
+    if (mapFilterOn() && needsWeather(P) && Number.isFinite(lake.lat)) dayLines(lake, P).then(({ line, bet }) => {
+      const el = $('#sheet-more'), lines = [line, bet && betText(bet)].filter(Boolean);
+      if (lines.length && shown === w && el) el.insertAdjacentHTML('afterbegin', `<div class="sheet-wx">${lines.map(esc).join('<br>')}</div>`);
     }, () => {});
     const e = await entryFor(lake);
     if (!e) return;

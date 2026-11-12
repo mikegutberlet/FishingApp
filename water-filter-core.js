@@ -3,7 +3,7 @@
 // be tested on their own.
 
 // The one set of filter settings (kept on this phone). Everything off except a 50 mile range and hiding algae waters.
-export const DEFAULTS = { fish: [], access: [], miles: 50, stocked: false, mine: false, noAlgae: true, sort: 'near', from: 'auto', saved: false, type: '', size: [], elev: [], level: [], iceFree: false, wx: '', day: 0 };
+export const DEFAULTS = { fish: [], access: [], miles: 50, stocked: false, mine: false, noAlgae: true, sort: 'near', from: 'auto', saved: false, type: '', size: [], elev: [], level: [], iceFree: false, wx: '', day: 0, score: false };
 // Saved settings from any version of the app: known keys of the right kind, defaults for the rest.
 export function clean(raw) {
   const out = {};
@@ -45,6 +45,6 @@ const ON = { fish: P => P.fish.length, access: P => P.access.length, miles: P =>
   noAlgae: P => P.noAlgae, type: P => P.type, size: P => P.size.length, elev: P => P.elev.length, level: P => P.level.length, iceFree: P => P.iceFree, wx: P => P.wx };
 export const active = P => Object.keys(ON).filter(k => ON[k](P));
 export const needsFacts = P => !!(P.fish.length || P.access.length || P.stocked || P.mine || P.noAlgae || P.level.length);
-export const needsWeather = P => !!P.wx;
+export const needsWeather = P => !!(P.wx || P.score); // the weather filter, or a best-bet score on each water (best-bet.js)
 // The change that switches one filter back to "show everything" (the map's removable chips).
 export const off = key => ({ [key]: Array.isArray(DEFAULTS[key]) ? [] : key === 'miles' ? 0 : typeof DEFAULTS[key] === 'string' ? '' : false });

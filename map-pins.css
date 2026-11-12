@@ -36,3 +36,6 @@
 .sheet-more { margin: -2px 0 10px; line-height: 1.4; }
 .sheet-more:empty { display: none; }
 .sheet-wx { font-weight: 600; }
+/* Best-bet scores on (map-filters.js): the score for the picked day rides on the pin's left shoulder. */
+.pin em { position: absolute; left: -9px; top: -7px; min-width: 17px; height: 17px; padding: 0 3px; box-sizing: border-box; border-radius: 9px; background: #fff; color: #14352e; border: 1.5px solid #14352e;
+  font: 700 11px/14px system-ui, sans-serif; text-align: center; pointer-events: none; }

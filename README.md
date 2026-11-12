@@ -96,6 +96,7 @@ It is a PWA: open it once in Safari/Chrome, choose **Add to Home Screen**, and i
 * **History**: CDFW's public schedule only goes back about a year, so the nightly job merges each day into `data/ca/plants.json`. History builds from 2025-10 onward.
 * **Lake level**: for reservoirs, Conditions shows CDEC elevation, 7- and 30-day change, and storage. The nearest gauge within 25 km is used; set a station id under Edit if it picks the wrong one.
 * **Compare**: a card's *Compare* button picks its water (up to three), and *Compare (2)* on the map puts them side by side: distance, fish, last plant, the picked day's weather for your craft, lake level, elevation, size and access (`map-compare.js`). The picks last until the app is closed.
+* **Best-bet score**: in the filters' Weather block, *Show a best-bet score (1 to 10) for that day* puts the trip planner's score on every pin for the day you picked: wind, rain, temperature, the pressure trend, bite windows, recent plants and lake level (`best-bet.js`, which calls the planner's own `scoreDay`). The drawer, the list (*Best bet for the day* under Sort), the card and Compare show it too, with the two things that moved it most. It needs the same forecasts as the weather filter, so a water with no forecast has no score.
 
 Data is refreshed daily by `.github/workflows/update-data.yml` running `scripts/update-ca-data.mjs`. It runs on GitHub because the state sites don't let a browser app fetch from them directly. It is all public data, and the job never sees anything from your phone.
 

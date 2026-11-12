@@ -26,9 +26,9 @@ async function ask(cells) {
   const url = new URL('https://api.open-meteo.com/v1/forecast');
   url.search = new URLSearchParams({
     latitude: cells.map(c => c.lat.toFixed(1)).join(','), longitude: cells.map(c => c.lon.toFixed(1)).join(','), timezone: 'auto',
-    temperature_unit: 'fahrenheit', wind_speed_unit: 'mph', precipitation_unit: 'inch', forecast_days: 8,
-    hourly: 'temperature_2m,precipitation_probability,weather_code,wind_speed_10m,wind_gusts_10m',
-    daily: 'weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max',
+    temperature_unit: 'fahrenheit', wind_speed_unit: 'mph', precipitation_unit: 'inch', forecast_days: 8, past_days: 1, // yesterday too: the score reads the pressure trend into a day
+    hourly: 'temperature_2m,precipitation_probability,weather_code,wind_speed_10m,wind_gusts_10m,pressure_msl',
+    daily: 'weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max',
   });
   try {
     const r = await Promise.race([fetch(url), new Promise((_, no) => setTimeout(() => no(new Error('Weather timed out')), 15e3))]);
@@ -119,27 +119,30 @@ export async function weatherStage(items, P, ref, { craft = craftId(), cap = CAP
   const { cells, beyond: cut } = pickCells(items, ref, Math.min(want, left), haveCells());
   const limited = cut > 0 && left < want;
   const got = await gridWeather(cells);
-  const grades = new Map();
+  const grades = new Map(), forecasts = new Map(); // forecasts: each item's square's forecast, for the best-bet score
   let unknown = 0, beyond = 0, over = 0, anySaved = false;
   for (const it of items) {
     const id = cellOf(it.lat, it.lon).id, w = fresh(id) ?? got.get(id);
     if (w === undefined) { beyond++; continue; }
+    if (w) forecasts.set(it, w);
     const g = gradeWater(w, it, P, craft);
     if (!g) unknown++; else if (g.over) over++; else if (g.saved) anySaved = true;
     grades.set(it, g);
   }
-  return { grades, unknown, beyond, over, saved: anySaved, asked: cells.length, limited };
+  return { grades, forecasts, unknown, beyond, over, saved: anySaved, asked: cells.length, limited };
 }
 
 // What to tell the person about a pass, as sentences: `where` ends the note about the cap ("Zoom in, or shorten the distance").
-export const weatherNotes = ({ unknown = 0, beyond = 0, over = 0, saved = false, limited = false }, where) => [
-  over && 'Daylight is over for today, so weather isn\'t applied. Pick another day',
-  unknown && `No forecast for ${unknown.toLocaleString()} water${unknown === 1 ? '' : 's'}, so weather isn't applied to them`,
+// `filtering`: the weather filter is on (false: only best-bet scores are, and nothing is hidden by weather).
+export const weatherNotes = ({ unknown = 0, beyond = 0, over = 0, saved = false, limited = false }, where, filtering = true) => [
+  over && filtering && 'Daylight is over for today, so weather isn\'t applied. Pick another day',
+  unknown && `No forecast for ${unknown.toLocaleString()} water${unknown === 1 ? '' : 's'}, so ${filtering ? "weather isn't applied to them" : `${unknown === 1 ? 'it has' : 'they have'} no score`}`,
   limited ? 'That\'s all the forecasts the app asks for in an hour. The rest are checked later' : beyond && `Weather is checked for the nearest ${CAP} areas. ${where}`,
   saved && 'Using forecasts saved earlier'].filter(Boolean);
 
 // The day's line for one water (a card on the map): its square's forecast, asked for if it isn't in hand.
-export async function weatherLine(lake, P) {
+export async function forecastFor(lake) {
   const c = cellOf(lake.lat, lake.lon);
-  return gradeWater((await gridWeather([c])).get(c.id), lake, P)?.line ?? null;
+  return (await gridWeather([c])).get(c.id) ?? null;
 }
+export const weatherLine = async (lake, P) => gradeWater(await forecastFor(lake), lake, P)?.line ?? null;

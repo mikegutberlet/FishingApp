@@ -8,6 +8,7 @@ import { rankRows } from './map-results-core.js';
 import { shownPins, pinTarget } from './map-pins.js';
 import { filterView } from './map-filters.js';
 import { preview, closeSheet } from './map-browse.js';
+import { prefs, savePrefs } from './water-filter.js';
 import { renderFinder } from './views/finder.js';
 
 const drawer = $('#results-drawer'), rowsEl = $('#rd-rows');
@@ -23,14 +24,18 @@ function render() {
   // Distance is from where the ring is measured; with no ring, from where you are or home when the app already knows
   // (it doesn't ask for your location just for this), else from the middle of the map.
   const ref = v.from ?? (here ? { ...here, label: 'where you are' } : v.known ?? { lat: c.lat, lon: c.lng });
-  const d = rankRows(pins, ref);
+  // With best-bet scores on, each row says its score, and the list can lead with the best bets (the list's own sort).
+  const byBet = v.score && prefs().sort === 'bet';
+  const d = rankRows(pins, ref, { sort: byBet ? 'bet' : 'near', score: v.score ? e => v.bet(e)?.score : undefined });
+  $('#rd-sort').classList.toggle('hidden', !v.score);
+  $('#rd-sort').textContent = byBet ? 'Sort by distance' : 'Sort by best bet';
   rows = d.rows;
-  $('#rd-count').textContent = `${d.total.toLocaleString()} water${d.total === 1 ? '' : 's'}${v.from ? '' : ' in view'}, closest to ${FROM[ref.label] ?? 'the middle of the map'} first`;
-  $('#rd-note').textContent = d.total > rows.length ? `Showing the nearest ${rows.length} of ${d.total.toLocaleString()}. Zoom in, or add filters.` : '';
+  $('#rd-count').textContent = `${d.total.toLocaleString()} water${d.total === 1 ? '' : 's'}${v.from ? '' : ' in view'}, ${byBet ? 'best bet' : `closest to ${FROM[ref.label] ?? 'the middle of the map'}`} first`;
+  $('#rd-note').textContent = d.total > rows.length ? `Showing the ${byBet ? 'best' : 'nearest'} ${rows.length} of ${d.total.toLocaleString()}. Zoom in, or add filters.` : '';
   const top = rowsEl.scrollTop;
-  rowsEl.innerHTML = rows.length ? rows.map(({ e, km }, i) => {
+  rowsEl.innerHTML = rows.length ? rows.map(({ e, km, score }, i) => {
     const wx = v.wx(e);
-    return `<button type="button" class="rd-row" data-i="${i}"><span class="rd-main"><b>${esc(e.name)}</b><span class="muted small">${esc([e.saved && '★ Saved', e.type, far(km)].filter(Boolean).join(' · '))}</span>${wx?.line ? `<span class="small rd-wx">${esc(wx.line)}</span>` : ''}</span><span aria-hidden="true">›</span></button>`;
+    return `<button type="button" class="rd-row" data-i="${i}"><span class="rd-main"><b>${esc(e.name)}</b><span class="muted small">${esc([e.saved && '★ Saved', e.type, far(km), score != null && `Best bet ${score}`].filter(Boolean).join(' · '))}</span>${wx?.line ? `<span class="small rd-wx">${esc(wx.line)}</span>` : ''}</span><span aria-hidden="true">›</span></button>`;
   }).join('') : `<div class="rd-empty muted">${v.busy ? 'Checking waters…' : v.on ? 'Nothing matches. Try a longer distance or fewer filters.' : 'No waters in view. Zoom out, or move the map.'}</div>`;
   rowsEl.scrollTop = top;
 }
@@ -47,6 +52,7 @@ function open() {
 const close = () => drawer.classList.add('hidden');
 $('#pin-list').onclick = () => isOpen() ? close() : open();
 $('#rd-close').onclick = close;
+$('#rd-sort').onclick = () => { savePrefs({ sort: prefs().sort === 'bet' ? 'near' : 'bet' }); rowsEl.scrollTop = 0; render(); };
 $('#pin-filters').addEventListener('click', close);
 $('#rd-full').onclick = () => { close(); showView('lakes', { render: false }); renderFinder(); };
 rowsEl.onclick = ev => {

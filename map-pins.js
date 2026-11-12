@@ -70,7 +70,8 @@ function build() {
 
 // ---------- Filtering (map-filters.js) ----------
 // While the map is filtered: `keep(pin)` says which pins stay, `count(inView, all)` what the bar reads (null: the usual
-// count), `also()` the bounds a distance ring covers, and `changed()` hears that the set of pins was rebuilt.
+// count), `also()` the bounds a distance ring covers, `changed()` hears that the set of pins was rebuilt, `tone(pin)`
+// overrides a pin's color and `badge(pin)` puts a number on it (null: none).
 let filter = null;
 export const setPinFilter = f => { filter = f; };
 export const pinList = () => pins;
@@ -81,7 +82,7 @@ export const pinsSettled = () => [...states.values()].every(st => st?.done);
 // ---------- Drawing ----------
 const TEARDROP = '<svg viewBox="0 0 26 32" aria-hidden="true"><path d="M13 31C13 31 2 19.5 2 12a11 11 0 0 1 22 0c0 7.500-11 19-11 19z"/></svg>';
 const caughtOn = e => e.saved ? mine.caught.get(e.saved.id) ?? 0 : 0;
-const pinIcon = (e, tone) => L.divIcon({ className: `pin tone-${tone}${e.saved ? ' saved' : ''}${caughtOn(e) ? ' caught' : ''}`, html: `${TEARDROP}${e.saved ? '<b>★</b>' : ''}<i></i>`, iconSize: [26, 32], iconAnchor: [13, 31] });
+const pinIcon = (e, tone, badge = filter?.badge?.(e)) => L.divIcon({ className: `pin tone-${tone}${e.saved ? ' saved' : ''}${caughtOn(e) ? ' caught' : ''}`, html: `${TEARDROP}${e.saved ? '<b>★</b>' : ''}<i></i>${badge != null ? `<em>${badge}</em>` : ''}`, iconSize: [26, 32], iconAnchor: [13, 31] });
 const target = e => e.saved ?? (e.stock && !e.w ? stockLake(e) : e.w);
 export { target as pinTarget }; // the water a pin opens
 // Your own catches and the species you noted on a saved water count as fish on record.

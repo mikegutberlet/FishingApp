@@ -39,6 +39,7 @@ export function filterForm(P = prefs()) {
     <fieldset><legend>Weather</legend><div class="fd-chips">${[0, 1, 2, 3, 4, 5, 6, 7].map(n => chip('day', n, dayLabel(n))).join('')}</div>
       <div class="fd-chips fd-kinds"><span class="muted small">Keep waters where that day is</span>${chips('wx', WX)}</div>
       <label class="fd-craft">Graded for ${craftSelect()}</label>
+      ${tick('score', 'Show a best-bet score (1 to 10) for that day')}
       <div class="muted small">A good day has six hours in a row of wind your craft can take and no storms; a fair day has three. Needs a signal, or a forecast saved in the last two days.</div></fieldset>
     <fieldset><legend>Lake or stream</legend><div class="fd-chips">${chips('type', TYPE)}</div></fieldset>
     <fieldset><legend>Size</legend><div class="fd-chips">${chips('size', SIZE())}</div></fieldset>
