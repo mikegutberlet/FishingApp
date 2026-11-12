@@ -1,6 +1,6 @@
 // Boat ramps, fishing piers, parking, campgrounds, marinas, boat rentals and tackle shops in one state,
 // from OpenStreetMap via the Overpass API. Runs monthly for each state (.github/workflows/build-safety.yml for
-// California, nevada-monthly.yml, oregon-monthly.yml).
+// California, build-access.yml for Nevada and Oregon).
 //
 //   node scripts/build-state-access.mjs <ca|nv|or>
 //   data/<st>/access.json  { places: [[lat, lon, kind, name, note]] }  kind: ramp | pier | parking | camp | marina | rental | tackle

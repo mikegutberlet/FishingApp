@@ -78,13 +78,14 @@ function drawOr(layer, or) {
 }
 
 // Thousands of places statewide, so only the ones in view are drawn, and only when zoomed in.
-let places = [];
+const places = [[], [], []]; // one list per state
 async function drawAccess(layer) {
-  if (!places.length) places = (await Promise.all([CA, NV, OR].map(S => S.accessPlaces()))).flat(); // asks again after a failed load
+  // A state whose list is empty (failed load, or no file yet) is asked again on the next draw.
+  await Promise.all([CA, NV, OR].map(async (S, i) => { if (!places[i].length) places[i] = await S.accessPlaces(); }));
   layer.clearLayers();
   if (map.getZoom() < 11) return;
   const b = map.getBounds().pad(0.1);
-  for (const [lat, lon, kind, name, note] of places) {
+  for (const [lat, lon, kind, name, note] of places.flat()) {
     if (!b.contains([lat, lon]) || (kind === 'parking' && map.getZoom() < 14)) continue;
     const k = ACCESS_KINDS[kind];
     L.marker([lat, lon], { icon: L.divIcon({ className: 'acc-icon', html: k.icon, iconSize: [22, 22] }), keyboard: false })

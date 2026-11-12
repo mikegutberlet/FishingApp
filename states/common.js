@@ -8,9 +8,11 @@ export const isRiver = lake => lake.kind === 'river' || /river|creek|stream|slou
 // Boat ramps, piers, parking, campgrounds, marinas, rentals and tackle shops near a water, nearest first, from a
 // state's access list (OpenStreetMap; scripts/build-state-access.mjs). `a` is the file, null when it isn't there.
 // How far something can be and still belong to the water grows with the water's size.
+// How far from the water's point something can be and still belong to it.
+export const reachKm = lake => isRiver(lake) ? 3 : Math.max(1.5, Math.sqrt((lake.acres ?? 50) / 247) * 1.5 + 0.5);
 export function accessNear(a, lake) {
   if (!a) return null;
-  const r = isRiver(lake) ? 3 : Math.max(1.5, Math.sqrt((lake.acres ?? 50) / 247) * 1.5 + 0.5);
+  const r = reachKm(lake);
   const limit = { ramp: r + 1, pier: r + 1, parking: r + 0.5, marina: r + 1, rental: r + 1, camp: r + 4, tackle: r + 15 };
   const near = [];
   for (const [lat, lon, kind, name, note] of a.places) {

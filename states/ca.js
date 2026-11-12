@@ -1,7 +1,7 @@
 // California: CDFW stocking and CDEC reservoir levels, read from the files the nightly job writes to data/ca/.
 // Every state module has the same shape (see states/index.js); Nevada is states/nv.js.
 import { haversineKm } from '../data-sources.js';
-import { accessNear } from './common.js';
+import { accessNear, reachKm } from './common.js';
 
 const cache = {};
 // A failed fetch (offline, or a file the nightly job hasn't written yet) is forgotten after 30 s so it is tried again.
@@ -158,8 +158,6 @@ export const bathymetryUrl = id => `data/ca/bathymetry/${id}.geojson`;
 
 // ---------- Water safety: algae advisories (nightly), fish advisories, regulations, access (weekly/monthly) ----------
 const isRiver = lake => lake.kind === 'river' || /river|creek|stream|slough|canal/i.test(lake.type ?? '');
-// How far from the water's point something can be and still belong to it.
-const reachKm = lake => isRiver(lake) ? 3 : Math.max(1.5, Math.sqrt((lake.acres ?? 50) / 247) * 1.5 + 0.5);
 const nameMatch = (a, b) => { const x = norm(a), y = norm(b); return x.length > 2 && y.length > 2 && (x === y || x.startsWith(y) || y.startsWith(x)); };
 
 export async function habAdvisories() {
