@@ -2,16 +2,14 @@
 // by the fish you want, how you get on the water, how far it is from home, recent stocking and your own catches.
 // Everything comes from data already on the phone; facts per water are worked out once and kept for the session.
 import { db } from '../db.js';
-import { list as stateList, forLake } from '../states/index.js';
 import { $, esc, fmtDate, status, showView } from '../ui.js';
 import { haversineKm } from '../data-sources.js';
 import { locate, pickPoint } from '../map.js';
 import { units } from '../units.js';
-import { groupOf, groupLabel } from '../game-plan.js';
+import { groupLabel } from '../game-plan.js';
 import { openLake, openWater } from './lake.js';
 import { renderLakeList } from './lakes.js';
-import { stockHistoryFor } from '../stock-history.js';
-import { speciesName, speciesLine, isCatchAll } from '../species.js';
+import { loadPool, withSaved, factsFor, habFor, addFish, hasFish, fishRows, stockLake } from '../water-facts.js';
 
 const HOME = 'tackle-box-home', PREFS = 'tackle-box-finder';
 const read = k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
@@ -23,61 +21,9 @@ const FISH = ['trout', 'kokanee', 'laker', 'largemouth', 'smallmouth', 'striper'
 const KINDS = ['Rainbow trout', 'Brown trout', 'Brook trout', 'Cutthroat trout', 'Lahontan cutthroat trout', 'Golden trout', 'Tiger trout', 'Bull trout', 'Cutbow trout', 'Steelhead'];
 const ACCESS = { ramp: 'Boat ramp', pier: 'Fishing pier', marina: 'Marina', rental: 'Boat rental', camp: 'Campground', parking: 'Parking' };
 const MILES = [10, 25, 50, 100, 200, 0];
-// NAS records of fish that didn't take or were removed don't mean the fish is there.
-const GONE = /failed|extirpated|eradicated/i;
-// "Brown bullhead" is a catfish, not a brown trout.
-const group = s => /bullhead/i.test(s ?? '') ? 'catfish' : groupOf(s);
 const metric = () => units().depth === 'm';
 const fmtMiles = mi => mi ? (metric() ? `${Math.round(mi * 1.609)} km` : `${mi} mi`) : 'Any';
 const distNum = km => metric() ? Math.round(km) : Math.round(km * 0.621371);
-const isStream = n => /river|creek|fork|section/i.test(n ?? ''); // as views/lakes.js types a stocked water
-
-// ---------- Every water, once per session ----------
-let pool = null;
-async function loadPool() {
-  return pool ??= Promise.all(stateList.map(async S => {
-    const [stocked, sw] = await Promise.all([S.waters(), S.statewide()]);
-    return [
-      ...sw.lakes.map(w => ({ key: `${S.code}:n:${w.id}`, S, w, name: w.name, type: w.type, lat: w.lat, lon: w.lon })),
-      ...stocked.filter(w => w.lat != null).map(w => ({ key: `${S.code}:s:${w.id}`, S, stock: w, name: w.name, type: w.type ?? (isStream(w.name) ? 'River' : 'Lake'), lat: w.lat, lon: w.lon })),
-    ];
-  })).then(parts => parts.flat()).then(all => {
-    // Nothing loaded (no signal before the data was cached): ask again next time.
-    if (!all.length) { pool = null; facts.clear(); }
-    return all;
-  });
-}
-
-// What we know about one water: fish (and where that comes from), latest plant and access places. Algae advisories
-// are slow to match in Oregon, so they're looked up only for waters that pass the other filters.
-const facts = new Map();
-function factsFor(e) {
-  if (!facts.has(e.key)) facts.set(e.key, (async () => {
-    const S = e.S, place = e.w ?? e.stock;
-    const id = e.saved?.[S.stockField];
-    const stock = e.stock ?? (id != null ? (await S.waters()).find(w => String(w.id) === String(id)) : await S.matchStockedWater(e.w));
-    const [hist, access] = await Promise.all([S.historyFor(place), S.accessFor?.(place)]);
-    const fish = new Map(), add = (s, src) => addFish(fish, s, src);
-    for (const p of stock?.plants ?? []) add(p.species, 'stocked');
-    // Past years' reports name the kind more often than the current schedule does ("Rainbow Trout" vs "Legal trout").
-    const past = stock ? await stockHistoryFor({ name: stock.name, state: S.code, [S.stockField]: stock.id, lat: stock.lat, lon: stock.lon, county: stock.county ?? stock.counties }) : null;
-    for (const y of past?.years ?? []) for (const s of Object.keys(y.sp)) add(s, 'past');
-    // historyFor lines read "Species (locality) · status".
-    for (const h of hist.local) if (!GONE.test(h.text.split(' · ').at(-1))) add(h.text.split(/ \(| · /)[0], 'on record');
-    return { stock, fish, lastPlant: stock?.lastPlant ?? null, access: access ? new Set(access.places.map(p => p.kind)) : null };
-  })().catch(() => ({ fish: new Map(), access: null })));
-  return facts.get(e.key);
-}
-// A fish goes in under its group ('trout') and, for trout and kokanee, also under the kind the record names
-// ('k:Tiger trout'). Other fish stay by group, so a card's list stays short.
-function addFish(fish, s, src) {
-  const g = group(s), kind = speciesName(s);
-  const named = kind && !isCatchAll(kind) && (speciesLine(kind).includes('Trout') || /kokanee|sockeye/i.test(kind));
-  for (const k of [g, named && `k:${kind}`]) if (k) (fish.get(k) ?? fish.set(k, new Set()).get(k)).add(src);
-}
-const hasFish = (fish, want) => fish.has(want) || [...fish.keys()].some(k => k.startsWith('k:') && speciesLine(k.slice(2)).includes(want));
-const habs = new Map();
-const habFor = e => habs.get(e.key) ?? habs.set(e.key, (e.S.habFor?.(e.w ?? e.stock) ?? Promise.resolve([])).then(a => a.length, () => 0)).get(e.key);
 
 // ---------- Where distance is measured from ----------
 async function origin() {
@@ -119,20 +65,9 @@ export async function renderFinder() {
   const [from, all, saved, catches] = await Promise.all([origin(), loadPool(), db.all('lakes'), db.all('catches')]);
   if (!$('#fd-from')) return;
   $('#fd-from').textContent = from ? `Distances from ${from.label}` : 'Set home to see distances. Location is off.';
-  // Your saved waters stand in for the same water in the state lists, and carry your catches and species notes.
   const caught = new Map();
   for (const c of catches) if (c.lakeId) (caught.get(c.lakeId) ?? caught.set(c.lakeId, []).get(c.lakeId)).push(c);
-  const savedFor = new Map();
-  const extra = [];
-  const keys = new Set(all.map(e => e.key));
-  for (const l of saved) {
-    const S = forLake(l);
-    // A river saved from the state's list has an NHD id but isn't in the finder's lakes: try its stock id too.
-    const key = S && [l.nhdId && `${S.code}:n:${l.nhdId}`, l[S.stockField] != null && `${S.code}:s:${l[S.stockField]}`].find(k => k && keys.has(k));
-    if (key) savedFor.set(key, l);
-    else if (S && l.lat != null) extra.push({ key: `mine:${l.id}`, S, w: l, name: l.name, type: l.type, lat: l.lat, lon: l.lon, saved: l });
-  }
-  const entries = [...all.map(e => savedFor.has(e.key) ? { ...e, saved: savedFor.get(e.key) } : e), ...extra];
+  const { entries, savedFor } = withSaved(all, saved);
 
   const save = patch => { write(PREFS, { ...prefs(), ...patch }); draw(); };
   list.querySelector('.fd-filters').onclick = e => {
@@ -197,17 +132,7 @@ export async function renderFinder() {
 }
 
 function card(r, i, today) {
-  // Each fish once, under the best evidence for it: your catches, then the current schedule, then past stocking
-  // reports, then a USGS record.
-  const by = { yours: "You've caught", stocked: 'Stocked', past: 'Stocked before', 'on record': 'On record' }, rows = {};
-  // A group shows by its kinds when the records name them ("Rainbow trout, Tiger trout"), else by its own name ("Trout").
-  const kinds = [...r.fish.keys()].filter(k => k.startsWith('k:'));
-  for (const [g, all] of r.fish) {
-    const named = new Set(g.startsWith('k:') ? [] : kinds.filter(k => group(k.slice(2)) === g).flatMap(k => [...r.fish.get(k)]));
-    const src = [...all].filter(s => !named.has(s));
-    if (src.length) (rows[Object.keys(by).find(k => src.includes(k))] ??= []).push(g.startsWith('k:') ? g.slice(2) : groupLabel(g));
-  }
-  const fish = Object.keys(by).filter(k => rows[k]).map(k => `<div class="small fd-fish"><span>${by[k]}:</span> ${esc(rows[k].join(', '))}</div>`).join('');
+  const fish = fishRows(r.fish).map(x => `<div class="small fd-fish"><span>${x.label}:</span> ${esc(x.names.join(', '))}</div>`).join('');
   const plant = r.f.lastPlant && `${r.f.lastPlant > today ? 'Plant planned' : 'Last stocked'} ${fmtDate(r.f.lastPlant)}`;
   const access = r.f.access && Object.keys(ACCESS).filter(k => r.f.access.has(k)).map(k => ACCESS[k]).join(', ');
   return `<div class="card lake-item fd-item" data-i="${i}">
@@ -220,7 +145,5 @@ function card(r, i, today) {
 async function openEntry(r) {
   if (r.saved) return openLake(r.saved.id);
   if (r.w) return openWater(r.w);
-  const S = r.S, w = r.stock;
-  openLake({ unsaved: true, name: w.name, type: r.type, state: S.code, county: w.county ?? w.counties, lat: w.lat, lon: w.lon, acres: w.acres ?? null,
-    [S.stockField]: w.id, stockingUrl: S.waterUrl(w.id), infoUrl: S.waterUrl(w.id) }, 'stocking');
+  openLake(stockLake(r), 'stocking');
 }
