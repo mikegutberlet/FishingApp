@@ -42,6 +42,11 @@ export function shape(e) {
     maxDepth: w.maxDepthFt ?? w.maxDepth ?? s?.maxDepth ?? null, saved: s, id: s?.id };
 }
 
+// Whether a water passes the settings that need lookups, for the map's pins (no card to fill). With nothing but the
+// algae filter on, its fish, access and stocking needn't be looked up at all.
+export const passes = async (e, P, ctx) => P.fish.length || P.access.length || P.stocked || P.mine ? !!(await fullPass(e, P, ctx)).hit
+  : !(P.noAlgae && e.S && await habFor(e));
+
 // One water against the settings that need its facts. `hit` is the row for a card (the entry plus its facts, fish
 // with your own catches added, and how many you've logged), or null. `unknown`: it failed only because the app has no
 // fish or access records for it. `stockKey`: the stocked water this lake stands for, so that one shows once.
@@ -56,7 +61,8 @@ export async function fullPass(entry, P, ctx, savedFor = new Map()) {
   const r = { ...e, f, fish, mine: mine.length };
   const cutoff = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10);
   let hit = null, unknown = false;
-  if (P.fish.length && !P.fish.some(g => hasFish(fish, g))) unknown = !fish.size;
+  if (P.saved && !e.saved) ;
+  else if (P.fish.length && !P.fish.some(g => hasFish(fish, g))) unknown = !fish.size;
   else if (P.access.length && !(f.access && P.access.every(k => f.access.has(k)))) unknown = !f.access;
   else if (P.stocked && !(f.lastPlant && f.lastPlant >= cutoff)) ;
   else if (P.mine && !r.mine) ;

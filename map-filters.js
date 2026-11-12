@@ -5,7 +5,7 @@
 import { map, pickPoint } from './map.js';
 import { $, esc, showView, status, onShow } from './ui.js';
 import { quickPass, active, needsFacts, off } from './water-filter-core.js';
-import { prefs, savePrefs, home, setHomePoint, origin, context, shape, fullPass } from './water-filter.js';
+import { prefs, savePrefs, home, setHomePoint, origin, context, shape, passes } from './water-filter.js';
 import { filterForm, bindFilterForm, syncForm, chipLabel, fmtMiles } from './views/filter-form.js';
 import { renderFinder } from './views/finder.js';
 import { pinsLayer, setPinFilter, pinList, pinsSettled, redrawPins, loadPinStates } from './map-pins.js';
@@ -20,8 +20,13 @@ const quickChip = $('#map-chips [data-chip=stocked-lately]');
 const tick = () => new Promise(r => setTimeout(r));
 
 // ---------- Which pins pass ----------
-let P = prefs(), from = null, fromKey = '', ctx = null;
-let token = 0, work = null; // work: 'origin' while finding where distance starts, { checked, total } while checking waters
+let P = prefs(), from = null, fromKey = '', fromAt = 0, ctx = null;
+// A fix on where you are is good for a few minutes, then asked for again: you may have driven on.
+const moved = () => from?.label === 'where you are' && Date.now() - fromAt > 5 * 60e3;
+// One question at a time: a second pass that needs the same origin waits for the first one's answer.
+let asking = null;
+const ask = key => (asking?.key === key ? asking : asking = { key, answer: origin(P).finally(() => { asking = null; }) }).answer;
+let token = 0, work = null; // work: 'origin' while finding where distance starts, 'quick' and then { checked, total } while checking waters
 const verdicts = new Map(), noSize = new Set(); // per pin, for the settings as they are now
 const vkey = e => `${e.key}|${e.saved?.id ?? ''}`; // a pin learns late that it stands for a water you saved
 const filtering = () => on && map.hasLayer(pinsLayer);
@@ -34,38 +39,39 @@ let waiting = null, fitNext = null; // asked for while the map was off screen: d
 async function refresh(reset = true) {
   // Off screen nothing is worked out (and your location isn't asked for) until the map is shown.
   if (!map.getContainer().offsetWidth) { waiting = !!waiting || reset; return; }
-  const me = ++token, fit = fitNext;
-  fitNext = null;
+  const me = ++token;
   P = prefs();
   if (reset) { verdicts.clear(); noSize.clear(); }
   work = null;
   if (!filtering()) { paint(); return redrawPins(); }
   // Where distance is measured from. Asked again when the choice or home changes, or when it couldn't be had last time.
   const key = P.miles ? `${P.from}|${JSON.stringify(home())}` : '';
-  if (!ctx || key !== fromKey || (reset && key && !from)) {
+  if (!ctx || key !== fromKey || (reset && key && (!from || moved()))) {
     work = 'origin'; paint(); redrawPins();
-    const [f, c] = await Promise.all([key ? origin(P) : null, ctx ?? context()]);
+    const [f, c] = await Promise.all([key ? ask(key) : null, ctx ?? context()]);
     if (me !== token) return;
-    from = f; fromKey = key; ctx = c;
+    from = f; fromKey = key; fromAt = Date.now(); ctx = c;
   }
-  if (fit) { const b = ringOn() ? ringBounds() : fit.length ? L.latLngBounds(fit) : null; if (b) map.fitBounds(b, { paddingTopLeft: [16, 150], paddingBottomRight: [16, 24], animate: false, maxZoom: 13 }); }
+  if (fitNext) { const fit = fitNext; fitNext = null; const b = ringOn() ? ringBounds() : fit.length ? L.latLngBounds(fit) : null; if (b) map.fitBounds(b, { paddingTopLeft: [16, 150], paddingBottomRight: [16, 24], animate: false, maxZoom: 13 }); }
   loadPinStates(); // the states under the ring
   // The checks that need no lookups settle most pins at once; the rest are looked up, nearest the middle of the map first.
   const quick = { from, iced: ctx.iced }, facts = needsFacts(P), todo = [];
+  let t0 = performance.now(), drawn = t0;
   for (const e of pinList()) {
     const k = vkey(e);
     if (verdicts.has(k)) continue;
     const q = quickPass(shape(e), P, quick);
     if (q.unknown) noSize.add(k);
     if (!q.ok || !facts) verdicts.set(k, q.ok); else todo.push(e);
+    if (performance.now() - t0 > 12) { if (work !== 'quick') { work = 'quick'; redrawPins(); } await tick(); if (me !== token) return; t0 = performance.now(); } // the ice estimate takes a moment per water
   }
   const c = map.getCenter(), far = e => (e.lat - c.lat) ** 2 + (e.lon - c.lng) ** 2;
   todo.sort((a, b) => far(a) - far(b));
   work = todo.length ? { checked: 0, total: todo.length } : null;
   paint(); redrawPins();
-  let t0 = performance.now(), drawn = t0;
+  t0 = drawn = performance.now();
   for (const e of todo) {
-    const hit = await fullPass(e, P, ctx).then(r => !!r.hit, () => false);
+    const hit = await passes(e, P, ctx).catch(() => false);
     if (me !== token) return;
     verdicts.set(vkey(e), hit); work.checked++;
     if (performance.now() - t0 > 12) { // a few at a time, so the map stays smooth; pins appear as they pass
@@ -87,7 +93,7 @@ setPinFilter({
   keep: e => !filtering() || verdicts.get(vkey(e)) === true,
   // What the bar reads while the map is filtered; the sheet shows the same line.
   count(inView, all) {
-    const text = !on ? null : work === 'origin' ? 'Finding where you are…'
+    const text = !on ? null : work === 'origin' ? 'Finding where you are…' : work === 'quick' ? 'Checking waters…'
       : work ? `Checking ${work.checked.toLocaleString()} of ${work.total.toLocaleString()} waters…`
       : !pinsSettled() ? 'Loading waters…'
       : ringOn() ? `${all.toLocaleString()} water${all === 1 ? ' matches' : 's match'} within ${fmtMiles(P.miles)}`
@@ -114,7 +120,7 @@ function paint() {
   const notes = [on && P.miles && work !== 'origin' && ctx && !from && "Location is off, so distance isn't applied", left && `${left.toLocaleString()} left out: no size or elevation on record`].filter(Boolean);
   noteEl.textContent = notes.join('. ');
   noteEl.classList.toggle('hidden', !notes.length);
-  quickChip.classList.toggle('on', on && P.stocked);
+  quickChip.classList.toggle('on', filtering() && P.stocked);
   $('#pin-filters').classList.toggle('on', on);
   $('#filter-use').classList.toggle('hidden', on);
 }
@@ -129,7 +135,7 @@ chipsEl.onclick = e => {
   if (b) { savePrefs(off(b.dataset.off)); changed(); }
 };
 quickChip.addEventListener('click', () => {
-  const want = !(on && prefs().stocked);
+  const want = !(filtering() && prefs().stocked);
   savePrefs({ stocked: want });
   if (!want && viaChip) { viaChip = false; setOn(false); syncForm(form); return refresh(); }
   const was = on;
@@ -158,7 +164,9 @@ document.addEventListener('tb-show-on-map', e => {
   fitNext = e.detail?.points ?? []; waiting = true;
   showView('map');
 });
-onShow('map', () => setTimeout(() => { if (waiting != null) { const r = waiting; waiting = null; refresh(r); } }, 80)); // once the map has its size
+onShow('map', () => setTimeout(() => { // once the map has its size
+  if (waiting != null) { const r = waiting; waiting = null; refresh(r); } else if (on && moved()) refresh();
+}, 80));
 
 map.on('overlayadd overlayremove', e => { if (e.layer === pinsLayer && on) later(false); });
 document.addEventListener('tb-lakes-changed', () => { ctx = null; if (on) later(true); });

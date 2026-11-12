@@ -43,8 +43,9 @@ export async function renderFinder() {
   said();
   const { entries, savedFor } = withSaved(all, ctx.saved);
 
+  let asked = 0; // a slow fix on where you are mustn't land on top of a later choice
   bindFilterForm(list.querySelector('.fd-filters'), async (P, key) => {
-    if (key === 'from') { from = await origin(P); if (!$('#fd-from')) return; said(); }
+    if (key === 'from') { const mine = ++asked, f = await origin(P); if (mine !== asked || !$('#fd-from')) return; from = f; said(); }
     draw();
   }, { setHome });
   $('#fd-sort').onchange = e => { savePrefs({ sort: e.target.value }); draw(); };
@@ -56,9 +57,10 @@ export async function renderFinder() {
     const me = ++run, P = prefs(), out = $('#fd-results');
     if (!out) return;
     // The checks that need no lookups first (distance, lake or stream, size, elevation, saved, ice), nearest first.
-    const quick = { from, iced: ctx.iced }, unknown = new Set(), noSize = new Set();
+    // "Only my saved waters" waits for the lookups: a lake you saved from the stocked list is only known as yours there.
+    const quick = { from, iced: ctx.iced }, quickP = { ...P, saved: false }, unknown = new Set(), noSize = new Set();
     const near = entries.map(e => ({ ...e, distKm: from ? haversineKm(from.lat, from.lon, e.lat, e.lon) : null }))
-      .filter(e => { const q = quickPass(shape(e), P, quick); if (q.unknown) noSize.add(e.key); return q.ok; }).sort((a, b) => (a.distKm ?? 0) - (b.distKm ?? 0));
+      .filter(e => { const q = quickPass(shape(e), quickP, quick); if (q.unknown) noSize.add(e.key); return q.ok; }).sort((a, b) => (a.distKm ?? 0) - (b.distKm ?? 0));
     const today = new Date().toISOString().slice(0, 10);
     const hits = [], claimed = new Set();
     for (let i = 0; i < near.length; i++) {
@@ -78,7 +80,7 @@ export async function renderFinder() {
       if (P.sort === 'stocked') rows = [...rows].sort((a, b) => (b.f.lastPlant ?? '').localeCompare(a.f.lastPlant ?? '') || (a.distKm ?? 0) - (b.distKm ?? 0));
       found = rows;
       const unknowns = [...unknown].filter(k => !claimed.has(k)).length;
-      const sizeless = noSize.size ? ` ${noSize.size.toLocaleString()} left out: no size or elevation on record.` : '';
+      const sizeless = noSize.size ? ' Waters with no size or elevation on record are left out.' : '';
       $('#fd-count').textContent = progress ?? (rows.length ? `${rows.length} water${rows.length === 1 ? '' : 's'} match${rows.length === 1 ? 'es' : ''}${unknowns ? `. ${unknowns} more within range have no fish or access records in the app yet.` : '.'}${sizeless}` : sizeless.trim());
       out.innerHTML = rows.length ? rows.slice(0, 60).map((r, i) => card(r, i, today)).join('')
         : progress ? '' : '<div class="card muted">Nothing matches. Try a longer distance or fewer filters.</div>';
