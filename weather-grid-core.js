@@ -10,13 +10,14 @@ export function cellOf(lat, lon) {
 }
 
 // A day is as good as its longest run of hours rated good for your craft (boat-weather.js rateHour): six or more is
-// a good day, three to five a fair one.
+// a good day, three to five a fair one. Today only the daylight still left is rated, so late in the day fewer hours
+// are asked for: all that's left being good is a good rest of the day.
 export function longestGood(hours) {
   let best = 0, run = 0;
   for (const h of hours) { run = h.tone === 'good' ? run + 1 : 0; if (run > best) best = run; }
   return best;
 }
-export const gradeOf = hours => { const n = longestGood(hours); return n >= 6 ? 'good' : n >= 3 ? 'fair' : 'poor'; };
+export const gradeOf = hours => { const n = longestGood(hours), left = hours.length; return left && n >= Math.min(6, left) ? 'good' : left && n >= Math.min(3, left) ? 'fair' : 'poor'; };
 // A water with no forecast (grade null) is kept: the filter hides what it knows to be poor.
 export const wxPass = (grade, want) => !want || grade == null || grade === 'good' || (want === 'fair' && grade === 'fair');
 

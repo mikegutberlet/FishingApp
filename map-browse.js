@@ -116,15 +116,22 @@ export async function preview(w) {
 async function more(w, lake, saved) {
   try {
     // While the map is filtered by weather, the card leads with the picked day here ("Sat: Kayak: good till 11 …").
+    // It is added when it arrives: the rest of the card is on the phone already and doesn't wait for it.
     const P = prefs();
-    const [day, e] = await Promise.all([mapFilterOn() && P.wx && Number.isFinite(lake.lat) ? weatherLine(lake, P).catch(() => null) : null, entryFor(lake)]);
-    const [f, hab, catches] = e ? await Promise.all([factsFor(e), habFor(e), saved ? db.byLake('catches', saved.id) : []]) : [{ fish: new Map(), access: null }, 0, []];
+    if (mapFilterOn() && P.wx && Number.isFinite(lake.lat)) weatherLine(lake, P).then(day => {
+      const el = $('#sheet-more');
+      if (day && shown === w && el) el.insertAdjacentHTML('afterbegin', `<div class="sheet-wx">${esc(day)}</div>`);
+    }, () => {});
+    const e = await entryFor(lake);
+    if (!e) return;
+    const [f, hab, catches] = await Promise.all([factsFor(e), habFor(e), saved ? db.byLake('catches', saved.id) : []]);
     const el = $('#sheet-more');
     if (shown !== w || !el) return;
+    const day = el.querySelector('.sheet-wx')?.outerHTML ?? '';
     const fish = new Map([...f.fish].map(([g, s]) => [g, new Set(s)]));
     for (const s of [...catches.map(c => c.species), ...String(saved?.species ?? '').split(/,|;/)]) addFish(fish, s, 'yours');
     const access = f.access && Object.keys(ACCESS).filter(k => f.access.has(k)).map(k => ACCESS[k]).join(', ');
-    el.innerHTML = (day ? `<div class="sheet-wx">${esc(day)}</div>` : '') + fishRows(fish).map(x => `<div><span class="muted">${x.label}:</span> ${esc(x.names.join(', '))}</div>`).join('')
+    el.innerHTML = day + fishRows(fish).map(x => `<div><span class="muted">${x.label}:</span> ${esc(x.names.join(', '))}</div>`).join('')
       + (hab ? '<div class="fd-warn">Toxic algae advisory</div>' : '') + (access ? `<div class="muted">${esc(access)}</div>` : '');
   } catch {}
 }

@@ -15,6 +15,8 @@ test('a day is graded by its longest run of good hours', () => {
   assert.equal(gradeOf(run('gggggg')), 'good'); assert.equal(gradeOf(run('wggggggw')), 'good');
   assert.equal(gradeOf(run('gggggwggg')), 'fair'); assert.equal(gradeOf(run('gggbb')), 'fair');
   assert.equal(gradeOf(run('ggwggbgg')), 'poor'); assert.equal(gradeOf([]), 'poor');
+  // late in the day there are fewer hours left to ask for: all of them good is a good rest of the day
+  assert.equal(gradeOf(run('gggg')), 'good'); assert.equal(gradeOf(run('gg')), 'good'); assert.equal(gradeOf(run('ggb')), 'poor'); assert.equal(gradeOf(run('gggb')), 'fair');
 });
 test('what the filter keeps', () => {
   assert.ok(wxPass('good', 'good')); assert.ok(!wxPass('fair', 'good')); assert.ok(!wxPass('poor', 'good'));

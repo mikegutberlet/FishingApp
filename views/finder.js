@@ -10,7 +10,7 @@ import { renderLakeList } from './lakes.js';
 import { loadPool, withSaved, fishRows, stockLake, ACCESS } from '../water-facts.js';
 import { quickPass } from '../water-filter-core.js';
 import { wxPass } from '../weather-grid-core.js';
-import { weatherStage } from '../weather-grid.js';
+import { weatherStage, weatherNotes } from '../weather-grid.js';
 import { prefs, savePrefs, home, setHomePoint, origin, context, shape, fullPass } from '../water-filter.js';
 import { filterForm, bindFilterForm } from './filter-form.js';
 
@@ -87,8 +87,7 @@ export async function renderFinder() {
       const st = await weatherStage(items, P, from);
       if (me !== run || !out.isConnected) return;
       const kept = items.filter(it => st.grades.has(it) && wxPass(st.grades.get(it)?.grade, P.wx)).map(it => ({ ...it.r, wx: st.grades.get(it)?.line }));
-      show(kept, null, [st.unknown && `No forecast for ${st.unknown.toLocaleString()} water${st.unknown === 1 ? '' : 's'}, so weather isn't applied to them.`,
-        st.beyond && 'Weather is checked for the nearest 300 areas. Shorten the distance, or add filters.', st.saved && 'Using forecasts saved earlier.'].filter(Boolean).join(' '));
+      show(kept, null, weatherNotes(st, 'Shorten the distance, or add filters').map(n => `${n}.`).join(' '));
     }
     function show(rows, progress, wxNote = '') {
       if (P.sort === 'stocked') rows = [...rows].sort((a, b) => (b.f.lastPlant ?? '').localeCompare(a.f.lastPlant ?? '') || (a.distKm ?? 0) - (b.distKm ?? 0));

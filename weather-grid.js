@@ -11,7 +11,14 @@ import { fmtTemp } from './units.js';
 const KEEP = 3 * 36e5, BATCH = 50, SINGLES = 12, SAVED_FOR = 48 * 36e5;
 const mem = new Map(); // square id -> { at, w }
 const fresh = id => { const m = mem.get(id); return m && Date.now() - m.at < KEEP ? m.w : null; };
-const haveCells = () => new Set([...mem.keys()].filter(fresh));
+const haveCells = () => { for (const id of [...mem.keys()]) if (!fresh(id)) mem.delete(id); return new Set(mem.keys()); };
+
+// The forecast service is free and shared with the rest of the app's forecasts, and counts every square as a request:
+// no more than 1,500 squares are asked for in any hour (kept on the phone, so reopening the app doesn't start over).
+const HOURLY = 1500, ASKED = 'tackle-box-wx-asked';
+const askedLately = () => { try { return (JSON.parse(localStorage.getItem(ASKED)) ?? []).filter(([t]) => Date.now() - t < 36e5); } catch { return []; } };
+const room = () => Math.max(0, HOURLY - askedLately().reduce((n, [, k]) => n + k, 0));
+const spend = n => { try { localStorage.setItem(ASKED, JSON.stringify([...askedLately(), [Date.now(), n]])); } catch {} };
 
 // ---------- Asking ----------
 // Several places in one request: Open-Meteo takes comma-separated lists and answers with a list in the same order.
@@ -29,24 +36,43 @@ async function ask(cells) {
   } catch { return null; }
 }
 
-// Saved copies live beside the app's other saved forecasts (forecast.js), which also clears out old ones.
+// Saved copies have a cache of their own (sw.js keeps it across app updates). A copy is good for two days; older
+// ones are cleared out the first time something is saved after the app opens.
+const SAVED = 'tb-wx-grid';
 const savedUrl = id => new URL(`__grid/${id}.json`, location.href).href;
+let pruned = false;
 async function save(id, w) {
-  try { await (await caches.open('tb-forecast')).put(savedUrl(id), new Response(JSON.stringify({ savedAt: new Date().toISOString(), w }), { headers: { 'Content-Type': 'application/json' } })); } catch {}
+  try {
+    const c = await caches.open(SAVED);
+    await c.put(savedUrl(id), new Response(JSON.stringify({ savedAt: new Date().toISOString(), w }), { headers: { 'Content-Type': 'application/json' } }));
+    if (pruned) return;
+    pruned = true;
+    for (const r of await c.keys()) { const s = await (await c.match(r))?.json().catch(() => null); if (!s || Date.now() - Date.parse(s.savedAt) > SAVED_FOR) await c.delete(r); }
+  } catch { /* no Cache API (private mode): the forecast just isn't kept */ }
 }
 async function saved(id) {
   try {
-    const s = await (await (await caches.open('tb-forecast')).match(savedUrl(id)))?.json();
+    const s = await (await (await caches.open(SAVED)).match(savedUrl(id)))?.json();
     return s?.w && Date.now() - Date.parse(s.savedAt) < SAVED_FOR ? { ...s.w, saved: true } : null;
   } catch { return null; }
 }
 
 // The forecast for each square: from memory, else the network, else the copy saved on the phone, else null.
+const asking = new Map(); // square id -> the request it is already part of, so two screens never ask for it twice
 export async function gridWeather(cells) {
-  const out = new Map(), need = [];
-  for (const c of cells) { const w = fresh(c.id); if (w) out.set(c.id, w); else need.push(c); }
+  const out = new Map(), need = [], wait = [];
+  for (const c of cells) { const w = fresh(c.id); if (w) out.set(c.id, w); else if (asking.has(c.id)) wait.push(c); else need.push(c); }
   const keep = (c, w) => { mem.set(c.id, { at: Date.now(), w }); out.set(c.id, w); save(c.id, w); };
+  const job = network(need, keep);
+  for (const c of need) asking.set(c.id, job);
+  await Promise.all([job, ...wait.map(c => asking.get(c.id))]).finally(() => { for (const c of need) asking.delete(c.id); });
+  for (const c of wait) { const w = fresh(c.id); if (w) out.set(c.id, w); }
+  await Promise.all([...need, ...wait].filter(c => !out.has(c.id)).map(async c => out.set(c.id, await saved(c.id))));
+  return out;
+}
+async function network(need, keep) {
   if (need.length && navigator.onLine !== false) {
+    spend(need.length);
     const parts = [];
     for (let i = 0; i < need.length; i += BATCH) parts.push(need.slice(i, i + BATCH));
     const batch = async part => { const ws = await ask(part); ws?.forEach((w, k) => keep(part[k], w)); return !!ws; };
@@ -63,8 +89,6 @@ export async function gridWeather(cells) {
       }
     }
   }
-  await Promise.all(need.filter(c => !out.has(c.id)).map(async c => out.set(c.id, await saved(c.id))));
-  return out;
 }
 
 // ---------- A water's day ----------
@@ -77,6 +101,7 @@ export const dayLabel = n => n ? `${dayWord(n)} ${addDays(Date.now(), n).getDate
 export function gradeWater(w, e, P, craft = craftId()) {
   const date = dateFor(P), day = w && safeHours(w, date, e, craft);
   if (!day) return null;
+  if (!day.hours.length) return { grade: null, over: true, line: 'Today: daylight is over' }; // nothing left to rate: not a reason to hide it
   const di = w.daily.time.indexOf(date), hi = w.daily.temperature_2m_max?.[di], lo = w.daily.temperature_2m_min?.[di], pop = w.daily.precipitation_probability_max?.[di];
   return { grade: gradeOf(day.hours), saved: !!w.saved,
     line: [`${dayWord(P.day)}: ${day.summary}`, hi != null && lo != null && `${fmtTemp(hi, true)} / ${fmtTemp(lo, true)}`, pop >= 20 && `${pop}% rain`].filter(Boolean).join(' · ') };
@@ -85,23 +110,33 @@ export function gradeWater(w, e, P, craft = craftId()) {
 // The weather stage of a filter pass. `items` (each with lat, lon, acres) already pass everything else; `ref` is where
 // "nearest" is measured from. `grades` holds { grade, line } per item, or null when its square has no forecast; an item
 // whose square is beyond this pass's cap isn't in it at all (`beyond` counts those). `unknown`: items without a
-// forecast. `saved`: some grades come from a copy saved earlier. `asked`: how many squares this pass asked for, out of
-// `cap` (a caller that makes several passes over one view shares one allowance between them).
+// forecast. `saved`: some grades come from a copy saved earlier. `over`: today's daylight is over, so nothing was rated.
+// `asked`: how many squares this pass asked for, out of `cap` (a caller that makes several passes over one view shares
+// one allowance between them). `limited`: the hour's allowance cut it short.
 export const CAP = 300;
 export async function weatherStage(items, P, ref, { craft = craftId(), cap = CAP } = {}) {
-  const { cells } = pickCells(items, ref, Math.max(0, cap), haveCells());
+  const left = room(), want = Math.max(0, cap);
+  const { cells, beyond: cut } = pickCells(items, ref, Math.min(want, left), haveCells());
+  const limited = cut > 0 && left < want;
   const got = await gridWeather(cells);
   const grades = new Map();
-  let unknown = 0, beyond = 0, anySaved = false;
+  let unknown = 0, beyond = 0, over = 0, anySaved = false;
   for (const it of items) {
     const id = cellOf(it.lat, it.lon).id, w = fresh(id) ?? got.get(id);
     if (w === undefined) { beyond++; continue; }
     const g = gradeWater(w, it, P, craft);
-    if (!g) unknown++; else if (g.saved) anySaved = true;
+    if (!g) unknown++; else if (g.over) over++; else if (g.saved) anySaved = true;
     grades.set(it, g);
   }
-  return { grades, unknown, beyond, saved: anySaved, asked: cells.length };
+  return { grades, unknown, beyond, over, saved: anySaved, asked: cells.length, limited };
 }
+
+// What to tell the person about a pass, as sentences: `where` ends the note about the cap ("Zoom in, or shorten the distance").
+export const weatherNotes = ({ unknown = 0, beyond = 0, over = 0, saved = false, limited = false }, where) => [
+  over && 'Daylight is over for today, so weather isn\'t applied. Pick another day',
+  unknown && `No forecast for ${unknown.toLocaleString()} water${unknown === 1 ? '' : 's'}, so weather isn't applied to them`,
+  limited ? 'That\'s all the forecasts the app asks for in an hour. The rest are checked later' : beyond && `Weather is checked for the nearest ${CAP} areas. ${where}`,
+  saved && 'Using forecasts saved earlier'].filter(Boolean);
 
 // The day's line for one water (a card on the map): its square's forecast, asked for if it isn't in hand.
 export async function weatherLine(lake, P) {

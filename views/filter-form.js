@@ -6,7 +6,7 @@ import { groupLabel } from '../game-plan.js';
 import { ACCESS } from '../water-facts.js';
 import { DEFAULTS } from '../water-filter-core.js';
 import { prefs, savePrefs, home } from '../water-filter.js';
-import { CRAFTS, craftId, setCraft } from '../boat-weather.js';
+import { craftId, setCraft, craftSelect } from '../boat-weather.js';
 import { dayLabel } from '../weather-grid.js';
 
 const FISH = ['trout', 'kokanee', 'laker', 'largemouth', 'smallmouth', 'striper', 'crappie', 'panfish', 'catfish', 'walleye'];
@@ -37,7 +37,7 @@ export function filterForm(P = prefs()) {
       <div class="fd-chips fd-kinds"><span class="muted small">Measure from</span>${chip('from', 'me', 'Where I am')}${chip('from', 'home', 'Home')}<button type="button" class="fd-sethome" data-home>${home() ? 'Move home' : 'Set home'}</button></div></fieldset>
     <fieldset><legend>Weather</legend><div class="fd-chips">${[0, 1, 2, 3, 4, 5, 6, 7].map(n => chip('day', n, dayLabel(n))).join('')}</div>
       <div class="fd-chips fd-kinds"><span class="muted small">Keep waters where that day is</span>${chips('wx', WX)}</div>
-      <label class="fd-craft">Graded for <select data-craft>${Object.entries(CRAFTS).map(([k, c]) => `<option value="${k}" ${k === craftId() ? 'selected' : ''}>${c.icon} ${esc(c.label)}</option>`).join('')}</select></label>
+      <label class="fd-craft">Graded for ${craftSelect()}</label>
       <div class="muted small">A good day has six hours in a row of wind your craft can take and no storms; a fair day has three. Needs a signal, or a forecast saved in the last two days.</div></fieldset>
     <fieldset><legend>Lake or stream</legend><div class="fd-chips">${chips('type', TYPE)}</div></fieldset>
     <fieldset><legend>Size</legend><div class="fd-chips">${chips('size', SIZE())}</div></fieldset>
@@ -54,7 +54,7 @@ export function syncForm(root, P = prefs()) {
   root.querySelectorAll('button[data-k]').forEach(b => b.setAttribute('aria-pressed', isOn(P, b.dataset.k, b.dataset.v)));
   root.querySelectorAll('input[data-opt]').forEach(el => { el.checked = !!P[el.dataset.opt]; });
   root.querySelectorAll('[data-home]').forEach(b => { b.textContent = home() ? 'Move home' : 'Set home'; });
-  root.querySelectorAll('select[data-craft]').forEach(el => { el.value = craftId(); });
+  root.querySelectorAll('select[name=craft]').forEach(el => { el.value = craftId(); });
 }
 
 // `onChange(P, key)` runs after each change is saved. `setHome()` is how this screen lets you pick home on the map.
@@ -74,7 +74,7 @@ export function bindFilterForm(root, onChange, { setHome } = {}) {
     const el = e.target.closest('input[data-opt]');
     if (el) return apply({ [el.dataset.opt]: el.checked }, el.dataset.opt);
     // The craft is the app's one craft setting (boat-weather.js), not a filter of its own.
-    if (e.target.matches('select[data-craft]')) { setCraft(e.target.value); onChange(prefs(), 'craft'); }
+    if (e.target.matches('select[name=craft]')) { setCraft(e.target.value); onChange(prefs(), 'craft'); }
   };
 }
 
