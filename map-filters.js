@@ -39,6 +39,7 @@ let wxLeft = CAP, wxFor = '';
 const wxOk = k => !P.wx || (wx.has(k) && wxPass(wx.get(k)?.grade, P.wx));
 const vkey = e => `${e.key}|${e.saved?.id ?? ''}`; // a pin learns late that it stands for a water you saved
 const filtering = () => on && map.hasLayer(pinsLayer);
+const sig = P => JSON.stringify({ ...P, sort: '' }); // the settings that decide which pins pass: the list's sort isn't one
 const ringOn = () => !!(filtering() && from && P.miles);
 const ringBounds = () => L.latLng(from.lat, from.lon).toBounds(2 * P.miles * 1609.344);
 
@@ -94,7 +95,7 @@ async function refresh(reset = true) {
     const view = map.getBounds().pad(0.2), ring = ringOn();
     const items = pinList().filter(e => verdicts.get(vkey(e)) === true && !wx.has(vkey(e)) && (ring || view.contains([e.lat, e.lon]))).map(e => ({ lat: e.lat, lon: e.lon, acres: shape(e).acres, e }));
     const px = map.project(c, map.getZoom()); // the view to within a thumb's width: the map settling into its size isn't a move
-    const asksFor = JSON.stringify(P) + (ring ? `|${from.lat},${from.lon}` : `|${map.getZoom()}|${Math.round(px.x / 64)}|${Math.round(px.y / 64)}`);
+    const asksFor = sig(P) + (ring ? `|${from.lat},${from.lon}` : `|${map.getZoom()}|${Math.round(px.x / 64)}|${Math.round(px.y / 64)}`);
     if (asksFor !== wxFor) { wxFor = asksFor; wxLeft = CAP; }
     if (items.length) {
       work = 'weather'; paint(); redrawPins();
@@ -226,7 +227,7 @@ document.addEventListener('tb-show-on-map', e => {
 });
 onShow('map', () => setTimeout(() => { // once the map has its size
   if (waiting != null) { const r = waiting; waiting = null; refresh(r); }
-  else if (on && (moved() || JSON.stringify(prefs()) !== JSON.stringify(P))) refresh(); // you drove on, or changed the filters in the list
+  else if (on && (moved() || sig(prefs()) !== sig(P))) refresh(); // you drove on, or changed the filters in the list
   else retryWeather();
 }, 80));
 

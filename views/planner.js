@@ -20,7 +20,7 @@ const mean = a => a.reduce((s, x) => s + x, 0) / a.length;
 
 // Score a water for one day: 5 is an ordinary day, 0–10. Each factor adds a reason chip.
 export async function scoreDay(lake, w, date) {
-  const reasons = [], add = (pts, text, tone = pts > 0 ? 'good' : pts < 0 ? 'bad' : 'ok') => { score += pts; reasons.push({ text, tone }); };
+  const reasons = [], add = (pts, text, tone = pts > 0 ? 'good' : pts < 0 ? 'bad' : 'ok') => { score += pts; reasons.push({ text, tone, pts }); };
   let score = 5;
   const i = w.daily.time.indexOf(date);
   if (i < 0) return null;

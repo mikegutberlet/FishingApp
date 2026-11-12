@@ -13,7 +13,7 @@ import { renderFinder } from './views/finder.js';
 
 const drawer = $('#results-drawer'), rowsEl = $('#rd-rows');
 const isOpen = () => !drawer.classList.contains('hidden');
-const far = km => units().depth === 'm' ? `${km < 10 ? km.toFixed(1) : Math.round(km)} km` : `${km * 0.621371 < 10 ? (km * 0.621371).toFixed(1) : Math.round(km * 0.621371)} mi`;
+export const far = km => units().depth === 'm' ? `${km < 10 ? km.toFixed(1) : Math.round(km)} km` : `${km * 0.621371 < 10 ? (km * 0.621371).toFixed(1) : Math.round(km * 0.621371)} mi`;
 const FROM = { home: 'home', 'where you are': 'you' };
 
 let rows = [];
@@ -52,7 +52,9 @@ function open() {
 const close = () => drawer.classList.add('hidden');
 $('#pin-list').onclick = () => isOpen() ? close() : open();
 $('#rd-close').onclick = close;
-$('#rd-sort').onclick = () => { savePrefs({ sort: prefs().sort === 'bet' ? 'near' : 'bet' }); rowsEl.scrollTop = 0; render(); };
+// To best bet and back to the list's sort as it was (closest, or most recently stocked).
+let sortWas = 'near';
+$('#rd-sort').onclick = () => { const now = prefs().sort; if (now !== 'bet') sortWas = now; savePrefs({ sort: now === 'bet' ? sortWas : 'bet' }); rowsEl.scrollTop = 0; render(); };
 $('#pin-filters').addEventListener('click', close);
 $('#rd-full').onclick = () => { close(); showView('lakes', { render: false }); renderFinder(); };
 rowsEl.onclick = ev => {
@@ -71,5 +73,7 @@ head.addEventListener('touchend', ev => {
   if (dy < -40) drawer.classList.add('tall'); else if (dy > 40) drawer.classList.contains('tall') ? drawer.classList.remove('tall') : close();
 }, { passive: true });
 drawer.querySelector('.rd-grip').onclick = () => drawer.classList.toggle('tall');
-const view = $('#view-map');
+// Leaving the map closes the drawer; so does a card opening (a pin tapped above the drawer), which would sit under it.
+const view = $('#view-map'), card = $('#water-sheet');
 new MutationObserver(() => { if (!view.classList.contains('active')) close(); }).observe(view, { attributes: true, attributeFilter: ['class'] });
+new MutationObserver(() => { if (!card.classList.contains('hidden')) close(); }).observe(card, { attributes: true, attributeFilter: ['class'] });

@@ -145,4 +145,3 @@ export async function forecastFor(lake) {
   const c = cellOf(lake.lat, lake.lon);
   return (await gridWeather([c])).get(c.id) ?? null;
 }
-export const weatherLine = async (lake, P) => gradeWater(await forecastFor(lake), lake, P)?.line ?? null;

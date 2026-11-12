@@ -3,15 +3,14 @@
 // access, from the same lookups the cards and filters use. The picks last until the app is closed.
 import { here } from './map.js';
 import { $, esc, fmtDate, status } from './ui.js';
-import { units } from './units.js';
 import { kmBetween } from './water-filter-core.js';
 import { entryFor, factsFor, fishRows, ACCESS } from './water-facts.js';
 import { prefs, shape } from './water-filter.js';
 import { filterView } from './map-filters.js';
+import { far } from './map-results.js';
 import { dayLabel } from './weather-grid.js';
 import { dayLines } from './best-bet.js';
 import { levelFor } from './lake-level.js';
-import { openWater, openLake } from './views/lake.js';
 
 const MAX = 3;
 const picked = []; // { id, lake, open() }
@@ -42,7 +41,6 @@ export function toggleCompare(lake, open) {
 // A water saved from its card is the same water: keep its column, and open your saved copy from now on.
 export function compareSaved(lake, open) { const p = picked.find(p => p.id === idOf(lake)); if (p) Object.assign(p, { lake, open }); }
 
-const far = km => units().depth === 'm' ? `${km < 10 ? km.toFixed(1) : Math.round(km)} km` : `${km * 0.621371 < 10 ? (km * 0.621371).toFixed(1) : Math.round(km * 0.621371)} mi`;
 const cap = s => s[0].toUpperCase() + s.slice(1);
 async function facts({ lake }) {
   const P = prefs(), from = filterView().known ?? here;
@@ -72,12 +70,14 @@ async function render() {
     + `<div class="cmp-cells cmp-acts" ${grid}>${cols.map((p, i) => `<button type="button" class="cmp-open" data-open="${i}">Open</button>`).join('')}</div>`;
   body.onclick = ev => {
     const drop = ev.target.closest('[data-drop]'), open = ev.target.closest('[data-open]');
-    if (drop) { picked.splice(picked.indexOf(cols[+drop.dataset.drop]), 1); sync(); }
+    const gone = drop ? picked.indexOf(cols[+drop.dataset.drop]) : -1; // -1: a second tap before the sheet was drawn again
+    if (gone >= 0) { picked.splice(gone, 1); sync(); }
     if (open) { sheet.classList.add('hidden'); cols[+open.dataset.open].open(); }
   };
 }
 openBtn.onclick = () => { $('#filter-sheet').classList.add('hidden'); $('#results-drawer').classList.add('hidden'); $('#water-sheet').classList.add('hidden'); sheet.classList.remove('hidden'); body.scrollTop = 0; render(); };
 $('#cmp-done').onclick = () => sheet.classList.add('hidden');
+for (const q of ['#pin-filters', '#pin-list']) $(q).addEventListener('click', () => sheet.classList.add('hidden')); // they open under it otherwise
 $('#cmp-clear').onclick = () => { picked.length = 0; sync(); };
 const view = $('#view-map');
 new MutationObserver(() => { if (!view.classList.contains('active')) sheet.classList.add('hidden'); }).observe(view, { attributes: true, attributeFilter: ['class'] });

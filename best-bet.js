@@ -14,7 +14,7 @@ export async function betFor(e, w, date) {
   const lake = { name: e.name, lat: e.lat, lon: e.lon, acres: src.acres ?? e.saved?.acres ?? null, state: S?.code, cdecStation: e.saved?.cdecStation, ...(stock ? { [S.stockField]: stock.id } : {}) };
   const r = await scoreDay(lake, w, date).catch(() => null);
   if (!r || !Number.isFinite(r.score)) return null;
-  return { score: Math.max(1, Math.round(r.score)), why: r.reasons.filter(x => x.tone !== 'ok').slice(0, 2).map(x => x.text.split(':')[0]).join(' · ') };
+  return { score: Math.max(1, Math.round(r.score)), why: r.reasons.filter(x => x.pts).sort((a, b) => Math.abs(b.pts) - Math.abs(a.pts)).slice(0, 2).map(x => x.text.split(':')[0]).join(' · ') };
 }
 export const betText = b => `Best bet ${b.score} of 10${b.why ? `: ${b.why}` : ''}`;
 

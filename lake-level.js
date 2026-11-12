@@ -1,17 +1,17 @@
 // A water's lake level trend for the map's card, the compare sheet and the "Lake level" filter: rising, steady or
 // falling over the last week, from the gauge the lake's own page uses (states/index.js reservoirFor). The gauge
-// readings are in the data already on the phone, so this works with no signal. Kept per water for the session.
+// readings are in the data already on the phone, so this works with no signal.
 import { reservoirFor } from './states/index.js';
 import { levelChange } from './forecast.js';
 import { isStreamType } from './water-filter-core.js';
 import { trendOf, levelText } from './lake-level-core.js';
 
-const kept = new Map();
+const kept = new Map(), KEEP = 10 * 60e3; // key -> { at, level }: asked again after ten minutes, so a gauge file that didn't load, or a feed gone quiet, isn't kept all day
 // `e` is a pool entry (water-facts.js). null for a stream, a water with no gauge, or a gauge whose last reading is
 // more than four days old (a stopped feed is not a trend).
 export function levelFor(e) {
   const key = `${e.key}|${e.saved?.cdecStation ?? ''}`;
-  if (!kept.has(key)) kept.set(key, (async () => {
+  if (!(Date.now() - kept.get(key)?.at < KEEP)) kept.set(key, { at: Date.now(), level: (async () => {
     if (!e.S || isStreamType(e.type)) return null;
     const w = e.w ?? e.stock ?? {};
     const res = await reservoirFor({ name: e.name, lat: e.lat, lon: e.lon, acres: w.acres ?? e.saved?.acres ?? null, state: e.S.code, cdecStation: e.saved?.cdecStation });
@@ -24,6 +24,6 @@ export function levelFor(e) {
     if (!trend) return null;
     const l = { trend, ft, pct, gauge: res.name };
     return { ...l, text: levelText(l) };
-  })().catch(() => null));
-  return kept.get(key);
+  })().catch(() => null) });
+  return kept.get(key).level;
 }

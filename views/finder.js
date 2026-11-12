@@ -49,6 +49,7 @@ export async function renderFinder() {
   let asked = 0; // a slow fix on where you are mustn't land on top of a later choice
   bindFilterForm(list.querySelector('.fd-filters'), async (P, key) => {
     if (key === 'from') { const mine = ++asked, f = await origin(P); if (mine !== asked || !$('#fd-from')) return; from = f; said(); }
+    if (key === 'score' && !P.score && P.sort === 'bet') { savePrefs({ sort: 'near' }); $('#fd-sort').value = 'near'; } // no scores to sort by
     draw();
   }, { setHome });
   // Sorting by best bet needs the scores: it switches them on.
@@ -89,10 +90,17 @@ export async function renderFinder() {
       const st = await weatherStage(items, P, from);
       if (me !== run || !out.isConnected) return;
       const kept = [], date = dateFor(P);
+      let t0 = performance.now();
       for (const it of items) {
         if (P.wx && !(st.grades.has(it) && wxPass(st.grades.get(it)?.grade, P.wx))) continue;
         const w = st.forecasts.get(it);
         kept.push({ ...it.r, wx: st.grades.get(it)?.line, bet: P.score && w ? await betFor(it.r, w, date) : null });
+        if (P.score && performance.now() - t0 > 12) { // a few at a time, so the page stays live; a newer pass ends this one
+          $('#fd-count').textContent = 'Scoring the day…';
+          await new Promise(res => setTimeout(res));
+          if (me !== run || !out.isConnected) return;
+          t0 = performance.now();
+        }
       }
       if (me !== run || !out.isConnected) return;
       show(kept, null, weatherNotes(st, 'Shorten the distance, or add filters', !!P.wx).map(n => `${n}.`).join(' '));
