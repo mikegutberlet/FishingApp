@@ -1,7 +1,7 @@
 name: Build drive-up or hike-in
 # How far the nearest road is from each lake and stocked water, for the "Drive-up or hike-in" filter and the line on
-# a water's card. Downloads each state's OpenStreetMap extract from Geofabrik, cuts the roads out with osmium, and
-# measures them against data/<st>/lakes.json and waters.json (access.json adds the boat ramps).
+# a water's card. Downloads each state's OpenStreetMap extract from Geofabrik, cuts the roads and lake shorelines out with
+# osmium, and measures them against data/<st>/lakes.json and waters.json (access.json adds the boat ramps).
 
 on:
   schedule:
@@ -42,10 +42,10 @@ jobs:
             st=${pair%%:*}; name=${pair##*:}
             # A state whose download or cut fails is left out, and the script keeps that state's old file.
             if curl -fsSL --retry 3 --retry-delay 20 -o "$RUNNER_TEMP/$name.osm.pbf" "https://download.geofabrik.de/north-america/us/$name-latest.osm.pbf" \
-              && bash scripts/reach-roads.sh "$RUNNER_TEMP/$name.osm.pbf" "$RUNNER_TEMP/$st-roads.geojsonseq"; then
-              echo "$st: $(wc -l < "$RUNNER_TEMP/$st-roads.geojsonseq") road lines, extract $(du -h "$RUNNER_TEMP/$name.osm.pbf" | cut -f1)"
+              && bash scripts/reach-roads.sh "$RUNNER_TEMP/$name.osm.pbf" "$RUNNER_TEMP/$st-roads.geojsonseq" "$RUNNER_TEMP/$st-water.geojsonseq"; then
+              echo "$st: $(wc -l < "$RUNNER_TEMP/$st-roads.geojsonseq") road lines, $(wc -l < "$RUNNER_TEMP/$st-water.geojsonseq") drawn waters, extract $(du -h "$RUNNER_TEMP/$name.osm.pbf" | cut -f1)"
             else
-              echo "::warning::$name roads failed"; rm -f "$RUNNER_TEMP/$st-roads.geojsonseq"
+              echo "::warning::$name roads failed"; rm -f "$RUNNER_TEMP/$st-roads.geojsonseq" "$RUNNER_TEMP/$st-water.geojsonseq"
             fi
             rm -f "$RUNNER_TEMP/$name.osm.pbf"
           done
@@ -54,7 +54,7 @@ jobs:
         timeout-minutes: 30
         run: |
           args=()
-          for st in ca nv or; do if [ -s "$RUNNER_TEMP/$st-roads.geojsonseq" ]; then args+=("$st=$RUNNER_TEMP/$st-roads.geojsonseq"); fi; done
+          for st in ca nv or; do if [ -s "$RUNNER_TEMP/$st-roads.geojsonseq" ]; then args+=("$st=$RUNNER_TEMP/$st"); fi; done
           mkdir -p data/ca/logs
           node scripts/build-reach.mjs "${args[@]}" 2>&1 | tee data/ca/logs/build-reach.log
           exit ${PIPESTATUS[0]}

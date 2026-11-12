@@ -4,7 +4,7 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdtempSync, writeFileSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { AT, BANDS, pointsFor, roadKind, roadFrom, valueFor, finder, rampAt } from '../build-reach.mjs';
+import { AT, BANDS, pointsFor, roadKind, roadFrom, waterFrom, matcher, outlineOf, valueFor, finder, rampAt } from '../build-reach.mjs';
 
 test('pointsFor: lakes by NHD id, stocked waters by their id, shore from acres, streams at the bank', () => {
   const pts = pointsFor(
@@ -13,6 +13,7 @@ test('pointsFor: lakes by NHD id, stocked waters by their id, shore from acres, 
   assert.deepEqual(pts.map(p => p.key), ['n:01654915', 's:13306', 's:7']);
   assert.ok(Math.abs(pts[0].shore - 0.829) < 0.01, `Donner's shore ${pts[0].shore}`);
   assert.equal(pts[2].shore, 0);
+  assert.deepEqual(pts.map(p => p.stream), [false, false, true]);
   assert.ok(pts[1].shore > 0.1 && pts[1].shore < 0.2); // no acres on record: a 20 acre lake
 });
 
@@ -65,6 +66,62 @@ test('finder: the nearest road of each kind from the shore, whichever way its po
   assert.ok(Math.abs(near.car - 2.12) < 0.05 && Math.abs(near.track - 0.34) < 0.03, JSON.stringify(near));
 });
 
+// A box of water around (lat, lon): half-height and half-width in degrees, as one ring [[lat, lon], …].
+const box = (lat, lon, dLat, dLon) => [[lat - dLat, lon - dLon], [lat - dLat, lon + dLon], [lat + dLat, lon + dLon], [lat + dLat, lon - dLon], [lat - dLat, lon - dLon]];
+const feature = (rings, tags = { natural: 'water' }, type = 'Polygon') => JSON.stringify({ type: 'Feature', properties: tags,
+  geometry: { type, coordinates: type === 'Polygon' ? rings.map(r => r.map(([lat, lon]) => [lon, lat])) : rings.map(poly => poly.map(r => r.map(([lat, lon]) => [lon, lat]))) } });
+
+test('waterFrom: the outer rings of a lake, and nothing for a river, a canal or a line', () => {
+  const a = box(39, -120, 0.01, 0.01), hole = box(39, -120, 0.001, 0.001), b = box(39.1, -120, 0.01, 0.01);
+  assert.deepEqual(waterFrom(feature([a, hole])), [a]);
+  assert.deepEqual(waterFrom(feature([[a, hole], [b]], { natural: 'water', water: 'reservoir' }, 'MultiPolygon')), [a, b]);
+  assert.equal(waterFrom(feature([a], { natural: 'water', water: 'river' })), null);
+  assert.equal(waterFrom(feature([a], { natural: 'water', water: 'canal' })), null);
+  assert.equal(waterFrom(feature([a], { landuse: 'reservoir' }))?.length, 1);
+  assert.equal(waterFrom(JSON.stringify({ type: 'Feature', properties: { natural: 'water' }, geometry: { type: 'LineString', coordinates: [[-120, 39], [-120.1, 39]] } })), null);
+  assert.equal(waterFrom('{nope'), null);
+});
+
+test('matcher: a lake takes the shoreline drawn around its point, when the size fits', () => {
+  // 0.01° × 0.01° at 39° N is about 1.11 km × 0.86 km, 237 acres.
+  const pts = [
+    { key: 'lake', lat: 39, lon: -120, acres: 250, stream: false },
+    { key: 'pond', lat: 39.2, lon: -120, acres: 3, stream: false },        // sits inside a drawn reservoir fifty times its size
+    { key: 'nosize', lat: 39.4, lon: -120, acres: null, stream: false },
+    { key: 'creek', lat: 39.6, lon: -120, acres: null, stream: true },
+    { key: 'dry', lat: 39.8, lon: -120, acres: 40, stream: false },        // nothing drawn here
+    { key: 'two', lat: 40, lon: -120, acres: 240, stream: false },
+  ];
+  const m = matcher(pts);
+  for (const [lat, dLat] of [[39, 0.005], [39.2, 0.005], [39.4, 0.005], [39.6, 0.005]]) m.offer([box(lat, -120, dLat, 0.005)]);
+  m.offer([box(40, -120, 0.011, 0.011)]); // a wider water drawn around the lake, under five times its size
+  m.offer([box(40, -120, 0.005, 0.005)]); // the lake itself
+  const got = m.outlines();
+  assert.deepEqual([...got.keys()].sort(), ['lake', 'nosize', 'two']);
+  assert.ok(got.get('two').every(([lat]) => Math.abs(lat - 40) < 0.006), 'the shoreline nearest the lake\'s size wins');
+  const big = matcher([{ key: 'x', lat: 39, lon: -120, acres: null, stream: false }]);
+  big.offer([box(39, -120, 0.05, 0.05)]); // 5,900 acres around a water with no size on record
+  assert.equal(big.outlines().size, 0);
+});
+
+test('outlineOf: shore points no more than 150 m apart, thinned for a very long shore', () => {
+  const ring = box(39, -120, 0.005, 0.005), out = outlineOf(ring);
+  assert.ok(out.length >= 26 && out.length <= 40, `${out.length} points around a 3.9 km shore`);
+  assert.deepEqual(out[0], ring[0]);
+  assert.ok(outlineOf(box(39, -120, 1, 1)).length <= 4000, 'a 390 km shore is thinned');
+});
+
+test('finder: a long reservoir with the road at the dam is a drive-up by its shoreline, a walk by its circle', () => {
+  // 5.2 km long and 0.33 km wide; 425 acres, so the circle's shore is 0.59 km from the middle.
+  const lake = { key: 'canyon', lat: 39, lon: -120, shore: 0.59, acres: 425 };
+  const dam = [[39.0, -119.9690], [38.99, -119.9690]]; // a road past the east end, 2.7 km from the middle
+  const circle = finder([lake]); circle.add('car', dam);
+  assert.equal(circle.values().get('canyon'), 3.2);
+  const shore = finder([{ ...lake, outline: outlineOf(box(39, -120, 0.0015, 0.03)) }]); shore.add('car', dam);
+  assert.equal(shore.values().get('canyon'), 'd');
+  assert.ok(shore.nearest('canyon').car < 0.1, JSON.stringify(shore.nearest('canyon')));
+});
+
 test('rampAt: a ramp or marina on a big water makes it drive-up even when the road is past the circle', () => {
   const access = { places: [[39.40, -120.10, 'ramp', 'Dam ramp', ''], [39.40, -120.30, 'camp', 'Far camp', '']] };
   const big = { lat: 39.40, lon: -120.125, shore: 0.9, acres: 700 }; // the ramp is 2.1 km from its middle
@@ -87,8 +144,14 @@ test('reach-roads.sh: roads and tracks come out one per line with their tags; pa
     ${way(11, [2, 3], { highway: 'track', motor_vehicle: 'no' })}
     ${way(12, [3, 4], { highway: 'path' })}
     ${way(13, [1, 2, 3, 4, 1], { building: 'yes' })}
+    ${way(15, [1, 2, 3, 4, 1], { natural: 'water', name: 'Test Pond' })}
+    ${way(16, [1, 2, 4, 1], {})}
+    <relation id="20" version="1" timestamp="2026-01-01T00:00:00Z"><member type="way" ref="16" role="outer"/><tag k="type" v="multipolygon"/><tag k="natural" v="water"/><tag k="water" v="reservoir"/></relation>
     ${way(14, [1, 4, 3, 1], { highway: 'service', junction: 'roundabout' })}</osm>`);
-  execFileSync('bash', [new URL('../reach-roads.sh', import.meta.url).pathname, join(dir, 'in.osm'), join(dir, 'out.geojsonseq')], { stdio: 'pipe' });
+  execFileSync('bash', [new URL('../reach-roads.sh', import.meta.url).pathname, join(dir, 'in.osm'), join(dir, 'out.geojsonseq'), join(dir, 'water.geojsonseq')], { stdio: 'pipe' });
+  const water = readFileSync(join(dir, 'water.geojsonseq'), 'utf8').split('\n').filter(l => l.trim());
+  assert.equal(water.length, 2, 'the pond and the reservoir drawn as a relation, not the building');
+  assert.deepEqual(water.map(l => waterFrom(l)?.[0].length).sort(), [4, 5]);
   const lines = readFileSync(join(dir, 'out.geojsonseq'), 'utf8').split('\n').filter(l => l.trim());
   const roads = lines.map(roadFrom);
   assert.equal(lines.length, 3, 'the path and the building are left out by the filter');

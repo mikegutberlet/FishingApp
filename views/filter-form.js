@@ -36,7 +36,7 @@ export function filterForm(P = prefs()) {
       <div class="fd-chips fd-kinds"><span class="muted small">Kind of trout</span>${KINDS.map(k => chip('fish', k, fishLabel(k))).join('')}</div></fieldset>
     <fieldset><legend>Getting on the water</legend><div class="fd-chips">${chips('access', ACCESS)}</div></fieldset>
     <fieldset><legend>Drive-up or hike-in</legend><div class="fd-chips">${chips('reach', REACH)}</div>
-      <div class="muted small">From OpenStreetMap roads, measured from the water's middle and its size, so a long, narrow reservoir can read farther than it is. Getting there on a water's page checks the roads themselves.</div></fieldset>
+      <div class="muted small">From OpenStreetMap roads and shorelines, checked monthly. It says how near a road comes, not whether it is open today: Getting there on a water's page has gates, seasons and the walk.</div></fieldset>
     <fieldset><legend>How far</legend><div class="fd-chips">${MILES.map(m => chip('miles', m, fmtMiles(m))).join('')}</div>
       <div class="fd-chips fd-kinds"><span class="muted small">Measure from</span>${chip('from', 'me', 'Where I am')}${chip('from', 'home', 'Home')}<button type="button" class="fd-sethome" data-home>${home() ? 'Move home' : 'Set home'}</button></div></fieldset>
     <fieldset><legend>Weather</legend><div class="fd-chips">${[0, 1, 2, 3, 4, 5, 6, 7].map(n => chip('day', n, dayLabel(n))).join('')}</div>
