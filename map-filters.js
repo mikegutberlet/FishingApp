@@ -9,7 +9,6 @@ import { wxPass } from './weather-grid-core.js';
 import { weatherStage, weatherNotes, CAP } from './weather-grid.js';
 import { prefs, savePrefs, home, setHomePoint, origin, context, shape, passes, mapFilterOn, setMapFilter } from './water-filter.js';
 import { filterForm, bindFilterForm, syncForm, chipLabel, fmtMiles } from './views/filter-form.js';
-import { renderFinder } from './views/finder.js';
 import { pinsLayer, setPinFilter, pinList, pinsSettled, redrawPins, loadPinStates } from './map-pins.js';
 
 let on = mapFilterOn();
@@ -121,6 +120,12 @@ function later(reset) {
   queued = !!queued || reset;
 }
 
+// For the results drawer (map-results.js): whether the map is filtered, where a distance ring is measured from (`known`:
+// the last place distance was measured from, ring or not), whether pins are still being checked, and a pin's weather
+// on the picked day.
+export const filterView = () => ({ on: filtering(), from: ringOn() ? from : null, known: from, busy: !!work || (filtering() && !pinsSettled()),
+  wx: e => (filtering() && P.wx ? wx.get(vkey(e)) : null) ?? null });
+
 const said = $('#filter-status');
 setPinFilter({
   keep: e => !filtering() || (verdicts.get(vkey(e)) === true && wxOk(vkey(e))),
@@ -198,7 +203,6 @@ $('#pin-filters').onclick = () => {
 };
 $('#filter-done').onclick = closeSheet;
 $('#filter-use').onclick = changed;
-$('#pin-list').onclick = () => { closeSheet(); showView('lakes', { render: false }); renderFinder(); };
 document.addEventListener('tb-show-on-map', e => {
   viaChip = false; setOn(true);
   if (!map.hasLayer(pinsLayer)) map.addLayer(pinsLayer);

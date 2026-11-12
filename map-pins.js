@@ -74,6 +74,7 @@ function build() {
 let filter = null;
 export const setPinFilter = f => { filter = f; };
 export const pinList = () => pins;
+export const shownPins = () => filter ? pins.filter(filter.keep) : pins; // the pins the map is showing (map-results.js lists them)
 // Every state asked for has its waters, and each lake knows the stocked water it stands for.
 export const pinsSettled = () => [...states.values()].every(st => st?.done);
 
@@ -82,6 +83,7 @@ const TEARDROP = '<svg viewBox="0 0 26 32" aria-hidden="true"><path d="M13 31C13
 const caughtOn = e => e.saved ? mine.caught.get(e.saved.id) ?? 0 : 0;
 const pinIcon = (e, tone) => L.divIcon({ className: `pin tone-${tone}${e.saved ? ' saved' : ''}${caughtOn(e) ? ' caught' : ''}`, html: `${TEARDROP}${e.saved ? '<b>★</b>' : ''}<i></i>`, iconSize: [26, 32], iconAnchor: [13, 31] });
 const target = e => e.saved ?? (e.stock && !e.w ? stockLake(e) : e.w);
+export { target as pinTarget }; // the water a pin opens
 // Your own catches and the species you noted on a saved water count as fish on record.
 async function toneOf(e) {
   const f = e.S ? await factsFor(e) : { fish: new Map() };
@@ -107,6 +109,7 @@ async function draw() {
   const loading = [...states.values()].includes(null);
   $('#pin-count').textContent = pins.length || !(loading || failed) ? filter?.count(count, shown.length) ?? `${count.toLocaleString()} water${count === 1 ? '' : 's'} in view`
     : loading ? 'Loading waters…' : 'The water lists didn’t download. Check your signal, then move the map.';
+  document.dispatchEvent(new Event('tb-pins-drawn')); // the results drawer lists what is showing
   const waiting = [];
   for (const g of clusterPins(shown.filter(e => near.contains([e.lat, e.lon])), z)) {
     if (g.pins.length > 1) {

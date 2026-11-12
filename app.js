@@ -29,6 +29,7 @@ import { initAccessPoints } from './access-points.js';
 import './map-browse.js';
 import './map-pins.js';
 import './map-filters.js';
+import './map-results.js';
 
 initOffline();
 initWaypoints();

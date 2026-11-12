@@ -1,0 +1,17 @@
+/* The results drawer under the map (map-results.js): the waters that are showing, closest first. */
+.results-drawer { position: absolute; z-index: 1003; left: 0; right: 0; bottom: 0; height: min(46vh, calc(100% - 150px)); display: flex; flex-direction: column;
+  background: var(--card); color: var(--text); border-radius: 14px 14px 0 0; border-top: 3px solid var(--bobber, var(--brand)); box-shadow: 0 -6px 24px rgba(0,0,0,.35); animation: sheet-in .18s ease-out; }
+.results-drawer.tall { height: min(80vh, calc(100% - 60px)); }
+.rd-head { position: relative; display: flex; align-items: center; gap: 8px; padding: 14px 14px 8px; border-bottom: 1px solid var(--line); touch-action: none; }
+.rd-grip { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 72px; min-height: 0; height: 16px; padding: 0; border: 0; background: none; }
+.rd-grip::before { content: ''; display: block; width: 40px; height: 4px; margin: 5px auto 0; border-radius: 2px; background: var(--line); }
+.rd-title { flex: 1; min-width: 0; }
+.rd-title b { font-size: 15px; }
+.rd-head button:not(.rd-grip) { flex-shrink: 0; width: auto; min-height: 40px; padding: 6px 12px; }
+.rd-rows { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding-bottom: 12px; }
+.rd-row { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 48px; padding: 7px 14px; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: none; color: inherit; text-align: left; font: inherit; }
+.rd-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.rd-main b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rd-wx { color: var(--text); }
+.rd-empty { padding: 18px 14px; }
+body:has(.results-drawer:not(.hidden)) .map-actions, body:has(.results-drawer:not(.hidden)) .legend { display: none; }
