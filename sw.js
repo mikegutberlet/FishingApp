@@ -45,6 +45,8 @@ const SHELL = [
   'map-results.js',
   'map-results-core.js',
   'map-results.css',
+  'map-compare.js',
+  'map-compare.css',
   'water-filter.js',
   'water-filter-core.js',
   'weather-grid.js',

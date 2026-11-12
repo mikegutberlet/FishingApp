@@ -1,0 +1,19 @@
+/* Compare up to three waters (map-compare.js): each fact is a label over one cell per water, so three fit a small phone. */
+.compare-sheet { position: absolute; z-index: 1004; left: 0; right: 0; bottom: 0; max-height: min(86vh, calc(100% - 8px)); display: flex; flex-direction: column;
+  background: var(--card); color: var(--text); border-radius: 14px 14px 0 0; border-top: 3px solid var(--bobber, var(--brand)); box-shadow: 0 -6px 24px rgba(0,0,0,.35); animation: sheet-in .18s ease-out; }
+.cmp-body { overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding: 0 12px 16px; }
+.cmp-names, .cmp-cells { display: grid; gap: 8px; }
+.cmp-names { position: sticky; top: 0; z-index: 1; background: var(--card); padding: 10px 0 8px; border-bottom: 1px solid var(--line); }
+.cmp-name { display: flex; align-items: flex-start; gap: 2px; min-width: 0; }
+.cmp-name b { flex: 1; min-width: 0; overflow-wrap: anywhere; font-size: 14px; line-height: 1.25; }
+.cmp-name button { flex-shrink: 0; width: 32px; min-height: 32px; height: 32px; padding: 0; border-radius: 50%; color: var(--muted); }
+.cmp-row { padding: 8px 0; border-bottom: 1px solid var(--line); }
+.cmp-label { margin-bottom: 2px; }
+.cmp-cell { min-width: 0; font-size: 13px; line-height: 1.35; overflow-wrap: anywhere; white-space: pre-line; }
+.cmp-acts { padding-top: 12px; }
+.cmp-acts button { min-height: 40px; width: 100%; }
+body:has(.compare-sheet:not(.hidden)) .map-actions, body:has(.compare-sheet:not(.hidden)) .legend { display: none; }
+/* The card's buttons: with Save there are four, which read better as two rows of two than squeezed into one. */
+.sheet-acts { flex-wrap: wrap; }
+.sheet-acts:has(#sheet-save) > * { flex: 1 1 40%; }
+#sheet-compare[aria-pressed=true] { border-color: var(--brand); font-weight: 600; }

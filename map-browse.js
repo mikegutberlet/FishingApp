@@ -11,6 +11,7 @@ import { entryFor, factsFor, habFor, addFish, fishRows, isSavedLake, ACCESS } fr
 import { prefs, mapFilterOn } from './water-filter.js';
 import { weatherLine } from './weather-grid.js';
 import { levelFor } from './lake-level.js';
+import { comparing, toggleCompare, compareSaved } from './map-compare.js';
 
 const view = $('#view-map'), search = $('#map-search'), results = $('#map-results'), sheet = $('#water-sheet');
 const km = (a, b) => { const r = Math.PI / 180, x = (b.lon - a.lon) * r * Math.cos((a.lat + b.lat) / 2 * r), y = (b.lat - a.lat) * r; return Math.hypot(x, y) * 6371; };
@@ -86,11 +87,14 @@ export async function preview(w) {
   sheet.innerHTML = `<div class="sheet-head"><div><b>${esc(lake.name)}</b><div class="muted small">${esc(summary(lake))}</div></div><button class="ghost" id="sheet-close" aria-label="Close">✕</button></div>
     <div class="sheet-facts"><span id="sheet-dist" class="chip">${here ? `📍 ${mi(km(here, lake))} from you` : ''}</span><span id="sheet-stock" class="chip">…</span>${saved ? `<span class="chip ok">★ In my lakes</span>` : ''}</div>
     <div id="sheet-more" class="sheet-more small"></div>
-    <div class="row sheet-acts"><button class="primary" id="sheet-open">Open</button>${saved ? '' : `<button id="sheet-save">${icon('plus')}Save</button>`}<a class="btn" href="${directionsUrl(lake.lat, lake.lon)}" target="_blank" rel="noopener">Directions</a></div>`;
+    <div class="row sheet-acts"><button class="primary" id="sheet-open">Open</button>${saved ? '' : `<button id="sheet-save">${icon('plus')}Save</button>`}<button id="sheet-compare" aria-pressed="${comparing(lake)}">${comparing(lake) ? 'Comparing ✓' : 'Compare'}</button><a class="btn" href="${directionsUrl(lake.lat, lake.lon)}" target="_blank" rel="noopener">Directions</a></div>`;
   sheet.classList.remove('hidden');
   if (!here) $('#sheet-dist').remove();
   $('#sheet-close').onclick = closeSheet;
-  $('#sheet-open').onclick = () => { closeSheet(); saved ? openLake(saved.id) : stocked ? openLake(w, 'stocking') : openWater(w); };
+  const open = () => saved ? openLake(saved.id) : stocked ? openLake(w, 'stocking') : openWater(w);
+  $('#sheet-open').onclick = () => { closeSheet(); open(); };
+  if (saved) compareSaved(saved, open); // saved from this card a moment ago: the same column, now your copy
+  $('#sheet-compare').onclick = ev => { const on = toggleCompare(lake, open); ev.currentTarget.textContent = on ? 'Comparing ✓' : 'Compare'; ev.currentTarget.setAttribute('aria-pressed', on); };
   const save = $('#sheet-save');
   if (save) save.onclick = async () => {
     save.disabled = true;

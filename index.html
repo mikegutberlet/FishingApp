@@ -34,6 +34,7 @@
   <link rel="stylesheet" href="map-pins.css">
   <link rel="stylesheet" href="map-filters.css">
   <link rel="stylesheet" href="map-results.css">
+  <link rel="stylesheet" href="map-compare.css">
   <link rel="stylesheet" href="welcome.css">
   <link rel="stylesheet" href="theme.css">
   <script>try { if (JSON.parse(localStorage.getItem('tackle-box-lock'))?.hash) document.documentElement.classList.add('locked'); } catch {}</script>
@@ -82,6 +83,10 @@
       <div id="filter-sheet" class="filter-sheet hidden" role="dialog" aria-label="Filters">
         <div class="filter-head"><div><b>Filters</b><div id="filter-status" class="muted small"></div></div><button type="button" id="filter-use" class="hidden">Use these filters</button><button type="button" id="filter-done" class="primary">Done</button></div>
         <div class="filter-body form fd-filters"></div>
+      </div>
+      <div id="compare-sheet" class="compare-sheet hidden" role="dialog" aria-label="Compare waters">
+        <div class="filter-head"><div><b>Compare</b></div><button type="button" id="cmp-clear">Clear</button><button type="button" id="cmp-done" class="primary">Done</button></div>
+        <div id="cmp-body" class="cmp-body"></div>
       </div>
       <div id="results-drawer" class="results-drawer hidden" role="dialog" aria-label="Waters on the map">
         <div class="rd-head"><button type="button" class="rd-grip" aria-label="Make the list taller or shorter"></button><div class="rd-title"><b id="rd-count"></b><div id="rd-note" class="muted small"></div></div><button type="button" id="rd-full">Full list</button><button type="button" id="rd-close" class="ghost" aria-label="Close">✕</button></div>

@@ -95,6 +95,7 @@ It is a PWA: open it once in Safari/Chrome, choose **Add to Home Screen**, and i
 * **Stocking per lake**: the Stocking tab shows CDFW plants for that water (upcoming plants, last plant, plants per year, full list). CDFW publishes week and species but not fish counts.
 * **History**: CDFW's public schedule only goes back about a year, so the nightly job merges each day into `data/ca/plants.json`. History builds from 2025-10 onward.
 * **Lake level**: for reservoirs, Conditions shows CDEC elevation, 7- and 30-day change, and storage. The nearest gauge within 25 km is used; set a station id under Edit if it picks the wrong one.
+* **Compare**: a card's *Compare* button picks its water (up to three), and *Compare (2)* on the map puts them side by side: distance, fish, last plant, the picked day's weather for your craft, lake level, elevation, size and access (`map-compare.js`). The picks last until the app is closed.
 
 Data is refreshed daily by `.github/workflows/update-data.yml` running `scripts/update-ca-data.mjs`. It runs on GitHub because the state sites don't let a browser app fetch from them directly. It is all public data, and the job never sees anything from your phone.
 
