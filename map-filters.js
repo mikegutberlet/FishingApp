@@ -210,7 +210,9 @@ document.addEventListener('tb-show-on-map', e => {
   showView('map');
 });
 onShow('map', () => setTimeout(() => { // once the map has its size
-  if (waiting != null) { const r = waiting; waiting = null; refresh(r); } else if (on && moved()) refresh(); else retryWeather();
+  if (waiting != null) { const r = waiting; waiting = null; refresh(r); }
+  else if (on && (moved() || JSON.stringify(prefs()) !== JSON.stringify(P))) refresh(); // you drove on, or changed the filters in the list
+  else retryWeather();
 }, 80));
 
 map.on('overlayadd overlayremove', e => { if (e.layer === pinsLayer && on) later(false); });

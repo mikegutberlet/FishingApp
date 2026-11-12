@@ -20,6 +20,7 @@ const TYPE = { lake: 'Lakes', stream: 'Rivers & creeks' };
 // The buckets are cut at 10 and 500 acres and at 4,000 and 7,000 ft (water-filter-core.js).
 const SIZE = () => metric() ? { pond: 'Pond, under 4 ha', small: '4 to 200 ha', big: 'Over 200 ha' } : { pond: 'Pond, under 10 acres', small: '10 to 500 acres', big: 'Over 500 acres' };
 const WX = { good: 'Good', fair: 'Good or fair' };
+const LEVEL = { rising: 'Rising', steady: 'Steady', falling: 'Falling' };
 const ELEV = () => metric() ? { low: 'Below 1,200 m', mid: '1,200 to 2,100 m', high: 'Above 2,100 m' } : { low: 'Below 4,000 ft', mid: '4,000 to 7,000 ft', high: 'Above 7,000 ft' };
 
 // Left to itself, distance is measured from home when you've set one, else from where you are.
@@ -42,6 +43,8 @@ export function filterForm(P = prefs()) {
     <fieldset><legend>Lake or stream</legend><div class="fd-chips">${chips('type', TYPE)}</div></fieldset>
     <fieldset><legend>Size</legend><div class="fd-chips">${chips('size', SIZE())}</div></fieldset>
     <fieldset><legend>Elevation</legend><div class="fd-chips">${chips('elev', ELEV())}</div></fieldset>
+    <fieldset><legend>Lake level</legend><div class="fd-chips">${chips('level', LEVEL)}</div>
+      <div class="muted small">Over the last week. Only waters with a level gauge can pass (about 230 reservoirs and lakes).</div></fieldset>
     ${tick('stocked', 'Stocked in the last 30 days or coming up')}
     ${tick('mine', "Only waters where I've logged a catch")}
     ${tick('saved', 'Only my saved waters')}
@@ -84,6 +87,6 @@ export function chipLabel(key, P, from) {
   return { fish: () => P.fish.map(fishLabel).join(', '), access: () => join(ACCESS, P.access),
     miles: () => from ? `${fmtMiles(P.miles)} from ${from.label}` : `Within ${fmtMiles(P.miles)}`,
     stocked: () => 'Stocked lately', mine: () => 'My catches', saved: () => 'Saved', noAlgae: () => 'No algae advisories',
-    type: () => TYPE[P.type], size: () => join(SIZE(), P.size), elev: () => join(ELEV(), P.elev), iceFree: () => 'Likely ice-free',
+    type: () => TYPE[P.type], size: () => join(SIZE(), P.size), elev: () => join(ELEV(), P.elev), level: () => `Level: ${join(LEVEL, P.level)}`, iceFree: () => 'Likely ice-free',
     wx: () => `${WX[P.wx]} weather ${P.day ? dayLabel(P.day).split(' ')[0] : 'today'}` }[key]();
 }

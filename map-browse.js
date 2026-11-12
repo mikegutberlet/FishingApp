@@ -10,6 +10,7 @@ import { coastSpots } from './coast.js';
 import { entryFor, factsFor, habFor, addFish, fishRows, isSavedLake, ACCESS } from './water-facts.js';
 import { prefs, mapFilterOn } from './water-filter.js';
 import { weatherLine } from './weather-grid.js';
+import { levelFor } from './lake-level.js';
 
 const view = $('#view-map'), search = $('#map-search'), results = $('#map-results'), sheet = $('#water-sheet');
 const km = (a, b) => { const r = Math.PI / 180, x = (b.lon - a.lon) * r * Math.cos((a.lat + b.lat) / 2 * r), y = (b.lat - a.lat) * r; return Math.hypot(x, y) * 6371; };
@@ -124,7 +125,7 @@ async function more(w, lake, saved) {
     }, () => {});
     const e = await entryFor(lake);
     if (!e) return;
-    const [f, hab, catches] = await Promise.all([factsFor(e), habFor(e), saved ? db.byLake('catches', saved.id) : []]);
+    const [f, hab, catches, level] = await Promise.all([factsFor(e), habFor(e), saved ? db.byLake('catches', saved.id) : [], levelFor(e)]);
     const el = $('#sheet-more');
     if (shown !== w || !el) return;
     const day = el.querySelector('.sheet-wx')?.outerHTML ?? '';
@@ -132,7 +133,7 @@ async function more(w, lake, saved) {
     for (const s of [...catches.map(c => c.species), ...String(saved?.species ?? '').split(/,|;/)]) addFish(fish, s, 'yours');
     const access = f.access && Object.keys(ACCESS).filter(k => f.access.has(k)).map(k => ACCESS[k]).join(', ');
     el.innerHTML = day + fishRows(fish).map(x => `<div><span class="muted">${x.label}:</span> ${esc(x.names.join(', '))}</div>`).join('')
-      + (hab ? '<div class="fd-warn">Toxic algae advisory</div>' : '') + (access ? `<div class="muted">${esc(access)}</div>` : '');
+      + (level ? `<div>${esc(level.text)}</div>` : '') + (hab ? '<div class="fd-warn">Toxic algae advisory</div>' : '') + (access ? `<div class="muted">${esc(access)}</div>` : '');
   } catch {}
 }
 

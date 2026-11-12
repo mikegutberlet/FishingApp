@@ -57,3 +57,11 @@ test('switching one filter back to "everything"', () => {
   for (const k of active(all)) assert.deepEqual(active(clean({ ...all, ...off(k) })), active(all).filter(x => x !== k), k);
   assert.deepEqual(off('miles'), { miles: 0 }); assert.deepEqual(off('noAlgae'), { noAlgae: false });
 });
+test('lake level: a list of trends, known words only, needs the lookups, one chip', () => {
+  assert.deepEqual(DEFAULTS.level, []);
+  assert.deepEqual(clean({ level: ['rising', 'sideways', 'falling'] }).level, ['rising', 'falling']);
+  assert.deepEqual(clean({ level: 'rising' }).level, []);
+  const P = { ...DEFAULTS, miles: 0, noAlgae: false, elev: ['low'], iceFree: true, level: ['steady'] };
+  assert.deepEqual(active(P), ['elev', 'level', 'iceFree']);
+  assert.ok(needsFacts(P)); assert.deepEqual(off('level'), { level: [] });
+});

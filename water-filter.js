@@ -7,6 +7,7 @@ import { locate } from './map.js';
 import { clean } from './water-filter-core.js';
 import { factsFor, habFor, addFish, hasFish } from './water-facts.js';
 import { iceEstimate, allIceLogs } from './know-water.js';
+import { levelFor } from './lake-level.js';
 
 const HOME = 'tackle-box-home', PREFS = 'tackle-box-finder';
 const read = k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
@@ -48,8 +49,9 @@ export function shape(e) {
 
 // Whether a water passes the settings that need lookups, for the map's pins (no card to fill). With nothing but the
 // algae filter on, its fish, access and stocking needn't be looked up at all.
+const levelOk = async (e, P) => !P.level.length || P.level.includes((await levelFor(e))?.trend); // no gauge: can't pass a level filter
 export const passes = async (e, P, ctx) => P.fish.length || P.access.length || P.stocked || P.mine ? !!(await fullPass(e, P, ctx)).hit
-  : !(P.noAlgae && e.S && await habFor(e));
+  : await levelOk(e, P) && !(P.noAlgae && e.S && await habFor(e));
 
 // One water against the settings that need its facts. `hit` is the row for a card (the entry plus its facts, fish
 // with your own catches added, and how many you've logged), or null. `unknown`: it failed only because the app has no
@@ -70,6 +72,7 @@ export async function fullPass(entry, P, ctx, savedFor = new Map()) {
   else if (P.access.length && !(f.access && P.access.every(k => f.access.has(k)))) unknown = !f.access;
   else if (P.stocked && !(f.lastPlant && f.lastPlant >= cutoff)) ;
   else if (P.mine && !r.mine) ;
+  else if (P.level.length && !P.level.includes((r.level = await levelFor(e))?.trend)) ;
   else if ((r.hab = await habFor(e)) && P.noAlgae) ;
   else hit = r;
   return { hit, unknown, stockKey };

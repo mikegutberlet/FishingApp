@@ -110,7 +110,7 @@ function card(r, i, today) {
   return `<div class="card lake-item fd-item" data-i="${i}">
     ${r.distKm != null ? `<span class="fd-post"><b>${distNum(r.distKm).toLocaleString()}</b>${metric() ? 'km' : 'mi'}</span>` : ''}
     <div class="fd-body"><b>${esc(r.name)}</b><div class="muted small">${esc(r.type ?? '')}${r.S ? ', ' + r.S.code : ''}${r.saved ? ' · saved' : ''}${r.mine ? ` · ${r.mine} catch${r.mine === 1 ? '' : 'es'} logged` : ''}</div>
-      ${r.wx ? `<div class="small fd-wx">${esc(r.wx)}</div>` : ''}${fish}${plant ? `<div class="small">${plant}</div>` : ''}
+      ${r.wx ? `<div class="small fd-wx">${esc(r.wx)}</div>` : ''}${fish}${r.level ? `<div class="small">${esc(r.level.text)}</div>` : ''}${plant ? `<div class="small">${plant}</div>` : ''}
       ${access ? `<div class="small muted">${esc(access)}</div>` : ''}${r.hab ? '<div class="small fd-warn">Toxic algae advisory</div>' : ''}</div><span>›</span></div>`;
 }
 
