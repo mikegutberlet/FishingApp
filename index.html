@@ -31,6 +31,7 @@
   <link rel="stylesheet" href="know.css">
   <link rel="stylesheet" href="access-more.css">
   <link rel="stylesheet" href="coast.css">
+  <link rel="stylesheet" href="map-pins.css">
   <link rel="stylesheet" href="welcome.css">
   <link rel="stylesheet" href="theme.css">
   <script>try { if (JSON.parse(localStorage.getItem('tackle-box-lock'))?.hash) document.documentElement.classList.add('locked'); } catch {}</script>
@@ -71,7 +72,8 @@
       <div class="map-top">
         <div class="map-search"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg><input id="map-search" type="search" placeholder="Find a lake or river" autocomplete="off" enterkeyhint="search"><button type="button" id="map-search-clear" class="ghost" aria-label="Clear">✕</button></div>
         <div id="map-results" class="map-results hidden"></div>
-        <div id="map-chips" class="map-chips"><button type="button" data-chip="base">Satellite</button><button type="button" data-chip="stocked">🐟 Stocked</button><button type="button" data-chip="names">Names</button></div>
+        <div id="map-chips" class="map-chips"><button type="button" data-chip="base">Satellite</button><button type="button" data-chip="stocked">🐟 Stocked</button><button type="button" data-chip="names">Names</button><button type="button" data-chip="pins">📍 Pins</button></div>
+        <div id="pin-bar" class="pin-bar hidden"><span id="pin-count"></span><button type="button" id="pin-key-btn" aria-expanded="false" aria-controls="pin-key">Key</button><div id="pin-key" class="pin-key hidden"></div></div>
       </div>
       <div id="water-sheet" class="water-sheet hidden"></div>
       <div class="map-actions">

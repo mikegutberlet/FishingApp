@@ -7,6 +7,7 @@ import { $, esc, fmtDate, icon, showView, status } from './ui.js';
 import { openWater, openLake, waterRecord } from './views/lake.js';
 import { directionsUrl } from './views/access.js';
 import { coastSpots } from './coast.js';
+import { entryFor, factsFor, habFor, addFish, fishRows, isSavedLake, ACCESS } from './water-facts.js';
 
 const view = $('#view-map'), search = $('#map-search'), results = $('#map-results'), sheet = $('#water-sheet');
 const km = (a, b) => { const r = Math.PI / 180, x = (b.lon - a.lon) * r * Math.cos((a.lat + b.lat) / 2 * r), y = (b.lat - a.lat) * r; return Math.hypot(x, y) * 6371; };
@@ -71,39 +72,70 @@ map.on('baselayerchange overlayadd overlayremove', syncChips);
 syncChips();
 
 // ---------- Preview sheet ----------
-// A statewide water (has `kind`) or one of your saved lakes (has an id in the database).
+// A water from a state's list, one of your saved lakes (water-facts.js isSavedLake), or a stocked water that is
+// neither yet (`unsaved`, from a pin: water-facts.js stockLake).
 let shown = null;
 export async function preview(w) {
   shown = w;
-  const saved = w.kind === undefined ? w : (await db.all('lakes')).find(l => l.nhdId === String(w.id));
+  const stocked = w.kind === undefined && w.unsaved;
+  const saved = stocked ? (await db.all('lakes')).find(l => stockIdOf(l) != null && forLake(l) === forLake(w) && String(stockIdOf(l)) === String(stockIdOf(w)))
+    : isSavedLake(w) ? w : (await db.all('lakes')).find(l => l.nhdId === String(w.id));
   if (shown !== w) return;
   const lake = saved ?? w;
   sheet.innerHTML = `<div class="sheet-head"><div><b>${esc(lake.name)}</b><div class="muted small">${esc(summary(lake))}</div></div><button class="ghost" id="sheet-close" aria-label="Close">✕</button></div>
     <div class="sheet-facts"><span id="sheet-dist" class="chip">${here ? `📍 ${mi(km(here, lake))} from you` : ''}</span><span id="sheet-stock" class="chip">…</span>${saved ? `<span class="chip ok">★ In my lakes</span>` : ''}</div>
+    <div id="sheet-more" class="sheet-more small"></div>
     <div class="row sheet-acts"><button class="primary" id="sheet-open">Open</button>${saved ? '' : `<button id="sheet-save">${icon('plus')}Save</button>`}<a class="btn" href="${directionsUrl(lake.lat, lake.lon)}" target="_blank" rel="noopener">Directions</a></div>`;
   sheet.classList.remove('hidden');
   if (!here) $('#sheet-dist').remove();
   $('#sheet-close').onclick = closeSheet;
-  $('#sheet-open').onclick = () => { closeSheet(); saved ? openLake(saved.id) : openWater(w); };
+  $('#sheet-open').onclick = () => { closeSheet(); saved ? openLake(saved.id) : stocked ? openLake(w, 'stocking') : openWater(w); };
   const save = $('#sheet-save');
   if (save) save.onclick = async () => {
     save.disabled = true;
-    const { unsaved, ...rest } = await waterRecord(w);
+    const { unsaved, ...rest } = stocked ? w : await waterRecord(w);
     await db.put('lakes', rest);
     await refreshMap();
     status(`${lake.name} saved to my lakes`);
     preview(w);
   };
+  more(w, lake, saved);
   // Last plant from the state's stocking list, when the water is on it.
   const S = forLake(lake), stockEl = $('#sheet-stock');
   try {
-    const id = lake.kind === 'coast' ? null : saved ? stockIdOf(saved) : (await S?.matchStockedWater(w))?.id;
+    const id = lake.kind === 'coast' ? null : saved ? stockIdOf(saved) : stocked ? stockIdOf(w) : (await S?.matchStockedWater(w))?.id;
     const st = id != null && (await S.waters()).find(x => String(x.id) === String(id));
     if (shown !== w || !stockEl.isConnected) return;
     if (!st) stockEl.remove();
     else if (st.lastPlant) { const p = st.plants[0]; stockEl.className = `chip ${Date.now() - Date.parse(st.lastPlant) < 30 * 864e5 ? 'good' : ''}`; stockEl.textContent = `🐟 ${p.weekEnd === st.lastPlant ? 'Planted' : 'Plant week of'} ${fmtDate(st.lastPlant + 'T12:00')} (${p.species})`; }
     else stockEl.textContent = `🐟 Stocked ${st.lastYearStocked ?? 'in past years'}`;
   } catch { stockEl?.remove(); }
+}
+// The fish, algae advisory and access for the water on the card, from the same lookups as the "Where should I go?"
+// list. Rivers from the state lists and waters the app has no facts for get nothing extra.
+async function more(w, lake, saved) {
+  try {
+    const e = await entryFor(lake);
+    if (!e) return;
+    const [f, hab, catches] = await Promise.all([factsFor(e), habFor(e), saved ? db.byLake('catches', saved.id) : []]);
+    const el = $('#sheet-more');
+    if (shown !== w || !el) return;
+    const fish = new Map([...f.fish].map(([g, s]) => [g, new Set(s)]));
+    for (const s of [...catches.map(c => c.species), ...String(saved?.species ?? '').split(/,|;/)]) addFish(fish, s, 'yours');
+    const access = f.access && Object.keys(ACCESS).filter(k => f.access.has(k)).map(k => ACCESS[k]).join(', ');
+    el.innerHTML = fishRows(fish).map(x => `<div><span class="muted">${x.label}:</span> ${esc(x.names.join(', '))}</div>`).join('')
+      + (hab ? '<div class="fd-warn">Toxic algae advisory</div>' : '') + (access ? `<div class="muted">${esc(access)}</div>` : '');
+  } catch {}
+}
+
+// Several waters on one spot (a bubble no zoom can split): pick which one to look at.
+export function chooser(waters) {
+  shown = waters;
+  sheet.innerHTML = `<div class="sheet-head"><div><b>${waters.length} waters here</b></div><button class="ghost" id="sheet-close" aria-label="Close">✕</button></div>
+    <div class="sheet-pick">${waters.map((w, i) => `<button type="button" data-i="${i}">${esc(w.name)}<span class="muted small">${esc(w.type ?? '')}</span></button>`).join('')}</div>`;
+  sheet.classList.remove('hidden');
+  $('#sheet-close').onclick = closeSheet;
+  sheet.querySelector('.sheet-pick').onclick = e => { const b = e.target.closest('[data-i]'); if (b) preview(waters[+b.dataset.i]); };
 }
 export function closeSheet() { shown = null; sheet.classList.add('hidden'); }
 setWaterTap(preview);
