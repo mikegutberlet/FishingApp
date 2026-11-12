@@ -80,7 +80,7 @@ function drawOr(layer, or) {
 // Thousands of places statewide, so only the ones in view are drawn, and only when zoomed in.
 let places = [];
 async function drawAccess(layer) {
-  if (!places.length) places = await CA.accessPlaces(); // asks again after a failed load
+  if (!places.length) places = (await Promise.all([CA, NV, OR].map(S => S.accessPlaces()))).flat(); // asks again after a failed load
   layer.clearLayers();
   if (map.getZoom() < 11) return;
   const b = map.getBounds().pad(0.1);

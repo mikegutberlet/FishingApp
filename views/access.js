@@ -11,7 +11,7 @@ export const directionsUrl = (lat, lon) => `https://www.google.com/maps/dir/?api
 const mi = km => `${(km * 0.621).toFixed(km < 1.6 ? 1 : 0)} mi`;
 
 export async function renderAccess(lake, el) {
-  // Ramps and facilities are only gathered for states that have an access list (California so far).
+  // Ramps and facilities are gathered monthly for each state (scripts/build-state-access.mjs).
   const S = forLake(lake);
   if (!S?.accessFor) return;
   const a = await S.accessFor(lake);

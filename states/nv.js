@@ -20,7 +20,7 @@ export const searchBy = 'region';
 export const searchHint = 'Pyramid, Truckee River, Wildhorse…';
 export const stockedHint = 'Topaz, Sparks Marina, Wildhorse…';
 
-export const { waters, plantsFor, dataDates, nearestWaters, nearestReservoir, statewide, history, matchStockedWater, historyFor, hydroFor, bathymetryFor, bathymetryUrl } = d;
+export const { waters, plantsFor, dataDates, nearestWaters, nearestReservoir, statewide, history, matchStockedWater, historyFor, hydroFor, bathymetryFor, bathymetryUrl, accessFor, accessPlaces } = d;
 
 // NDOW's page for a stocked water: latest fishing report and the "pertinent information" write-up.
 export async function reportFor(lake) {
