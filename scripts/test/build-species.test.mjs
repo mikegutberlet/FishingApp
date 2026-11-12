@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { namesFrom } from '../ca-lake-names.mjs';
-import { listName, shareWord, pointsFor, matcher, nvCodes, recordNote, parsePlan, planNote, fhdNote, pointOf, NV_CODES } from '../build-species.mjs';
+import { extraLakes, listName, shareWord, pointsFor, matcher, nvCodes, recordNote, parsePlan, planNote, fhdNote, pointOf, NV_CODES } from '../build-species.mjs';
 
 test('listName: the app\'s name for the fish, the agency\'s where that says more, null for a fish not on the list', () => {
   assert.equal(listName('Bass, Largemouth'), 'Largemouth bass');
@@ -129,4 +129,38 @@ test('namesFrom: CDFW\'s name for a water id, else the USGS one', () => {
     { attributes: { DFGWATERID: 7, NAME: ' ', GNIS_NAME: 'Stampede  Reservoir' } }, { attributes: { DFGWATERID: 8, NAME: ' ', GNIS_NAME: ' ' } }, { attributes: { DFGWATERID: 12438, NAME: 'Lake Of The Woods', GNIS_NAME: ' ' } }]);
   assert.deepEqual([...names], [[26575, 'Lake Oroville'], [4425, 'Lake Elizabeth'], [7, 'Stampede Reservoir'], [12438, 'Lake of the Woods']]);
   assert.deepEqual([...namesFrom(undefined)], []);
+});
+
+test('matcher: a big lake answers to a kindred name from farther out, in step with its size', () => {
+  const find = matcher(pointsFor([{ id: 'bc', name: 'Lake Billy Chinook', lat: 44.58, lon: -121.3, acres: 3900 }, { id: 'sm', name: 'Chinook Pond', lat: 44.0, lon: -121.0, acres: 3 }], []));
+  // 3.9 km from the lake's point: past 2.5 km, inside twice the radius of a 3,900-acre lake.
+  assert.deepEqual(find({ name: 'Billy Chinook Reservoir', lat: 44.615, lon: -121.3 }, { nearKm: 2.5 }), ['n:bc']);
+  assert.deepEqual(find({ name: 'Chinook Slough Pond', lat: 44.035, lon: -121.0 }, { nearKm: 2.5 }), []);
+});
+
+test('matcher: on asks for the lake a record\'s point lies on, whatever its name, when nothing of its name is near', () => {
+  const find = matcher(pointsFor([{ id: 'aw', name: 'Acorn Woman Lakes', lat: 42.04, lon: -123.02, acres: 60 }, { id: 'sr', name: 'Sunrise Lake', lat: 43.9, lon: -122.0, acres: 2 }], []));
+  assert.deepEqual(find({ name: 'Squaw Lakes', lat: 42.0404, lon: -123.02 }), []);
+  assert.deepEqual(find({ name: 'Squaw Lakes', lat: 42.0404, lon: -123.02 }, { on: true }), ['n:aw']); // renamed; 45 m from its point
+  assert.deepEqual(find({ name: 'Sunup Lake', lat: 43.9015, lon: -122.0 }, { on: true }), ['n:sr']); // 170 m from a small lake's point: the same water
+  assert.deepEqual(find({ name: 'Sunset Lake', lat: 43.9045, lon: -122.0 }, { on: true }), []); // a neighbour 500 m off a 2-acre lake
+});
+
+test('extraLakes: the lakes a state maps that the app has no water for, one per place, streams and other states left out', () => {
+  const square = [[-124, 42], [-117, 42], [-117, 46], [-124, 46]];
+  const list = extraLakes([
+    { name: 'Delta Park Ponds ', lat: 45.599, lon: -122.683 }, { name: 'Delta Park Ponds', lat: 45.602, lon: -122.688 }, { name: 'Delta Park Ponds', lat: 45.599, lon: -122.692 },
+    { name: 'Twin Ponds', lat: 44.5, lon: -118.5 }, { name: 'Twin Ponds', lat: 43.1, lon: -121.9 },
+    { name: 'Serres Reservoir', lat: 45.137, lon: -122.825 },
+    { name: 'Cottonwood Creek', lat: 42.3, lon: -120.4 }, { name: 'Hutton Spring', lat: 42.9, lon: -120.1 }, { name: 'Unnamed trib to Thomas Creek', lat: 44.7, lon: -122.6 }, { name: 'Rogue River Bay', lat: 42.42, lon: -124.42 },
+    { name: 'Lake Wallula', lat: 46.22, lon: -118.96 }, // Washington's side
+    { name: 'Woodburn Pond', lat: 45.137, lon: -122.825 }, // a second name for the spot Serres Reservoir is on
+    { name: 'Squaw Lake', lat: 43.0, lon: -122.5 }, // a name the state has since retired: the lake is on the map under its new one
+  ], square, 'odfw');
+  assert.deepEqual(list, [
+    { id: 'odfw-deltaparkponds-4560-12269', name: 'Delta Park Ponds', type: 'Pond', lat: 45.6, lon: -122.68767, acres: null },
+    { id: 'odfw-serresreservoir-4514-12283', name: 'Serres Reservoir', type: 'Reservoir', lat: 45.137, lon: -122.825, acres: null },
+    { id: 'odfw-twinponds-4310-12190', name: 'Twin Ponds', type: 'Pond', lat: 43.1, lon: -121.9, acres: null },
+    { id: 'odfw-twinponds-4450-11850', name: 'Twin Ponds', type: 'Pond', lat: 44.5, lon: -118.5, acres: null },
+  ]);
 });

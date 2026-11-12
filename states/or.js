@@ -5,7 +5,7 @@ import { stateData } from './common.js';
 import { sameWater } from './nv.js';
 import { haversineKm } from '../data-sources.js';
 
-const d = stateData('or', 'OR');
+const d = stateData('or', 'OR', { extraLakes: true });
 
 export const code = 'OR';
 export const name = 'Oregon';

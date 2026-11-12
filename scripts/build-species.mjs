@@ -4,6 +4,9 @@
 //   node scripts/build-species.mjs [ca] [nv] [or]        (no state: all three)
 //   data/<st>/species.json  { updatedAt, sources: [{ label, url }], fish: { "<key>": [[name, how, source, note], …] } }
 //     key     n:<id in lakes.json> or s:<id in waters.json> (the app's pool key without the state)
+//   data/or/lakes-extra.json  { updatedAt, source, lakes: [{ id, name, type, lat, lon, acres: null }] }: the lakes
+//     Oregon's maps name that lakes.json (the national list's named lakes) doesn't. The app reads them with the
+//     lake list (states/common.js), so they are waters like any other, keyed n:<id>.
 //     name    the app's name for the fish (species.js) when it is one it knows, else the agency's name
 //     how     "plan"   the state plans to stock it this year      (California's provisional stocking document)
 //             "lives"  the state lists it as living in the water  (Nevada's fishable waters, Oregon's distribution maps)
@@ -31,6 +34,7 @@ import { nameKey } from '../name-key.js';
 import { speciesName, isCatchAll } from '../species.js';
 import { haversineKm } from '../data-sources.js';
 import { lakeNames, lakePlaces } from './ca-lake-names.mjs';
+import { STATES, inOutline } from './states.mjs';
 
 const run = promisify(execFile);
 const DATA = new URL('../data/', import.meta.url);
@@ -105,7 +109,7 @@ export function pointsFor(lakes, stocked) {
     // A water the state lists by reach or by county also answers to its plain name: "Lake Tahoe – Cave Rock",
     // "Humboldt River, Elko".
     const base = nameKey(String(w.name ?? '').split(/\s+[–—-]\s+/)[0].replace(/,\s*([a-z ]+)$/i, (m, c) => c.toLowerCase() === county ? '' : m));
-    return { key, name: w.name ?? null, k, base: base && base !== k ? base : null, lat: w.lat ?? null, lon: w.lon ?? null, county };
+    return { key, name: w.name ?? null, k, base: base && base !== k ? base : null, lat: w.lat ?? null, lon: w.lon ?? null, county, acres: w.acres ?? null };
   };
   return [...lakes.filter(w => w.lat != null).map(w => pt(`n:${w.id}`, w)), ...stocked.map(w => pt(`s:${w.id}`, w))];
 }
@@ -113,6 +117,10 @@ export function pointsFor(lakes, stocked) {
 // find(record, opts) → the keys of the waters a record { name, lat, lon, county } is about.
 //   With a map point: waters of the same name within nameKm or in the record's county, and (nearKm) differently named waters that close
 //   which share a telling word ("Wild Horse Reservoir" and "Wildhorse Res." don't, "Topaz Lake" and "Topaz Res." do).
+//   A big lake answers to a kindred name from farther out: up to twice the radius of a round lake of its size
+//   ("Billy Chinook Reservoir" is drawn 4 km from the app's point for Lake Billy Chinook).
+//   on: when nothing of its name is near, the water the record's point lies on (within 300 m of its point, or
+//   inside a round lake of its size), whatever that water is called: a renamed lake, or a name spelled another way.
 //   Without one: waters of that name in the record's county, or, with no county either, a name that is one place
 //   (every located water of that name within 10 km of the others).
 export function matcher(points) {
@@ -121,7 +129,8 @@ export function matcher(points) {
   const km = (p, r) => haversineKm(p.lat, p.lon, r.lat, r.lon);
   const inCounty = (p, county) => p.county.split(/,| and /).some(c => c.trim().replace(/ county$/, '') === county);
   const onePlace = list => { const at = list.filter(p => p.lat != null); return at.every(a => at.every(b => km(a, b) <= 10)); };
-  return function find(rec, { nameKm = 15, nearKm = 0, unique } = {}) {
+  const ownKm = p => Math.sqrt((p.acres ?? 0) * 0.0040469 / Math.PI); // the radius of a round lake of its size
+  return function find(rec, { nameKm = 15, nearKm = 0, unique, on = false } = {}) {
     const k = nameKey(rec.name), same = (k && byName.get(k)) || [], county = String(rec.county ?? '').trim().toLowerCase().replace(/ county$/, '');
     if (rec.lat == null) {
       if (county) return same.filter(p => inCounty(p, county)).map(p => p.key);
@@ -132,12 +141,37 @@ export function matcher(points) {
     // A stocked water of that name with no map point: only when the name is one place in the app's lists, and the
     // caller hasn't said the source has several waters of that name (unique: false).
     const loose = unique === false ? [] : same.filter(p => p.lat == null && (hits.length || !same.some(q => q.lat != null)) && onePlace(same));
-    const near = nearKm ? points.filter(p => p.lat != null && p.k !== k && p.base !== k && Math.abs(p.lat - rec.lat) < 0.1 && km(p, rec) <= nearKm && shareWord(p.name, rec.name)) : [];
-    return [...new Set([...hits, ...loose, ...near].map(p => p.key))];
+    const near = nearKm ? points.filter(p => p.lat != null && p.k !== k && p.base !== k && Math.abs(p.lat - rec.lat) < 0.2 && km(p, rec) <= Math.max(nearKm, 2 * ownKm(p)) && shareWord(p.name, rec.name)) : [];
+    const found = [...new Set([...hits, ...loose, ...near].map(p => p.key))];
+    if (found.length || !on) return found;
+    const at = points.filter(p => p.lat != null && Math.abs(p.lat - rec.lat) < 0.2 && km(p, rec) <= Math.max(0.3, ownKm(p))).sort((a, b) => km(a, rec) - km(b, rec))[0];
+    return at ? [at.key] : [];
   };
 }
 
 // fish: { key: [[name, how, source, note]] }, one row per fish and how it is known; a later note doesn't replace one.
+// The lakes a state's maps name that the app has no water for, as waters to add: one per place (records of one name
+// within 2 km; a second name for the same spot adds nothing), inside the state's outline, and not the creeks, springs
+// and bays such maps also draw as lake shapes. A name the state has since retired isn't added either: that lake is
+// on the national list under its new name.
+// → [{ id: "<prefix>-<name>-<lat><lon>", name, type, lat, lon, acres: null }], sorted by id
+const STILL = /\b(lakes?|reservoir|ponds?|pool|pit|helipond)\b/i, FLOWING = /\b(creek|river|springs?|slough|trib|bay|fork)\b/i, RETIRED = /\bsquaw\b/i;
+export function extraLakes(records, outline, prefix) {
+  const places = [];
+  for (const r of records) {
+    const name = String(r.name ?? '').replace(/\s+/g, ' ').trim(), k = nameKey(name);
+    if (!k || r.lat == null || RETIRED.test(name) || (FLOWING.test(name) && !STILL.test(name))) continue;
+    const place = places.find(p => p.k === k && haversineKm(p.pts[0].lat, p.pts[0].lon, r.lat, r.lon) <= 2);
+    if (place) place.pts.push(r);
+    else if (!places.some(p => haversineKm(p.pts[0].lat, p.pts[0].lon, r.lat, r.lon) <= 0.3)) places.push({ k, name, pts: [r] });
+  }
+  const mean = (pts, f) => +(pts.reduce((sum, p) => sum + p[f], 0) / pts.length).toFixed(5);
+  return places.map(p => ({ k: p.k, name: p.name, lat: mean(p.pts, 'lat'), lon: mean(p.pts, 'lon') }))
+    .filter(p => inOutline([p.lon, p.lat], outline))
+    .map(p => ({ id: `${prefix}-${p.k}-${Math.round(p.lat * 100)}${Math.round(Math.abs(p.lon) * 100)}`.replace(/(\d{4})(\d{5})$/, '$1-$2'), name: p.name, type: /\bponds?\b|helipond|\bpit\b|\bpool\b/i.test(p.name) ? 'Pond' : /reservoir/i.test(p.name) ? 'Reservoir' : 'Lake', lat: p.lat, lon: p.lon, acres: null }))
+    .sort((a, b) => (a.id < b.id ? -1 : 1));
+}
+
 function adder(fish) {
   return (keys, name, how, source, note = '') => {
     if (!name) return 0;
@@ -289,26 +323,37 @@ export function fhdNote(r) {
   if (r.fhdUseTy === 'Historical') return null;
   return [ORIGIN[r.fhdOrig], PRODUCTION[r.fhdProd]].filter(Boolean).join(', ');
 }
-async function oregon(find) {
+// Lakes Oregon has renamed that the distribution maps still carry under the old name.
+const FHD_NAMES = { 'Squaw Lakes': 'Acorn Woman Lakes' };
+async function oregon(find0, stocked, lakes) {
   const fish = {}, add = adder(fish), report = { unmatched: [], layers: 0 };
   const layers = ((await get(`${FHD}?f=json`)).layers ?? []).filter(l => !l.subLayerIds && /lake/i.test(l.name));
-  let rows = 0, tied = 0;
+  const recs = [];
   for (const l of layers) {
     let list;
     try { list = await arcRows(`${FHD}/${l.id}`, { fields: 'fhdStNm,fhdSpNm,fhdOrig,fhdProd,fhdUseTy' }); } catch (e) { (report.failed ??= []).push(`${l.name}: ${e.message.slice(-80)}`); continue; }
     report.layers++;
     for (const r of list) {
       const note = fhdNote(r), name = listName(l.name);
-      if (note == null || !r.fhdStNm) continue;
-      const keys = find({ name: r.fhdStNm, lat: r.lat, lon: r.lon }, { nameKm: 15, nearKm: 2.5 });
-      rows++; if (keys.length) tied++; else report.unmatched.push(String(r.fhdStNm).trim());
-      add(keys, name, 'lives', 0, note);
+      if (note != null && r.fhdStNm) recs.push({ rec: { name: FHD_NAMES[String(r.fhdStNm).trim()] ?? r.fhdStNm, lat: r.lat, lon: r.lon }, name, note });
     }
   }
-  if (report.layers < 30 || rows < 1000) throw new Error(`ODFW distribution: ${report.layers} layers, ${rows} rows`);
+  if (report.layers < 30 || recs.length < 1000) throw new Error(`ODFW distribution: ${report.layers} layers, ${recs.length} rows`);
+  // A lake the state maps that the app has no water for becomes a water of the app (data/or/lakes-extra.json), and
+  // takes its fish like the others.
+  const how = { nameKm: 15, nearKm: 2.5, on: true };
+  const extra = extraLakes(recs.filter(x => !find0(x.rec, how).length).map(x => x.rec), STATES.or.outline, 'odfw');
+  const find = extra.length ? matcher(pointsFor([...lakes, ...extra], stocked)) : find0;
+  let tied = 0;
+  for (const { rec, name, note } of recs) {
+    const keys = find(rec, how);
+    if (keys.length) tied++; else report.unmatched.push(String(rec.name).trim());
+    add(keys, name, 'lives', 0, note);
+  }
   report.unmatched = [...new Set(report.unmatched)].sort();
-  report.distribution = `${tied} of ${rows} lake rows tied to a water (${report.unmatched.length} lakes not in the app's lists)`;
-  return { sources: [{ label: 'ODFW Fish Habitat Distribution (lakes)', url: 'https://nrimp.dfw.state.or.us/nrimp/default.aspx?pn=fishdistdata' }], fish, report };
+  const added = extra.filter(l => fish[`n:${l.id}`]); // an added lake with no fish the app's list carries would be an empty pin
+  report.distribution = `${tied} of ${recs.length} lake rows tied to a water; ${added.length} lakes added that the national list doesn't name; ${report.unmatched.length} names left out (creeks and springs drawn as lakes, waters across the state line)`;
+  return { sources: [{ label: 'ODFW Fish Habitat Distribution (lakes)', url: 'https://nrimp.dfw.state.or.us/nrimp/default.aspx?pn=fishdistdata' }], fish, report, extra: added };
 }
 
 // ---------- Main ----------
@@ -319,10 +364,11 @@ async function main(states) {
     const dir = new URL(`${st}/`, DATA);
     try {
       const [lakes, stocked] = await Promise.all([readJson(new URL('lakes.json', dir)).then(j => j.lakes), readJson(new URL('waters.json', dir)).then(j => j.waters)]);
-      const { sources, fish, report } = await BUILD[st](matcher(pointsFor(lakes, stocked)), stocked, lakes);
+      const { sources, fish, report, extra } = await BUILD[st](matcher(pointsFor(lakes, stocked)), stocked, lakes);
       const keys = Object.keys(fish).sort(), sorted = Object.fromEntries(keys.map(k => [k, fish[k]]));
       if (!keys.length) throw new Error('no water got a fish');
       await writeFile(new URL('species.json', dir), JSON.stringify({ updatedAt: new Date().toISOString(), sources, fish: sorted }) + '\n');
+      if (extra) await writeFile(new URL('lakes-extra.json', dir), JSON.stringify({ updatedAt: new Date().toISOString(), source: sources[0].label, lakes: extra }) + '\n');
       const { unmatched, ...rest } = report;
       console.log(`${st}: ${keys.length} waters, ${keys.reduce((n, k) => n + fish[k].length, 0)} fish rows`, JSON.stringify(rest));
       if (unmatched?.length) console.log(`${st}: not in the app's lists (${unmatched.length}): ${unmatched.slice(0, 400).join('; ')}`);

@@ -156,14 +156,15 @@ async function main(states, { open = false } = {}) {
     const dir = new URL(`${st}/`, DATA);
     try {
       asks ??= await queries();
-      const [lakes, stocked] = await Promise.all([readJson(new URL('lakes.json', dir)).then(j => j.lakes), readJson(new URL('waters.json', dir)).then(j => j.waters)]);
+      const [lakes, stocked, extra] = await Promise.all([readJson(new URL('lakes.json', dir)).then(j => j.lakes), readJson(new URL('waters.json', dir)).then(j => j.waters),
+        readJson(new URL('lakes-extra.json', dir)).then(j => j.lakes, () => [])]); // lakes the state's fish maps add (build-species.mjs)
       const records = [], seen = new Set();
       for (const [which, name] of asks) {
         const t = Date.now(), got = await recordsOf(AREA[st], which, name, seen);
         records.push(...got);
         console.log(`${st}: ${name}: ${got.length} records, ${Math.round((Date.now() - t) / 1000)} s`);
       }
-      const { datasets, fish } = tally(records, reachOf(lakes, stocked));
+      const { datasets, fish } = tally(records, reachOf([...lakes, ...extra], stocked));
       if (!datasets.length) throw new Error('no record fell near a water');
       const sources = [];
       for (const d of datasets) {

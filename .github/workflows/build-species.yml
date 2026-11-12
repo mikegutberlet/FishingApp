@@ -15,6 +15,7 @@ on:
       - scripts/build-sightings.mjs
       - scripts/ca-lake-names.mjs
       - scripts/species/**
+      - scripts/states.mjs
       - .github/workflows/build-species.yml
 
 permissions:
@@ -54,7 +55,7 @@ jobs:
         run: node scripts/build-sightings.mjs
       - name: Commit changes
         run: |
-          for f in data/ca/species.json data/ca/logs/build-species.log data/nv/species.json data/or/species.json data/ca/sightings.json data/nv/sightings.json data/or/sightings.json; do if [ -e "$f" ]; then git add "$f"; fi; done
+          for f in data/ca/species.json data/ca/logs/build-species.log data/nv/species.json data/or/species.json data/or/lakes-extra.json data/ca/sightings.json data/nv/sightings.json data/or/sightings.json; do if [ -e "$f" ]; then git add "$f"; fi; done
           if git diff --cached --quiet; then echo "No data changes"; exit 0; fi
           # Only main keeps data commits. A commit on a PR branch would conflict with main's next run,
           # so a branch run shows what changed here and keeps its data as an artifact instead.
@@ -74,6 +75,7 @@ jobs:
             data/ca/species.json
             data/nv/species.json
             data/or/species.json
+            data/or/lakes-extra.json
             data/ca/sightings.json
             data/nv/sightings.json
             data/or/sightings.json
