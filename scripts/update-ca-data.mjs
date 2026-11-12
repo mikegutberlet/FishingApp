@@ -4,12 +4,14 @@
 //
 //   data/ca/plants.json      CDFW fish planting schedule. The site only shows ~1 year back, so each
 //                            run merges into the existing file and the history keeps growing.
-//   data/ca/waters.json      CDFW stocked waters with a map point for each (joined by stock id).
+//   data/ca/waters.json      CDFW stocked waters with a map point for each (joined by stock id), named from the
+//                            schedule, else from CDFW's list of lakes (scripts/ca-lake-names.mjs).
 //   data/ca/reservoirs.json  CDEC reservoir elevation/storage, last 30 days.
 //
 // Each section is independent: if a source is down, its file is left as it was.
 
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { lakeNames } from './ca-lake-names.mjs';
 
 const OUT = new URL('../data/ca/', import.meta.url);
 const UA = { 'User-Agent': 'TackleBox-fishing-app (personal, github.com/mikegutberlet/FishingApp)' };
@@ -86,14 +88,18 @@ async function updateWaters(plants) {
   }
   const names = new Map();
   for (const p of plants) if (p.stockId && !names.has(p.stockId)) names.set(p.stockId, p.water); // plants are newest first
+  // A lake that hasn't been on the schedule lately has no name there: CDFW's list of lakes has it, by the same id.
+  let listed = new Map();
+  try { listed = await lakeNames(features.filter(f => f.geometry && !names.has(f.properties.StockingWaterID)).map(f => f.properties.StockingWaterID), async url => (await get(url)).json()); }
+  catch (e) { console.log(`waters: lake names not read (${e.message}); those waters stay nameless this run`); }
   const waters = features.filter(f => f.geometry).map(f => ({
-    id: f.properties.StockingWaterID, name: names.get(f.properties.StockingWaterID) ?? null,
+    id: f.properties.StockingWaterID, name: names.get(f.properties.StockingWaterID) ?? listed.get(f.properties.StockingWaterID) ?? null,
     counties: f.properties.Counties, lastYearStocked: f.properties.last_yr_stkd, ...representativePoint(f.geometry),
   }));
-  const named = waters.filter(w => w.name).length;
+  const named = waters.filter(w => names.has(w.id)).length;
   const unmatched = [...names.keys()].filter(id => !waters.some(w => w.id === id)).length;
   await writeJson('waters.json', { updatedAt: new Date().toISOString(), source: 'CDFW BIOS ds778 Recent Stocked Waters', waters });
-  console.log(`waters: ${waters.length} polygons, ${named} named from the schedule, ${unmatched} schedule waters without a polygon`);
+  console.log(`waters: ${waters.length} polygons, ${named} named from the schedule, ${waters.filter(w => w.name).length - named} from CDFW's lake list, ${unmatched} schedule waters without a polygon`);
 }
 
 // ---------- CDEC reservoirs ----------

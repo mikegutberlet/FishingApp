@@ -1,11 +1,14 @@
 // What the app knows about every water, for the "Where should I go?" list (views/finder.js) and the map's pins
 // (map-pins.js): the pool of waters (each state's lakes and stocked waters, plus your saved ones), and per water its
-// stocking match, fish (and where that comes from), latest plant, access places and algae advisories.
+// stocking match, fish (and where that comes from), latest plant, access places and algae advisories. The fish come
+// from the stocking schedule and past reports, the agencies' own lists of what is in each water (species.json),
+// USGS records of introductions, and your catches.
 // Everything comes from data already on the phone; facts per water are worked out once and kept for the session.
 import { list as stateList, forLake } from './states/index.js';
 import { groupOf, groupLabel } from './game-plan.js';
 import { stockHistoryFor } from './stock-history.js';
 import { speciesName, speciesLine, isCatchAll } from './species.js';
+import { listedRows, HOW_SOURCE } from './fish-here-core.js';
 
 // NAS records of fish that didn't take or were removed don't mean the fish is there.
 const GONE = /failed|extirpated|eradicated/i;
@@ -76,14 +79,23 @@ export function factsFor(e) {
     for (const y of past?.years ?? []) for (const s of Object.keys(y.sp)) add(s, 'past');
     // historyFor lines read "Species (locality) · status".
     for (const h of hist.local) if (!GONE.test(h.text.split(' · ').at(-1))) add(h.text.split(/ \(| · /)[0], 'on record');
-    return { stock, fish, lastPlant: stock?.lastPlant ?? null, access: access ? new Set(access.places.map(p => p.kind)) : null };
-  })().catch(() => ({ fish: new Map(), access: null })));
+    // What the agency itself lists for this water, and for the stocked water it stands for.
+    const listed = await listedFor(S, [ownKey(e), stock && `s:${stock.id}`, e.saved?.nhdId && `n:${e.saved.nhdId}`]);
+    for (const r of listed) add(r.name, HOW_SOURCE[r.how]);
+    return { stock, fish, listed, lastPlant: stock?.lastPlant ?? null, access: access ? new Set(access.places.map(p => p.kind)) : null };
+  })().catch(() => ({ fish: new Map(), listed: [], access: null })));
   return facts.get(key);
+}
+// An entry's key in a state's files: its pool key without the state. null for a water of your own that isn't in the lists.
+const ownKey = e => e.S && e.key.startsWith(`${e.S.code}:`) ? e.key.slice(e.S.code.length + 1) : null;
+// The fish the agency's own lists name for these keys (fish-here-core.js), or [] before the file's first build.
+export async function listedFor(S, keys) {
+  return listedRows(await S?.speciesList?.().catch(() => null), keys);
 }
 // Drive-up or hike-in from the state's monthly file (reach-core.js says what a value means). null: no record, as for
 // a stream that isn't in the lists, a water added by hand, or before the file's first build.
 export async function reachFor(e) {
-  const S = e.S, key = S && e.key.startsWith(`${S.code}:`) ? e.key.slice(S.code.length + 1) : null;
+  const S = e.S, key = ownKey(e);
   return (key && (await S.reachMap?.().catch(() => null))?.[key]) ?? null;
 }
 // A fish goes in under its group ('trout') and, for trout and kokanee, also under the kind the record names
@@ -98,9 +110,10 @@ const habs = new Map();
 export const habFor = e => habs.get(e.key) ?? habs.set(e.key, (e.S?.habFor?.(e.w ?? e.stock) ?? Promise.resolve([])).then(a => a.length, () => 0)).get(e.key);
 
 // A water's fish as lines for a card: each fish once, under the best evidence for it (your catches, then the current
-// schedule, then past stocking reports, then a USGS record). A group shows by its kinds when the records name them
+// schedule or the state's plan for the year, then the state's own list of what lives there, then past stocking
+// reports, then the state's record book, then a USGS record). A group shows by its kinds when the records name them
 // ("Rainbow trout, Tiger trout"), else by its own name ("Trout").
-const BY = { yours: "You've caught", stocked: 'Stocked', past: 'Stocked before', 'on record': 'On record' };
+const BY = { yours: "You've caught", stocked: 'Stocked', lives: 'Lives here', past: 'Stocked before', caught: 'Caught here', 'on record': 'On record' };
 export function fishRows(fish) {
   const rows = {};
   const kinds = [...fish.keys()].filter(k => k.startsWith('k:'));

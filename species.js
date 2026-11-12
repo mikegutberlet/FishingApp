@@ -71,7 +71,7 @@ export const SPECIES = [
   { name: 'Sacramento perch', states: 'CA NV', re: /sacramento perch/ },
   // Pike, walleye
   { name: 'Walleye', states: 'NV OR', re: /walleye/ },
-  { name: 'Northern pike', states: 'CA', re: /northern pike|^pike$/ },
+  { name: 'Northern pike', states: 'CA', re: /northern pike(?!minnow)|^pike$/ },
   { name: 'Tiger muskie', states: 'NV', re: /tiger musk/ },
   { name: 'Muskellunge', states: '', re: /muskellunge|musk(ie|y)/ },
   // Catfish

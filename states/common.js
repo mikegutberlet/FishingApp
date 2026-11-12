@@ -206,5 +206,7 @@ export function stateData(dir, code) {
   const accessPlaces = async () => (await load('access'))?.places ?? [];
   // Drive-up or hike-in for each water, by its pool key without the state (reach-core.js). null: no file yet.
   const reachMap = async () => (await load('reach'))?.reach ?? null;
-  return { load, waters, plantsFor, dataDates, nearestWaters, nearestReservoir, statewide, history: () => load('history'), matchStockedWater, historyFor, hydroFor, bathymetryFor, bathymetryUrl, accessFor, accessPlaces, reachMap };
+  // The fish the agency's own lists name for each water, by pool key without the state (fish-here-core.js). null: no file yet.
+  const speciesList = () => load('species');
+  return { load, waters, plantsFor, dataDates, nearestWaters, nearestReservoir, statewide, history: () => load('history'), matchStockedWater, historyFor, hydroFor, bathymetryFor, bathymetryUrl, accessFor, accessPlaces, reachMap, speciesList };
 }

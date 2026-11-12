@@ -1,0 +1,72 @@
+name: Build fish lists
+# The fish each agency's own lists name for a water, for the finder, the map's fish filter and the "What's in here"
+# list on a water's Stocking tab: California's stocking document for the year, Nevada's fishable waters and record
+# book, Oregon's fish distribution maps. Matched against data/<st>/lakes.json and waters.json.
+
+on:
+  schedule:
+    - cron: '23 12 6 * *' # monthly; the sources change a few times a year
+  workflow_dispatch:
+  push:
+    paths:
+      - scripts/build-species.mjs
+      - scripts/ca-lake-names.mjs
+      - scripts/species/**
+      - .github/workflows/build-species.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # On main, the branch as it is when the job starts, not the commit that queued the run: a run that waited
+          # behind another run of this workflow then builds on that run's data commit instead of conflicting with it.
+          # Branch runs keep their own commit, since they only upload their data and the branch may be gone by then.
+          ref: ${{ github.ref_name == 'main' && github.ref || '' }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Tests
+        run: node --test scripts/test/build-species.test.mjs scripts/test/fish-here-core.test.mjs
+      - name: Fish lists
+        continue-on-error: true # a state whose source failed keeps its old file; the others are still committed
+        timeout-minutes: 20
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils # pdftotext, for California's document
+          mkdir -p data/ca/logs
+          node scripts/build-species.mjs 2>&1 | tee data/ca/logs/build-species.log
+          exit ${PIPESTATUS[0]}
+      - name: Commit changes
+        run: |
+          for f in data/ca/species.json data/ca/logs/build-species.log data/nv/species.json data/or/species.json; do if [ -e "$f" ]; then git add "$f"; fi; done
+          if git diff --cached --quiet; then echo "No data changes"; exit 0; fi
+          # Only main keeps data commits. A commit on a PR branch would conflict with main's next run,
+          # so a branch run shows what changed here and keeps its data as an artifact instead.
+          if [ "$GITHUB_REF_NAME" != main ]; then git diff --cached --stat; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update fish lists for California, Nevada and Oregon"
+          # If the branch moved under us (another run, a rebase), this run's fresh output wins.
+          for i in 1 2 3; do if git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" && git push; then exit 0; fi; git rebase --abort 2>/dev/null || true; sleep 10; done
+          echo "push failed"; exit 1
+      - name: Keep this branch run's data
+        if: github.ref_name != 'main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: data
+          path: |
+            data/ca/species.json
+            data/nv/species.json
+            data/or/species.json
+            data/ca/logs/build-species.log
+          if-no-files-found: ignore
+          retention-days: 7

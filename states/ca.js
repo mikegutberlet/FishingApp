@@ -206,6 +206,11 @@ export async function reachMap() {
   return (await load('reach'))?.reach ?? null;
 }
 
+// The fish CDFW's own lists name for each water, by pool key without the state (fish-here-core.js). null: no file yet.
+export async function speciesList() {
+  return load('species');
+}
+
 // ---------- Fishing regulations (weekly build from Title 14, CCR) ----------
 const insideRing = ([x, y], ring) => {
   let c = false;
