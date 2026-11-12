@@ -1,6 +1,7 @@
-name: Build drive-up or hike-in (California, Nevada, Oregon)
-# How far the nearest road is from each lake and stocked water, from OpenStreetMap, for the "Drive-up or hike-in"
-# filter and the line on a water's card. Reads data/<st>/lakes.json, waters.json and access.json as they are.
+name: Build drive-up or hike-in
+# How far the nearest road is from each lake and stocked water, for the "Drive-up or hike-in" filter and the line on
+# a water's card. Downloads each state's OpenStreetMap extract from Geofabrik, cuts the roads out with osmium, and
+# measures them against data/<st>/lakes.json and waters.json (access.json adds the boat ramps).
 
 on:
   schedule:
@@ -8,7 +9,8 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - scripts/build-state-reach.mjs
+      - scripts/build-reach.mjs
+      - scripts/reach-roads.sh
       - .github/workflows/build-reach.yml
 
 permissions:
@@ -21,7 +23,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 130 # each state has its own limit below, so a slow source can't stop the commit step
+    timeout-minutes: 100
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,30 +34,33 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: California
-        continue-on-error: true
-        timeout-minutes: 40 # the script stops asking after 30 minutes and keeps last month's value for the rest
+      - name: Roads from OpenStreetMap
+        timeout-minutes: 60
         run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq osmium-tool
+          for pair in ca:california nv:nevada or:oregon; do
+            st=${pair%%:*}; name=${pair##*:}
+            # A state whose download or cut fails is left out, and the script keeps that state's old file.
+            if curl -fsSL --retry 3 --retry-delay 20 -o "$RUNNER_TEMP/$name.osm.pbf" "https://download.geofabrik.de/north-america/us/$name-latest.osm.pbf" \
+              && bash scripts/reach-roads.sh "$RUNNER_TEMP/$name.osm.pbf" "$RUNNER_TEMP/$st-roads.geojsonseq"; then
+              echo "$st: $(wc -l < "$RUNNER_TEMP/$st-roads.geojsonseq") road lines, extract $(du -h "$RUNNER_TEMP/$name.osm.pbf" | cut -f1)"
+            else
+              echo "::warning::$name roads failed"; rm -f "$RUNNER_TEMP/$st-roads.geojsonseq"
+            fi
+            rm -f "$RUNNER_TEMP/$name.osm.pbf"
+          done
+      - name: Drive-up or hike-in
+        continue-on-error: true # a state that failed keeps its old file; the others are still committed
+        timeout-minutes: 30
+        run: |
+          args=()
+          for st in ca nv or; do if [ -s "$RUNNER_TEMP/$st-roads.geojsonseq" ]; then args+=("$st=$RUNNER_TEMP/$st-roads.geojsonseq"); fi; done
           mkdir -p data/ca/logs
-          node scripts/build-state-reach.mjs ca 2>&1 | tee data/ca/logs/build-state-reach.log
-          exit ${PIPESTATUS[0]}
-      - name: Nevada
-        continue-on-error: true
-        timeout-minutes: 40 # the script stops asking after 30 minutes and keeps last month's value for the rest
-        run: |
-          mkdir -p data/nv/logs
-          node scripts/build-state-reach.mjs nv 2>&1 | tee data/nv/logs/build-state-reach.log
-          exit ${PIPESTATUS[0]}
-      - name: Oregon
-        continue-on-error: true
-        timeout-minutes: 40 # the script stops asking after 30 minutes and keeps last month's value for the rest
-        run: |
-          mkdir -p data/or/logs
-          node scripts/build-state-reach.mjs or 2>&1 | tee data/or/logs/build-state-reach.log
+          node scripts/build-reach.mjs "${args[@]}" 2>&1 | tee data/ca/logs/build-reach.log
           exit ${PIPESTATUS[0]}
       - name: Commit changes
         run: |
-          for f in data/ca/reach.json data/ca/logs/build-state-reach.log data/nv/reach.json data/nv/logs/build-state-reach.log data/or/reach.json data/or/logs/build-state-reach.log; do if [ -e "$f" ]; then git add "$f"; fi; done
+          for f in data/ca/reach.json data/ca/logs/build-reach.log data/nv/reach.json data/or/reach.json; do if [ -e "$f" ]; then git add "$f"; fi; done
           if git diff --cached --quiet; then echo "No data changes"; exit 0; fi
           # Only main keeps data commits. A commit on a PR branch would conflict with main's next run,
           # so a branch run shows what changed here and keeps its data as an artifact instead.

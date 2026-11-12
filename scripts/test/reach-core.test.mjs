@@ -18,5 +18,6 @@ test('reachText and reachShort: one sentence and one short label for every value
   assert.equal(reachText(8), 'Hike-in: the nearest road is 3 to 5 miles away');
   assert.equal(reachText(9), 'Hike-in: the nearest road is more than 5 miles away');
   assert.deepEqual(['d', 'r', 0.8, 1.6, 3.2, 4.8, 8, 9].map(reachShort), ['Drive-up', 'Drive-up, dirt track', 'Short walk, half a mile', 'Short walk, a mile', 'Hike-in, 1 to 2 miles', 'Hike-in, 2 to 3 miles', 'Hike-in, 3 to 5 miles', 'Hike-in, over 5 miles']);
-  for (const v of [undefined, null, 'x', 2, 0]) { assert.equal(reachText(v), null); assert.equal(reachShort(v), null); }
+  assert.equal(reachKind('3.2'), null, 'a band written as text is junk, not a drive');
+  for (const v of [undefined, null, 'x', 2, 0, '3.2', '9']) { assert.equal(reachText(v), null); assert.equal(reachShort(v), null); }
 });
