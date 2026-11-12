@@ -1,6 +1,6 @@
 // Forecasts for the weather filter ("good weather on Saturday for my kayak"), shared by the "Where should I go?"
 // list and the map. A forecast is asked for per square of a tenth of a degree (weather-grid-core.js), only for
-// squares that hold a water passing every other filter, nearest first and no more than 100 a pass. Each is kept for
+// squares that hold a water passing every other filter, nearest first and no more than 300 a pass. Each is kept for
 // three hours and saved on the phone, so a saved copy answers when there is no signal. The only thing sent is the
 // squares' centers, to Open-Meteo (the service the app's forecasts already come from).
 import { cellOf, gradeOf, pickCells, readMulti } from './weather-grid-core.js';
@@ -8,7 +8,7 @@ import { safeHours, craftId } from './boat-weather.js';
 import { localKey, addDays } from './forecast.js';
 import { fmtTemp } from './units.js';
 
-const KEEP = 3 * 36e5, CAP = 100, BATCH = 50, SINGLES = 12, SAVED_FOR = 48 * 36e5;
+const KEEP = 3 * 36e5, CAP = 300, BATCH = 50, SINGLES = 12, SAVED_FOR = 48 * 36e5;
 const mem = new Map(); // square id -> { at, w }
 const fresh = id => { const m = mem.get(id); return m && Date.now() - m.at < KEEP ? m.w : null; };
 const haveCells = () => new Set([...mem.keys()].filter(fresh));
@@ -47,9 +47,12 @@ export async function gridWeather(cells) {
   for (const c of cells) { const w = fresh(c.id); if (w) out.set(c.id, w); else need.push(c); }
   const keep = (c, w) => { mem.set(c.id, { at: Date.now(), w }); out.set(c.id, w); save(c.id, w); };
   if (need.length && navigator.onLine !== false) {
-    for (let i = 0; i < need.length; i += BATCH) {
-      const part = need.slice(i, i + BATCH), ws = await ask(part);
-      if (ws) { part.forEach((c, k) => keep(c, ws[k])); continue; }
+    const parts = [];
+    for (let i = 0; i < need.length; i += BATCH) parts.push(need.slice(i, i + BATCH));
+    const batch = async part => { const ws = await ask(part); ws?.forEach((w, k) => keep(part[k], w)); return !!ws; };
+    // The nearest squares first, on their own; when that works the rest are asked for together.
+    if (await batch(parts[0])) await Promise.all(parts.slice(1).map(batch));
+    else {
       // No usable answer for several places at once. If one place alone works, the service is there but won't take
       // a list: ask place by place for the nearest dozen. If not, there's no signal: stop asking.
       const first = (await ask([need[0]]))?.[0];
@@ -58,7 +61,6 @@ export async function gridWeather(cells) {
         const rest = need.slice(1, SINGLES);
         for (let k = 0; k < rest.length; k += 4) await Promise.all(rest.slice(k, k + 4).map(async c => { const w = (await ask([c]))?.[0]; if (w) keep(c, w); }));
       }
-      break;
     }
   }
   await Promise.all(need.filter(c => !out.has(c.id)).map(async c => out.set(c.id, await saved(c.id))));
@@ -67,8 +69,8 @@ export async function gridWeather(cells) {
 
 // ---------- A water's day ----------
 export const dateFor = P => localKey(addDays(Date.now(), P.day));
-export const dayLabel = n => n ? addDays(Date.now(), n).toLocaleDateString(undefined, { weekday: 'short', day: 'numeric' }).replace(',', '') : 'Today';
 const dayWord = n => n ? addDays(Date.now(), n).toLocaleDateString(undefined, { weekday: 'short' }) : 'Today';
+export const dayLabel = n => n ? `${dayWord(n)} ${addDays(Date.now(), n).getDate()}` : 'Today';
 
 // A water's grade for the picked day and craft, and the line a row or card shows: "Sat: Kayak: good till 11, off by 1
 // · 62°F / 38°F · 40% rain". null when the forecast doesn't cover that day. `e` needs `acres` (big water, lower limits).

@@ -9,6 +9,8 @@ import { openLake, openWater } from './lake.js';
 import { renderLakeList } from './lakes.js';
 import { loadPool, withSaved, fishRows, stockLake, ACCESS } from '../water-facts.js';
 import { quickPass } from '../water-filter-core.js';
+import { wxPass } from '../weather-grid-core.js';
+import { weatherStage } from '../weather-grid.js';
 import { prefs, savePrefs, home, setHomePoint, origin, context, shape, fullPass } from '../water-filter.js';
 import { filterForm, bindFilterForm } from './filter-form.js';
 
@@ -70,17 +72,29 @@ export async function renderFinder() {
       if (stockKey) claimed.add(stockKey);
       if (hit) hits.push(hit); else if (un) unknown.add(near[i].key);
       if (i % 80 === 79 || i === near.length - 1) {
-        show(hits.filter(h => !(h.stock && claimed.has(h.key))), i + 1 < near.length ? `Checking ${i + 1} of ${near.length} waters…` : null);
+        const last = i + 1 === near.length, rows = P.wx && !last ? [] : hits.filter(h => !(h.stock && claimed.has(h.key)));
+        if (P.wx && last) return weather(rows);
+        show(rows, last ? null : `Checking ${i + 1} of ${near.length} waters…`);
         await new Promise(res => setTimeout(res));
         if (me !== run) return;
       }
     }
     if (!near.length) show([], null);
-    function show(rows, progress) {
+    // The weather filter comes last, so forecasts are asked for only where a water passed everything else.
+    async function weather(rows) {
+      $('#fd-count').textContent = 'Checking the weather…';
+      const items = rows.map(r => ({ lat: r.lat, lon: r.lon, acres: shape(r).acres, r }));
+      const st = await weatherStage(items, P, from);
+      if (me !== run || !out.isConnected) return;
+      const kept = items.filter(it => st.grades.has(it) && wxPass(st.grades.get(it)?.grade, P.wx)).map(it => ({ ...it.r, wx: st.grades.get(it)?.line }));
+      show(kept, null, [st.unknown && `No forecast for ${st.unknown.toLocaleString()} water${st.unknown === 1 ? '' : 's'}, so weather isn't applied to them.`,
+        st.beyond && 'Weather is checked for the nearest 300 areas. Shorten the distance, or add filters.', st.saved && 'Using forecasts saved earlier.'].filter(Boolean).join(' '));
+    }
+    function show(rows, progress, wxNote = '') {
       if (P.sort === 'stocked') rows = [...rows].sort((a, b) => (b.f.lastPlant ?? '').localeCompare(a.f.lastPlant ?? '') || (a.distKm ?? 0) - (b.distKm ?? 0));
       found = rows;
       const unknowns = [...unknown].filter(k => !claimed.has(k)).length;
-      const sizeless = noSize.size ? ' Waters with no size or elevation on record are left out.' : '';
+      const sizeless = (noSize.size ? ' Waters with no size or elevation on record are left out.' : '') + (wxNote && ` ${wxNote}`);
       $('#fd-count').textContent = progress ?? (rows.length ? `${rows.length} water${rows.length === 1 ? '' : 's'} match${rows.length === 1 ? 'es' : ''}${unknowns ? `. ${unknowns} more within range have no fish or access records in the app yet.` : '.'}${sizeless}` : sizeless.trim());
       out.innerHTML = rows.length ? rows.slice(0, 60).map((r, i) => card(r, i, today)).join('')
         : progress ? '' : '<div class="card muted">Nothing matches. Try a longer distance or fewer filters.</div>';
@@ -97,7 +111,7 @@ function card(r, i, today) {
   return `<div class="card lake-item fd-item" data-i="${i}">
     ${r.distKm != null ? `<span class="fd-post"><b>${distNum(r.distKm).toLocaleString()}</b>${metric() ? 'km' : 'mi'}</span>` : ''}
     <div class="fd-body"><b>${esc(r.name)}</b><div class="muted small">${esc(r.type ?? '')}${r.S ? ', ' + r.S.code : ''}${r.saved ? ' · saved' : ''}${r.mine ? ` · ${r.mine} catch${r.mine === 1 ? '' : 'es'} logged` : ''}</div>
-      ${fish}${plant ? `<div class="small">${plant}</div>` : ''}
+      ${r.wx ? `<div class="small fd-wx">${esc(r.wx)}</div>` : ''}${fish}${plant ? `<div class="small">${plant}</div>` : ''}
       ${access ? `<div class="small muted">${esc(access)}</div>` : ''}${r.hab ? '<div class="small fd-warn">Toxic algae advisory</div>' : ''}</div><span>›</span></div>`;
 }
 
