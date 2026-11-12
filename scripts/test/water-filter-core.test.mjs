@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { DEFAULTS, clean, sizeOf, elevOf, isStreamType, kmBetween, quickPass, active, needsFacts } from '../../water-filter-core.js';
+import { DEFAULTS, clean, sizeOf, elevOf, isStreamType, kmBetween, quickPass, active, needsFacts, off } from '../../water-filter-core.js';
 
 const P = over => ({ ...DEFAULTS, miles: 0, ...over });
 const ctx = { from: { lat: 39.33, lon: -120.18 }, iced: () => false };
@@ -50,4 +50,10 @@ test('which filters are on, and whether they need the lookups', () => {
   assert.deepEqual(active({ ...DEFAULTS, miles: 0, noAlgae: false }), []);
   assert.deepEqual(active({ ...DEFAULTS, fish: ['trout'], size: ['pond'], iceFree: true, type: 'lake' }), ['fish', 'miles', 'noAlgae', 'type', 'size', 'iceFree']);
   assert.ok(needsFacts(DEFAULTS)); assert.ok(!needsFacts({ ...DEFAULTS, noAlgae: false })); assert.ok(needsFacts({ ...DEFAULTS, noAlgae: false, fish: ['trout'] }));
+});
+test('switching one filter back to "everything"', () => {
+  const all = { ...DEFAULTS, fish: ['trout'], access: ['ramp'], stocked: true, mine: true, saved: true, type: 'stream', size: ['pond'], elev: ['low'], iceFree: true };
+  assert.deepEqual(active(all), ['fish', 'access', 'miles', 'stocked', 'mine', 'saved', 'noAlgae', 'type', 'size', 'elev', 'iceFree']);
+  for (const k of active(all)) assert.deepEqual(active(clean({ ...all, ...off(k) })), active(all).filter(x => x !== k), k);
+  assert.deepEqual(off('miles'), { miles: 0 }); assert.deepEqual(off('noAlgae'), { noAlgae: false });
 });

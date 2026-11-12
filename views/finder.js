@@ -5,25 +5,20 @@ import { $, esc, fmtDate, status, showView } from '../ui.js';
 import { haversineKm } from '../data-sources.js';
 import { pickPoint } from '../map.js';
 import { units } from '../units.js';
-import { groupLabel } from '../game-plan.js';
 import { openLake, openWater } from './lake.js';
 import { renderLakeList } from './lakes.js';
 import { loadPool, withSaved, fishRows, stockLake, ACCESS } from '../water-facts.js';
 import { quickPass } from '../water-filter-core.js';
-import { prefs, savePrefs, home, setHomePoint, origin, context, shape, fullPass } from '../water-filter.js';
+import { prefs, savePrefs, setHomePoint, origin, context, shape, fullPass } from '../water-filter.js';
+import { filterForm, bindFilterForm } from './filter-form.js';
 
-const FISH = ['trout', 'kokanee', 'laker', 'largemouth', 'smallmouth', 'striper', 'crappie', 'panfish', 'catfish', 'walleye'];
-// Kinds of trout, by the species list's names (species.js): "Cutthroat trout" also finds Lahontan, Paiute and the rest.
-const KINDS = ['Rainbow trout', 'Brown trout', 'Brook trout', 'Cutthroat trout', 'Lahontan cutthroat trout', 'Golden trout', 'Tiger trout', 'Bull trout', 'Cutbow trout', 'Steelhead'];
-const MILES = [10, 25, 50, 100, 200, 0];
 const metric = () => units().depth === 'm';
-const fmtMiles = mi => mi ? (metric() ? `${Math.round(mi * 1.609)} km` : `${mi} mi`) : 'Any';
 const distNum = km => metric() ? Math.round(km) : Math.round(km * 0.621371);
 
 function setHome() {
   showView('map');
   status('Tap the map where home is');
-  pickPoint(({ lat, lng }) => { setHomePoint({ lat, lon: lng }); showView('lakes', { render: false }); renderFinder(); });
+  pickPoint(({ lat, lng }) => { setHomePoint({ lat, lon: lng }); savePrefs({ from: 'home' }); showView('lakes', { render: false }); renderFinder(); });
 }
 
 // ---------- The screen ----------
@@ -33,41 +28,26 @@ export async function renderFinder() {
   $('#lake-detail').classList.add('hidden');
   list.classList.remove('hidden');
   const P = prefs();
-  const chip = (attr, v, label, on) => `<button type="button" data-${attr}="${v}" aria-pressed="${on}">${esc(label)}</button>`;
   list.innerHTML = `<button id="back">‹ My waters</button><h2>Where should I go?</h2>
     <div class="card form fd-filters">
-      <div class="fd-from"><span id="fd-from" class="muted">Finding where you are…</span><button type="button" id="fd-home">${home() ? 'Move home' : 'Set home'}</button></div>
-      <fieldset><legend>Fish I want</legend><div class="fd-chips">${FISH.map(g => chip('fish', g, groupLabel(g), P.fish.includes(g))).join('')}</div>
-        <div class="fd-chips fd-kinds"><span class="muted small">Kind of trout</span>${KINDS.map(k => chip('fish', k, k.replace(/ trout$/, ''), P.fish.includes(k))).join('')}</div></fieldset>
-      <fieldset><legend>Getting on the water</legend><div class="fd-chips">${Object.entries(ACCESS).map(([k, l]) => chip('access', k, l, P.access.includes(k))).join('')}</div></fieldset>
-      <fieldset><legend>How far</legend><div class="fd-chips">${MILES.map(m => chip('miles', m, fmtMiles(m), P.miles === m)).join('')}</div></fieldset>
-      <label class="check"><input type="checkbox" data-opt="stocked" ${P.stocked ? 'checked' : ''}> Stocked in the last 30 days or coming up</label>
-      <label class="check"><input type="checkbox" data-opt="mine" ${P.mine ? 'checked' : ''}> Only waters where I've logged a catch</label>
-      <label class="check"><input type="checkbox" data-opt="noAlgae" ${P.noAlgae ? 'checked' : ''}> Hide waters with a toxic algae advisory</label>
+      <div id="fd-from" class="muted fd-from">Finding where you are…</div>
+      ${filterForm(P)}
       <label>Sort <select id="fd-sort"><option value="near">Closest first</option><option value="stocked" ${P.sort === 'stocked' ? 'selected' : ''}>Most recently stocked</option></select></label>
     </div>
     <div id="fd-count" class="muted small" aria-live="polite"></div><div id="fd-results"></div>
-    <p class="muted small">Fish lists come from state stocking reports, USGS records of introduced fish and your own catches. California's and Oregon's current schedules say only “trout”, so a kind of trout is matched from past reports, USGS records and your catches. Native fish that were never stocked or recorded don't show up, so a water left out may still hold them. Ramps, piers, marinas, rentals, campgrounds and parking come from OpenStreetMap and cover California only for now. Distances are straight-line.</p>`;
+    <p class="muted small">Fish lists come from state stocking reports, USGS records of introduced fish and your own catches. California's and Oregon's current schedules say only “trout”, so a kind of trout is matched from past reports, USGS records and your catches. Native fish that were never stocked or recorded don't show up, so a water left out may still hold them. Ramps, piers, marinas, rentals, campgrounds and parking come from OpenStreetMap and cover California only for now. Size and elevation come from the states' lake lists, and stocked rivers and creeks have neither, so they drop out when you filter by size or elevation. “Likely ice-free” is an estimate from elevation, the time of year and your own ice notes. Distances are straight-line.</p>`;
   $('#back').onclick = renderLakeList;
-  $('#fd-home').onclick = setHome;
-  const [from, all, ctx] = await Promise.all([origin(), loadPool(), context()]);
+  let [from, all, ctx] = await Promise.all([origin(P), loadPool(), context()]);
   if (!$('#fd-from')) return;
-  $('#fd-from').textContent = from ? `Distances from ${from.label}` : 'Set home to see distances. Location is off.';
+  const said = () => { $('#fd-from').textContent = from ? `Distances from ${from.label}` : 'Set home to see distances. Location is off.'; };
+  said();
   const { entries, savedFor } = withSaved(all, ctx.saved);
 
-  const save = patch => { savePrefs(patch); draw(); };
-  list.querySelector('.fd-filters').onclick = e => {
-    const b = e.target.closest('button[data-fish], button[data-access], button[data-miles]');
-    if (!b) return;
-    const P = prefs();
-    if (b.dataset.miles != null) { list.querySelectorAll('[data-miles]').forEach(x => x.setAttribute('aria-pressed', x === b)); return save({ miles: +b.dataset.miles }); }
-    const kind = b.dataset.fish ? 'fish' : 'access', v = b.dataset[kind], on = !P[kind].includes(v);
-    b.setAttribute('aria-pressed', on);
-    save({ [kind]: on ? [...P[kind], v] : P[kind].filter(x => x !== v) });
-  };
-  list.querySelectorAll('[data-opt]').forEach(el => el.onchange = () => save({ [el.dataset.opt]: el.checked }));
-  $('#fd-sort').onchange = e => save({ sort: e.target.value });
-
+  bindFilterForm(list.querySelector('.fd-filters'), async (P, key) => {
+    if (key === 'from') { from = await origin(P); if (!$('#fd-from')) return; said(); }
+    draw();
+  }, { setHome });
+  $('#fd-sort').onchange = e => { savePrefs({ sort: e.target.value }); draw(); };
 
   async function draw() {
     const me = ++run, P = prefs(), out = $('#fd-results');

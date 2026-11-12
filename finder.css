@@ -7,8 +7,8 @@
 .fd-kinds { margin-top: 8px; align-items: center; }
 .fd-kinds > span { width: 100%; }
 @media (prefers-color-scheme: dark) { .fd-chips button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); } }
-.fd-from { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
-.fd-from button { flex-shrink: 0; }
+.fd-from { margin-bottom: 12px; }
+.fd-chips .fd-sethome { border-radius: 8px; margin-left: auto; }
 .fd-item { gap: 12px; align-items: flex-start; }
 .fd-body { flex: 1; min-width: 0; }
 .fd-post { flex: 0 0 52px; display: flex; flex-direction: column; align-items: center; padding: 5px 0 4px; border-radius: 5px;

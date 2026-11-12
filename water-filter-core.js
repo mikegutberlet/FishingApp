@@ -41,3 +41,5 @@ const ON = { fish: P => P.fish.length, access: P => P.access.length, miles: P =>
   noAlgae: P => P.noAlgae, type: P => P.type, size: P => P.size.length, elev: P => P.elev.length, iceFree: P => P.iceFree };
 export const active = P => Object.keys(ON).filter(k => ON[k](P));
 export const needsFacts = P => !!(P.fish.length || P.access.length || P.stocked || P.mine || P.noAlgae);
+// The change that switches one filter back to "show everything" (the map's removable chips).
+export const off = key => ({ [key]: Array.isArray(DEFAULTS[key]) ? [] : key === 'miles' ? 0 : key === 'type' ? '' : false });
