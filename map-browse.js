@@ -1,13 +1,19 @@
 // Browsing the map for somewhere to fish: a search bar, quick layer chips, a preview sheet for the water you tap,
 // and the small map on the Today screen that opens the full one.
 import { db } from './db.js';
-import { map, statewide, loadState, setWaterTap, here, baseLayers, stockedLayer, watersLayer, refreshMap } from './map.js';
+import { map, statewide, loadState, setWaterTap, here, baseLayers, watersLayer, refreshMap } from './map.js';
 import { STATES, forLake, stockIdOf } from './states/index.js';
 import { $, esc, fmtDate, icon, showView, status } from './ui.js';
 import { openWater, openLake, waterRecord } from './views/lake.js';
 import { directionsUrl } from './views/access.js';
 import { coastSpots } from './coast.js';
-import { entryFor, factsFor, habFor, addFish, fishRows, isSavedLake, ACCESS } from './water-facts.js';
+import { entryFor, factsFor, habFor, addFish, fishRows, isSavedLake, reachFor, ACCESS } from './water-facts.js';
+import { reachText } from './reach-core.js';
+import { prefs, mapFilterOn } from './water-filter.js';
+import { needsWeather } from './water-filter-core.js';
+import { dayLines, betText } from './best-bet.js';
+import { levelFor } from './lake-level.js';
+import { comparing, toggleCompare, compareSaved } from './map-compare.js';
 
 const view = $('#view-map'), search = $('#map-search'), results = $('#map-results'), sheet = $('#water-sheet');
 const km = (a, b) => { const r = Math.PI / 180, x = (b.lon - a.lon) * r * Math.cos((a.lat + b.lat) / 2 * r), y = (b.lat - a.lat) * r; return Math.hypot(x, y) * 6371; };
@@ -50,12 +56,11 @@ results.onclick = e => {
 };
 $('#map-search-clear').onclick = () => { search.value = ''; results.innerHTML = ''; results.classList.add('hidden'); };
 
-// ---------- Quick chips: base map, stocked waters, names ----------
+// ---------- Quick chips: base map and names (map-pins.js and map-filters.js own the Pins and Stocked lately chips) ----------
 const chips = $('#map-chips');
 const BASES = ['Satellite', 'Topo', 'Streets'];
 const syncChips = () => {
   chips.querySelector('[data-chip=base]').textContent = BASES.find(n => map.hasLayer(baseLayers[n])) ?? 'Satellite';
-  chips.querySelector('[data-chip=stocked]').classList.toggle('on', map.hasLayer(stockedLayer));
   chips.querySelector('[data-chip=names]').classList.toggle('on', map.hasLayer(watersLayer));
 };
 chips.onclick = e => {
@@ -64,7 +69,6 @@ chips.onclick = e => {
     const now = BASES.find(n => map.hasLayer(baseLayers[n])) ?? 'Satellite', next = BASES[(BASES.indexOf(now) + 1) % BASES.length];
     map.removeLayer(baseLayers[now]); map.addLayer(baseLayers[next]); map.fire('baselayerchange', { layer: baseLayers[next], name: next });
   }
-  if (c === 'stocked') map.hasLayer(stockedLayer) ? map.removeLayer(stockedLayer) : map.addLayer(stockedLayer);
   if (c === 'names') map.hasLayer(watersLayer) ? map.removeLayer(watersLayer) : map.addLayer(watersLayer);
   syncChips();
 };
@@ -85,11 +89,14 @@ export async function preview(w) {
   sheet.innerHTML = `<div class="sheet-head"><div><b>${esc(lake.name)}</b><div class="muted small">${esc(summary(lake))}</div></div><button class="ghost" id="sheet-close" aria-label="Close">✕</button></div>
     <div class="sheet-facts"><span id="sheet-dist" class="chip">${here ? `📍 ${mi(km(here, lake))} from you` : ''}</span><span id="sheet-stock" class="chip">…</span>${saved ? `<span class="chip ok">★ In my lakes</span>` : ''}</div>
     <div id="sheet-more" class="sheet-more small"></div>
-    <div class="row sheet-acts"><button class="primary" id="sheet-open">Open</button>${saved ? '' : `<button id="sheet-save">${icon('plus')}Save</button>`}<a class="btn" href="${directionsUrl(lake.lat, lake.lon)}" target="_blank" rel="noopener">Directions</a></div>`;
+    <div class="row sheet-acts"><button class="primary" id="sheet-open">Open</button>${saved ? '' : `<button id="sheet-save">${icon('plus')}Save</button>`}<button id="sheet-compare" aria-pressed="${comparing(lake)}">${comparing(lake) ? 'Comparing ✓' : 'Compare'}</button><a class="btn" href="${directionsUrl(lake.lat, lake.lon)}" target="_blank" rel="noopener">Directions</a></div>`;
   sheet.classList.remove('hidden');
   if (!here) $('#sheet-dist').remove();
   $('#sheet-close').onclick = closeSheet;
-  $('#sheet-open').onclick = () => { closeSheet(); saved ? openLake(saved.id) : stocked ? openLake(w, 'stocking') : openWater(w); };
+  const open = () => saved ? openLake(saved.id) : stocked ? openLake(w, 'stocking') : openWater(w);
+  $('#sheet-open').onclick = () => { closeSheet(); open(); };
+  if (saved) compareSaved(saved, open); // saved from this card a moment ago: the same column, now your copy
+  $('#sheet-compare').onclick = ev => { const on = toggleCompare(lake, open); ev.currentTarget.textContent = on ? 'Comparing ✓' : 'Compare'; ev.currentTarget.setAttribute('aria-pressed', on); };
   const save = $('#sheet-save');
   if (save) save.onclick = async () => {
     save.disabled = true;
@@ -115,16 +122,24 @@ export async function preview(w) {
 // list. Rivers from the state lists and waters the app has no facts for get nothing extra.
 async function more(w, lake, saved) {
   try {
+    // While the map is filtered by weather, the card leads with the picked day here ("Sat: Kayak: good till 11 …").
+    // It is added when it arrives: the rest of the card is on the phone already and doesn't wait for it.
+    const P = prefs();
+    if (mapFilterOn() && needsWeather(P) && Number.isFinite(lake.lat)) dayLines(lake, P).then(({ line, bet }) => {
+      const el = $('#sheet-more'), lines = [line, bet && betText(bet)].filter(Boolean);
+      if (lines.length && shown === w && el) el.insertAdjacentHTML('afterbegin', `<div class="sheet-wx">${lines.map(esc).join('<br>')}</div>`);
+    }, () => {});
     const e = await entryFor(lake);
     if (!e) return;
-    const [f, hab, catches] = await Promise.all([factsFor(e), habFor(e), saved ? db.byLake('catches', saved.id) : []]);
+    const [f, hab, catches, level, reach] = await Promise.all([factsFor(e), habFor(e), saved ? db.byLake('catches', saved.id) : [], levelFor(e), reachFor(e).then(reachText)]);
     const el = $('#sheet-more');
     if (shown !== w || !el) return;
+    const day = el.querySelector('.sheet-wx')?.outerHTML ?? '';
     const fish = new Map([...f.fish].map(([g, s]) => [g, new Set(s)]));
     for (const s of [...catches.map(c => c.species), ...String(saved?.species ?? '').split(/,|;/)]) addFish(fish, s, 'yours');
     const access = f.access && Object.keys(ACCESS).filter(k => f.access.has(k)).map(k => ACCESS[k]).join(', ');
-    el.innerHTML = fishRows(fish).map(x => `<div><span class="muted">${x.label}:</span> ${esc(x.names.join(', '))}</div>`).join('')
-      + (hab ? '<div class="fd-warn">Toxic algae advisory</div>' : '') + (access ? `<div class="muted">${esc(access)}</div>` : '');
+    el.innerHTML = day + fishRows(fish).map(x => `<div><span class="muted">${x.label}:</span> ${esc(x.names.join(', '))}</div>`).join('')
+      + (level ? `<div>${esc(level.text)}</div>` : '') + (reach ? `<div>${esc(reach)}</div>` : '') + (hab ? '<div class="fd-warn">Toxic algae advisory</div>' : '') + (access ? `<div class="muted">${esc(access)}</div>` : '');
   } catch {}
 }
 

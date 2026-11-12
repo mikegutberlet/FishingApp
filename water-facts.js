@@ -80,6 +80,12 @@ export function factsFor(e) {
   })().catch(() => ({ fish: new Map(), access: null })));
   return facts.get(key);
 }
+// Drive-up or hike-in from the state's monthly file (reach-core.js says what a value means). null: no record, as for
+// a stream that isn't in the lists, a water added by hand, or before the file's first build.
+export async function reachFor(e) {
+  const S = e.S, key = S && e.key.startsWith(`${S.code}:`) ? e.key.slice(S.code.length + 1) : null;
+  return (key && (await S.reachMap?.().catch(() => null))?.[key]) ?? null;
+}
 // A fish goes in under its group ('trout') and, for trout and kokanee, also under the kind the record names
 // ('k:Tiger trout'). Other fish stay by group, so a card's list stays short.
 export function addFish(fish, s, src) {
@@ -89,7 +95,7 @@ export function addFish(fish, s, src) {
 }
 export const hasFish = (fish, want) => fish.has(want) || [...fish.keys()].some(k => k.startsWith('k:') && speciesLine(k.slice(2)).includes(want));
 const habs = new Map();
-export const habFor = e => habs.get(e.key) ?? habs.set(e.key, (e.S.habFor?.(e.w ?? e.stock) ?? Promise.resolve([])).then(a => a.length, () => 0)).get(e.key);
+export const habFor = e => habs.get(e.key) ?? habs.set(e.key, (e.S?.habFor?.(e.w ?? e.stock) ?? Promise.resolve([])).then(a => a.length, () => 0)).get(e.key);
 
 // A water's fish as lines for a card: each fish once, under the best evidence for it (your catches, then the current
 // schedule, then past stocking reports, then a USGS record). A group shows by its kinds when the records name them

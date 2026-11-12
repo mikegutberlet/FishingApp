@@ -4,7 +4,8 @@
 .pin.tone-wait { --pin: #b8c4c9; }
 .pin.tone-none { --pin: #7d8f97; }
 .pin.tone-fish { --pin: #1f78c8; }
-.pin.tone-fresh { --pin: #1f9d57; }
+.pin.tone-fresh, .pin.tone-wx-good { --pin: #1f9d57; }
+.pin.tone-wx-fair { --pin: #d99a00; } /* weather filter on (map-filters.js): the color is the picked day's weather */
 /* A white bead in the head of a plain pin; your saved waters carry a star there instead. */
 .pin::after { content: ''; position: absolute; left: 9px; top: 8px; width: 8px; height: 8px; border-radius: 50%; background: #fff; opacity: .9; }
 .pin.saved::after { display: none; }
@@ -27,9 +28,14 @@
 .pin-key span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
 .pin-key .muted { flex-basis: 100%; font-size: 12px; line-height: 1.35; }
 .pin-dot { width: 11px; height: 11px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.25); }
-.pin-dot.tone-none { background: #7d8f97; } .pin-dot.tone-fish { background: #1f78c8; } .pin-dot.tone-fresh { background: #1f9d57; } .pin-dot.caught { background: #f28c28; }
+.pin-dot.tone-none { background: #7d8f97; } .pin-dot.tone-fish { background: #1f78c8; } .pin-dot.tone-fresh, .pin-dot.tone-wx-good { background: #1f9d57; } .pin-dot.tone-wx-fair { background: #d99a00; }
+.pin-key-wx { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 4px 12px; padding-bottom: 4px; border-bottom: 1px solid var(--line); } .pin-dot.caught { background: #f28c28; }
 
 .sheet-pick { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; max-height: 40vh; overflow-y: auto; }
 .sheet-pick button { display: flex; justify-content: space-between; align-items: center; gap: 8px; text-align: left; min-height: 40px; }
 .sheet-more { margin: -2px 0 10px; line-height: 1.4; }
 .sheet-more:empty { display: none; }
+.sheet-wx { font-weight: 600; }
+/* Best-bet scores on (map-filters.js): the score for the picked day rides on the pin's left shoulder. */
+.pin em { position: absolute; left: -9px; top: -7px; min-width: 17px; height: 17px; padding: 0 3px; box-sizing: border-box; border-radius: 9px; background: #fff; color: #14352e; border: 1.5px solid #14352e;
+  font: 700 11px/14px system-ui, sans-serif; text-align: center; pointer-events: none; }

@@ -1,6 +1,7 @@
 // California: CDFW stocking and CDEC reservoir levels, read from the files the nightly job writes to data/ca/.
 // Every state module has the same shape (see states/index.js); Nevada is states/nv.js.
 import { haversineKm } from '../data-sources.js';
+import { accessNear, reachKm } from './common.js';
 
 const cache = {};
 // A failed fetch (offline, or a file the nightly job hasn't written yet) is forgotten after 30 s so it is tried again.
@@ -157,8 +158,6 @@ export const bathymetryUrl = id => `data/ca/bathymetry/${id}.geojson`;
 
 // ---------- Water safety: algae advisories (nightly), fish advisories, regulations, access (weekly/monthly) ----------
 const isRiver = lake => lake.kind === 'river' || /river|creek|stream|slough|canal/i.test(lake.type ?? '');
-// How far from the water's point something can be and still belong to it.
-const reachKm = lake => isRiver(lake) ? 3 : Math.max(1.5, Math.sqrt((lake.acres ?? 50) / 247) * 1.5 + 0.5);
 const nameMatch = (a, b) => { const x = norm(a), y = norm(b); return x.length > 2 && y.length > 2 && (x === y || x.startsWith(y) || y.startsWith(x)); };
 
 export async function habAdvisories() {
@@ -195,21 +194,16 @@ export async function fishAdviceFor(lake) {
 
 // Boat ramps, piers, parking, campgrounds, marinas, rentals and tackle shops near the water (OpenStreetMap).
 export async function accessFor(lake) {
-  const a = await load('access');
-  if (!a) return null;
-  const r = reachKm(lake);
-  const limit = { ramp: r + 1, pier: r + 1, parking: r + 0.5, marina: r + 1, rental: r + 1, camp: r + 4, tackle: r + 15 };
-  const near = [];
-  for (const [lat, lon, kind, name, note] of a.places) {
-    if (Math.abs(lat - lake.lat) > 0.3 || Math.abs(lon - lake.lon) > 0.4) continue;
-    const distKm = haversineKm(lake.lat, lake.lon, lat, lon);
-    if (distKm <= (limit[kind] ?? r)) near.push({ lat, lon, kind, name, note, distKm });
-  }
-  return { places: near.sort((x, y) => x.distKm - y.distKm), updatedAt: a.updatedAt };
+  return accessNear(await load('access'), lake);
 }
 
 export async function accessPlaces() {
   return (await load('access'))?.places ?? [];
+}
+
+// Drive-up or hike-in for each water, by its pool key without the state (reach-core.js). null: no file yet.
+export async function reachMap() {
+  return (await load('reach'))?.reach ?? null;
 }
 
 // ---------- Fishing regulations (weekly build from Title 14, CCR) ----------

@@ -1,5 +1,5 @@
 // Caches the app shell so it opens with no signal on the water. Your data is in IndexedDB, not here.
-const CACHE = 'tackle-box-v47';
+const CACHE = 'tackle-box-v48';
 // One file per line. Add new files here and bump CACHE.
 const SHELL = [
   './',
@@ -38,6 +38,21 @@ const SHELL = [
   'map-pins.js',
   'map-pins-core.js',
   'map-pins.css',
+  'map-filters.js',
+  'map-filters.css',
+  'best-bet.js',
+  'lake-level.js',
+  'lake-level-core.js',
+  'reach-core.js',
+  'map-results.js',
+  'map-results-core.js',
+  'map-results.css',
+  'map-compare.js',
+  'map-compare.css',
+  'water-filter.js',
+  'water-filter-core.js',
+  'weather-grid.js',
+  'weather-grid-core.js',
   'water-facts.js',
   'db.js',
   'data-sources.js',
@@ -117,6 +132,7 @@ const SHELL = [
   'views/where.js',
   'finder.css',
   'views/finder.js',
+  'views/filter-form.js',
   'coords.js',
   'help.js',
   'signal.js',
@@ -182,7 +198,7 @@ self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c
 // ~7 MB of storage. Drop those once; the map fetches them again when next viewed with signal.
 const dropOpaqueTiles = () => caches.open('tiles').then(c => c.keys().then(keys => Promise.all(keys.map(k => c.match(k).then(r => r?.type === 'opaque' && c.delete(k))))));
 self.addEventListener('activate', e => e.waitUntil(dropOpaqueTiles().then(() =>
-  caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE && k !== 'tiles' && k !== 'tb-access' && k !== 'tb-forecast' && k !== 'tb-help' && !k.startsWith('offline-')).map(k => caches.delete(k))))).then(() => self.clients.claim())));
+  caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE && k !== 'tiles' && k !== 'tb-access' && k !== 'tb-forecast' && k !== 'tb-wx-grid' && k !== 'tb-help' && !k.startsWith('offline-')).map(k => caches.delete(k))))).then(() => self.clients.claim())));
 
 let slowUntil = 0; // weak signal: until then, files with a saved copy don't wait for the network
 self.addEventListener('fetch', e => {

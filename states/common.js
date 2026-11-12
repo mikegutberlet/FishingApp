@@ -5,6 +5,24 @@ import { haversineKm } from '../data-sources.js';
 export const norm = s => (s ?? '').toLowerCase().replace(/\b(lake|reservoir|river|creek|pond|the|of)\b|[^a-z0-9]/g, '');
 export const isRiver = lake => lake.kind === 'river' || /river|creek|stream|slough|canal/i.test(lake.type ?? '');
 
+// Boat ramps, piers, parking, campgrounds, marinas, rentals and tackle shops near a water, nearest first, from a
+// state's access list (OpenStreetMap; scripts/build-state-access.mjs). `a` is the file, null when it isn't there.
+// How far something can be and still belong to the water grows with the water's size.
+// How far from the water's point something can be and still belong to it.
+export const reachKm = lake => isRiver(lake) ? 3 : Math.max(1.5, Math.sqrt((lake.acres ?? 50) / 247) * 1.5 + 0.5);
+export function accessNear(a, lake) {
+  if (!a) return null;
+  const r = reachKm(lake);
+  const limit = { ramp: r + 1, pier: r + 1, parking: r + 0.5, marina: r + 1, rental: r + 1, camp: r + 4, tackle: r + 15 };
+  const near = [];
+  for (const [lat, lon, kind, name, note] of a.places) {
+    if (Math.abs(lat - lake.lat) > 0.3 || Math.abs(lon - lake.lon) > 0.4) continue;
+    const distKm = haversineKm(lake.lat, lake.lon, lat, lon);
+    if (distKm <= (limit[kind] ?? r)) near.push({ lat, lon, kind, name, note, distKm });
+  }
+  return { places: near.sort((x, y) => x.distKm - y.distKm), updatedAt: a.updatedAt };
+}
+
 // Does a free-text place ("West Walker River near Coleville") name this water? Whole words only, so Lake Mead is
 // not "Truckee Meadows", and a lake is not the river of the same name (Carson Lake vs Carson River).
 const TYPE_WORDS = /\b(lake|lakes|reservoir|pond|river|creek|slough|wash)\b/i;
@@ -184,5 +202,9 @@ export function stateData(dir, code) {
   }
   const bathymetryUrl = id => `data/${dir}/bathymetry/${id}.geojson`;
 
-  return { load, waters, plantsFor, dataDates, nearestWaters, nearestReservoir, statewide, history: () => load('history'), matchStockedWater, historyFor, hydroFor, bathymetryFor, bathymetryUrl };
+  const accessFor = async lake => accessNear(await load('access'), lake);
+  const accessPlaces = async () => (await load('access'))?.places ?? [];
+  // Drive-up or hike-in for each water, by its pool key without the state (reach-core.js). null: no file yet.
+  const reachMap = async () => (await load('reach'))?.reach ?? null;
+  return { load, waters, plantsFor, dataDates, nearestWaters, nearestReservoir, statewide, history: () => load('history'), matchStockedWater, historyFor, hydroFor, bathymetryFor, bathymetryUrl, accessFor, accessPlaces, reachMap };
 }

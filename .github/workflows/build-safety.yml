@@ -9,7 +9,7 @@ on:
     paths:
       - scripts/build-ca-regs.mjs
       - scripts/build-ca-oehha.mjs
-      - scripts/build-ca-access.mjs
+      - scripts/build-state-access.mjs
       - .github/workflows/build-safety.yml
 
 permissions:
@@ -53,7 +53,7 @@ jobs:
         timeout-minutes: 35 # Overpass retries across mirrors can otherwise run past an hour
         run: |
           mkdir -p data/ca/logs
-          node scripts/build-ca-access.mjs 2>&1 | tee data/ca/logs/build-ca-access.log
+          node scripts/build-state-access.mjs ca 2>&1 | tee data/ca/logs/build-ca-access.log
           exit ${PIPESTATUS[0]}
       - name: Commit changes
         run: |
