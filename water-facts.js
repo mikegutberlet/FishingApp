@@ -11,6 +11,7 @@ import { speciesName, speciesLine, isCatchAll } from './species.js';
 const GONE = /failed|extirpated|eradicated/i;
 // "Brown bullhead" is a catfish, not a brown trout.
 export const group = s => /bullhead/i.test(s ?? '') ? 'catfish' : groupOf(s);
+export const ACCESS = { ramp: 'Boat ramp', pier: 'Fishing pier', marina: 'Marina', rental: 'Boat rental', camp: 'Campground', parking: 'Parking' };
 export const isStream = n => /river|creek|fork|section/i.test(n ?? ''); // as views/lakes.js types a stocked water
 
 // ---------- Every water, once per session ----------

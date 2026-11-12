@@ -9,7 +9,7 @@ import { units } from '../units.js';
 import { groupLabel } from '../game-plan.js';
 import { openLake, openWater } from './lake.js';
 import { renderLakeList } from './lakes.js';
-import { loadPool, withSaved, factsFor, habFor, addFish, hasFish, fishRows, stockLake } from '../water-facts.js';
+import { loadPool, withSaved, factsFor, habFor, addFish, hasFish, fishRows, stockLake, ACCESS } from '../water-facts.js';
 
 const HOME = 'tackle-box-home', PREFS = 'tackle-box-finder';
 const read = k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
@@ -19,7 +19,6 @@ const prefs = () => ({ fish: [], access: [], miles: 50, stocked: false, mine: fa
 const FISH = ['trout', 'kokanee', 'laker', 'largemouth', 'smallmouth', 'striper', 'crappie', 'panfish', 'catfish', 'walleye'];
 // Kinds of trout, by the species list's names (species.js): "Cutthroat trout" also finds Lahontan, Paiute and the rest.
 const KINDS = ['Rainbow trout', 'Brown trout', 'Brook trout', 'Cutthroat trout', 'Lahontan cutthroat trout', 'Golden trout', 'Tiger trout', 'Bull trout', 'Cutbow trout', 'Steelhead'];
-const ACCESS = { ramp: 'Boat ramp', pier: 'Fishing pier', marina: 'Marina', rental: 'Boat rental', camp: 'Campground', parking: 'Parking' };
 const MILES = [10, 25, 50, 100, 200, 0];
 const metric = () => units().depth === 'm';
 const fmtMiles = mi => mi ? (metric() ? `${Math.round(mi * 1.609)} km` : `${mi} mi`) : 'Any';

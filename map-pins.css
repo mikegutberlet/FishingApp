@@ -32,3 +32,5 @@
 
 .sheet-pick { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; max-height: 40vh; overflow-y: auto; }
 .sheet-pick button { display: flex; justify-content: space-between; align-items: center; gap: 8px; text-align: left; min-height: 40px; }
+.sheet-more { margin: -2px 0 10px; line-height: 1.4; }
+.sheet-more:empty { display: none; }
