@@ -29,7 +29,7 @@ export function queryFor(st) {
 out center tags;`;
 }
 
-async function overpass(QUERY) {
+export async function overpass(QUERY) {
   let last;
   for (const url of MIRRORS) {
     for (let attempt = 1; attempt <= 2; attempt++) {

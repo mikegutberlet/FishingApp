@@ -1,0 +1,79 @@
+name: Build drive-up or hike-in (California, Nevada, Oregon)
+# How far the nearest road is from each lake and stocked water, from OpenStreetMap, for the "Drive-up or hike-in"
+# filter and the line on a water's card. Reads data/<st>/lakes.json, waters.json and access.json as they are.
+
+on:
+  schedule:
+    - cron: '47 11 11 * *' # monthly, two days after the access build it reads
+  workflow_dispatch:
+  push:
+    paths:
+      - scripts/build-state-reach.mjs
+      - .github/workflows/build-reach.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 130 # each state has its own limit below, so a slow source can't stop the commit step
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # On main, the branch as it is when the job starts, not the commit that queued the run: a run that waited
+          # behind another run of this workflow then builds on that run's data commit instead of conflicting with it.
+          # Branch runs keep their own commit, since they only upload their data and the branch may be gone by then.
+          ref: ${{ github.ref_name == 'main' && github.ref || '' }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: California
+        continue-on-error: true
+        timeout-minutes: 40 # the script stops asking after 30 minutes and keeps last month's value for the rest
+        run: |
+          mkdir -p data/ca/logs
+          node scripts/build-state-reach.mjs ca 2>&1 | tee data/ca/logs/build-state-reach.log
+          exit ${PIPESTATUS[0]}
+      - name: Nevada
+        continue-on-error: true
+        timeout-minutes: 40 # the script stops asking after 30 minutes and keeps last month's value for the rest
+        run: |
+          mkdir -p data/nv/logs
+          node scripts/build-state-reach.mjs nv 2>&1 | tee data/nv/logs/build-state-reach.log
+          exit ${PIPESTATUS[0]}
+      - name: Oregon
+        continue-on-error: true
+        timeout-minutes: 40 # the script stops asking after 30 minutes and keeps last month's value for the rest
+        run: |
+          mkdir -p data/or/logs
+          node scripts/build-state-reach.mjs or 2>&1 | tee data/or/logs/build-state-reach.log
+          exit ${PIPESTATUS[0]}
+      - name: Commit changes
+        run: |
+          for f in data/ca/reach.json data/ca/logs/build-state-reach.log data/nv/reach.json data/nv/logs/build-state-reach.log data/or/reach.json data/or/logs/build-state-reach.log; do if [ -e "$f" ]; then git add "$f"; fi; done
+          if git diff --cached --quiet; then echo "No data changes"; exit 0; fi
+          # Only main keeps data commits. A commit on a PR branch would conflict with main's next run,
+          # so a branch run shows what changed here and keeps its data as an artifact instead.
+          if [ "$GITHUB_REF_NAME" != main ]; then git diff --cached --stat; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update drive-up or hike-in for California, Nevada and Oregon"
+          # If the branch moved under us (another run, a rebase), this run's fresh output wins.
+          for i in 1 2 3; do if git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" && git push; then exit 0; fi; git rebase --abort 2>/dev/null || true; sleep 10; done
+          echo "push failed"; exit 1
+      - name: Keep this branch run's data
+        if: github.ref_name != 'main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: data
+          path: |
+            data/ca/reach.json
+            data/nv/reach.json
+            data/or/reach.json
+          if-no-files-found: ignore
+          retention-days: 7

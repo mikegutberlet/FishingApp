@@ -270,6 +270,7 @@ Reverse-engineering other apps isn't needed: the public sources above cover cond
 * `scripts/build-ca-bathymetry.mjs`: monthly depth contours → `data/ca/bathymetry/`
 * `scripts/build-ca-hab.mjs`, `build-ca-ics.mjs`: nightly algae advisories → `data/ca/hab.json`, plant calendars → `data/ca/ics/`
 * `scripts/build-ca-regs.mjs`, `build-ca-oehha.mjs`, `build-state-access.mjs`: weekly regulations and county lines, fish advisories; monthly access → `data/ca/` (the same access script builds `data/nv/access.json` and `data/or/access.json` from `.github/workflows/build-access.yml`)
+* `scripts/build-state-reach.mjs <ca|nv|or>`: monthly, how far the nearest road is from each lake and stocked water (OpenStreetMap road counts in rings around the water) → `data/<st>/reach.json`, from `.github/workflows/build-reach.yml`
 * `data/ca/logs/`: output of each data job, committed so problems can be read from the repo
 * `scripts/nv/update-nv-data.mjs`: nightly NDOW waters, stockings and reports, lake levels, algae → `data/nv/`
 * `scripts/nv/build-nv-regs.mjs`: weekly regulations and mercury advisories
