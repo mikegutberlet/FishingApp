@@ -269,7 +269,7 @@ Reverse-engineering other apps isn't needed: the public sources above cover cond
 * `scripts/build-ca-waters.mjs`, `build-ca-history.mjs`: weekly statewide water list and history
 * `scripts/build-ca-bathymetry.mjs`: monthly depth contours → `data/ca/bathymetry/`
 * `scripts/build-ca-hab.mjs`, `build-ca-ics.mjs`: nightly algae advisories → `data/ca/hab.json`, plant calendars → `data/ca/ics/`
-* `scripts/build-ca-regs.mjs`, `build-ca-oehha.mjs`, `build-ca-access.mjs`: weekly regulations and county lines, fish advisories; monthly access → `data/ca/`
+* `scripts/build-ca-regs.mjs`, `build-ca-oehha.mjs`, `build-state-access.mjs`: weekly regulations and county lines, fish advisories; monthly access → `data/ca/`
 * `data/ca/logs/`: output of each data job, committed so problems can be read from the repo
 * `scripts/nv/update-nv-data.mjs`: nightly NDOW waters, stockings and reports, lake levels, algae → `data/nv/`
 * `scripts/nv/build-nv-regs.mjs`: weekly regulations and mercury advisories

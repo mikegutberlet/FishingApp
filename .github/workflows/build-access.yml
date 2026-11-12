@@ -1,0 +1,71 @@
+name: Build access and facilities (Nevada, Oregon)
+# Boat ramps, piers, marinas, rentals, campgrounds and parking from OpenStreetMap, for the access filters, the
+# Getting there tab and the map's ramps layer. California's file is built by build-safety.yml with the same script.
+
+on:
+  schedule:
+    - cron: '17 11 9 * *' # monthly
+  workflow_dispatch:
+  push:
+    paths:
+      - scripts/build-state-access.mjs
+      - .github/workflows/build-access.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 80 # each state has its own limit below, so a slow source can't stop the commit step
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # On main, the branch as it is when the job starts, not the commit that queued the run: a run that waited
+          # behind another run of this workflow then builds on that run's data commit instead of conflicting with it.
+          # Branch runs keep their own commit, since they only upload their data and the branch may be gone by then.
+          ref: ${{ github.ref_name == 'main' && github.ref || '' }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Nevada
+        continue-on-error: true
+        timeout-minutes: 35 # Overpass retries across mirrors can otherwise run past an hour
+        run: |
+          mkdir -p data/nv/logs
+          node scripts/build-state-access.mjs nv 2>&1 | tee data/nv/logs/build-state-access.log
+          exit ${PIPESTATUS[0]}
+      - name: Oregon
+        continue-on-error: true
+        timeout-minutes: 35
+        run: |
+          mkdir -p data/or/logs
+          node scripts/build-state-access.mjs or 2>&1 | tee data/or/logs/build-state-access.log
+          exit ${PIPESTATUS[0]}
+      - name: Commit changes
+        run: |
+          for f in data/nv/access.json data/nv/logs/build-state-access.log data/or/access.json data/or/logs/build-state-access.log; do if [ -e "$f" ]; then git add "$f"; fi; done
+          if git diff --cached --quiet; then echo "No data changes"; exit 0; fi
+          # Only main keeps data commits. A commit on a PR branch would conflict with main's next run,
+          # so a branch run shows what changed here and keeps its data as an artifact instead.
+          if [ "$GITHUB_REF_NAME" != main ]; then git diff --cached --stat; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update Nevada and Oregon access and facilities"
+          # If the branch moved under us (another run, a rebase), this run's fresh output wins.
+          for i in 1 2 3; do if git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" && git push; then exit 0; fi; git rebase --abort 2>/dev/null || true; sleep 10; done
+          echo "push failed"; exit 1
+      - name: Keep this branch run's data
+        if: github.ref_name != 'main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: data
+          path: |
+            data/nv/access.json
+            data/or/access.json
+          if-no-files-found: ignore
+          retention-days: 7
