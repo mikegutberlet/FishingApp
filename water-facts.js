@@ -47,20 +47,25 @@ export function withSaved(all, saved) {
 }
 
 // The state's stocked water for an entry: its own, the one saved on your lake, or the one that matches by name and place.
+// Kept per water and per stock id saved on it: the map looks a lake up before it knows you saved it, and the id you
+// saved must still win afterwards.
+const memoKey = e => `${e.key}|${(e.S && e.saved?.[e.S.stockField]) ?? ''}`;
 const stocks = new Map();
 export function stockFor(e) {
-  if (!stocks.has(e.key)) stocks.set(e.key, (async () => {
+  const key = memoKey(e);
+  if (!stocks.has(key)) stocks.set(key, (async () => {
     const S = e.S, id = e.saved?.[S.stockField];
     return e.stock ?? (id != null ? (await S.waters()).find(w => String(w.id) === String(id)) : await S.matchStockedWater(e.w)) ?? null;
   })());
-  return stocks.get(e.key);
+  return stocks.get(key);
 }
 
 // What we know about one water: fish (and where that comes from), latest plant and access places. Algae advisories
 // are slow to match in Oregon, so they're looked up only when asked (habFor).
 const facts = new Map();
 export function factsFor(e) {
-  if (!facts.has(e.key)) facts.set(e.key, (async () => {
+  const key = memoKey(e);
+  if (!facts.has(key)) facts.set(key, (async () => {
     const S = e.S, place = e.w ?? e.stock;
     const stock = await stockFor(e);
     const [hist, access] = await Promise.all([S.historyFor(place), S.accessFor?.(place)]);
@@ -73,7 +78,7 @@ export function factsFor(e) {
     for (const h of hist.local) if (!GONE.test(h.text.split(' · ').at(-1))) add(h.text.split(/ \(| · /)[0], 'on record');
     return { stock, fish, lastPlant: stock?.lastPlant ?? null, access: access ? new Set(access.places.map(p => p.kind)) : null };
   })().catch(() => ({ fish: new Map(), access: null })));
-  return facts.get(e.key);
+  return facts.get(key);
 }
 // A fish goes in under its group ('trout') and, for trout and kokanee, also under the kind the record names
 // ('k:Tiger trout'). Other fish stay by group, so a card's list stays short.
@@ -108,14 +113,18 @@ export function stockLake(e) {
     [S.stockField]: w.id, stockingUrl: S.waterUrl(w.id), infoUrl: S.waterUrl(w.id) };
 }
 
+// One of your saved lakes rather than a water from a state's list: added by hand (no `kind`), or saved from a list
+// (it keeps `kind` and gains `nhdId`).
+export const isSavedLake = w => !w.unsaved && (w.kind === undefined || 'nhdId' in w);
+
 // The pool entry for a water the map hands over: one of a state's lakes (kind 'lake'), a saved lake, or a stockLake.
 // Rivers from the state lists aren't in the pool: null.
 export async function entryFor(w) {
-  const S = forLake(w);
-  if (!S || w.kind === 'river' || w.kind === 'coast') return null;
+  const S = forLake(w), mine = isSavedLake(w);
+  if (!S || w.kind === 'coast' || (!mine && w.kind === 'river')) return null;
   const all = await statePool(S);
-  if (w.kind === 'lake') return all.find(e => e.key === `${S.code}:n:${w.id}`) ?? null;
-  const { entries } = withSaved(all, w.id != null && !w.unsaved ? [w] : []);
+  if (!mine && w.kind === 'lake') return all.find(e => e.key === `${S.code}:n:${w.id}`) ?? null;
+  const { entries } = withSaved(all, mine ? [w] : []);
   const stockKey = w[S.stockField] != null ? `${S.code}:s:${w[S.stockField]}` : null;
   return entries.find(e => e.saved === w) ?? (stockKey && entries.find(e => e.key === stockKey)) ?? null;
 }

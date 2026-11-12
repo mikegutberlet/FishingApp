@@ -21,20 +21,23 @@ const tick = () => new Promise(r => setTimeout(r));
 // (the list's rule: such a water shows once, as the lake). Stocked-only pins wait for that pass.
 const states = new Map();
 let mine = { saved: [], caught: new Map() }, pins = [], stale = true;
-const tones = new Map(); // entry key -> 'fresh' | 'fish' | 'none', kept until your lakes or catches change
+const tones = new Map(); // toneKey -> 'fresh' | 'fish' | 'none', kept until your lakes or catches change
+const toneKey = e => `${e.key}|${e.saved?.id ?? ''}`; // a pin learns late that it stands for a water you saved
 
 function loadStates() {
   if (!map.hasLayer(pinsLayer) || !map.getContainer().offsetWidth) return; // hidden: wait until the map is on screen
   for (const S of statesIn(map.getBounds())) {
     if (states.has(S.code)) continue;
     states.set(S.code, null);
+    // No signal before the lists were kept: say so, and ask again on the next move.
+    const none = () => { states.delete(S.code); failed = true; draw(); };
     statePool(S).then(all => {
-      if (!all.length) return states.delete(S.code); // no signal before the lists were kept: ask again on the next move
+      if (!all.length) return none();
       const st = { S, all, done: false, claimed: new Set(), link: new Map() };
       states.set(S.code, st);
-      stale = true; draw();
+      failed = false; stale = true; draw();
       linkStocked(st);
-    }, () => states.delete(S.code));
+    }, none);
   }
 }
 async function linkStocked(st) {
@@ -54,7 +57,8 @@ function build() {
   const claimed = new Set(), link = new Map();
   for (const st of loaded) { for (const k of st.claimed) claimed.add(k); for (const [a, b] of st.link) link.set(a, b); }
   const done = new Set(loaded.filter(st => st.done).map(st => st.S.code));
-  pins = entries.filter(e => e.w || (done.has(e.S.code) && !claimed.has(e.key)))
+  // Until a state's pass is done only your saved ones of its stocked-only waters show, so a saved creek never loses its pin.
+  pins = entries.filter(e => e.w || (done.has(e.S.code) ? !claimed.has(e.key) : e.saved))
     .map(e => e.saved || !savedFor.has(link.get(e.key)) ? e : { ...e, saved: savedFor.get(link.get(e.key)) });
   // Saved waters outside the three states still get their pin.
   for (const l of mine.saved) if (!forLake(l) && Number.isFinite(l.lat) && Number.isFinite(l.lon)) pins.push({ key: `mine:${l.id}`, S: null, w: l, name: l.name, type: l.type, lat: l.lat, lon: l.lon, saved: l });
@@ -74,7 +78,11 @@ async function toneOf(e) {
   return pinTone({ lastPlant: f.lastPlant, fish: yours ? new Map([['yours', 1]]) : f.fish });
 }
 
-let run = 0;
+// While you're choosing a point on the map ("Lake here", home, a waypoint), a tap that lands on a pin is still a tap
+// on the map: hand over the spot the finger touched, not the pin's own point.
+const pickHere = ev => map.fire('click', { latlng: map.mouseEventToLatLng(ev.originalEvent) });
+
+let run = 0, failed = false;
 async function draw() {
   const me = ++run;
   pinsLayer.clearLayers();
@@ -84,23 +92,25 @@ async function draw() {
   if (stale) build();
   const z = map.getZoom(), view = map.getBounds(), near = view.pad(0.2);
   const count = pins.reduce((n, e) => n + view.contains([e.lat, e.lon]), 0);
-  $('#pin-count').textContent = pins.length ? `${count.toLocaleString()} water${count === 1 ? '' : 's'} in view` : '';
+  const loading = [...states.values()].includes(null);
+  $('#pin-count').textContent = pins.length || !(loading || failed) ? `${count.toLocaleString()} water${count === 1 ? '' : 's'} in view`
+    : loading ? 'Loading waters…' : 'The water lists didn’t download. Check your signal, then move the map.';
   const waiting = [];
   for (const g of clusterPins(pins.filter(e => near.contains([e.lat, e.lon])), z)) {
     if (g.pins.length > 1) {
       const n = g.pins.length, size = n < 10 ? 30 : n < 100 ? 36 : 44;
       L.marker([g.lat, g.lon], { icon: L.divIcon({ className: 'pin-bubble', html: `<span>${n.toLocaleString()}</span>`, iconSize: [size, size] }), title: `${n} waters`, keyboard: false })
         .on('click', ev => {
-          if (isPicking()) return map.fire('click', { latlng: ev.latlng });
+          if (isPicking()) return pickHere(ev);
           // Waters no zoom can pull apart are offered as a list.
           if (samePlace(g.pins) || z >= map.getMaxZoom()) chooser(g.pins.map(target));
           else map.fitBounds(L.latLngBounds(g.pins.map(p => [p.lat, p.lon])), { maxZoom: z + 3, padding: [50, 50] });
         }).addTo(pinsLayer);
       continue;
     }
-    const e = g.pins[0], known = tones.get(e.key);
+    const e = g.pins[0], known = tones.get(toneKey(e));
     const m = L.marker([e.lat, e.lon], { icon: pinIcon(e, known ?? 'wait'), title: e.name, keyboard: false, zIndexOffset: e.saved ? 500 : 0 })
-      .on('click', ev => isPicking() ? map.fire('click', { latlng: ev.latlng }) : preview(target(e))).addTo(pinsLayer);
+      .on('click', ev => isPicking() ? pickHere(ev) : preview(target(e))).addTo(pinsLayer);
     if (!known) waiting.push([e, m]);
   }
   // Colors for the pins that don't have one yet, a few at a time so the map stays smooth. A newer draw drops the rest.
@@ -108,7 +118,7 @@ async function draw() {
   for (const [e, m] of waiting) {
     const tone = await toneOf(e);
     if (me !== run) return;
-    tones.set(e.key, tone);
+    tones.set(toneKey(e), tone);
     m.getElement()?.classList.replace('tone-wait', `tone-${tone}`);
     if (performance.now() - t0 > 12) { await tick(); if (me !== run) return; t0 = performance.now(); }
   }

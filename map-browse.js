@@ -7,7 +7,7 @@ import { $, esc, fmtDate, icon, showView, status } from './ui.js';
 import { openWater, openLake, waterRecord } from './views/lake.js';
 import { directionsUrl } from './views/access.js';
 import { coastSpots } from './coast.js';
-import { entryFor, factsFor, habFor, addFish, fishRows, ACCESS } from './water-facts.js';
+import { entryFor, factsFor, habFor, addFish, fishRows, isSavedLake, ACCESS } from './water-facts.js';
 
 const view = $('#view-map'), search = $('#map-search'), results = $('#map-results'), sheet = $('#water-sheet');
 const km = (a, b) => { const r = Math.PI / 180, x = (b.lon - a.lon) * r * Math.cos((a.lat + b.lat) / 2 * r), y = (b.lat - a.lat) * r; return Math.hypot(x, y) * 6371; };
@@ -72,14 +72,14 @@ map.on('baselayerchange overlayadd overlayremove', syncChips);
 syncChips();
 
 // ---------- Preview sheet ----------
-// A statewide water (has `kind`), one of your saved lakes (has an id in the database), or a stocked water that is
+// A water from a state's list, one of your saved lakes (water-facts.js isSavedLake), or a stocked water that is
 // neither yet (`unsaved`, from a pin: water-facts.js stockLake).
 let shown = null;
 export async function preview(w) {
   shown = w;
   const stocked = w.kind === undefined && w.unsaved;
   const saved = stocked ? (await db.all('lakes')).find(l => stockIdOf(l) != null && forLake(l) === forLake(w) && String(stockIdOf(l)) === String(stockIdOf(w)))
-    : w.kind === undefined ? w : (await db.all('lakes')).find(l => l.nhdId === String(w.id));
+    : isSavedLake(w) ? w : (await db.all('lakes')).find(l => l.nhdId === String(w.id));
   if (shown !== w) return;
   const lake = saved ?? w;
   sheet.innerHTML = `<div class="sheet-head"><div><b>${esc(lake.name)}</b><div class="muted small">${esc(summary(lake))}</div></div><button class="ghost" id="sheet-close" aria-label="Close">✕</button></div>
