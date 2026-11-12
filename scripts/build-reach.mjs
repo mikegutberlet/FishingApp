@@ -103,9 +103,11 @@ export function outlineOf(ring, step = 0.15, max = 4000) {
 
 // Offer it every drawn water; each lake keeps the ring around its point whose size is nearest its own. A ring more
 // than five times bigger or smaller than the lake on record is something else (a bay it sits in, an island pond),
-// and a lake with no size on record only takes a ring under 2,000 acres.
+// and a lake with no size on record only takes a ring under 2,000 acres. A point that is in no ring of its size (a
+// reservoir's point is often at the dam, a winding one's on a bend of dry land) takes the ring of its size whose
+// shore passes within the lake's own radius of it.
 export function matcher(points) {
-  const CELL = 0.1, cells = new Map(), best = new Map();
+  const CELL = 0.1, cells = new Map(), best = new Map(), wrong = new Map(), FIT = Math.log(5);
   for (const p of points) {
     if (p.stream) continue;
     const k = `${Math.floor(p.lat / CELL)}:${Math.floor(p.lon / CELL)}`;
@@ -116,19 +118,31 @@ export function matcher(points) {
       for (const ring of rings) {
         const b = boundsOf(ring);
         let acres = null;
-        for (let y = Math.floor(b.s / CELL); y <= Math.floor(b.n / CELL); y++) {
-          for (let x = Math.floor(b.w / CELL); x <= Math.floor(b.e / CELL); x++) {
+        // One square farther each way: a point beside the ring can be in the next square.
+        for (let y = Math.floor(b.s / CELL) - 1; y <= Math.floor(b.n / CELL) + 1; y++) {
+          for (let x = Math.floor(b.w / CELL) - 1; x <= Math.floor(b.e / CELL) + 1; x++) {
             for (const p of cells.get(`${y}:${x}`) ?? []) {
-              if (p.lat < b.s || p.lat > b.n || p.lon < b.w || p.lon > b.e || !inRing(p.lat, p.lon, ring)) continue;
+              const gap = Math.hypot(Math.max(0, b.s - p.lat, p.lat - b.n) * KM_LAT, Math.max(0, b.w - p.lon, p.lon - b.e) * kmLon(p.lat));
+              const inside = gap === 0 && inRing(p.lat, p.lon, ring);
+              if (!inside && !(p.acres > 0 && gap <= p.shore)) continue;
               acres ??= ringAcres(ring);
-              const off = p.acres > 0 ? Math.abs(Math.log(acres / p.acres)) : acres <= 2000 ? acres / 1e6 : Infinity;
-              if (off <= Math.log(5) && off < (best.get(p.key)?.off ?? Infinity)) best.set(p.key, { off, ring });
+              const size = p.acres > 0 ? Math.abs(Math.log(acres / p.acres)) : acres <= 2000 ? acres / 1e6 : Infinity;
+              if (size > FIT) {
+                if (inside && p.acres > 0 && size < (wrong.get(p.key)?.size ?? Infinity)) wrong.set(p.key, { size, acres });
+                continue;
+              }
+              // A ring beside the point never beats one around it.
+              const off = inside ? size : size + FIT + 1;
+              if (off >= (best.get(p.key)?.off ?? Infinity) || !inside && distKmToLine(p.lat, p.lon, ring) > p.shore) continue;
+              best.set(p.key, { off, ring });
             }
           }
         }
       }
     },
     outlines: () => new Map([...best].map(([key, b]) => [key, outlineOf(b.ring)])),
+    // For the log: lakes with no shoreline that sit in a drawn water of another size, with that water's acres.
+    wrongSize: () => new Map([...wrong].filter(([key]) => !best.has(key)).map(([key, w]) => [key, Math.round(w.acres)])),
   };
 }
 
@@ -221,7 +235,7 @@ if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
     catch (e) { console.error(`reach ${st}: no shorelines: ${e.message}`); }
     console.log(`reach ${st}: ${n} drawn waters read, ${secs(t)}`);
   }
-  const outlines = match.outlines();
+  const outlines = match.outlines(), wrongSize = match.wrongSize();
   for (const p of points) if (outlines.has(p.key)) p.outline = outlines.get(p.key);
 
   const find = finder(points);
@@ -252,10 +266,10 @@ if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
     }
     await writeFile(new URL('reach.json', d.dir), JSON.stringify({ updatedAt: new Date().toISOString(), source: 'OpenStreetMap contributors (ODbL), from Geofabrik extracts', reach }) + '\n');
     const lakes = d.points.filter(p => !p.stream);
-    console.log(`reach ${st}: ${d.points.length} waters, ${lakes.filter(p => p.outline).length} of ${lakes.length} lakes by their shoreline, ${byRamp} drive-up by a ramp`, JSON.stringify(tally));
+    console.log(`reach ${st}: ${d.points.length} waters, ${lakes.filter(p => p.outline).length} of ${lakes.length} lakes by their shoreline (${lakes.filter(p => wrongSize.has(p.key)).length} more sit in a drawn water of another size), ${byRamp} drive-up by a ramp`, JSON.stringify(tally));
     // For reading the log: the biggest waters that came out as a walk, and some well-known ones with the distances
     // behind their value ("shore": measured from the drawn shoreline, "circle": from the point and size).
-    const val = p => reach[p.key.slice(st.length + 1)], how = p => p.outline ? 'shore' : 'circle';
+    const val = p => reach[p.key.slice(st.length + 1)], how = p => p.outline ? 'shore' : wrongSize.has(p.key) ? `circle, in a drawn water of ${wrongSize.get(p.key)} ac` : 'circle';
     const walk = d.points.filter(p => typeof val(p) === 'number').sort((a, b) => (b.acres ?? 0) - (a.acres ?? 0)).slice(0, 15);
     console.log(`reach ${st} biggest not drive-up:`, walk.map(p => `${p.name} (${p.acres} ac, ${how(p)}) ${val(p)}`).join('; '));
     const km = n => Number.isFinite(n) ? n.toFixed(1) : '-';

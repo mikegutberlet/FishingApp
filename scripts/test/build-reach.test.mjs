@@ -104,6 +104,30 @@ test('matcher: a lake takes the shoreline drawn around its point, when the size 
   assert.equal(big.outlines().size, 0);
 });
 
+test('matcher: a point just off the water (at the dam, on a bend) takes the shoreline of its own size beside it', () => {
+  // The box is 0.43 km from its middle to its east and west sides; a 250 acre lake's circle reaches 0.45 km.
+  const pts = [
+    { key: 'dam', lat: 39, lon: -119.992, acres: 250, shore: 0.45, stream: false },      // 0.26 km east of the water
+    { key: 'far', lat: 39.2, lon: -119.98, acres: 250, shore: 0.45, stream: false },     // 1.3 km east of one
+    { key: 'other', lat: 39.4, lon: -119.992, acres: 20, shore: 0.13, stream: false },   // a pond beside a water twelve times its size
+    { key: 'nosize', lat: 39.6, lon: -119.992, acres: null, shore: 0.13, stream: false },
+    { key: 'inside', lat: 39.8, lon: -120, acres: 480, shore: 0.63, stream: false },     // in a water half its size, beside one of its size
+  ];
+  const m = matcher(pts);
+  for (const lat of [39, 39.2, 39.4, 39.6, 39.8]) m.offer([box(lat, -120, 0.005, 0.005)]);
+  m.offer([box(39.8, -119.985, 0.007, 0.007)]); // 465 acres, its west side 0.69 km from 'inside'
+  const got = m.outlines();
+  assert.deepEqual([...got.keys()].sort(), ['dam', 'inside']);
+  assert.ok(got.get('inside').every(([, lon]) => lon < -119.99), 'the water around the point wins over one beside it');
+});
+
+test('matcher: says which lakes sit in a drawn water of another size', () => {
+  const m = matcher([{ key: 'pond', lat: 39.2, lon: -120, acres: 3, shore: 0.05, stream: false }, { key: 'lake', lat: 39, lon: -120, acres: 250, shore: 0.45, stream: false }]);
+  m.offer([box(39.2, -120, 0.005, 0.005)]); m.offer([box(39, -120, 0.005, 0.005)]);
+  assert.deepEqual([...m.wrongSize().keys()], ['pond']);
+  assert.ok(Math.abs(m.wrongSize().get('pond') - 237) < 5, `${m.wrongSize().get('pond')} acres`);
+});
+
 test('outlineOf: shore points no more than 150 m apart, thinned for a very long shore', () => {
   const ring = box(39, -120, 0.005, 0.005), out = outlineOf(ring);
   assert.ok(out.length >= 26 && out.length <= 40, `${out.length} points around a 3.9 km shore`);
