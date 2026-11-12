@@ -8,7 +8,7 @@ import { safeHours, craftId } from './boat-weather.js';
 import { localKey, addDays } from './forecast.js';
 import { fmtTemp } from './units.js';
 
-const KEEP = 3 * 36e5, CAP = 300, BATCH = 50, SINGLES = 12, SAVED_FOR = 48 * 36e5;
+const KEEP = 3 * 36e5, BATCH = 50, SINGLES = 12, SAVED_FOR = 48 * 36e5;
 const mem = new Map(); // square id -> { at, w }
 const fresh = id => { const m = mem.get(id); return m && Date.now() - m.at < KEEP ? m.w : null; };
 const haveCells = () => new Set([...mem.keys()].filter(fresh));
@@ -85,9 +85,11 @@ export function gradeWater(w, e, P, craft = craftId()) {
 // The weather stage of a filter pass. `items` (each with lat, lon, acres) already pass everything else; `ref` is where
 // "nearest" is measured from. `grades` holds { grade, line } per item, or null when its square has no forecast; an item
 // whose square is beyond this pass's cap isn't in it at all (`beyond` counts those). `unknown`: items without a
-// forecast. `saved`: some grades come from a copy saved earlier.
-export async function weatherStage(items, P, ref, craft = craftId()) {
-  const { cells } = pickCells(items, ref, CAP, haveCells());
+// forecast. `saved`: some grades come from a copy saved earlier. `asked`: how many squares this pass asked for, out of
+// `cap` (a caller that makes several passes over one view shares one allowance between them).
+export const CAP = 300;
+export async function weatherStage(items, P, ref, { craft = craftId(), cap = CAP } = {}) {
+  const { cells } = pickCells(items, ref, Math.max(0, cap), haveCells());
   const got = await gridWeather(cells);
   const grades = new Map();
   let unknown = 0, beyond = 0, anySaved = false;
@@ -98,7 +100,7 @@ export async function weatherStage(items, P, ref, craft = craftId()) {
     if (!g) unknown++; else if (g.saved) anySaved = true;
     grades.set(it, g);
   }
-  return { grades, unknown, beyond, saved: anySaved };
+  return { grades, unknown, beyond, saved: anySaved, asked: cells.length };
 }
 
 // The day's line for one water (a card on the map): its square's forecast, asked for if it isn't in hand.

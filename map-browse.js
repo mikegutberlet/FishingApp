@@ -8,6 +8,8 @@ import { openWater, openLake, waterRecord } from './views/lake.js';
 import { directionsUrl } from './views/access.js';
 import { coastSpots } from './coast.js';
 import { entryFor, factsFor, habFor, addFish, fishRows, isSavedLake, ACCESS } from './water-facts.js';
+import { prefs, mapFilterOn } from './water-filter.js';
+import { weatherLine } from './weather-grid.js';
 
 const view = $('#view-map'), search = $('#map-search'), results = $('#map-results'), sheet = $('#water-sheet');
 const km = (a, b) => { const r = Math.PI / 180, x = (b.lon - a.lon) * r * Math.cos((a.lat + b.lat) / 2 * r), y = (b.lat - a.lat) * r; return Math.hypot(x, y) * 6371; };
@@ -113,15 +115,16 @@ export async function preview(w) {
 // list. Rivers from the state lists and waters the app has no facts for get nothing extra.
 async function more(w, lake, saved) {
   try {
-    const e = await entryFor(lake);
-    if (!e) return;
-    const [f, hab, catches] = await Promise.all([factsFor(e), habFor(e), saved ? db.byLake('catches', saved.id) : []]);
+    // While the map is filtered by weather, the card leads with the picked day here ("Sat: Kayak: good till 11 …").
+    const P = prefs();
+    const [day, e] = await Promise.all([mapFilterOn() && P.wx && Number.isFinite(lake.lat) ? weatherLine(lake, P).catch(() => null) : null, entryFor(lake)]);
+    const [f, hab, catches] = e ? await Promise.all([factsFor(e), habFor(e), saved ? db.byLake('catches', saved.id) : []]) : [{ fish: new Map(), access: null }, 0, []];
     const el = $('#sheet-more');
     if (shown !== w || !el) return;
     const fish = new Map([...f.fish].map(([g, s]) => [g, new Set(s)]));
     for (const s of [...catches.map(c => c.species), ...String(saved?.species ?? '').split(/,|;/)]) addFish(fish, s, 'yours');
     const access = f.access && Object.keys(ACCESS).filter(k => f.access.has(k)).map(k => ACCESS[k]).join(', ');
-    el.innerHTML = fishRows(fish).map(x => `<div><span class="muted">${x.label}:</span> ${esc(x.names.join(', '))}</div>`).join('')
+    el.innerHTML = (day ? `<div class="sheet-wx">${esc(day)}</div>` : '') + fishRows(fish).map(x => `<div><span class="muted">${x.label}:</span> ${esc(x.names.join(', '))}</div>`).join('')
       + (hab ? '<div class="fd-warn">Toxic algae advisory</div>' : '') + (access ? `<div class="muted">${esc(access)}</div>` : '');
   } catch {}
 }

@@ -120,7 +120,7 @@ async function draw() {
         }).addTo(pinsLayer);
       continue;
     }
-    const e = g.pins[0], known = tones.get(toneKey(e));
+    const e = g.pins[0], known = filter?.tone(e) ?? tones.get(toneKey(e));
     const m = L.marker([e.lat, e.lon], { icon: pinIcon(e, known ?? 'wait'), title: e.name, keyboard: false, zIndexOffset: e.saved ? 500 : 0 })
       .on('click', ev => isPicking() ? pickHere(ev) : preview(target(e))).addTo(pinsLayer);
     if (!known) waiting.push([e, m]);

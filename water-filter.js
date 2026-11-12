@@ -14,6 +14,10 @@ const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } ca
 export const prefs = () => clean(read(PREFS));
 export const savePrefs = patch => { const P = clean({ ...prefs(), ...patch }); write(PREFS, P); return P; };
 export const home = () => read(HOME);
+// The map shows every pin until you filter there: this switch (this phone only) says whether the settings hide pins.
+const MAP = 'tackle-box-map-filter';
+export const mapFilterOn = () => { try { return localStorage.getItem(MAP) === '1'; } catch { return false; } };
+export const setMapFilter = v => { try { localStorage.setItem(MAP, v ? '1' : '0'); } catch {} };
 export const setHomePoint = ({ lat, lon }) => write(HOME, { lat, lon });
 
 // Where distance is measured from: home or where you are, as picked; left to itself, home when you've set one.
