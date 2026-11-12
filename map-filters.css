@@ -1,6 +1,7 @@
 /* Filters on the map (map-filters.js): the buttons and chips in the pin bar, the distance ring and the filter sheet. */
 .pin-bar #pin-count { flex: 1 1 auto; }
 .pin-bar #pin-filters.on { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+@media (prefers-color-scheme: dark) { .pin-bar #pin-filters.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); } }
 .filter-chips { flex-basis: 100%; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 1px 6px 3px 0; }
 .filter-chips::-webkit-scrollbar { display: none; }
 .filter-chips button { flex-shrink: 0; border-radius: 999px; white-space: nowrap; }

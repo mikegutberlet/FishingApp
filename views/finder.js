@@ -9,7 +9,7 @@ import { openLake, openWater } from './lake.js';
 import { renderLakeList } from './lakes.js';
 import { loadPool, withSaved, fishRows, stockLake, ACCESS } from '../water-facts.js';
 import { quickPass } from '../water-filter-core.js';
-import { prefs, savePrefs, setHomePoint, origin, context, shape, fullPass } from '../water-filter.js';
+import { prefs, savePrefs, home, setHomePoint, origin, context, shape, fullPass } from '../water-filter.js';
 import { filterForm, bindFilterForm } from './filter-form.js';
 
 const metric = () => units().depth === 'm';
@@ -39,7 +39,7 @@ export async function renderFinder() {
   $('#back').onclick = renderLakeList;
   let [from, all, ctx] = await Promise.all([origin(P), loadPool(), context()]);
   if (!$('#fd-from')) return;
-  const said = () => { $('#fd-from').textContent = from ? `Distances from ${from.label}` : 'Set home to see distances. Location is off.'; };
+  const said = () => { $('#fd-from').textContent = from ? `Distances from ${from.label}` : home() ? "Location is off, so distance isn't applied." : 'Set home to see distances. Location is off.'; };
   said();
   const { entries, savedFor } = withSaved(all, ctx.saved);
 
