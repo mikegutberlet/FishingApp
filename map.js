@@ -21,7 +21,7 @@ const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/servi
 const topo = L.tileLayer('https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, maxNativeZoom: 16, crossOrigin: true, attribution: 'USGS The National Map' });
 try { ({ Topo: topo, Streets: street }[localStorage.getItem(BASE_KEY)] ?? satellite).addTo(map); } catch { satellite.addTo(map); }
 export const baseLayers = { Satellite: satellite, Topo: topo, Streets: street };
-const lakeLayer = L.layerGroup().addTo(map);
+export const lakeLayer = L.layerGroup().addTo(map);
 const catchLayer = L.layerGroup().addTo(map);
 export const depthLayer = L.layerGroup().addTo(map);
 export const stockedLayer = L.layerGroup();
@@ -50,6 +50,7 @@ export const pickPoint = (cb, onCancel = null) => {
   if (cb) leftMap.observe(mapView, { attributes: true, attributeFilter: ['class'] });
   c?.();
 };
+export const isPicking = () => !!picking; // map-pins.js hands a tap on a pin to the pick
 // What a tap on a water does: map-browse.js swaps in its preview sheet; without it, the water's page opens.
 export let onWaterTap = w => openWater(w);
 export const setWaterTap = fn => { onWaterTap = fn; };
@@ -168,6 +169,7 @@ export async function refreshMap() {
     L.circleMarker([c.lat, c.lon], { radius: 6, color: '#fff', weight: 2, fillColor: '#f28c28', fillOpacity: 1 }).addTo(catchLayer)
       .bindPopup(`<b>${esc(c.species)}</b> ${c.length ? c.length + '"' : ''} ${c.weight ? c.weight + ' lb' : ''}<br>${fmtDate(c.time)}${c.lure ? '<br>' + esc(c.lure) : ''}`);
   }
+  document.dispatchEvent(new Event('tb-lakes-changed')); // the pins re-read your lakes and catches (map-pins.js)
 }
 
 // Depth colors: shallow = light, deep = dark blue.

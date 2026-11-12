@@ -105,6 +105,15 @@ export async function preview(w) {
     else stockEl.textContent = `🐟 Stocked ${st.lastYearStocked ?? 'in past years'}`;
   } catch { stockEl?.remove(); }
 }
+// Several waters on one spot (a bubble no zoom can split): pick which one to look at.
+export function chooser(waters) {
+  shown = waters;
+  sheet.innerHTML = `<div class="sheet-head"><div><b>${waters.length} waters here</b></div><button class="ghost" id="sheet-close" aria-label="Close">✕</button></div>
+    <div class="sheet-pick">${waters.map((w, i) => `<button type="button" data-i="${i}">${esc(w.name)}<span class="muted small">${esc(w.type ?? '')}</span></button>`).join('')}</div>`;
+  sheet.classList.remove('hidden');
+  $('#sheet-close').onclick = closeSheet;
+  sheet.querySelector('.sheet-pick').onclick = e => { const b = e.target.closest('[data-i]'); if (b) preview(waters[+b.dataset.i]); };
+}
 export function closeSheet() { shown = null; sheet.classList.add('hidden'); }
 setWaterTap(preview);
 map.on('tapempty', closeSheet);
