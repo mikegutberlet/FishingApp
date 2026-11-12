@@ -80,6 +80,12 @@ export function factsFor(e) {
   })().catch(() => ({ fish: new Map(), access: null })));
   return facts.get(key);
 }
+// Drive-up or hike-in from the state's monthly file (reach-core.js says what a value means). null: no record, as for
+// a stream that isn't in the lists, a water added by hand, or before the file's first build.
+export async function reachFor(e) {
+  const S = e.S, key = S && e.key.startsWith(`${S.code}:`) ? e.key.slice(S.code.length + 1) : null;
+  return (key && (await S.reachMap?.().catch(() => null))?.[key]) ?? null;
+}
 // A fish goes in under its group ('trout') and, for trout and kokanee, also under the kind the record names
 // ('k:Tiger trout'). Other fish stay by group, so a card's list stays short.
 export function addFish(fish, s, src) {

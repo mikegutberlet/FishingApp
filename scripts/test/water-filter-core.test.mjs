@@ -70,3 +70,13 @@ test('best-bet score: a switch, not a filter; it needs the forecasts', () => {
   assert.ok(needsWeather({ ...DEFAULTS, score: true })); assert.ok(needsWeather({ ...DEFAULTS, wx: 'good' })); assert.ok(!needsWeather(DEFAULTS));
   assert.deepEqual(active({ ...DEFAULTS, miles: 0, noAlgae: false, score: true }), []);
 });
+
+test('drive-up or hike-in: a list of kinds, known words only, needs the lookups, chip after access', () => {
+  assert.deepEqual(DEFAULTS.reach, []);
+  assert.deepEqual(clean({ reach: ['hike', 'fly', 'drive'] }).reach, ['hike', 'drive']);
+  assert.deepEqual(clean({ reach: 'hike' }).reach, []);
+  assert.deepEqual(clean({}).reach, []);
+  const P = { ...DEFAULTS, noAlgae: false, access: ['ramp'], reach: ['walk'] };
+  assert.deepEqual(active(P), ['access', 'reach', 'miles']);
+  assert.ok(needsFacts({ ...DEFAULTS, noAlgae: false, reach: ['walk'] })); assert.deepEqual(off('reach'), { reach: [] });
+});

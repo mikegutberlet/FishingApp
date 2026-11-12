@@ -201,6 +201,11 @@ export async function accessPlaces() {
   return (await load('access'))?.places ?? [];
 }
 
+// Drive-up or hike-in for each water, by its pool key without the state (reach-core.js). null: no file yet.
+export async function reachMap() {
+  return (await load('reach'))?.reach ?? null;
+}
+
 // ---------- Fishing regulations (weekly build from Title 14, CCR) ----------
 const insideRing = ([x, y], ring) => {
   let c = false;

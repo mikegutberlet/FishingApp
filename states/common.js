@@ -204,5 +204,7 @@ export function stateData(dir, code) {
 
   const accessFor = async lake => accessNear(await load('access'), lake);
   const accessPlaces = async () => (await load('access'))?.places ?? [];
-  return { load, waters, plantsFor, dataDates, nearestWaters, nearestReservoir, statewide, history: () => load('history'), matchStockedWater, historyFor, hydroFor, bathymetryFor, bathymetryUrl, accessFor, accessPlaces };
+  // Drive-up or hike-in for each water, by its pool key without the state (reach-core.js). null: no file yet.
+  const reachMap = async () => (await load('reach'))?.reach ?? null;
+  return { load, waters, plantsFor, dataDates, nearestWaters, nearestReservoir, statewide, history: () => load('history'), matchStockedWater, historyFor, hydroFor, bathymetryFor, bathymetryUrl, accessFor, accessPlaces, reachMap };
 }

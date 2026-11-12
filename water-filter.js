@@ -5,7 +5,8 @@
 import { db } from './db.js';
 import { locate } from './map.js';
 import { clean } from './water-filter-core.js';
-import { factsFor, habFor, addFish, hasFish } from './water-facts.js';
+import { factsFor, habFor, addFish, hasFish, reachFor } from './water-facts.js';
+import { reachKind } from './reach-core.js';
 import { iceEstimate, allIceLogs } from './know-water.js';
 import { levelFor } from './lake-level.js';
 
@@ -50,8 +51,9 @@ export function shape(e) {
 // Whether a water passes the settings that need lookups, for the map's pins (no card to fill). With nothing but the
 // algae filter on, its fish, access and stocking needn't be looked up at all.
 const levelOk = async (e, P) => !P.level.length || P.level.includes((await levelFor(e))?.trend); // no gauge: can't pass a level filter
+const reachOk = async (e, P) => !P.reach.length || P.reach.includes(reachKind(await reachFor(e))); // no record: can't pass either
 export const passes = async (e, P, ctx) => P.fish.length || P.access.length || P.stocked || P.mine ? !!(await fullPass(e, P, ctx)).hit
-  : await levelOk(e, P) && !(P.noAlgae && e.S && await habFor(e));
+  : await reachOk(e, P) && await levelOk(e, P) && !(P.noAlgae && e.S && await habFor(e));
 
 // One water against the settings that need its facts. `hit` is the row for a card (the entry plus its facts, fish
 // with your own catches added, and how many you've logged), or null. `unknown`: it failed only because the app has no
@@ -64,12 +66,13 @@ export async function fullPass(entry, P, ctx, savedFor = new Map()) {
   const mine = e.saved ? ctx.caught.get(e.saved.id) ?? [] : [];
   const fish = new Map([...f.fish].map(([g, s]) => [g, new Set(s)]));
   for (const s of [...mine.map(c => c.species), ...String(e.saved?.species ?? '').split(/,|;/)]) addFish(fish, s, 'yours');
-  const r = { ...e, f, fish, mine: mine.length };
+  const r = { ...e, f, fish, mine: mine.length, reach: await reachFor(e) };
   const cutoff = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10);
   let hit = null, unknown = false;
   if (P.saved && !e.saved) ;
   else if (P.fish.length && !P.fish.some(g => hasFish(fish, g))) unknown = !fish.size;
   else if (P.access.length && !(f.access && P.access.every(k => f.access.has(k)))) unknown = !f.access;
+  else if (P.reach.length && !P.reach.includes(reachKind(r.reach))) ;
   else if (P.stocked && !(f.lastPlant && f.lastPlant >= cutoff)) ;
   else if (P.mine && !r.mine) ;
   else if (P.level.length && !P.level.includes((r.level = await levelFor(e))?.trend)) ;

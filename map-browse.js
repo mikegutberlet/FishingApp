@@ -7,7 +7,8 @@ import { $, esc, fmtDate, icon, showView, status } from './ui.js';
 import { openWater, openLake, waterRecord } from './views/lake.js';
 import { directionsUrl } from './views/access.js';
 import { coastSpots } from './coast.js';
-import { entryFor, factsFor, habFor, addFish, fishRows, isSavedLake, ACCESS } from './water-facts.js';
+import { entryFor, factsFor, habFor, addFish, fishRows, isSavedLake, reachFor, ACCESS } from './water-facts.js';
+import { reachText } from './reach-core.js';
 import { prefs, mapFilterOn } from './water-filter.js';
 import { needsWeather } from './water-filter-core.js';
 import { dayLines, betText } from './best-bet.js';
@@ -130,7 +131,7 @@ async function more(w, lake, saved) {
     }, () => {});
     const e = await entryFor(lake);
     if (!e) return;
-    const [f, hab, catches, level] = await Promise.all([factsFor(e), habFor(e), saved ? db.byLake('catches', saved.id) : [], levelFor(e)]);
+    const [f, hab, catches, level, reach] = await Promise.all([factsFor(e), habFor(e), saved ? db.byLake('catches', saved.id) : [], levelFor(e), reachFor(e).then(reachText)]);
     const el = $('#sheet-more');
     if (shown !== w || !el) return;
     const day = el.querySelector('.sheet-wx')?.outerHTML ?? '';
@@ -138,7 +139,7 @@ async function more(w, lake, saved) {
     for (const s of [...catches.map(c => c.species), ...String(saved?.species ?? '').split(/,|;/)]) addFish(fish, s, 'yours');
     const access = f.access && Object.keys(ACCESS).filter(k => f.access.has(k)).map(k => ACCESS[k]).join(', ');
     el.innerHTML = day + fishRows(fish).map(x => `<div><span class="muted">${x.label}:</span> ${esc(x.names.join(', '))}</div>`).join('')
-      + (level ? `<div>${esc(level.text)}</div>` : '') + (hab ? '<div class="fd-warn">Toxic algae advisory</div>' : '') + (access ? `<div class="muted">${esc(access)}</div>` : '');
+      + (level ? `<div>${esc(level.text)}</div>` : '') + (reach ? `<div>${esc(reach)}</div>` : '') + (hab ? '<div class="fd-warn">Toxic algae advisory</div>' : '') + (access ? `<div class="muted">${esc(access)}</div>` : '');
   } catch {}
 }
 

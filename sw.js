@@ -43,6 +43,7 @@ const SHELL = [
   'best-bet.js',
   'lake-level.js',
   'lake-level-core.js',
+  'reach-core.js',
   'map-results.js',
   'map-results-core.js',
   'map-results.css',

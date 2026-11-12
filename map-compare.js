@@ -1,10 +1,11 @@
 // Compare up to three waters side by side. A card's Compare button puts its water in; "Compare (2)" on the map opens
-// the sheet: distance, fish, last plant, the picked day's weather for your craft, lake level, elevation, size and
-// access, from the same lookups the cards and filters use. The picks last until the app is closed.
+// the sheet: distance, fish, last plant, the picked day's weather for your craft, lake level, elevation, size, drive-up or
+// hike-in and access, from the same lookups the cards and filters use. The picks last until the app is closed.
 import { here } from './map.js';
 import { $, esc, fmtDate, status } from './ui.js';
 import { kmBetween } from './water-filter-core.js';
-import { entryFor, factsFor, fishRows, ACCESS } from './water-facts.js';
+import { entryFor, factsFor, fishRows, reachFor, ACCESS } from './water-facts.js';
+import { reachShort } from './reach-core.js';
 import { prefs, shape } from './water-filter.js';
 import { filterView } from './map-filters.js';
 import { far } from './map-results.js';
@@ -45,7 +46,7 @@ const cap = s => s[0].toUpperCase() + s.slice(1);
 async function facts({ lake }) {
   const P = prefs(), from = filterView().known ?? here;
   const e = await entryFor(lake).catch(() => null), s = e ? shape(e) : lake;
-  const [f, level, day] = await Promise.all([e ? factsFor(e) : null, e ? levelFor(e) : null, dayLines(lake, P).catch(() => ({}))]);
+  const [f, level, reach, day] = await Promise.all([e ? factsFor(e) : null, e ? levelFor(e) : null, e ? reachFor(e) : null, dayLines(lake, P).catch(() => ({}))]);
   const acres = s.acres ?? lake.acres, elev = s.elevationFt ?? lake.elevationFt;
   return {
     Distance: from ? far(kmBetween(from, lake)) : null,
@@ -56,6 +57,7 @@ async function facts({ lake }) {
     'Lake level': level && cap(level.text.replace(/^Lake level /, '').replace(/ \(gauge: .*\)$/, '').replace(':', ',')),
     Elevation: elev > 0 ? `${Math.round(elev).toLocaleString()} ft` : null,
     Size: acres > 0 ? `${Math.round(acres).toLocaleString()} acres` : null,
+    'Drive or hike': reachShort(reach),
     'Getting on the water': f?.access && Object.keys(ACCESS).filter(k => f.access.has(k)).map(k => ACCESS[k]).join(', '),
   };
 }
