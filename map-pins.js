@@ -26,7 +26,8 @@ const toneKey = e => `${e.key}|${e.saved?.id ?? ''}`; // a pin learns late that 
 
 function loadStates() {
   if (!map.hasLayer(pinsLayer) || !map.getContainer().offsetWidth) return; // hidden: wait until the map is on screen
-  for (const S of statesIn(map.getBounds())) {
+  const ring = filter?.also(); // a distance filter needs the waters under its ring, on screen or not
+  for (const S of new Set([...statesIn(map.getBounds()), ...(ring ? statesIn(ring) : [])])) {
     if (states.has(S.code)) continue;
     states.set(S.code, null);
     // No signal before the lists were kept: say so, and ask again on the next move.
@@ -64,7 +65,17 @@ function build() {
   for (const l of mine.saved) if (!forLake(l) && Number.isFinite(l.lat) && Number.isFinite(l.lon)) pins.push({ key: `mine:${l.id}`, S: null, w: l, name: l.name, type: l.type, lat: l.lat, lon: l.lon, saved: l });
   pins = pins.filter(e => Number.isFinite(e.lat) && Number.isFinite(e.lon));
   stale = false;
+  filter?.changed();
 }
+
+// ---------- Filtering (map-filters.js) ----------
+// While the map is filtered: `keep(pin)` says which pins stay, `count(inView, all)` what the bar reads (null: the usual
+// count), `also()` the bounds a distance ring covers, and `changed()` hears that the set of pins was rebuilt.
+let filter = null;
+export const setPinFilter = f => { filter = f; };
+export const pinList = () => pins;
+// Every state asked for has its waters, and each lake knows the stocked water it stands for.
+export const pinsSettled = () => [...states.values()].every(st => st?.done);
 
 // ---------- Drawing ----------
 const TEARDROP = '<svg viewBox="0 0 26 32" aria-hidden="true"><path d="M13 31C13 31 2 19.5 2 12a11 11 0 0 1 22 0c0 7.500-11 19-11 19z"/></svg>';
@@ -91,12 +102,13 @@ async function draw() {
   if (!on || !map.getContainer().offsetWidth) return;
   if (stale) build();
   const z = map.getZoom(), view = map.getBounds(), near = view.pad(0.2);
-  const count = pins.reduce((n, e) => n + view.contains([e.lat, e.lon]), 0);
+  const shown = filter ? pins.filter(filter.keep) : pins;
+  const count = shown.reduce((n, e) => n + view.contains([e.lat, e.lon]), 0);
   const loading = [...states.values()].includes(null);
-  $('#pin-count').textContent = pins.length || !(loading || failed) ? `${count.toLocaleString()} water${count === 1 ? '' : 's'} in view`
+  $('#pin-count').textContent = pins.length || !(loading || failed) ? filter?.count(count, shown.length) ?? `${count.toLocaleString()} water${count === 1 ? '' : 's'} in view`
     : loading ? 'Loading waters…' : 'The water lists didn’t download. Check your signal, then move the map.';
   const waiting = [];
-  for (const g of clusterPins(pins.filter(e => near.contains([e.lat, e.lon])), z)) {
+  for (const g of clusterPins(shown.filter(e => near.contains([e.lat, e.lon])), z)) {
     if (g.pins.length > 1) {
       const n = g.pins.length, size = n < 10 ? 30 : n < 100 ? 36 : 44;
       L.marker([g.lat, g.lon], { icon: L.divIcon({ className: 'pin-bubble', html: `<span>${n.toLocaleString()}</span>`, iconSize: [size, size] }), title: `${n} waters`, keyboard: false })
@@ -123,6 +135,8 @@ async function draw() {
     if (performance.now() - t0 > 12) { await tick(); if (me !== run) return; t0 = performance.now(); }
   }
 }
+
+export { draw as redrawPins, loadStates as loadPinStates };
 
 // ---------- Your lakes and catches ----------
 async function readMine() {

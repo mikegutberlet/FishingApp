@@ -1,7 +1,7 @@
 // Browsing the map for somewhere to fish: a search bar, quick layer chips, a preview sheet for the water you tap,
 // and the small map on the Today screen that opens the full one.
 import { db } from './db.js';
-import { map, statewide, loadState, setWaterTap, here, baseLayers, stockedLayer, watersLayer, refreshMap } from './map.js';
+import { map, statewide, loadState, setWaterTap, here, baseLayers, watersLayer, refreshMap } from './map.js';
 import { STATES, forLake, stockIdOf } from './states/index.js';
 import { $, esc, fmtDate, icon, showView, status } from './ui.js';
 import { openWater, openLake, waterRecord } from './views/lake.js';
@@ -50,12 +50,11 @@ results.onclick = e => {
 };
 $('#map-search-clear').onclick = () => { search.value = ''; results.innerHTML = ''; results.classList.add('hidden'); };
 
-// ---------- Quick chips: base map, stocked waters, names ----------
+// ---------- Quick chips: base map and names (map-pins.js and map-filters.js own the Pins and Stocked lately chips) ----------
 const chips = $('#map-chips');
 const BASES = ['Satellite', 'Topo', 'Streets'];
 const syncChips = () => {
   chips.querySelector('[data-chip=base]').textContent = BASES.find(n => map.hasLayer(baseLayers[n])) ?? 'Satellite';
-  chips.querySelector('[data-chip=stocked]').classList.toggle('on', map.hasLayer(stockedLayer));
   chips.querySelector('[data-chip=names]').classList.toggle('on', map.hasLayer(watersLayer));
 };
 chips.onclick = e => {
@@ -64,7 +63,6 @@ chips.onclick = e => {
     const now = BASES.find(n => map.hasLayer(baseLayers[n])) ?? 'Satellite', next = BASES[(BASES.indexOf(now) + 1) % BASES.length];
     map.removeLayer(baseLayers[now]); map.addLayer(baseLayers[next]); map.fire('baselayerchange', { layer: baseLayers[next], name: next });
   }
-  if (c === 'stocked') map.hasLayer(stockedLayer) ? map.removeLayer(stockedLayer) : map.addLayer(stockedLayer);
   if (c === 'names') map.hasLayer(watersLayer) ? map.removeLayer(watersLayer) : map.addLayer(watersLayer);
   syncChips();
 };

@@ -1,0 +1,20 @@
+/* Filters on the map (map-filters.js): the buttons and chips in the pin bar, the distance ring and the filter sheet. */
+.pin-bar #pin-count { flex: 1 1 auto; }
+.pin-bar #pin-filters.on { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+.filter-chips { flex-basis: 100%; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 1px 6px 3px 0; }
+.filter-chips::-webkit-scrollbar { display: none; }
+.filter-chips button { flex-shrink: 0; border-radius: 999px; white-space: nowrap; }
+.filter-chips button span { color: var(--muted); margin-left: 2px; }
+.filter-chips #filter-clear { border-radius: 8px; font-weight: 600; }
+.filter-note { flex-basis: 100%; font-size: 12px; line-height: 1.35; padding: 0 6px 4px 0; }
+/* White dashes with a dark edge, so the ring reads on satellite, topo and street maps alike. */
+.filter-ring, .filter-origin { filter: drop-shadow(0 0 1.5px rgba(0,0,0,.9)); }
+
+.filter-sheet { position: absolute; z-index: 1003; left: 0; right: 0; bottom: 0; max-height: min(80vh, calc(100% - 8px)); display: flex; flex-direction: column;
+  background: var(--card); color: var(--text); border-radius: 14px 14px 0 0; border-top: 3px solid var(--bobber, var(--brand)); box-shadow: 0 -6px 24px rgba(0,0,0,.35); animation: sheet-in .18s ease-out; }
+.filter-head { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+.filter-head > div { flex: 1; min-width: 0; }
+.filter-head b { font-size: 17px; }
+.filter-head button { flex-shrink: 0; width: auto; min-height: 40px; padding: 6px 14px; }
+.filter-body { overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding: 12px 14px 20px; }
+body:has(.filter-sheet:not(.hidden)) .map-actions, body:has(.filter-sheet:not(.hidden)) .legend { display: none; }

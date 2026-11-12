@@ -89,7 +89,7 @@ export function addFish(fish, s, src) {
 }
 export const hasFish = (fish, want) => fish.has(want) || [...fish.keys()].some(k => k.startsWith('k:') && speciesLine(k.slice(2)).includes(want));
 const habs = new Map();
-export const habFor = e => habs.get(e.key) ?? habs.set(e.key, (e.S.habFor?.(e.w ?? e.stock) ?? Promise.resolve([])).then(a => a.length, () => 0)).get(e.key);
+export const habFor = e => habs.get(e.key) ?? habs.set(e.key, (e.S?.habFor?.(e.w ?? e.stock) ?? Promise.resolve([])).then(a => a.length, () => 0)).get(e.key);
 
 // A water's fish as lines for a card: each fish once, under the best evidence for it (your catches, then the current
 // schedule, then past stocking reports, then a USGS record). A group shows by its kinds when the records name them

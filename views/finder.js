@@ -34,7 +34,7 @@ export async function renderFinder() {
       ${filterForm(P)}
       <label>Sort <select id="fd-sort"><option value="near">Closest first</option><option value="stocked" ${P.sort === 'stocked' ? 'selected' : ''}>Most recently stocked</option></select></label>
     </div>
-    <div id="fd-count" class="muted small" aria-live="polite"></div><div id="fd-results"></div>
+    <div class="fd-line"><div id="fd-count" class="muted small" aria-live="polite"></div><button type="button" id="fd-show-map">Show on map</button></div><div id="fd-results"></div>
     <p class="muted small">Fish lists come from state stocking reports, USGS records of introduced fish and your own catches. California's and Oregon's current schedules say only “trout”, so a kind of trout is matched from past reports, USGS records and your catches. Native fish that were never stocked or recorded don't show up, so a water left out may still hold them. Ramps, piers, marinas, rentals, campgrounds and parking come from OpenStreetMap and cover California only for now. Size and elevation come from the states' lake lists, and stocked rivers and creeks have neither, so they drop out when you filter by size or elevation. “Likely ice-free” is an estimate from elevation, the time of year and your own ice notes. Distances are straight-line.</p>`;
   $('#back').onclick = renderLakeList;
   let [from, all, ctx] = await Promise.all([origin(P), loadPool(), context()]);
@@ -48,6 +48,9 @@ export async function renderFinder() {
     draw();
   }, { setHome });
   $('#fd-sort').onchange = e => { savePrefs({ sort: e.target.value }); draw(); };
+  // The map takes the same settings (map-filters.js) and fits itself to the distance ring, or to these results.
+  let found = [];
+  $('#fd-show-map').onclick = () => document.dispatchEvent(new CustomEvent('tb-show-on-map', { detail: { points: found.map(r => [r.lat, r.lon]) } }));
 
   async function draw() {
     const me = ++run, P = prefs(), out = $('#fd-results');
@@ -73,6 +76,7 @@ export async function renderFinder() {
     if (!near.length) show([], null);
     function show(rows, progress) {
       if (P.sort === 'stocked') rows = [...rows].sort((a, b) => (b.f.lastPlant ?? '').localeCompare(a.f.lastPlant ?? '') || (a.distKm ?? 0) - (b.distKm ?? 0));
+      found = rows;
       const unknowns = [...unknown].filter(k => !claimed.has(k)).length;
       const sizeless = noSize.size ? ` ${noSize.size.toLocaleString()} left out: no size or elevation on record.` : '';
       $('#fd-count').textContent = progress ?? (rows.length ? `${rows.length} water${rows.length === 1 ? '' : 's'} match${rows.length === 1 ? 'es' : ''}${unknowns ? `. ${unknowns} more within range have no fish or access records in the app yet.` : '.'}${sizeless}` : sizeless.trim());
