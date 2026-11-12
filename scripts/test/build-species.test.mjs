@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { namesFrom } from '../ca-lake-names.mjs';
-import { extraLakes, listName, shareWord, pointsFor, matcher, nvCodes, recordNote, parsePlan, planNote, fhdNote, pointOf, NV_CODES } from '../build-species.mjs';
+import { extraLakes, kinOf, listName, shareWord, pointsFor, matcher, nvCodes, recordNote, parsePlan, planNote, fhdNote, pointOf, NV_CODES } from '../build-species.mjs';
 
 test('listName: the app\'s name for the fish, the agency\'s where that says more, null for a fish not on the list', () => {
   assert.equal(listName('Bass, Largemouth'), 'Largemouth bass');
@@ -163,4 +163,26 @@ test('extraLakes: the lakes a state maps that the app has no water for, one per 
     { id: 'odfw-twinponds-4310-12190', name: 'Twin Ponds', type: 'Pond', lat: 43.1, lon: -121.9, acres: null },
     { id: 'odfw-twinponds-4450-11850', name: 'Twin Ponds', type: 'Pond', lat: 44.5, lon: -118.5, acres: null },
   ]);
+});
+
+test('kinOf: the lake list\'s entries that are a planned water under another form of its name', () => {
+  const names = list => list.map(c => c.name);
+  assert.deepEqual(names(kinOf('Bowman Reservoir', [{ name: 'Bowman Lake' }])), ['Bowman Lake']);
+  assert.deepEqual(names(kinOf('Spaulding Reservoir', [{ name: 'Lake Spaulding' }])), ['Lake Spaulding']);
+  assert.deepEqual(names(kinOf('Prosser Reservoir', [{ name: 'Prosser Creek Reservoir' }])), ['Prosser Creek Reservoir']);
+  assert.deepEqual(names(kinOf('Bullards Bar Reservoir', [{ name: 'New Bullards Bar Reservoir' }])), ['New Bullards Bar Reservoir']);
+  assert.deepEqual(names(kinOf('Spicer Meadows Reservoir', [{ name: 'Spicer Meadow Reservoir' }])), ['Spicer Meadow Reservoir']);
+  assert.deepEqual(names(kinOf('Echo Lake, Lower', [{ name: 'Echo Lake, Upper and Lower' }])), ['Echo Lake, Upper and Lower']);
+  // Only the lake itself: not the afterbay that shares its name.
+  assert.deepEqual(names(kinOf('Beardsley Reservoir', [{ name: 'Beardsley Lake' }, { name: 'Beardsley Afterbay' }])), ['Beardsley Lake']);
+  // One water drawn as several shapes is still one water; two different waters of kindred names are neither.
+  assert.equal(kinOf('Angora Lake Upper', [{ name: 'Angora Lakes' }, { name: 'Angora Lakes' }, { name: 'Angora Lakes' }]).length, 3);
+  assert.deepEqual(kinOf('Twin Lake', [{ name: 'Twin Lakes' }, { name: 'Upper Twin Lake' }]), []);
+  assert.deepEqual(kinOf('Twin Lake', [{ name: 'Twin Lakes', lat: 40.5, lon: -121.2 }, { name: 'Twin Lakes', lat: 40.9, lon: -120.6 }]), []); // two pairs of lakes, 60 km apart
+  assert.equal(kinOf('Twin Lake', [{ name: 'Twin Lakes', lat: 40.5, lon: -121.2 }, { name: 'Twin Lakes', lat: 40.503, lon: -121.2 }]).length, 2);
+  // "Little" and "Big" tell lakes apart: Little Walker Lake isn't Walker Lake.
+  assert.deepEqual(kinOf('Little Walker Lake', [{ name: 'Walker Lake' }]), []);
+  // A stream isn't the lake named for it.
+  assert.deepEqual(kinOf('McCloud River Lakin Dam', [{ name: 'Lake McCloud' }]), []);
+  assert.deepEqual(kinOf('Plum Creek', [{ name: 'Plum Creek Reservoir' }]), []);
 });

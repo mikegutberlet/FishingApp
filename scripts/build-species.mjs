@@ -33,7 +33,7 @@ import { pathToFileURL } from 'node:url';
 import { nameKey } from '../name-key.js';
 import { speciesName, isCatchAll } from '../species.js';
 import { haversineKm } from '../data-sources.js';
-import { lakeNames, lakePlaces } from './ca-lake-names.mjs';
+import { lakeNames, lakePlaces, lakesLike } from './ca-lake-names.mjs';
 import { STATES, inOutline } from './states.mjs';
 
 const run = promisify(execFile);
@@ -150,6 +150,19 @@ export function matcher(points) {
 }
 
 // fish: { key: [[name, how, source, note]] }, one row per fish and how it is known; a later note doesn't replace one.
+// candidates [{ name, … }] from a lake list, searched by a word of a planned water's name → the ones that are that
+// water under another form of its name: the same telling words once lake, reservoir, upper, lower, new and plurals
+// are set aside ("Bowman Reservoir" is "Bowman Lake", "Bullards Bar Reservoir" is "New Bullards Bar Reservoir").
+// "Little" and "Big" stay: Little Walker Lake isn't Walker Lake. None when the name is a stream's, or when the
+// candidates left are different waters: other names, or one name in places more than 5 km apart.
+export function kinOf(planName, candidates) {
+  const tell = s => [...words(String(s).replace(/\bnew\b/gi, ' ')), ...(String(s).toLowerCase().match(/\b(little|big)\b/g) ?? [])].map(w => w.replace(/s$/, '')).sort().join(' ');
+  if (FLOWING.test(planName) && !STILL.test(planName)) return [];
+  const mine = tell(planName), kin = mine ? candidates.filter(c => tell(c.name) === mine) : [];
+  const onePlace = kin.every(c => c.lat == null || kin[0].lat == null || haversineKm(c.lat, c.lon, kin[0].lat, kin[0].lon) <= 5);
+  return new Set(kin.map(c => nameKey(c.name))).size === 1 && onePlace ? kin : [];
+}
+
 // The lakes a state's maps name that the app has no water for, as waters to add: one per place (records of one name
 // within 2 km; a second name for the same spot adds nothing), inside the state's outline, and not the creeks, springs
 // and bays such maps also draw as lake shapes. A name the state has since retired isn't added either: that lake is
@@ -301,12 +314,25 @@ async function california(find0, stocked, lakes) {
     let lakesTied = 0;
     for (const r of left) {
       const at = places.filter(p => nameKey(p.name) === nameKey(r.water) && p.county.toLowerCase() === r.county.toLowerCase());
-      const keys = [...new Set(at.flatMap(p => find({ name: r.water, lat: p.lat, lon: p.lon }, { nameKm: 2 }).filter(k => k.startsWith('n:'))))];
+      // CDFW's name for a lake is often not the map's: at CDFW's own point for it, the lake that point lies on is the one.
+      const keys = [...new Set(at.flatMap(p => find({ name: r.water, lat: p.lat, lon: p.lon }, { nameKm: 2, on: true }).filter(k => k.startsWith('n:'))))];
       if (keys.length && !waters.get(`${r.county}|${r.water}`)) lakesTied++;
       waters.set(`${r.county}|${r.water}`, waters.get(`${r.county}|${r.water}`) + keys.length);
       add(keys, listName(r.species), 'plan', 0, planNote(r));
     }
-    report.lakes = `${lakesTied} more planned waters tied to a lake on the map through CDFW's lake list`;
+    // Still nothing: the lake list may know the water under another form of its name. Its entry gives the state's
+    // water id (a stocked water of the app's, often one the schedule doesn't name) and a point for the map's lake.
+    let kinTied = 0;
+    for (const [id] of [...waters].filter(([, n]) => !n)) {
+      const [county, water] = [id.slice(0, id.indexOf('|')), id.slice(id.indexOf('|') + 1)];
+      const word = [...words(water.replace(/\bnew\b/gi, ' '))].sort((a, b) => b.length - a.length)[0];
+      const kin = word ? kinOf(water, await lakesLike(word, county, get)) : [];
+      const keys = [...new Set(kin.flatMap(c => [...(has.has(String(c.id)) ? [`s:${c.id}`] : []), ...find({ name: c.name, lat: c.lat, lon: c.lon }, { nameKm: 2, on: true }).filter(k => k.startsWith('n:'))]))];
+      if (!keys.length) continue;
+      kinTied++; waters.set(id, keys.length);
+      for (const r of rows) if (r.county === county && r.water === water) add(keys, listName(r.species), 'plan', 0, planNote(r));
+    }
+    report.lakes = `${lakesTied} more planned waters tied to a lake on the map through CDFW's lake list, ${kinTied} under another form of their name`;
   } catch (e) { report.lakes = `lake list not read: ${e.message}`; }
   report.unmatched = [...waters].filter(([, n]) => !n).map(([k]) => k.replace('|', ': '));
   report.plan = `${year}: ${rows.length} rows, ${waters.size} waters, ${waters.size - report.unmatched.length} tied to a stocked water`;

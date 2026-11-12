@@ -38,3 +38,14 @@ export async function lakePlaces(names, getJson) {
   }
   return out;
 }
+
+// The lake list's entries in a county whose name holds a word: [{ id, name, county, lat, lon }]. For a water the
+// stocking document names another way than the list does ("Bowman Reservoir", the list's "Bowman Lake").
+export async function lakesLike(word, county, getJson) {
+  const w = String(word).toUpperCase().replace(/[^A-Z0-9 ]/g, ''), c = String(county).replace(/'/g, "''");
+  if (w.length < 4) return [];
+  const q = new URLSearchParams({ where: `(UPPER(NAME) LIKE '%${w}%' OR UPPER(GNIS_NAME) LIKE '%${w}%') AND COUNTY = '${c}'`, outFields: 'DFGWATERID,NAME,GNIS_NAME,COUNTY,LAT_NAD83,LON_NAD83', returnGeometry: 'false', f: 'json' });
+  return ((await getJson(`${LAKE_LIST}/query?${q}`)).features ?? []).map(f => f.attributes)
+    .map(a => ({ id: a.DFGWATERID, name: String(a.NAME ?? '').trim() || String(a.GNIS_NAME ?? '').trim(), county: String(a.COUNTY ?? '').trim(), lat: a.LAT_NAD83, lon: a.LON_NAD83 }))
+    .filter(a => a.name && a.lat != null);
+}
