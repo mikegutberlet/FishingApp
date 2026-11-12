@@ -3,7 +3,7 @@
 // be tested on their own.
 
 // The one set of filter settings (kept on this phone). Everything off except a 50 mile range and hiding algae waters.
-export const DEFAULTS = { fish: [], access: [], miles: 50, stocked: false, mine: false, noAlgae: true, sort: 'near', from: 'auto', saved: false, type: '', size: [], elev: [], iceFree: false };
+export const DEFAULTS = { fish: [], access: [], miles: 50, stocked: false, mine: false, noAlgae: true, sort: 'near', from: 'auto', saved: false, type: '', size: [], elev: [], iceFree: false, wx: '', day: 0 };
 // Saved settings from any version of the app: known keys of the right kind, defaults for the rest.
 export function clean(raw) {
   const out = {};
@@ -11,6 +11,9 @@ export function clean(raw) {
     const v = raw?.[k];
     out[k] = Array.isArray(d) ? (Array.isArray(v) ? v : [...d]) : typeof v === typeof d ? v : d;
   }
+  // Weather: good, or good or fair, for a day up to a week ahead (days from today).
+  if (!['good', 'fair'].includes(out.wx)) out.wx = '';
+  if (!(Number.isInteger(out.day) && out.day >= 0 && out.day <= 7)) out.day = 0;
   return out;
 }
 
@@ -38,8 +41,9 @@ export function quickPass(e, P, ctx) {
 
 // The filters that are narrowing things, in the order the chips show them, and whether any needs the per-water lookups.
 const ON = { fish: P => P.fish.length, access: P => P.access.length, miles: P => P.miles, stocked: P => P.stocked, mine: P => P.mine, saved: P => P.saved,
-  noAlgae: P => P.noAlgae, type: P => P.type, size: P => P.size.length, elev: P => P.elev.length, iceFree: P => P.iceFree };
+  noAlgae: P => P.noAlgae, type: P => P.type, size: P => P.size.length, elev: P => P.elev.length, iceFree: P => P.iceFree, wx: P => P.wx };
 export const active = P => Object.keys(ON).filter(k => ON[k](P));
 export const needsFacts = P => !!(P.fish.length || P.access.length || P.stocked || P.mine || P.noAlgae);
+export const needsWeather = P => !!P.wx;
 // The change that switches one filter back to "show everything" (the map's removable chips).
-export const off = key => ({ [key]: Array.isArray(DEFAULTS[key]) ? [] : key === 'miles' ? 0 : key === 'type' ? '' : false });
+export const off = key => ({ [key]: Array.isArray(DEFAULTS[key]) ? [] : key === 'miles' ? 0 : typeof DEFAULTS[key] === 'string' ? '' : false });
