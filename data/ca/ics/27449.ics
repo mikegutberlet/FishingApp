@@ -110,4 +110,21 @@ DESCRIPTION:Trout plant this week at Prado Park Lake
 TRIGGER:-PT12H
 END:VALARM
 END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-15-27449-trout@tackle-box
+DTSTAMP:20261115T000000Z
+DTSTART;VALUE=DATE:20261115
+DTEND;VALUE=DATE:20261122
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Prado Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Prado Park Lake (San Bernardino Co
+ unty) the week of 2026-11-15. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=27449
+GEO:33.94354;-117.64704
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Prado Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
 END:VCALENDAR

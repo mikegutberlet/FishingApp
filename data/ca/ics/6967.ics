@@ -152,4 +152,22 @@ DESCRIPTION:Trout plant this week at Mojave Narrows Regional Park Lake
 TRIGGER:-PT12H
 END:VALARM
 END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-15-6967-trout@tackle-box
+DTSTAMP:20261115T000000Z
+DTSTART;VALUE=DATE:20261115
+DTEND;VALUE=DATE:20261122
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Mojave Narrows Regional Park Lake
+DESCRIPTION:CDFW plans to plant Trout at Mojave Narrows Regional Park Lake 
+ (San Bernardino County) the week of 2026-11-15. Plants are subject to chan
+ ge.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=6967
+GEO:34.51351;-117.2765
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Mojave Narrows Regional Park Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
 END:VCALENDAR

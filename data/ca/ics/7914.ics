@@ -3,8 +3,8 @@ VERSION:2.0
 PRODID:-//Tackle Box//CDFW plants//EN
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
-X-WR-CALNAME:Fish plants: CDFW water #7914
-X-WR-CALDESC:CDFW fish planting schedule for CDFW water #7914. Plants are s
+X-WR-CALNAME:Fish plants: Morena Reservoir
+X-WR-CALDESC:CDFW fish planting schedule for Morena Reservoir. Plants are s
  ubject to change.
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H

@@ -110,4 +110,21 @@ DESCRIPTION:Trout plant this week at Lake Murray
 TRIGGER:-PT12H
 END:VALARM
 END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-22-7887-trout@tackle-box
+DTSTAMP:20261122T000000Z
+DTSTART;VALUE=DATE:20261122
+DTEND;VALUE=DATE:20261129
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Lake Murray
+DESCRIPTION:CDFW plans to plant Trout at Lake Murray (San Diego County) the
+  week of 2026-11-22. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=7887
+GEO:32.78923;-117.04284
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Lake Murray
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
 END:VCALENDAR

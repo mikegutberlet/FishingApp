@@ -3,9 +3,9 @@ VERSION:2.0
 PRODID:-//Tackle Box//CDFW plants//EN
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
-X-WR-CALNAME:Fish plants: CDFW water #14320
-X-WR-CALDESC:CDFW fish planting schedule for CDFW water #14320. Plants are 
- subject to change.
+X-WR-CALNAME:Fish plants: Echo Lake\, Upper and Lower
+X-WR-CALDESC:CDFW fish planting schedule for Echo Lake\, Upper and Lower. P
+ lants are subject to change.
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H
 END:VCALENDAR
