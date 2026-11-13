@@ -1,4 +1,5 @@
-// Stocking tab: the state's plants for the water (CDFW, NDOW), plus your own stocking records.
+// Stocking tab: what the state's own lists say is in the water (fish-here.js), the state's plants for it (CDFW,
+// NDOW, ODFW), plus your own stocking records.
 import { db } from '../../db.js';
 import { forLake, stockIdOf } from '../../states/index.js';
 import { parseStockingCsv } from '../../data-sources.js';
@@ -8,10 +9,12 @@ import { renderStateReport } from '../state-report.js';
 import { isNew, markPlantsSeen } from '../new-plants.js';
 import { stockHistoryFor } from '../../stock-history.js';
 import { speciesLabel } from '../../species.js';
+import { renderFishHere } from '../fish-here.js';
 
 export async function renderStocking(lake, body) {
   if (lake.unsaved) {
-    body.innerHTML = `<div id="state-stock"><div class="card muted">No state stocking found for this water.</div></div><p class="muted small">Save this water to keep your own stocking notes.</p>`;
+    body.innerHTML = `<div id="fish-here"></div><div id="state-stock"><div class="card muted">No state stocking found for this water.</div></div><p class="muted small">Save this water to keep your own stocking notes.</p>`;
+    renderFishHere(lake, $('#fish-here'));
     renderStateStocking(lake, $('#state-stock'));
     return;
   }
@@ -21,7 +24,7 @@ export async function renderStocking(lake, body) {
   const years = Object.keys(byYear).sort();
   const yearTotals = years.map(y => [y, Object.values(byYear[y]).reduce((a, b) => a + b, 0)]);
   const maxTotal = Math.max(1, ...yearTotals.map(t => t[1]));
-  body.innerHTML = `<div id="state-stock"></div><div class="card"><h3>${stockIdOf(lake) ? 'Your stocking notes' : 'Stocking history'}</h3>
+  body.innerHTML = `<div id="fish-here"></div><div id="state-stock"></div><div class="card"><h3>${stockIdOf(lake) ? 'Your stocking notes' : 'Stocking history'}</h3>
       ${lake.stockingUrl ? `<p class="small"><a href="${esc(lake.stockingUrl)}" target="_blank" rel="noopener">Latest state stocking report ↗</a></p>` : '<p class="muted small">Add your state’s stocking report link under Edit.</p>'}
       ${years.length ? `<div class="bars">${yearTotals.map(([y, t]) => `<div class="barrow"><span class="lbl">${y}</span><div class="fill" style="width:${t / maxTotal * 70}%"></div><span>${t.toLocaleString()}</span></div>`).join('')}</div>` : '<p class="muted">No stocking records yet.</p>'}
     </div>
@@ -33,6 +36,7 @@ export async function renderStocking(lake, body) {
     </form>
     ${rows.length ? `<div class="card"><table><tr><th>Date</th><th>Species</th><th>Number</th><th>Size</th><th></th></tr>
       ${rows.map(r => `<tr><td>${esc(r.date)}</td><td>${esc(r.species)}</td><td>${r.count?.toLocaleString() ?? ''}</td><td>${esc(r.size)}</td><td><a href="#" data-del="${r.id}">✕</a></td></tr>`).join('')}</table></div>` : ''}`;
+  renderFishHere(lake, $('#fish-here'));
   renderStateStocking(lake, $('#state-stock'));
   $('#stock-form').onsubmit = async e => {
     e.preventDefault();

@@ -54,7 +54,7 @@ const stillWater = s => {
 };
 const streamName = s => /\b(creek|river|slough|fork)$/i.test(String(s ?? '').replace(/\s*\(.*?\)\s*/g, ' ').split(/\s*[–—-]\s+/)[0].replace(/^(.+?),\s*(.+)$/, '$2 $1').trim());
 
-export function stateData(dir, code) {
+export function stateData(dir, code, { extraLakes = false } = {}) {
   const cache = {};
   // A failed fetch (offline, or the file isn't there yet) is tried again after 30 s rather than kept for the session.
   const get = (key, url) => cache[key] ??= fetch(url).then(r => r.ok ? r.json() : Promise.reject(new Error(r.status)))
@@ -122,14 +122,15 @@ export function stateData(dir, code) {
   // lake (the Snake through Brownlee) carries the lake's name as inLake. Built once per file the app has loaded.
   let built = null;
   async function statewide() {
-    const [l, r] = await Promise.all([load('lakes'), load('rivers')]);
-    if (built?.l === l && built?.r === r) return built.out;
-    const lakes = (l?.lakes ?? []).map(x => ({ ...x, kind: 'lake', state: code }));
+    // lakes-extra (extraLakes): lakes the state's fish maps name that the national list doesn't (scripts/build-species.mjs).
+    const [l, r, x] = await Promise.all([load('lakes'), load('rivers'), extraLakes ? load('lakes-extra') : null]);
+    if (built?.l === l && built?.r === r && built?.x === x) return built.out;
+    const lakes = [...(l?.lakes ?? []), ...(x?.lakes ?? [])].map(x => ({ ...x, kind: 'lake', state: code }));
     const riverLabels = [];
     for (const river of r?.rivers ?? []) {
       for (const [lat, lon, inLake] of river.points) riverLabels.push({ ...river, kind: 'river', state: code, lat, lon, ...(String(inLake ?? '').trim() && { inLake }) });
     }
-    built = { l, r, out: { lakes, riverLabels } };
+    built = { l, r, x, out: { lakes, riverLabels } };
     return built.out;
   }
 
@@ -206,5 +207,8 @@ export function stateData(dir, code) {
   const accessPlaces = async () => (await load('access'))?.places ?? [];
   // Drive-up or hike-in for each water, by its pool key without the state (reach-core.js). null: no file yet.
   const reachMap = async () => (await load('reach'))?.reach ?? null;
-  return { load, waters, plantsFor, dataDates, nearestWaters, nearestReservoir, statewide, history: () => load('history'), matchStockedWater, historyFor, hydroFor, bathymetryFor, bathymetryUrl, accessFor, accessPlaces, reachMap };
+  // The fish the agency's own lists name for each water, by pool key without the state (fish-here-core.js). null: no file yet.
+  const speciesList = () => load('species');
+  const sightingList = () => load('sightings');
+  return { load, waters, plantsFor, dataDates, nearestWaters, nearestReservoir, statewide, history: () => load('history'), matchStockedWater, historyFor, hydroFor, bathymetryFor, bathymetryUrl, accessFor, accessPlaces, reachMap, speciesList, sightingList };
 }

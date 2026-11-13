@@ -5,7 +5,7 @@ import { stateData } from './common.js';
 import { sameWater } from './nv.js';
 import { haversineKm } from '../data-sources.js';
 
-const d = stateData('or', 'OR');
+const d = stateData('or', 'OR', { extraLakes: true });
 
 export const code = 'OR';
 export const name = 'Oregon';
@@ -77,7 +77,7 @@ export const searchHint = 'Detroit, Deschutes River, Diamond…';
 export const stockedHint = 'Hagg, Detroit, Willamette zone…';
 
 export { sameWater };
-export const { waters, plantsFor, dataDates, nearestWaters, nearestReservoir, statewide, history, matchStockedWater, historyFor, hydroFor, bathymetryFor, bathymetryUrl, accessFor, accessPlaces, reachMap } = d;
+export const { waters, plantsFor, dataDates, nearestWaters, nearestReservoir, statewide, history, matchStockedWater, historyFor, hydroFor, bathymetryFor, bathymetryUrl, accessFor, accessPlaces, reachMap, speciesList, sightingList } = d;
 
 function inRing([x, y], ring) {
   let c = false;
