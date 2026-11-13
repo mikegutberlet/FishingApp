@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-11-12T21:01:29.188Z",
+  "startedAt": "2026-11-13T20:37:24.986Z",
   "ndow": {
     "waters": 551
   },
@@ -72,9 +72,9 @@
     "geocoderCalls": 0
   },
   "plants": {
-    "total": 1728,
-    "new": 5,
-    "kept": 1723
+    "total": 1731,
+    "new": 3,
+    "kept": 1728
   },
   "usgs": {
     "sites": [
