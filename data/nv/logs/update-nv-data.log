@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-11-14T18:48:43.023Z",
+  "startedAt": "2026-11-15T19:26:30.223Z",
   "ndow": {
     "waters": 551
   },
@@ -73,8 +73,8 @@
   },
   "plants": {
     "total": 1733,
-    "new": 2,
-    "kept": 1731
+    "new": 0,
+    "kept": 1733
   },
   "usgs": {
     "sites": [

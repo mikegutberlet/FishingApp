@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-11-14T18:48:43.023Z",
+  "startedAt": "2026-11-15T19:26:30.223Z",
   "ndow": {
     "waters": 551
   },
@@ -73,8 +73,8 @@
   },
   "plants": {
     "total": 1733,
-    "new": 2,
-    "kept": 1731
+    "new": 0,
+    "kept": 1733
   },
   "usgs": {
     "sites": [
@@ -133,14 +133,14 @@
   },
   "keptStations": [],
   "reservoirs": [
-    "USGS 10288500 Walker Lake near Hawthorne, NV: 2026-11-14 3914.08 / 2026-11-13 1128000",
-    "USGS 10297000 Topaz Lake near Topaz, CA: 2026-11-13 4982.77 / 2026-11-13 16670",
-    "USGS 10301700 Weber Reservoir near Schurz, NV: 2026-11-13 4201.83 / 2026-11-13 5842",
-    "USGS 10312100 Lahontan Reservoir near Fallon, NV: 2026-11-14 4124.2 / 2026-11-14 58700",
-    "USGS 10336710 Marlette Lake near Carson City, NV: 2026-11-13 7818.63 / 2026-11-13 5052",
-    "USGS 13174000 Wild Horse Reservoir near Gold Cr, NV: 2026-11-13 6181.8 / 2026-11-13 21130",
-    "USBR MEAD Lake Mead: 2026-11-13 1040.86 / 2026-11-13 7037000",
-    "USBR MOHAVE Lake Mohave: 2026-11-13 639.521 / 2026-11-13 1662150"
+    "USGS 10288500 Walker Lake near Hawthorne, NV: 2026-11-15 3914.06 / 2026-11-14 1128000",
+    "USGS 10297000 Topaz Lake near Topaz, CA: 2026-11-14 4982.83 / 2026-11-14 16770",
+    "USGS 10301700 Weber Reservoir near Schurz, NV: 2026-11-14 4201.86 / 2026-11-14 5858",
+    "USGS 10312100 Lahontan Reservoir near Fallon, NV: 2026-11-15 4124.43 / 2026-11-15 59390",
+    "USGS 10336710 Marlette Lake near Carson City, NV: 2026-11-14 7818.65 / 2026-11-14 5058",
+    "USGS 13174000 Wild Horse Reservoir near Gold Cr, NV: 2026-11-14 6181.77 / 2026-11-14 21080",
+    "USBR MEAD Lake Mead: 2026-11-14 1041 / 2026-11-14 7046670",
+    "USBR MOHAVE Lake Mohave: 2026-11-14 639.486 / 2026-11-14 1661180"
   ],
   "hab": [
     "Mountain View Pond: HAB Watch 2026-10-14 located",
@@ -152,5 +152,5 @@
     "South Meadows Community Pond: HAB Watch 2026-06-23 NO POINT",
     "Walker Lake: HAB Watch 2026-05-19 located"
   ],
-  "finishedAt": "2026-11-14T18:49:06.841Z"
+  "finishedAt": "2026-11-15T19:27:02.851Z"
 }
