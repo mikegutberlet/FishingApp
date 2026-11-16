@@ -1,5 +1,5 @@
 {
- "startedAt": "2026-11-09T22:41:13.587Z",
+ "startedAt": "2026-11-16T22:29:47.546Z",
  "pages": {
   "license-tag-permit-fees": [
    "# License, Tag & Permit Fees (40p 71r)"
@@ -633,8 +633,8 @@
   }
  },
  "indexLinks": [
-  "northwest-zone",
   "willamette-zone",
+  "northwest-zone",
   "southwest-zone",
   "central-zone",
   "license-tag-permit-fees",
@@ -967,5 +967,5 @@
   "Northwest: 1 parts"
  ],
  "counties": 36,
- "finishedAt": "2026-11-09T22:41:16.633Z"
+ "finishedAt": "2026-11-16T22:29:50.837Z"
 }

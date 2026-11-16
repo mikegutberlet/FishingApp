@@ -1,5 +1,5 @@
 {
- "startedAt": "2026-11-09T22:41:13.587Z",
+ "startedAt": "2026-11-16T22:29:47.546Z",
  "pages": {
   "license-tag-permit-fees": 1,
   "definitions": 2,
@@ -39,8 +39,8 @@
   }
  },
  "indexLinks": [
-  "northwest-zone",
   "willamette-zone",
+  "northwest-zone",
   "southwest-zone",
   "central-zone",
   "license-tag-permit-fees",
