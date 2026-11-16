@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-11-09T22:15:13.428Z",
+  "startedAt": "2026-11-16T21:56:25.698Z",
   "steps": {
     "nhdLayers": [
       {
@@ -55,9 +55,8 @@
         "name": "Waterbody - Large Scale"
       }
     ],
-    "splitTiles": 3,
     "lakes": {
-      "features": 1976,
+      "features": 1975,
       "polygons": 370,
       "inState": 350,
       "carriedOver": 0
@@ -133,5 +132,5 @@
       "carriedOver": 0
     }
   },
-  "finishedAt": "2026-11-09T23:45:02.327Z"
+  "finishedAt": "2026-11-16T22:15:58.155Z"
 }
