@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-11-09T22:38:06.515Z",
+  "startedAt": "2026-11-16T22:26:26.998Z",
   "steps": {
     "nhdLayers": [
       {
@@ -55,14 +55,13 @@
         "name": "Waterbody - Large Scale"
       }
     ],
-    "splitTiles": 2,
     "lakes": {
-      "features": 3309,
+      "features": 3308,
       "polygons": 2320,
       "inState": 2244,
       "carriedOver": 0
     },
-    "elevationError": "fetch failed",
+    "elevationError": "429 https://api.open-meteo.com/v1/elevation?latitude=42.73638,42.75557,42.09831,42.29103,42.58,42.72293,42.11619,42.55798,42.95217,42.92976,42.41715,42.62141,42.13945,42.74589,42.66842,42.80542,42.28733,4",
     "elevations": {
       "nhdKept": 429,
       "fromDem": 1815,
@@ -139,5 +138,5 @@
       "carriedOver": 0
     }
   },
-  "finishedAt": "2026-11-09T23:15:38.900Z"
+  "finishedAt": "2026-11-16T22:37:55.576Z"
 }
