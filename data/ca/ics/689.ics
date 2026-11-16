@@ -8,4 +8,21 @@ X-WR-CALDESC:CDFW fish planting schedule for Iron Canyon Reservoir. Plants
  are subject to change.
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-11-15-689-trout@tackle-box
+DTSTAMP:20261115T000000Z
+DTSTART;VALUE=DATE:20261115
+DTEND;VALUE=DATE:20261122
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Iron Canyon Reservoir
+DESCRIPTION:CDFW plans to plant Trout at Iron Canyon Reservoir (Shasta Coun
+ ty) the week of 2026-11-15. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=689
+GEO:41.05162;-121.98419
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Iron Canyon Reservoir
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
 END:VCALENDAR

@@ -93,4 +93,21 @@ DESCRIPTION:Trout plant this week at Atascadero Lake
 TRIGGER:-PT12H
 END:VALARM
 END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-15-6526-trout@tackle-box
+DTSTAMP:20261115T000000Z
+DTSTART;VALUE=DATE:20261115
+DTEND;VALUE=DATE:20261122
+TRANSP:TRANSPARENT
+SUMMARY:🐟 Trout plant: Atascadero Lake
+DESCRIPTION:CDFW plans to plant Trout at Atascadero Lake (San Luis Obispo C
+ ounty) the week of 2026-11-15. Plants are subject to change.
+URL:https://apps.wildlife.ca.gov/fishing/?stockid=6526
+GEO:35.46434;-120.66569
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Trout plant this week at Atascadero Lake
+TRIGGER:-PT12H
+END:VALARM
+END:VEVENT
 END:VCALENDAR
