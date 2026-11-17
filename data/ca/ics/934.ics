@@ -9,23 +9,6 @@ X-WR-CALDESC:CDFW fish planting schedule for Whiskeytown Lake. Plants are s
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H
 BEGIN:VEVENT
-UID:2025-11-16-934-trout@tackle-box
-DTSTAMP:20251116T000000Z
-DTSTART;VALUE=DATE:20251116
-DTEND;VALUE=DATE:20251123
-TRANSP:TRANSPARENT
-SUMMARY:🐟 Trout plant: Whiskeytown Lake
-DESCRIPTION:CDFW plans to plant Trout at Whiskeytown Lake (Shasta County) t
- he week of 2025-11-16. Plants are subject to change.
-URL:https://apps.wildlife.ca.gov/fishing/?stockid=934
-GEO:40.62951;-122.57594
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:Trout plant this week at Whiskeytown Lake
-TRIGGER:-PT12H
-END:VALARM
-END:VEVENT
-BEGIN:VEVENT
 UID:2025-12-14-934-trout@tackle-box
 DTSTAMP:20251214T000000Z
 DTSTART;VALUE=DATE:20251214

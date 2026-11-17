@@ -9,23 +9,6 @@ X-WR-CALDESC:CDFW fish planting schedule for Fresno City Woodward Park Lake
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H
 BEGIN:VEVENT
-UID:2025-11-16-28286-trout@tackle-box
-DTSTAMP:20251116T000000Z
-DTSTART;VALUE=DATE:20251116
-DTEND;VALUE=DATE:20251123
-TRANSP:TRANSPARENT
-SUMMARY:🐟 Trout plant: Fresno City Woodward Park Lake
-DESCRIPTION:CDFW plans to plant Trout at Fresno City Woodward Park Lake (Fr
- esno County) the week of 2025-11-16. Plants are subject to change.
-URL:https://apps.wildlife.ca.gov/fishing/?stockid=28286
-GEO:36.86399;-119.78361
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:Trout plant this week at Fresno City Woodward Park Lake
-TRIGGER:-PT12H
-END:VALARM
-END:VEVENT
-BEGIN:VEVENT
 UID:2025-11-30-28286-trout@tackle-box
 DTSTAMP:20251130T000000Z
 DTSTART;VALUE=DATE:20251130

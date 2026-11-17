@@ -9,23 +9,6 @@ X-WR-CALDESC:CDFW fish planting schedule for Rollins Reservoir. Plants are
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H
 BEGIN:VEVENT
-UID:2025-11-16-2063-trout@tackle-box
-DTSTAMP:20251116T000000Z
-DTSTART;VALUE=DATE:20251116
-DTEND;VALUE=DATE:20251123
-TRANSP:TRANSPARENT
-SUMMARY:🐟 Trout plant: Rollins Reservoir
-DESCRIPTION:CDFW plans to plant Trout at Rollins Reservoir (Nevada\, Placer
-  County) the week of 2025-11-16. Plants are subject to change.
-URL:https://apps.wildlife.ca.gov/fishing/?stockid=2063
-GEO:39.15466;-120.93229
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:Trout plant this week at Rollins Reservoir
-TRIGGER:-PT12H
-END:VALARM
-END:VEVENT
-BEGIN:VEVENT
 UID:2026-02-01-2063-trout@tackle-box
 DTSTAMP:20260201T000000Z
 DTSTART;VALUE=DATE:20260201

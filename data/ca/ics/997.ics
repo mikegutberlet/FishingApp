@@ -42,21 +42,4 @@ DESCRIPTION:Trout plant this week at McCumber Reservoir
 TRIGGER:-PT12H
 END:VALARM
 END:VEVENT
-BEGIN:VEVENT
-UID:2026-11-15-997-trout@tackle-box
-DTSTAMP:20261115T000000Z
-DTSTART;VALUE=DATE:20261115
-DTEND;VALUE=DATE:20261122
-TRANSP:TRANSPARENT
-SUMMARY:🐟 Trout plant: McCumber Reservoir
-DESCRIPTION:CDFW plans to plant Trout at McCumber Reservoir (Shasta County)
-  the week of 2026-11-15. Plants are subject to change.
-URL:https://apps.wildlife.ca.gov/fishing/?stockid=997
-GEO:40.53981;-121.73124
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:Trout plant this week at McCumber Reservoir
-TRIGGER:-PT12H
-END:VALARM
-END:VEVENT
 END:VCALENDAR

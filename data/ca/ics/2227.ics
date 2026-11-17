@@ -9,23 +9,6 @@ X-WR-CALDESC:CDFW fish planting schedule for Halsey Forebay. Plants are sub
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H
 BEGIN:VEVENT
-UID:2025-11-16-2227-trout@tackle-box
-DTSTAMP:20251116T000000Z
-DTSTART;VALUE=DATE:20251116
-DTEND;VALUE=DATE:20251123
-TRANSP:TRANSPARENT
-SUMMARY:🐟 Trout plant: Halsey Forebay
-DESCRIPTION:CDFW plans to plant Trout at Halsey Forebay (Placer County) the
-  week of 2025-11-16. Plants are subject to change.
-URL:https://apps.wildlife.ca.gov/fishing/?stockid=2227
-GEO:38.97098;-121.03811
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:Trout plant this week at Halsey Forebay
-TRIGGER:-PT12H
-END:VALARM
-END:VEVENT
-BEGIN:VEVENT
 UID:2026-01-25-2227-trout@tackle-box
 DTSTAMP:20260125T000000Z
 DTSTART;VALUE=DATE:20260125

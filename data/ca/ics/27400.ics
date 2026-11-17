@@ -9,23 +9,6 @@ X-WR-CALDESC:CDFW fish planting schedule for Jenkinson Lake. Plants are sub
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H
 BEGIN:VEVENT
-UID:2025-11-16-27400-trout@tackle-box
-DTSTAMP:20251116T000000Z
-DTSTART;VALUE=DATE:20251116
-DTEND;VALUE=DATE:20251123
-TRANSP:TRANSPARENT
-SUMMARY:🐟 Trout plant: Jenkinson Lake
-DESCRIPTION:CDFW plans to plant Trout at Jenkinson Lake (El Dorado County) 
- the week of 2025-11-16. Plants are subject to change.
-URL:https://apps.wildlife.ca.gov/fishing/?stockid=27400
-GEO:38.72613;-120.55372
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:Trout plant this week at Jenkinson Lake
-TRIGGER:-PT12H
-END:VALARM
-END:VEVENT
-BEGIN:VEVENT
 UID:2026-01-25-27400-trout@tackle-box
 DTSTAMP:20260125T000000Z
 DTSTART;VALUE=DATE:20260125
