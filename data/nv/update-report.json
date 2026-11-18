@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-11-17T21:52:11.249Z",
+  "startedAt": "2026-11-18T21:32:07.311Z",
   "ndow": {
     "waters": 551
   },
@@ -72,8 +72,8 @@
     "geocoderCalls": 0
   },
   "plants": {
-    "total": 1733,
-    "new": 0,
+    "total": 1734,
+    "new": 1,
     "kept": 1733
   },
   "usgs": {
@@ -133,14 +133,14 @@
   },
   "keptStations": [],
   "reservoirs": [
-    "USGS 10288500 Walker Lake near Hawthorne, NV: 2026-11-17 3914.04 / 2026-11-16 1127000",
-    "USGS 10297000 Topaz Lake near Topaz, CA: 2026-11-16 4982.96 / 2026-11-16 16980",
-    "USGS 10301700 Weber Reservoir near Schurz, NV: 2026-11-16 4201.87 / 2026-11-16 5868",
-    "USGS 10312100 Lahontan Reservoir near Fallon, NV: 2026-11-17 4124.93 / 2026-11-17 60900",
-    "USGS 10336710 Marlette Lake near Carson City, NV: 2026-11-16 7818.71 / 2026-11-16 5077",
-    "USGS 13174000 Wild Horse Reservoir near Gold Cr, NV: 2026-11-16 6181.79 / 2026-11-16 21110",
-    "USBR MEAD Lake Mead: 2026-11-16 1041.16 / 2026-11-16 7057750",
-    "USBR MOHAVE Lake Mohave: 2026-11-16 639.528 / 2026-11-16 1662340"
+    "USGS 10288500 Walker Lake near Hawthorne, NV: 2026-11-18 3914.02 / 2026-11-17 1127000",
+    "USGS 10297000 Topaz Lake near Topaz, CA: 2026-11-17 4983.05 / 2026-11-17 17130",
+    "USGS 10301700 Weber Reservoir near Schurz, NV: 2026-11-17 4201.88 / 2026-11-17 5873",
+    "USGS 10312100 Lahontan Reservoir near Fallon, NV: 2026-11-18 4125.18 / 2026-11-18 61660",
+    "USGS 10336710 Marlette Lake near Carson City, NV: 2026-11-17 7818.71 / 2026-11-17 5077",
+    "USGS 13174000 Wild Horse Reservoir near Gold Cr, NV: 2026-11-17 6181.77 / 2026-11-17 21080",
+    "USBR MEAD Lake Mead: 2026-11-17 1041.23 / 2026-11-17 7062600",
+    "USBR MOHAVE Lake Mohave: 2026-11-17 639.622 / 2026-11-17 1664930"
   ],
   "hab": [
     "Mountain View Pond: HAB Watch 2026-10-14 located",
@@ -152,5 +152,5 @@
     "South Meadows Community Pond: HAB Watch 2026-06-23 NO POINT",
     "Walker Lake: HAB Watch 2026-05-19 located"
   ],
-  "finishedAt": "2026-11-17T21:53:19.224Z"
+  "finishedAt": "2026-11-18T21:33:06.956Z"
 }
