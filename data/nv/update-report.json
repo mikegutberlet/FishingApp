@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-11-20T21:27:19.380Z",
+  "startedAt": "2026-11-21T20:13:07.219Z",
   "ndow": {
     "waters": 551
   },
@@ -73,8 +73,8 @@
   },
   "plants": {
     "total": 1737,
-    "new": 3,
-    "kept": 1734
+    "new": 0,
+    "kept": 1737
   },
   "usgs": {
     "sites": [
@@ -133,14 +133,14 @@
   },
   "keptStations": [],
   "reservoirs": [
-    "USGS 10288500 Walker Lake near Hawthorne, NV: 2026-11-20 3914 / 2026-11-19 1125000",
-    "USGS 10297000 Topaz Lake near Topaz, CA: 2026-11-19 4983.27 / 2026-11-19 17500",
-    "USGS 10301700 Weber Reservoir near Schurz, NV: 2026-11-19 4201.88 / 2026-11-19 5875",
-    "USGS 10312100 Lahontan Reservoir near Fallon, NV: 2026-11-20 4125.68 / 2026-11-20 63220",
-    "USGS 10336710 Marlette Lake near Carson City, NV: 2026-11-19 7818.92 / 2026-11-19 5144",
-    "USGS 13174000 Wild Horse Reservoir near Gold Cr, NV: 2026-11-19 6181.78 / 2026-11-19 21100",
-    "USBR MEAD Lake Mead: 2026-11-19 1041.27 / 2026-11-19 7065370",
-    "USBR MOHAVE Lake Mohave: 2026-11-19 639.618 / 2026-11-19 1664820"
+    "USGS 10288500 Walker Lake near Hawthorne, NV: 2026-11-21 3914 / 2026-11-20 1126000",
+    "USGS 10297000 Topaz Lake near Topaz, CA: 2026-11-20 4983.33 / 2026-11-20 17600",
+    "USGS 10301700 Weber Reservoir near Schurz, NV: 2026-11-20 4201.91 / 2026-11-20 5892",
+    "USGS 10312100 Lahontan Reservoir near Fallon, NV: 2026-11-21 4125.87 / 2026-11-21 63830",
+    "USGS 10336710 Marlette Lake near Carson City, NV: 2026-11-20 7818.96 / 2026-11-20 5157",
+    "USGS 13174000 Wild Horse Reservoir near Gold Cr, NV: 2026-11-20 6181.78 / 2026-11-20 21100",
+    "USBR MEAD Lake Mead: 2026-11-20 1041.36 / 2026-11-20 7071600",
+    "USBR MOHAVE Lake Mohave: 2026-11-20 639.465 / 2026-11-20 1660610"
   ],
   "hab": [
     "Mountain View Pond: HAB Watch 2026-10-14 located",
@@ -151,5 +151,5 @@
     "South Meadows Community Pond: HAB Watch 2026-06-23 NO POINT",
     "Walker Lake: HAB Watch 2026-05-19 located"
   ],
-  "finishedAt": "2026-11-20T21:28:12.840Z"
+  "finishedAt": "2026-11-21T20:14:08.638Z"
 }
