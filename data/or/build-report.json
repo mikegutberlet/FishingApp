@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-11-16T22:26:26.998Z",
+  "startedAt": "2026-11-24T00:13:06.517Z",
   "steps": {
     "nhdLayers": [
       {
@@ -61,11 +61,11 @@
       "inState": 2244,
       "carriedOver": 0
     },
-    "elevationError": "429 https://api.open-meteo.com/v1/elevation?latitude=42.73638,42.75557,42.09831,42.29103,42.58,42.72293,42.11619,42.55798,42.95217,42.92976,42.41715,42.62141,42.13945,42.74589,42.66842,42.80542,42.28733,4",
+    "elevationError": "429 https://api.open-meteo.com/v1/elevation?latitude=43.55605,44.33963,44.84252,42.11967,44.97447,43.84715,45.11655,45.31454,45.08054,45.17789,43.37483,44.42193,45.20921,42.40108,42.06358,44.17698,43.4184",
     "elevations": {
-      "nhdKept": 429,
-      "fromDem": 1815,
-      "missing": 0
+      "nhdKept": 406,
+      "fromDem": 1738,
+      "missing": 100
     },
     "depthProbe": "403 https://pasta.lternet.edu/package/eml/edi/1043?filter=newest",
     "depth": {
@@ -138,5 +138,5 @@
       "carriedOver": 0
     }
   },
-  "finishedAt": "2026-11-16T22:37:55.576Z"
+  "finishedAt": "2026-11-24T00:20:49.225Z"
 }
