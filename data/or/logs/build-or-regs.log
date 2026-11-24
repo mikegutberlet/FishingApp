@@ -1,10 +1,10 @@
 {
- "startedAt": "2026-11-16T22:29:47.546Z",
+ "startedAt": "2026-11-24T00:20:14.815Z",
  "pages": {
-  "license-tag-permit-fees": 1,
-  "definitions": 2,
+  "license-tag-permit-fees": 2,
+  "definitions": 4,
   "license-information": 5,
-  "general-statewide-regulations": 23,
+  "general-statewide-regulations": 24,
   "northwest-zone": {
    "general": 7,
    "waters": 84
@@ -27,7 +27,7 @@
   },
   "southeast-zone": {
    "general": 7,
-   "waters": 75
+   "waters": 74
   },
   "snake-river-zone": {
    "general": 6,
@@ -39,8 +39,8 @@
   }
  },
  "indexLinks": [
-  "willamette-zone",
   "northwest-zone",
+  "willamette-zone",
   "southwest-zone",
   "central-zone",
   "license-tag-permit-fees",
