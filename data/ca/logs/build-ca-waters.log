@@ -1,6 +1,7 @@
 depth: 403 https://pasta.lternet.edu/package/search/eml?defType=edismax&q=title:%22LAGOS-US%20DEPTH%22&fl=packageid,title,pubdate&rows=20
+rivers: 504 https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query?where=GNIS_NAME+IS+NOT+NULL+AND+%28GNIS_NAME+LIKE+%27%25+River%25%27+OR+GNIS_NAME+LIKE+%27%25+Creek%25%27+OR+GNIS_NAME+LIKE+%27
 {
-  "startedAt": "2026-11-16T22:28:03.074Z",
+  "startedAt": "2026-11-24T00:17:19.105Z",
   "steps": {
     "nhdLayers": [
       {
@@ -61,11 +62,11 @@ depth: 403 https://pasta.lternet.edu/package/search/eml?defType=edismax&q=title:
       "polygons": 3248,
       "inCalifornia": 2930
     },
-    "elevationError": "429 https://api.open-meteo.com/v1/elevation?latitude=41.23803,41.42664,40.84945,40.94414,41.37515,41.38026,41.9344,41.52127,41.58134,41.59078,41.56126,41.55198,41.56219,41.58334,41.94974,37.0886,38.39216,",
+    "elevationError": "429 https://api.open-meteo.com/v1/elevation?latitude=34.14821,37.09313,36.94793,37.28859,37.06877,37.47517,37.1514,37.04172,37.41483,37.16211,37.12906,37.8417,37.89727,37.70404,36.30623,37.15791,36.57023,",
     "elevations": {
-      "nhdKept": 649,
-      "fromDem": 2281,
-      "missing": 0
+      "nhdKept": 603,
+      "fromDem": 2127,
+      "missing": 200
     },
     "depthProbe": "403 https://pasta.lternet.edu/package/eml/edi/1043?filter=newest",
     "depth": {
@@ -120,4 +121,4 @@ depth: 403 https://pasta.lternet.edu/package/search/eml?defType=edismax&q=title:
           "meanFt": null,
           "name": "Shasta Lake"
         },
-   
+ 
