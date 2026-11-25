@@ -1,6 +1,12 @@
+overpass attempt 1 failed: 502 https://overpass-api.de/api/interpreter
+overpass attempt 2 failed: 502 https://overpass-api.de/api/interpreter
+overpass attempt 1 failed: 504 https://overpass.kumi.systems/api/interpreter
+overpass attempt 2 failed: 504 https://overpass.kumi.systems/api/interpreter
+overpass attempt 1 failed: fetch failed
+OR: only 3 sheriff offices and 11 ranger stations, keeping last week's
 CA: 284 hospitals with emergency services, 268 placed (0 one by one, 16 by OpenStreetMap name), 16 not placed: ALTA BATES SUMMIT MEDICAL CENTER; KAISER FOUNDATION HOSPITAL-SANTA CLARA; ST MARY MEDICAL CENTER; NH Camp Pendleton; SAINT JOHN'S HEALTH CENTER; PROVIDENCE ST MARY MEDICAL CENTER; Weed ACH (FT Irwin); STANFORD HEALTH CARE; KAISER FOUNDATION HOSPITAL-SANTA ROSA; WHITTIER HOSPITAL MEDICAL CENTER; KAISER FOUNDATION HOSPITAL - ANTIOCH; KAISER FOUNDATION HOSPITAL - VACAVILLE; VA SAN DIEGO HEALTHCARE SYSTEM; VA GREATER LOS ANGELES HEALTHCARE SYSTEM; SURPRISE VALLEY COMMUNITY HOSPITAL
 NV: 37 hospitals with emergency services, 37 placed (1 one by one, 0 by OpenStreetMap name), 0 not placed
-OR: 58 hospitals with emergency services, 57 placed (0 one by one, 3 by OpenStreetMap name), 1 not placed: ST ANTHONY HOSPITAL
+OR: 58 hospitals with emergency services, 54 placed (0 one by one, 0 by OpenStreetMap name), 4 not placed: PROVIDENCE WILLAMETTE FALLS MEDICAL CENTER; WILLAMETTE VALLEY MEDICAL CENTER; LEGACY MERIDIAN PARK MEDICAL CENTER; ST ANTHONY HOSPITAL
 CA directory: couldn't place 1 Doctor Carlton B. Goodlett Pl Rm 456 San Francisco 94102
 CA directory: couldn't place 100 Courthouse Square Downieville 95936
 CA directory: couldn't place 655 E Third St San Bernardino 92415
@@ -13,7 +19,6 @@ CA directory: couldn't place 99 Water St Markleeville 96120
 CA directory: couldn't place 400 County Center Redwood City 94063
 CA directory: 56 sheriffs listed
 CA: sheriffs' association directory has a phone for 46 of 58 counties
-OR: sheriffs' association directory has a phone for 36 of 36 counties
-CA: 268 ERs, 271 sheriff offices (46 of 58 counties with a phone; none for Trinity, Merced, San Bernardino, Yolo, Inyo, Mariposa, San Francisco, Modoc, San Mateo, Butte, Sierra, Alpine), 235 ranger stations (19 with a phone)
-NV: 37 ERs, 18 sheriff offices (1 of 17 counties with a phone; none for Mineral, Storey, Douglas, Lander, Clark, Churchill, White Pine, Elko, Lyon, Lincoln, Washoe, Humboldt, Pershing, Carson City, Esmeralda, Eureka), 21 ranger stations (2 with a phone)
-OR: 57 ERs, 60 sheriff offices (36 of 36 counties with a phone), 46 ranger stations (5 with a phone)
+CA: 268 ERs, 269 sheriff offices (46 of 58 counties with a phone; none for Trinity, Merced, San Bernardino, Yolo, Inyo, Mariposa, San Francisco, Modoc, San Mateo, Butte, Sierra, Alpine), 234 ranger stations (19 with a phone)
+NV: 37 ERs, 19 sheriff offices (1 of 17 counties with a phone; none for Mineral, Storey, Douglas, Lander, Clark, Churchill, White Pine, Elko, Lyon, Lincoln, Washoe, Humboldt, Pershing, Carson City, Esmeralda, Eureka), 20 ranger stations (2 with a phone)
+OR: 54 ERs, 60 sheriff offices (36 of 36 counties with a phone), 46 ranger stations (5 with a phone)
