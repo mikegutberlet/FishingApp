@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-11-25T22:40:40.893Z",
+  "startedAt": "2026-11-26T22:31:13.127Z",
   "ndow": {
     "waters": 551
   },
@@ -73,8 +73,8 @@
   },
   "plants": {
     "total": 1757,
-    "new": 14,
-    "kept": 1743
+    "new": 0,
+    "kept": 1757
   },
   "usgs": {
     "sites": [
@@ -118,4 +118,4 @@
         "/rise/api/catalog-item/6132 Lake Mohave Davis Dam and Powerplant Daily Water Temperature-DegF Time Series Data",
         "/rise/api/catalog-item/6133 Lake Mohave Davis Dam and Powerplant Daily Lake/Reservoir Elevation-ft Time Series Data",
         "/rise/api/catalog-item/6134 Lake Mohave Davis Dam and Powerplant Daily Lake/Reservoir Storage-af Time Series Data",
-        "/rise/api/catalog-item/6135 Lake Mohave Davis Dam and Powerplant Daily Lake/Reservoir Release - Total-cfs Time S
+        "/rise/api/catalog-item/6135 Lake Mohave Davis Dam and Powerplant Daily Lake/Reservoir Release - Total-cfs Time Se
